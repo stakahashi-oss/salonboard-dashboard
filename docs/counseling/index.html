@@ -309,12 +309,12 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
 
     <div class="q-card">
       <div class="q-label">フルネーム <span class="q-required">*</span></div>
-      <input class="gf-input" type="text" id="lineNewName" placeholder="例：山田 花子" autocomplete="name">
+      <input class="gf-input" type="text" id="startNewName" placeholder="例：山田 花子" autocomplete="name">
     </div>
 
     <div class="q-card">
       <div class="q-label">電話番号</div>
-      <input class="gf-input" type="tel" id="lineNewPhone" placeholder="例：090-0000-0000" inputmode="numeric" maxlength="11">
+      <input class="gf-input" type="tel" id="startNewPhone" placeholder="例：090-0000-0000" inputmode="numeric" maxlength="11">
       <div class="gf-hint">予約情報との紐付けに使用します</div>
     </div>
 
@@ -634,6 +634,21 @@ function startFormWithPhone(phone) {
 
 function startNew() {
   currentCustomer = {}; currentReservation = {};
+  showFormScreen();
+}
+
+function startLineNew() {
+  const name  = document.getElementById("startNewName").value.trim();
+  const phone = document.getElementById("startNewPhone").value.replace(/-/g,"").trim();
+  if (!name) { alert("フルネームを入力してください"); document.getElementById("startNewName").focus(); return; }
+  const today = new Date().toLocaleDateString("ja-JP", {year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
+  currentCustomer = {name: name, phone: phone, visit_date: today};
+  currentReservation = {};
+  // フォーム内の名前・電話番号フィールドにも反映
+  const nameEl = document.getElementById("lineNewName");
+  const phoneEl = document.getElementById("lineNewPhone");
+  if (nameEl) nameEl.value = name;
+  if (phoneEl) phoneEl.value = phone;
   showFormScreen();
 }
 
