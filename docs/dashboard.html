@@ -1361,24 +1361,27 @@ function renderFriendsMgmt(friends) {
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>登録日</th><th>名前</th><th>電話番号</th><th>タグ</th><th>カウンセリング</th><th>個別送信</th>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>最終来店</th><th>タグ</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
-            const name    = f['お名前'] || f['LINE表示名'] || '未設定';
-            const phone   = f['電話番号'] || '―';
-            const linked  = f['電話番号'] ? '<span class="badge-green">連携済み</span>' : '<span class="badge-gray">未連携</span>';
-            const regDate = (f['登録日時']||'').substring(0,10) || '―';
-            const tags    = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '―';
-            const uid     = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-            const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const name      = f['お名前'] || f['LINE表示名'] || '未設定';
+            const phone     = f['電話番号'] || '―';
+            const lastVisit = (f['最終来店日']||'').substring(0,10) || '―';
+            const regDate   = (f['登録日時']||'').substring(0,10) || '―';
+            const tags      = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
+            const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             return `<tr>
               <td style="white-space:nowrap">${regDate}</td>
               <td><strong>${name}</strong></td>
               <td>${phone}</td>
-              <td>${tags}</td>
-              <td>${linked}</td>
-              <td><button class="btn btn-green btn-sm" onclick="openPushModal('${uid}','${safeName}')">📨 送信</button></td>
+              <td style="white-space:nowrap">${lastVisit}</td>
+              <td>${tags || '―'}</td>
+              <td style="white-space:nowrap;display:flex;gap:4px">
+                <button class="btn btn-blue btn-sm" onclick="openCustomerProfile('${uid}')">👤 詳細</button>
+                <button class="btn btn-green btn-sm" onclick="openPushModal('${uid}','${safeName}')">📨 送信</button>
+              </td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -2050,6 +2053,109 @@ async function sendTalkReply() {
     alert('送信エラー: ' + e.message);
   }
 }
+
+// ══════════════════════════════════════════════════════════
+// 顧客プロフィール
+// ══════════════════════════════════════════════════════════
+async function openCustomerProfile(lineUid) {
+  if (!lineUid) return;
+  const modal = document.getElementById('customerProfileModal');
+  const body  = document.getElementById('customerProfileBody');
+  modal.style.display = 'flex';
+  body.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_customer_profile', {line_uid: lineUid});
+    if (data.error) throw new Error(data.error);
+    renderCustomerProfile(data);
+  } catch(e) {
+    body.innerHTML = `<div class="notice-red">❌ ${e.message}</div>`;
+  }
+}
+
+function closeCustomerProfile() {
+  document.getElementById('customerProfileModal').style.display = 'none';
+}
+
+function renderCustomerProfile(data) {
+  const f  = data.friend || {};
+  const rs = data.reservations || [];
+  const cs = data.counseling || [];
+  const name = f.name || f.display_name || '未設定';
+
+  const reservRows = rs.length ? rs.map(r => `
+    <tr>
+      <td style="white-space:nowrap">${r.visit_date}</td>
+      <td>${r.store}</td>
+      <td>${r.menu}</td>
+      <td>${r.staff || '―'}</td>
+      <td>${r.status}</td>
+      <td style="text-align:right">${r.amount ? Number(r.amount).toLocaleString()+'円' : '―'}</td>
+    </tr>`).join('') :
+    '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">予約データなし（電話番号を登録してください）</td></tr>';
+
+  const counselRows = cs.length ? cs.map(c => `
+    <tr>
+      <td style="white-space:nowrap">${String(c['来店日']||'').substring(0,10)}</td>
+      <td>${c['メニュー']||'―'}</td>
+      <td>${c['本日の要望']||'―'}</td>
+      <td>${c['施術メモ']||'―'}</td>
+      <td>${c['次回提案']||'―'}</td>
+    </tr>`).join('') :
+    '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">カウンセリング記録なし</td></tr>';
+
+  document.getElementById('customerProfileBody').innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="flex:1;min-width:200px;background:#f0fff0;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">来店回数</div>
+        <div style="font-size:28px;font-weight:700;color:#00b900">${data.visit_count}<span style="font-size:14px;font-weight:400"> 回</span></div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f0f4ff;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">最終来店日</div>
+        <div style="font-size:18px;font-weight:700;color:#1a73e8">${data.last_visit || '―'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#fff8f0;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">電話番号</div>
+        <div style="font-size:16px;font-weight:600">${f.phone || '未登録'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f5f5f5;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">友だち登録日</div>
+        <div style="font-size:14px">${String(f.registered_at||'').substring(0,10) || '―'}</div>
+        <div style="font-size:11px;color:#888;margin-top:4px">タグ: ${f.tags || 'なし'}</div>
+      </div>
+    </div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📅 予約履歴（${rs.length}件）</div>
+    <div class="tbl-scroll" style="margin-bottom:20px">
+      <table class="tbl">
+        <thead><tr><th>来店日</th><th>店舗</th><th>メニュー</th><th>担当</th><th>ステータス</th><th>金額</th></tr></thead>
+        <tbody>${reservRows}</tbody>
+      </table>
+    </div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📋 カウンセリング履歴（${cs.length}件）</div>
+    <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>来店日</th><th>メニュー</th><th>要望</th><th>施術メモ</th><th>次回提案</th></tr></thead>
+        <tbody>${counselRows}</tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;text-align:right">
+      <button class="btn btn-green btn-sm" onclick="openPushModal('${f.line_uid}','${name.replace(/'/g,"\\'")}');closeCustomerProfile()">📨 メッセージ送信</button>
+    </div>`;
+}
 </script>
+
+<!-- 顧客プロフィールモーダル -->
+<div id="customerProfileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:860px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:1">
+      <div style="font-weight:700;font-size:16px">👤 顧客プロフィール</div>
+      <button onclick="closeCustomerProfile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888;line-height:1">×</button>
+    </div>
+    <div id="customerProfileBody" style="padding:20px"></div>
+  </div>
+</div>
+
 </body>
 </html>
