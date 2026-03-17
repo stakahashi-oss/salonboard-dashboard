@@ -211,6 +211,7 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item" onclick="showTab('line-broadcast',this);loadBroadcastTab()">📢 配信</div>
     <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
     <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
+    <div class="nav-item" onclick="showTab('line-stats',this);loadBroadcastStats()">📊 配信結果</div>
     <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
   </div>
 </nav>
@@ -565,7 +566,7 @@ textarea.msg-input:focus { border-color:#00b900; }
           <div style="display:grid;gap:8px">
             <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
             <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
-            <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+            <input id="couponUrl" type="url" placeholder="公式LINEクーポンURL" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
           </div>
           <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-top:10px">
             <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
@@ -581,6 +582,16 @@ textarea.msg-input:focus { border-color:#00b900; }
         <!-- 空き情報 -->
         <div id="broadcast-tab-vacancy" style="display:none">
           <textarea id="vacancyMsg" placeholder="例：【空き情報】&#10;本日空きあります！&#10;・14:00〜&#10;・16:00〜&#10;ご予約はこちらのLINEへ🌸" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:120px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- 画像付き配信（共通オプション） -->
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:12px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🖼 画像を追加（任意）</div>
+          <input id="broadcastImageUrl" type="url" placeholder="画像URL（https://...）" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" oninput="previewBroadcastImage()">
+          <div id="broadcastImagePreview" style="margin-top:8px;display:none">
+            <img id="broadcastImageEl" src="" style="max-width:200px;border-radius:8px;border:1px solid #ddd">
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:4px">画像＋テキストの順で送信されます</div>
         </div>
 
         <!-- テスト配信 -->
@@ -609,13 +620,41 @@ textarea.msg-input:focus { border-color:#00b900; }
 
   <!-- ═══════ タグ管理 ═══════ -->
   <div class="section" id="tab-line-tags">
-    <div class="notice-green" style="margin-bottom:16px">
-      🏷️ <strong>タグ管理</strong> — LINE友だちにタグを付けてセグメント管理ができます。
+    <!-- タグ作成 -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">🏷️ タグ作成</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="newTagName" placeholder="タグ名を入力（例：VIP・新規・川崎）" style="flex:1;min-width:180px;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')createNewTag()">
+        <input type="color" id="newTagColor" value="#00b900" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <button class="btn btn-green btn-sm" onclick="createNewTag()">＋ 作成</button>
+      </div>
+      <div id="tagMasterList" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
-    <div class="friends-search-row">
-      <input class="friends-search-input" type="text" id="tagSearch" placeholder="名前・電話番号・タグで絞り込み" oninput="filterTags()">
+
+    <!-- 友だちへのタグ設定 -->
+    <div class="card">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">👥 友だちにタグを設定</div>
+        <button class="btn btn-green btn-sm" onclick="loadTagFriends()">🔄 更新</button>
+      </div>
+      <div class="friends-search-row">
+        <input class="friends-search-input" type="text" id="tagSearch" placeholder="名前・電話番号で絞り込み" oninput="filterTagFriends()">
+      </div>
+      <div id="tagsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
-    <div id="tagsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+  </div>
+
+  <!-- ═══════ 配信結果 ═══════ -->
+  <div class="section" id="tab-line-stats">
+    <div class="card">
+      <div class="card-header" style="margin-bottom:16px">
+        <div class="card-title">📊 配信結果・コンバージョン</div>
+        <button class="btn btn-green btn-sm" onclick="loadBroadcastStats()">🔄 更新</button>
+      </div>
+      <div id="broadcastStatsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+    </div>
   </div>
 
   <!-- ═══════ トーク画面 ═══════ -->
@@ -1932,57 +1971,130 @@ function resetScenarioStep(id, idx) {
 // タグ管理
 // ══════════════════════════════════════════════════════════
 let tagsAll = [];
+let tagMaster = [];
 
 async function loadTags() {
   document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
-    const data = await gasGet('get_line_friends');
-    tagsAll = data.friends || [];
-    renderTags(tagsAll);
+    const [friendsData, tagsData] = await Promise.all([
+      gasGet('get_line_friends'),
+      gasGet('get_tags')
+    ]);
+    tagsAll = friendsData.friends || [];
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    renderTagFriends(tagsAll);
   } catch(e) {
     document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
   }
 }
 
-function filterTags() {
-  const q = document.getElementById('tagSearch').value.trim().toLowerCase();
-  if (!q) { renderTags(tagsAll); return; }
-  renderTags(tagsAll.filter(f =>
-    (f['お名前']||'').toLowerCase().includes(q) ||
-    (f['LINE表示名']||'').toLowerCase().includes(q) ||
-    (f['電話番号']||'').includes(q) ||
-    (f['タグ']||'').toLowerCase().includes(q)
-  ));
+async function loadTagFriends() {
+  document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_line_friends');
+    tagsAll = data.friends || [];
+    renderTagFriends(tagsAll);
+  } catch(e) {
+    document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
 }
 
-function renderTags(friends) {
+function renderTagMaster() {
+  const el = document.getElementById('tagMasterList');
+  if (!tagMaster.length) {
+    el.innerHTML = '<span style="font-size:12px;color:#aaa">タグがありません。上から作成してください。</span>';
+    return;
+  }
+  el.innerHTML = tagMaster.map(t => `
+    <div style="display:inline-flex;align-items:center;gap:6px;background:${t.color}22;border:1.5px solid ${t.color};border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;color:${t.color}">
+      ${t.name}
+      <span onclick="deleteTagMaster('${t.name}')" style="cursor:pointer;color:${t.color};font-size:14px;line-height:1;opacity:.7" title="削除">×</span>
+    </div>`).join('');
+}
+
+async function createNewTag() {
+  const name = document.getElementById('newTagName').value.trim();
+  const color = document.getElementById('newTagColor').value;
+  if (!name) { alert('タグ名を入力してください'); return; }
+  try {
+    const r = await gasPost({action: 'create_tag', tag_name: name, color});
+    if (r.error) { alert(r.error); return; }
+    document.getElementById('newTagName').value = '';
+    const tagsData = await gasGet('get_tags');
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    refreshAllTagDropdowns();
+  } catch(e) { alert('エラー: ' + e.message); }
+}
+
+async function deleteTagMaster(name) {
+  if (!confirm(`タグ「${name}」を削除しますか？`)) return;
+  try {
+    await gasPost({action: 'delete_tag', tag_name: name});
+    const tagsData = await gasGet('get_tags');
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    refreshAllTagDropdowns();
+  } catch(e) { alert('エラー: ' + e.message); }
+}
+
+function refreshAllTagDropdowns() {
+  const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
+    ...tagMaster.map(t => `<option value="${t.name}">${t.name}</option>`)].join('');
+  const broadcastOptions = ['<option value="">👥 全員</option>',
+    ...tagMaster.map(t => `<option value="${t.name}">🏷️ ${t.name}</option>`)].join('');
+  ['friendsTagFilter'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = tagOptions; });
+  ['broadcastTagFilter'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = broadcastOptions; });
+}
+
+function filterTagFriends() {
+  const q = document.getElementById('tagSearch').value.trim().toLowerCase();
+  renderTagFriends(q ? tagsAll.filter(f =>
+    (f['お名前']||'').toLowerCase().includes(q) ||
+    (f['LINE表示名']||'').toLowerCase().includes(q) ||
+    (f['電話番号']||'').includes(q)
+  ) : tagsAll);
+}
+
+function filterTags() { filterTagFriends(); }
+
+function renderTagFriends(friends) {
   if (!friends.length) {
     document.getElementById('tagsList').innerHTML = '<div style="text-align:center;padding:30px;color:#999">友だちがいません</div>';
     return;
   }
+  const tagChips = tagMaster.map(t =>
+    `<span class="tag-chip" data-tag="${t.name}" style="display:inline-block;padding:3px 10px;border-radius:12px;border:1.5px solid ${t.color};color:${t.color};font-size:11px;cursor:pointer;margin:2px;background:#fff;font-weight:600">${t.name}</span>`
+  ).join('');
+
   document.getElementById('tagsList').innerHTML = `
-    <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:13px">
-      <thead><tr style="background:#f5f6fa">
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">お名前</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">電話番号</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">タグ</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">操作</th>
-      </tr></thead>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>お名前</th><th>電話番号</th><th>現在のタグ</th><th>タグを設定</th></tr></thead>
       <tbody>${friends.map(f => {
-        const uid = f['LINE_UID'] || '';
+        const uid = (f['LINE_UID']||'').replace(/'/g,"&#39;");
         const name = f['お名前'] || f['LINE表示名'] || '未設定';
         const phone = f['電話番号'] || '―';
-        const tags = f['タグ'] || '';
-        return `<tr style="border-bottom:1px solid #f0f0f0">
-          <td style="padding:9px 8px;font-weight:600">${name}</td>
-          <td style="padding:9px 8px">${phone}</td>
-          <td style="padding:9px 8px">
-            <input type="text" id="tag-${uid}" value="${tags}" placeholder="例: VIP, まつ毛, 新規"
-              style="border:1.5px solid #ddd;border-radius:6px;padding:4px 8px;font-size:12px;width:200px;outline:none">
-          </td>
-          <td style="padding:9px 8px">
-            <button class="btn btn-green btn-sm" onclick="saveTag('${uid}')">保存</button>
+        const currentTags = (f['タグ']||'').split(',').map(t=>t.trim()).filter(Boolean);
+        const currentBadges = currentTags.map(t => {
+          const tm = tagMaster.find(m => m.name === t);
+          const color = tm ? tm.color : '#888';
+          return `<span style="background:${color};color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t}</span>`;
+        }).join('');
+        return `<tr>
+          <td><strong>${name}</strong></td>
+          <td>${phone}</td>
+          <td>${currentBadges || '―'}</td>
+          <td>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px" id="chips-${uid}">
+              ${tagMaster.map(t => {
+                const sel = currentTags.includes(t.name);
+                return `<span onclick="toggleTagChip(this,'${uid}')" data-tag="${t.name}"
+                  style="display:inline-block;padding:3px 10px;border-radius:12px;border:1.5px solid ${t.color};color:${sel?'#fff':t.color};font-size:11px;cursor:pointer;margin:2px;background:${sel?t.color:'#fff'};font-weight:600;transition:all .15s">${t.name}</span>`;
+              }).join('')}
+            </div>
+            <button class="btn btn-green btn-sm" onclick="saveTagFromChips('${uid}')">保存</button>
             <span id="tag-status-${uid}" style="font-size:11px;color:#888;margin-left:6px"></span>
           </td>
         </tr>`;
@@ -1992,17 +2104,100 @@ function renderTags(friends) {
     </div>`;
 }
 
-async function saveTag(lineUid) {
-  const tags = document.getElementById(`tag-${lineUid}`).value.trim();
+function toggleTagChip(el, uid) {
+  const isSelected = el.style.background !== 'rgb(255, 255, 255)' && el.style.background !== '#fff' && el.style.background !== '';
+  const tagName = el.dataset.tag;
+  const tm = tagMaster.find(m => m.name === tagName);
+  const color = tm ? tm.color : '#888';
+  if (isSelected) {
+    el.style.background = '#fff';
+    el.style.color = color;
+  } else {
+    el.style.background = color;
+    el.style.color = '#fff';
+  }
+}
+
+async function saveTagFromChips(lineUid) {
+  const chips = document.querySelectorAll(`#chips-${lineUid} span`);
+  const selected = [];
+  chips.forEach(chip => {
+    const bg = chip.style.background;
+    if (bg && bg !== '#fff' && bg !== 'rgb(255, 255, 255)') selected.push(chip.dataset.tag);
+  });
+  const tags = selected.join(',');
   const statusEl = document.getElementById(`tag-status-${lineUid}`);
   statusEl.textContent = '保存中...';
   try {
-    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags: tags});
+    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags});
     if (r.error) throw new Error(r.error);
     statusEl.textContent = '✅';
     setTimeout(() => { statusEl.textContent = ''; }, 2000);
+    // allFriendsも更新
+    const f = allFriends.find(f => f['LINE_UID'] === lineUid);
+    if (f) f['タグ'] = tags;
+  } catch(e) { statusEl.textContent = '❌'; }
+}
+
+async function saveTag(lineUid) {
+  const tags = document.getElementById(`tag-${lineUid}`)?.value.trim() || '';
+  const statusEl = document.getElementById(`tag-status-${lineUid}`);
+  if (statusEl) statusEl.textContent = '保存中...';
+  try {
+    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags});
+    if (r.error) throw new Error(r.error);
+    if (statusEl) { statusEl.textContent = '✅'; setTimeout(() => { statusEl.textContent = ''; }, 2000); }
+  } catch(e) { if (statusEl) statusEl.textContent = '❌'; }
+}
+
+// ══════════════════════════════════════════════════════════
+// 配信結果・コンバージョン
+// ══════════════════════════════════════════════════════════
+async function loadBroadcastStats() {
+  const el = document.getElementById('broadcastStatsList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_broadcast_stats');
+    const list = data.list || [];
+    if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa">配信履歴がありません</div>'; return; }
+    el.innerHTML = `
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>配信日時</th><th>種別</th><th>対象タグ</th><th>内容</th><th>送信数</th><th>クリック数</th><th>クリック率</th></tr></thead>
+        <tbody>${list.map(b => {
+          const ctr = b.sent_count > 0 ? Math.round(b.click_count / b.sent_count * 100) : 0;
+          const ctrColor = ctr >= 10 ? '#00b900' : ctr >= 5 ? '#f59e0b' : '#888';
+          return `<tr>
+            <td style="white-space:nowrap">${String(b.sent_at).substring(0,16)}</td>
+            <td>${b.type || 'text'}</td>
+            <td>${b.tag || '全員'}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.preview}</td>
+            <td style="text-align:center">${b.sent_count}</td>
+            <td style="text-align:center;font-weight:700;color:#1a73e8">${b.click_count}</td>
+            <td style="text-align:center;font-weight:700;color:${ctrColor}">${ctr}%</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      </div>`;
   } catch(e) {
-    statusEl.textContent = '❌';
+    el.innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// 画像プレビュー
+// ══════════════════════════════════════════════════════════
+function previewBroadcastImage() {
+  const url = document.getElementById('broadcastImageUrl').value.trim();
+  const previewDiv = document.getElementById('broadcastImagePreview');
+  const img = document.getElementById('broadcastImageEl');
+  if (url) {
+    img.src = url;
+    previewDiv.style.display = 'block';
+  } else {
+    previewDiv.style.display = 'none';
   }
 }
 

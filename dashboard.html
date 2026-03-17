@@ -160,6 +160,9 @@ textarea.msg-input:focus { border-color:#00b900; }
 .scenario-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
 .scenario-preview { background:#dcf8c6; border-radius:12px; padding:14px 16px; font-size:13px; white-space:pre-wrap; margin-top:10px; border-left:4px solid #00b900; min-height:40px; display:none; }
 .friends-search-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.broadcast-tab { padding:8px 16px; border:1.5px solid #ddd; border-radius:20px; font-size:13px; cursor:pointer; background:#f8f8f8; color:#555; transition:all .15s; }
+.broadcast-tab.active-tab { border-color:#00b900; background:#00b900; color:#fff; font-weight:700; }
+.scheduled-item { background:#f0fff0; border:1px solid #c8e6c9; border-radius:8px; padding:10px 14px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
 .friends-search-input { flex:1; min-width:200px; padding:8px 14px; border:1.5px solid #ddd; border-radius:8px; font-size:13px; outline:none; transition:border-color .2s; }
 .friends-search-input:focus { border-color:#00b900; }
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9999; display:flex; align-items:center; justify-content:center; padding:16px; }
@@ -167,9 +170,34 @@ textarea.msg-input:focus { border-color:#00b900; }
 .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
 .modal-title { font-size:16px; font-weight:700; }
 .modal-close { background:#eee; border:none; border-radius:8px; padding:4px 12px; cursor:pointer; font-size:14px; }
+
+/* ── ログイン画面 ── */
+#loginOverlay { position:fixed; inset:0; background:#f0f2f5; z-index:9999; display:flex; align-items:center; justify-content:center; }
+.login-box { background:#fff; border-radius:16px; padding:40px 32px; width:100%; max-width:360px; box-shadow:0 4px 24px rgba(0,0,0,.1); text-align:center; }
+.login-box-logo { background:#00b900; width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 16px; }
+.login-box-title { font-size:20px; font-weight:700; margin-bottom:4px; }
+.login-box-sub { font-size:13px; color:#888; margin-bottom:28px; }
+.login-box-input { width:100%; padding:13px 16px; border:1.5px solid #ddd; border-radius:10px; font-size:15px; outline:none; margin-bottom:12px; transition:border-color .2s; }
+.login-box-input:focus { border-color:#00b900; }
+.login-box-btn { width:100%; padding:14px; background:#00b900; color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:opacity .15s; }
+.login-box-btn:hover { opacity:.9; }
+.login-box-error { color:#e74c3c; font-size:13px; margin-top:8px; min-height:18px; }
 </style>
 </head>
 <body>
+
+<!-- ログインオーバーレイ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-box-logo">📊</div>
+    <div class="login-box-title">管理ダッシュボード</div>
+    <div class="login-box-sub">SSIN STUDIO / most eyes / LUMISS</div>
+    <input class="login-box-input" id="dashLoginPass" type="password" placeholder="パスワードを入力"
+      onkeydown="if(event.key==='Enter')doDashLogin()">
+    <button class="login-box-btn" onclick="doDashLogin()">ログイン</button>
+    <div class="login-box-error" id="dashLoginError"></div>
+  </div>
+</div>
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">📊 管理ダッシュボード</div>
@@ -180,8 +208,10 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item" onclick="showTab('counseling',this);loadCounseling()">📋 カウンセリング記録</div>
     <div class="nav-section">LINE管理</div>
     <div class="nav-item" onclick="showTab('line-friends-mgmt',this);loadLineFriendsMgmt()">👥 友だち管理</div>
+    <div class="nav-item" onclick="showTab('line-broadcast',this);loadBroadcastTab()">📢 配信</div>
     <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
     <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
+    <div class="nav-item" onclick="showTab('line-stats',this);loadBroadcastStats()">📊 配信結果</div>
     <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
   </div>
 </nav>
@@ -327,19 +357,47 @@ textarea.msg-input:focus { border-color:#00b900; }
         <textarea class="msg-input" id="campaignContent" style="min-height:140px"></textarea>
       </div>
 
+      <!-- 配信日時 -->
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:14px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🕐 配信日時</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="homeTiming" value="now" checked onchange="toggleHomeSchedule(this.value)"> 今すぐ送信
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="homeTiming" value="schedule" onchange="toggleHomeSchedule(this.value)"> 日時指定
+          </label>
+          <input type="datetime-local" id="homeScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none">
+        </div>
+      </div>
+
+      <!-- テスト配信 -->
+      <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px;margin-top:10px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🧪 テスト配信</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="homeTestTargetUid" style="flex:1;min-width:160px;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;background:#fff">
+            <option value="">送信先を選択...</option>
+          </select>
+          <button class="btn btn-sm" style="background:#f59e0b;color:#fff;white-space:nowrap" onclick="sendHomeTest()">🧪 テスト送信</button>
+          <span id="homeTestStatus" style="font-size:12px;color:#888"></span>
+        </div>
+      </div>
+
       <!-- 送信確認 -->
-      <div class="send-confirm" id="sendConfirm">
+      <div class="send-confirm" id="sendConfirm" style="margin-top:14px">
         ⚠️ <strong>全友だちに一斉送信</strong>します。送信後は取り消せません。本当に送信しますか？
         <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn btn-red" onclick="executeBroadcast()">送信する</button>
+          <button class="btn btn-red" onclick="executeHomeBroadcast()">送信する</button>
           <button class="btn btn-gray" onclick="cancelConfirm()">キャンセル</button>
         </div>
       </div>
 
-      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-blue" onclick="previewMessage()">👁 プレビュー</button>
-        <button class="btn btn-green" id="sendBtn" onclick="confirmBroadcast()">📤 一斉配信する</button>
+        <button class="btn btn-green" id="sendBtn" onclick="confirmHomeBroadcast()">📤 一斉配信する</button>
+        <span id="homeBroadcastStatus" style="font-size:12px;color:#888"></span>
       </div>
+      <div id="homeScheduledList" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -447,27 +505,6 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="kpi-card blue"><div class="kpi-label">📅 今月追加</div><div class="kpi-value" id="kpi-friends-month">-</div></div>
       <div class="kpi-card"><div class="kpi-label">🔗 カウンセリング連携済み</div><div class="kpi-value" id="kpi-friends-linked">-</div></div>
     </div>
-
-    <!-- 一斉送信 -->
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-header"><div class="card-title">📢 一斉送信</div></div>
-      <div style="padding:4px 0 12px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-          <label style="font-size:13px;color:#555">送信対象:</label>
-          <select id="broadcastTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateBroadcastCount()">
-            <option value="">👥 全員</option>
-          </select>
-          <span id="broadcastCount" style="font-size:12px;color:#888"></span>
-        </div>
-        <textarea id="broadcastMsg" placeholder="送信するメッセージを入力..." style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:90px;font-family:inherit;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-          <button class="btn btn-green" onclick="sendBroadcast()">📢 一斉送信</button>
-          <span id="broadcastStatus" style="font-size:12px;color:#888"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 友だち一覧 -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">👥 LINE友だち一覧</div>
@@ -483,15 +520,141 @@ textarea.msg-input:focus { border-color:#00b900; }
     </div>
   </div>
 
+  <!-- ═══════ 配信 ═══════ -->
+  <div class="section" id="tab-line-broadcast">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">📢 配信作成</div></div>
+      <div style="padding:4px 0 12px">
+
+        <!-- 送信対象 -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+          <label style="font-size:13px;font-weight:600;color:#555">送信対象:</label>
+          <select id="broadcastTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateBroadcastCount()">
+            <option value="">👥 全員</option>
+          </select>
+          <span id="broadcastCount" style="font-size:12px;color:#888"></span>
+        </div>
+
+        <!-- 配信日時 -->
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🕐 配信日時</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+              <input type="radio" name="broadcastTiming" value="now" checked onchange="toggleSchedule(this.value)"> 今すぐ送信
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+              <input type="radio" name="broadcastTiming" value="schedule" onchange="toggleSchedule(this.value)"> 日時指定
+            </label>
+            <input type="datetime-local" id="broadcastScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none">
+          </div>
+        </div>
+
+        <!-- 配信内容タブ -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <button id="tab-text-btn" class="broadcast-tab active-tab" onclick="switchBroadcastTab('text')">💬 テキスト</button>
+          <button id="tab-coupon-btn" class="broadcast-tab" onclick="switchBroadcastTab('coupon')">🎫 クーポン</button>
+          <button id="tab-vacancy-btn" class="broadcast-tab" onclick="switchBroadcastTab('vacancy')">📅 空き情報</button>
+        </div>
+
+        <!-- テキスト -->
+        <div id="broadcast-tab-text">
+          <textarea id="broadcastMsg" placeholder="送信するメッセージを入力..." style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:100px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- クーポン -->
+        <div id="broadcast-tab-coupon" style="display:none">
+          <div style="display:grid;gap:8px">
+            <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+            <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+            <input id="couponUrl" type="url" placeholder="公式LINEクーポンURL" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+          </div>
+          <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-top:10px">
+            <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
+            <div style="padding:14px;background:#fff">
+              <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px" id="couponPreviewTitle"></div>
+              <div style="font-size:12px;color:#888;margin-bottom:12px" id="couponPreviewDesc"></div>
+              <div style="background:#00b900;color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:700">クーポンを使う</div>
+            </div>
+          </div>
+          <button class="btn btn-gray btn-sm" onclick="previewCoupon()" style="margin-top:8px">👁 プレビュー</button>
+        </div>
+
+        <!-- 空き情報 -->
+        <div id="broadcast-tab-vacancy" style="display:none">
+          <textarea id="vacancyMsg" placeholder="例：【空き情報】&#10;本日空きあります！&#10;・14:00〜&#10;・16:00〜&#10;ご予約はこちらのLINEへ🌸" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:120px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- 画像付き配信（共通オプション） -->
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:12px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🖼 画像を追加（任意）</div>
+          <input id="broadcastImageUrl" type="url" placeholder="画像URL（https://...）" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" oninput="previewBroadcastImage()">
+          <div id="broadcastImagePreview" style="margin-top:8px;display:none">
+            <img id="broadcastImageEl" src="" style="max-width:200px;border-radius:8px;border:1px solid #ddd">
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:4px">画像＋テキストの順で送信されます</div>
+        </div>
+
+        <!-- テスト配信 -->
+        <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px;margin-top:14px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🧪 テスト配信</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select id="testTargetUid" style="flex:1;min-width:160px;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;background:#fff">
+              <option value="">送信先を選択...</option>
+            </select>
+            <button class="btn btn-sm" style="background:#f59e0b;color:#fff;white-space:nowrap" onclick="sendTestBroadcast()">🧪 テスト送信</button>
+            <span id="testStatus" style="font-size:12px;color:#888"></span>
+          </div>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-green" onclick="executeBroadcast()" id="broadcastSendBtn">📢 配信する</button>
+          <span id="broadcastStatus" style="font-size:12px;color:#888"></span>
+        </div>
+
+        <!-- 予約済み一覧 -->
+        <div id="scheduledList" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════ タグ管理 ═══════ -->
   <div class="section" id="tab-line-tags">
-    <div class="notice-green" style="margin-bottom:16px">
-      🏷️ <strong>タグ管理</strong> — LINE友だちにタグを付けてセグメント管理ができます。
+    <!-- タグ作成 -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">🏷️ タグ作成</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="newTagName" placeholder="タグ名を入力（例：VIP・新規・川崎）" style="flex:1;min-width:180px;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')createNewTag()">
+        <input type="color" id="newTagColor" value="#00b900" style="width:40px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px">
+        <button class="btn btn-green btn-sm" onclick="createNewTag()">＋ 作成</button>
+      </div>
+      <div id="tagMasterList" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
-    <div class="friends-search-row">
-      <input class="friends-search-input" type="text" id="tagSearch" placeholder="名前・電話番号・タグで絞り込み" oninput="filterTags()">
+
+    <!-- 友だちへのタグ設定 -->
+    <div class="card">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">👥 友だちにタグを設定</div>
+        <button class="btn btn-green btn-sm" onclick="loadTagFriends()">🔄 更新</button>
+      </div>
+      <div class="friends-search-row">
+        <input class="friends-search-input" type="text" id="tagSearch" placeholder="名前・電話番号で絞り込み" oninput="filterTagFriends()">
+      </div>
+      <div id="tagsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
-    <div id="tagsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+  </div>
+
+  <!-- ═══════ 配信結果 ═══════ -->
+  <div class="section" id="tab-line-stats">
+    <div class="card">
+      <div class="card-header" style="margin-bottom:16px">
+        <div class="card-title">📊 配信結果・コンバージョン</div>
+        <button class="btn btn-green btn-sm" onclick="loadBroadcastStats()">🔄 更新</button>
+      </div>
+      <div id="broadcastStatsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+    </div>
   </div>
 
   <!-- ═══════ トーク画面 ═══════ -->
@@ -580,12 +743,24 @@ const TEMPLATES = {
   ],
 };
 
+// ── ログイン ─────────────────────────────────────────
+const DASH_PASS = "ssin2026";
+function doDashLogin() {
+  const val = document.getElementById('dashLoginPass').value;
+  if (val === DASH_PASS) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    initDashboard();
+  } else {
+    document.getElementById('dashLoginError').textContent = 'パスワードが違います';
+  }
+}
+
 // ── Init ────────────────────────────────────────────
-window.addEventListener('load', () => {
+function initDashboard() {
   loadDashboard();
   loadCounseling();
   loadLineFriendsMgmt();
-});
+}
 
 async function loadDashboard() {
   document.getElementById('updatedAt').textContent = 'データ読込中...';
@@ -1070,40 +1245,106 @@ function previewMessage() {
   </div>`;
 }
 
-function confirmBroadcast() {
+function toggleHomeSchedule(val) {
+  document.getElementById('homeScheduleTime').style.display = val === 'schedule' ? '' : 'none';
+  document.getElementById('sendBtn').textContent = val === 'schedule' ? '📅 予約する' : '📤 一斉配信する';
+}
+
+function confirmHomeBroadcast() {
   const content = getMessageContent();
-  if(!content){ alert('メッセージを入力してください'); return; }
-  document.getElementById('sendConfirm').style.display = '';
+  if (!content) { alert('メッセージを入力してください'); return; }
+  const timingEl = document.querySelector('input[name="homeTiming"]:checked');
+  const timing = timingEl ? timingEl.value : 'now';
+  if (timing === 'schedule') { executeHomeBroadcast(); return; }
+  document.getElementById('sendConfirm').style.display = 'block';
 }
 
 function cancelConfirm() { document.getElementById('sendConfirm').style.display = 'none'; }
 
-async function executeBroadcast() {
+async function sendHomeTest() {
+  const uid = document.getElementById('homeTestTargetUid').value;
+  const statusEl = document.getElementById('homeTestStatus');
+  if (!uid) { alert('送信先を選択してください'); return; }
   const content = getMessageContent();
-  const btn = document.getElementById('sendBtn');
-  btn.disabled = true;
-  btn.textContent = '送信中...';
-  document.getElementById('sendConfirm').style.display = 'none';
+  if (!content) { alert('メッセージを入力してください'); return; }
+  statusEl.textContent = '送信中...';
   try {
-    const r = await fetch('/api/line/broadcast', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ type:'text', content })
-    });
-    const data = await r.json();
-    const el = document.getElementById('broadcastResult');
-    if(data.status==='success') {
-      el.innerHTML = '<div class="notice-green">✅ 一斉配信しました！</div>';
-      await loadBroadcastLog();
-    } else {
-      el.innerHTML = `<div class="notice-red">❌ 送信エラー: ${JSON.stringify(data.detail||data)}</div>`;
-    }
+    await gasPost({action: 'send_push', line_uid: uid, message: content});
+    statusEl.textContent = '✅ テスト送信完了';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
   } catch(e) {
-    document.getElementById('broadcastResult').innerHTML = `<div class="notice-red">❌ エラー: ${e.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '📤 一斉配信する';
+    statusEl.textContent = `❌ ${e.message}`;
   }
 }
+
+async function executeHomeBroadcast() {
+  const content = getMessageContent();
+  if (!content) { alert('メッセージを入力してください'); return; }
+  const timing = document.querySelector('input[name="homeTiming"]:checked').value;
+  const schedTime = document.getElementById('homeScheduleTime').value;
+  const statusEl = document.getElementById('homeBroadcastStatus');
+  document.getElementById('sendConfirm').style.display = 'none';
+
+  // 予約送信
+  if (timing === 'schedule') {
+    if (!schedTime) { alert('配信日時を選択してください'); return; }
+    statusEl.textContent = '予約中...';
+    try {
+      await gasPost({action:'schedule_broadcast', schedule_time:schedTime, tag:'', type:'text', message:content, flex:''});
+      statusEl.textContent = `✅ ${schedTime} に予約しました`;
+      loadHomeScheduledList();
+      setTimeout(() => { statusEl.textContent = ''; }, 5000);
+    } catch(e) { statusEl.textContent = `❌ ${e.message}`; }
+    return;
+  }
+
+  // 今すぐ送信
+  const targets = allFriends.filter(f => f['LINE_UID']);
+  if (!targets.length) { alert('送信対象がいません'); return; }
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  statusEl.textContent = `送信中... 0/${targets.length}`;
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    try {
+      await gasPost({action:'send_push', line_uid:targets[i]['LINE_UID'], message:content});
+      success++;
+    } catch(e) {}
+    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
+  btn.disabled = false;
+  btn.textContent = '📤 一斉配信する';
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+async function loadHomeScheduledList() {
+  try {
+    const data = await gasGet('get_scheduled');
+    const list = (data.list || []);
+    const el = document.getElementById('homeScheduledList');
+    if (!list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">📅 予約済み配信</div>' +
+      list.map(s => `<div class="scheduled-item">
+        <div><div style="font-weight:600">💬 ${s.schedule_time}</div>
+        <div style="color:#888;font-size:11px">${s.preview}</div></div>
+        <button onclick="cancelScheduled('${s.id}');loadHomeScheduledList()" style="border:none;background:#fee;color:#c00;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px">取消</button>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// 友だちリストをテスト配信プルダウンに反映（ホームタブ用）
+function refreshHomeTestSelect() {
+  const sel = document.getElementById('homeTestTargetUid');
+  if (!sel || !allFriends.length) return;
+  sel.innerHTML = '<option value="">送信先を選択...</option>' +
+    allFriends.filter(f => f['LINE_UID']).map(f => {
+      const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
+      return `<option value="${f['LINE_UID']}">${name}</option>`;
+    }).join('');
+}
+
+function confirmBroadcast() { confirmHomeBroadcast(); }
 
 // ── Refresh ─────────────────────────────────────────
 async function refreshAll() {
@@ -1126,7 +1367,7 @@ async function gasGet(action, extra = {}) {
 async function gasPost(body) {
   const res = await fetch(DASH_GAS_URL, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify({key: DASH_SECRET, ...body})
   });
   return res.json();
@@ -1160,12 +1401,13 @@ async function loadLineFriendsMgmt() {
     const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
       ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
     document.getElementById('friendsTagFilter').innerHTML  = tagOptions;
-    document.getElementById('broadcastTagFilter').innerHTML =
-      ['<option value="">👥 全員</option>',
-        ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+    const broadcastTagHtml = ['<option value="">👥 全員</option>',
+      ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+    document.getElementById('broadcastTagFilter').innerHTML = broadcastTagHtml;
     updateBroadcastCount();
 
     renderFriendsMgmt(allFriends);
+    refreshHomeTestSelect();
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
@@ -1195,24 +1437,27 @@ function renderFriendsMgmt(friends) {
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>登録日</th><th>名前</th><th>電話番号</th><th>タグ</th><th>カウンセリング</th><th>個別送信</th>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>最終来店</th><th>タグ</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
-            const name    = f['お名前'] || f['LINE表示名'] || '未設定';
-            const phone   = f['電話番号'] || '―';
-            const linked  = f['電話番号'] ? '<span class="badge-green">連携済み</span>' : '<span class="badge-gray">未連携</span>';
-            const regDate = (f['登録日時']||'').substring(0,10) || '―';
-            const tags    = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '―';
-            const uid     = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-            const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const name      = f['お名前'] || f['LINE表示名'] || '未設定';
+            const phone     = f['電話番号'] || '―';
+            const lastVisit = (f['最終来店日']||'').substring(0,10) || '―';
+            const regDate   = (f['登録日時']||'').substring(0,10) || '―';
+            const tags      = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
+            const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             return `<tr>
               <td style="white-space:nowrap">${regDate}</td>
               <td><strong>${name}</strong></td>
               <td>${phone}</td>
-              <td>${tags}</td>
-              <td>${linked}</td>
-              <td><button class="btn btn-green btn-sm" onclick="openPushModal('${uid}','${safeName}')">📨 送信</button></td>
+              <td style="white-space:nowrap">${lastVisit}</td>
+              <td>${tags || '―'}</td>
+              <td style="white-space:nowrap;display:flex;gap:4px">
+                <button class="btn btn-blue btn-sm" onclick="openCustomerProfile('${uid}')">👤 詳細</button>
+                <button class="btn btn-green btn-sm" onclick="openPushModal('${uid}','${safeName}')">📨 送信</button>
+              </td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -1253,6 +1498,209 @@ async function sendBroadcast() {
   statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
   document.getElementById('broadcastMsg').value = '';
   setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+let currentBroadcastTab = 'text';
+
+function switchBroadcastTab(tab) {
+  currentBroadcastTab = tab;
+  ['text','coupon','vacancy'].forEach(t => {
+    document.getElementById(`broadcast-tab-${t}`).style.display = t === tab ? '' : 'none';
+    document.getElementById(`tab-${t}-btn`).classList.toggle('active-tab', t === tab);
+  });
+}
+
+function toggleSchedule(val) {
+  document.getElementById('broadcastScheduleTime').style.display = val === 'schedule' ? '' : 'none';
+  document.getElementById('broadcastSendBtn').textContent = val === 'schedule' ? '📅 予約する' : '📢 配信する';
+}
+
+function updateCouponCount() {}  // 統合カウントに統一
+
+function previewCoupon() {
+  const title = document.getElementById('couponTitle').value.trim();
+  const desc  = document.getElementById('couponDesc').value.trim();
+  if (!title) { alert('クーポンタイトルを入力してください'); return; }
+  document.getElementById('couponPreviewTitle').textContent = title;
+  document.getElementById('couponPreviewDesc').textContent  = desc;
+  const p = document.getElementById('couponPreview');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+
+function buildCouponFlex(title, desc, url) {
+  return {
+    type: 'flex',
+    altText: `🎫 ${title}`,
+    contents: {
+      type: 'bubble',
+      header: {
+        type:'box', layout:'vertical', backgroundColor:'#00b900', paddingAll:'12px',
+        contents:[{type:'text', text:'🎫 クーポン', color:'#ffffff', size:'sm', weight:'bold'}]
+      },
+      body: {
+        type:'box', layout:'vertical', spacing:'md',
+        contents:[
+          {type:'text', text:title, size:'xl', weight:'bold', color:'#1a1a2e', wrap:true},
+          {type:'text', text:desc||' ', size:'sm', color:'#888888', wrap:true}
+        ]
+      },
+      footer: {
+        type:'box', layout:'vertical',
+        contents:[{type:'button', style:'primary', color:'#00b900',
+          action:{type:'uri', label:'クーポンを使う', uri:url}}]
+      }
+    }
+  };
+}
+
+async function executeBroadcast() {
+  const tag      = document.getElementById('broadcastTagFilter').value;
+  const timing   = document.querySelector('input[name="broadcastTiming"]:checked').value;
+  const schedTime = document.getElementById('broadcastScheduleTime').value;
+  const statusEl = document.getElementById('broadcastStatus');
+
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  if (!targets.length) { alert('送信対象がいません'); return; }
+
+  // コンテンツ取得
+  let msgText = '', flexData = null;
+  if (currentBroadcastTab === 'text') {
+    msgText = document.getElementById('broadcastMsg').value.trim();
+    if (!msgText) { alert('メッセージを入力してください'); return; }
+  } else if (currentBroadcastTab === 'coupon') {
+    const title = document.getElementById('couponTitle').value.trim();
+    const desc  = document.getElementById('couponDesc').value.trim();
+    const url   = document.getElementById('couponUrl').value.trim();
+    if (!title) { alert('クーポンタイトルを入力してください'); return; }
+    if (!url)   { alert('クーポンURLを入力してください'); return; }
+    flexData = buildCouponFlex(title, desc, url);
+  } else if (currentBroadcastTab === 'vacancy') {
+    msgText = document.getElementById('vacancyMsg').value.trim();
+    if (!msgText) { alert('空き情報を入力してください'); return; }
+  }
+
+  // 予約送信
+  if (timing === 'schedule') {
+    if (!schedTime) { alert('配信日時を選択してください'); return; }
+    if (!confirm(`${targets.length}人に ${schedTime} に配信予約しますか？`)) return;
+    statusEl.textContent = '予約中...';
+    try {
+      await gasPost({
+        action: 'schedule_broadcast',
+        schedule_time: schedTime,
+        tag: tag,
+        type: currentBroadcastTab,
+        message: msgText,
+        flex: flexData ? JSON.stringify(flexData) : ''
+      });
+      statusEl.textContent = `✅ ${schedTime} に予約しました`;
+      loadScheduledBroadcasts();
+    } catch(e) { statusEl.textContent = `❌ エラー: ${e.message}`; }
+    return;
+  }
+
+  // 今すぐ送信
+  if (!confirm(`${targets.length}人に配信しますか？`)) return;
+  statusEl.textContent = `送信中... 0/${targets.length}`;
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    try {
+      if (flexData) {
+        await gasPost({action:'send_flex', line_uid:targets[i]['LINE_UID'], flex:JSON.stringify(flexData)});
+      } else {
+        await gasPost({action:'send_push', line_uid:targets[i]['LINE_UID'], message:msgText});
+      }
+      success++;
+    } catch(e) {}
+    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+async function loadScheduledBroadcasts() {
+  try {
+    const data = await gasGet('get_scheduled');
+    const list = data.list || [];
+    const el = document.getElementById('scheduledList');
+    if (!list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">📅 予約済み配信</div>' +
+      list.map(s => `
+        <div class="scheduled-item">
+          <div>
+            <div style="font-weight:600">${s.type === 'coupon' ? '🎫' : s.type === 'vacancy' ? '📅' : '💬'} ${s.schedule_time}</div>
+            <div style="color:#888;font-size:11px">${s.tag ? '🏷️ '+s.tag : '👥 全員'} ／ ${s.preview}</div>
+          </div>
+          <button onclick="cancelScheduled('${s.id}')" style="border:none;background:#fee;color:#c00;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px">取消</button>
+        </div>`).join('');
+  } catch(e) {}
+}
+
+async function cancelScheduled(id) {
+  if (!confirm('予約を取消しますか？')) return;
+  await gasPost({action:'cancel_scheduled', id});
+  loadScheduledBroadcasts();
+}
+
+async function sendBroadcast() { await executeBroadcast(); }
+
+function loadBroadcastTab() {
+  // 友だちリストをテスト配信プルダウンに反映
+  const sel = document.getElementById('testTargetUid');
+  if (sel && allFriends.length) {
+    sel.innerHTML = '<option value="">送信先を選択...</option>' +
+      allFriends.filter(f => f['LINE_UID']).map(f => {
+        const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
+        return `<option value="${f['LINE_UID']}">${name}</option>`;
+      }).join('');
+  }
+  // タグフィルターを配信タブにも反映
+  const tagSet = new Set();
+  allFriends.forEach(f => {
+    if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
+  });
+  document.getElementById('broadcastTagFilter').innerHTML =
+    ['<option value="">👥 全員</option>',
+      ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+  updateBroadcastCount();
+  loadScheduledBroadcasts();
+}
+
+async function sendTestBroadcast() {
+  const uid = document.getElementById('testTargetUid').value;
+  const statusEl = document.getElementById('testStatus');
+  if (!uid) { alert('送信先を選択してください'); return; }
+
+  let msgText = '', flexData = null;
+  if (currentBroadcastTab === 'text') {
+    msgText = document.getElementById('broadcastMsg').value.trim();
+    if (!msgText) { alert('メッセージを入力してください'); return; }
+  } else if (currentBroadcastTab === 'coupon') {
+    const title = document.getElementById('couponTitle').value.trim();
+    const desc  = document.getElementById('couponDesc').value.trim();
+    const url   = document.getElementById('couponUrl').value.trim();
+    if (!title) { alert('クーポンタイトルを入力してください'); return; }
+    if (!url)   { alert('クーポンURLを入力してください'); return; }
+    flexData = buildCouponFlex(title, desc, url);
+  } else if (currentBroadcastTab === 'vacancy') {
+    msgText = document.getElementById('vacancyMsg').value.trim();
+    if (!msgText) { alert('空き情報を入力してください'); return; }
+  }
+
+  statusEl.textContent = '送信中...';
+  try {
+    if (flexData) {
+      await gasPost({action:'send_flex', line_uid:uid, flex:JSON.stringify(flexData)});
+    } else {
+      await gasPost({action:'send_push', line_uid:uid, message:msgText});
+    }
+    statusEl.textContent = '✅ テスト送信完了';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch(e) {
+    statusEl.textContent = `❌ エラー: ${e.message}`;
+  }
 }
 
 function openPushModal(lineUid, name) {
@@ -1495,6 +1943,10 @@ async function saveScenarioStep(id, idx) {
 function previewScenarioStep(id) {
   const msg = document.getElementById(`msg-${id}`).value;
   const previewEl = document.getElementById(`preview-${id}`);
+  if (previewEl.style.display === 'block') {
+    previewEl.style.display = 'none';
+    return;
+  }
   const previewText = msg
     .replace(/\{name\}/g,        '田中 花子')
     .replace(/\{store\}/g,       'SSIN STUDIO')
@@ -1503,7 +1955,7 @@ function previewScenarioStep(id) {
     .replace(/\{visit_date\}/g,  '2026/04/01')
     .replace(/\{start_time\}/g,  '10:00')
     .replace(/\{menu\}/g,        'まつげエクステ');
-  previewEl.style.display = previewEl.style.display === 'none' || !previewEl.style.display ? '' : 'none';
+  previewEl.style.display = 'block';
   previewEl.textContent = previewText;
 }
 
@@ -1519,57 +1971,130 @@ function resetScenarioStep(id, idx) {
 // タグ管理
 // ══════════════════════════════════════════════════════════
 let tagsAll = [];
+let tagMaster = [];
 
 async function loadTags() {
   document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
-    const data = await gasGet('get_line_friends');
-    tagsAll = data.friends || [];
-    renderTags(tagsAll);
+    const [friendsData, tagsData] = await Promise.all([
+      gasGet('get_line_friends'),
+      gasGet('get_tags')
+    ]);
+    tagsAll = friendsData.friends || [];
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    renderTagFriends(tagsAll);
   } catch(e) {
     document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
   }
 }
 
-function filterTags() {
-  const q = document.getElementById('tagSearch').value.trim().toLowerCase();
-  if (!q) { renderTags(tagsAll); return; }
-  renderTags(tagsAll.filter(f =>
-    (f['お名前']||'').toLowerCase().includes(q) ||
-    (f['LINE表示名']||'').toLowerCase().includes(q) ||
-    (f['電話番号']||'').includes(q) ||
-    (f['タグ']||'').toLowerCase().includes(q)
-  ));
+async function loadTagFriends() {
+  document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_line_friends');
+    tagsAll = data.friends || [];
+    renderTagFriends(tagsAll);
+  } catch(e) {
+    document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
 }
 
-function renderTags(friends) {
+function renderTagMaster() {
+  const el = document.getElementById('tagMasterList');
+  if (!tagMaster.length) {
+    el.innerHTML = '<span style="font-size:12px;color:#aaa">タグがありません。上から作成してください。</span>';
+    return;
+  }
+  el.innerHTML = tagMaster.map(t => `
+    <div style="display:inline-flex;align-items:center;gap:6px;background:${t.color}22;border:1.5px solid ${t.color};border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;color:${t.color}">
+      ${t.name}
+      <span onclick="deleteTagMaster('${t.name}')" style="cursor:pointer;color:${t.color};font-size:14px;line-height:1;opacity:.7" title="削除">×</span>
+    </div>`).join('');
+}
+
+async function createNewTag() {
+  const name = document.getElementById('newTagName').value.trim();
+  const color = document.getElementById('newTagColor').value;
+  if (!name) { alert('タグ名を入力してください'); return; }
+  try {
+    const r = await gasPost({action: 'create_tag', tag_name: name, color});
+    if (r.error) { alert(r.error); return; }
+    document.getElementById('newTagName').value = '';
+    const tagsData = await gasGet('get_tags');
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    refreshAllTagDropdowns();
+  } catch(e) { alert('エラー: ' + e.message); }
+}
+
+async function deleteTagMaster(name) {
+  if (!confirm(`タグ「${name}」を削除しますか？`)) return;
+  try {
+    await gasPost({action: 'delete_tag', tag_name: name});
+    const tagsData = await gasGet('get_tags');
+    tagMaster = tagsData.tags || [];
+    renderTagMaster();
+    refreshAllTagDropdowns();
+  } catch(e) { alert('エラー: ' + e.message); }
+}
+
+function refreshAllTagDropdowns() {
+  const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
+    ...tagMaster.map(t => `<option value="${t.name}">${t.name}</option>`)].join('');
+  const broadcastOptions = ['<option value="">👥 全員</option>',
+    ...tagMaster.map(t => `<option value="${t.name}">🏷️ ${t.name}</option>`)].join('');
+  ['friendsTagFilter'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = tagOptions; });
+  ['broadcastTagFilter'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = broadcastOptions; });
+}
+
+function filterTagFriends() {
+  const q = document.getElementById('tagSearch').value.trim().toLowerCase();
+  renderTagFriends(q ? tagsAll.filter(f =>
+    (f['お名前']||'').toLowerCase().includes(q) ||
+    (f['LINE表示名']||'').toLowerCase().includes(q) ||
+    (f['電話番号']||'').includes(q)
+  ) : tagsAll);
+}
+
+function filterTags() { filterTagFriends(); }
+
+function renderTagFriends(friends) {
   if (!friends.length) {
     document.getElementById('tagsList').innerHTML = '<div style="text-align:center;padding:30px;color:#999">友だちがいません</div>';
     return;
   }
+  const tagChips = tagMaster.map(t =>
+    `<span class="tag-chip" data-tag="${t.name}" style="display:inline-block;padding:3px 10px;border-radius:12px;border:1.5px solid ${t.color};color:${t.color};font-size:11px;cursor:pointer;margin:2px;background:#fff;font-weight:600">${t.name}</span>`
+  ).join('');
+
   document.getElementById('tagsList').innerHTML = `
-    <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:13px">
-      <thead><tr style="background:#f5f6fa">
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">お名前</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">電話番号</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">タグ</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">操作</th>
-      </tr></thead>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>お名前</th><th>電話番号</th><th>現在のタグ</th><th>タグを設定</th></tr></thead>
       <tbody>${friends.map(f => {
-        const uid = f['LINE_UID'] || '';
+        const uid = (f['LINE_UID']||'').replace(/'/g,"&#39;");
         const name = f['お名前'] || f['LINE表示名'] || '未設定';
         const phone = f['電話番号'] || '―';
-        const tags = f['タグ'] || '';
-        return `<tr style="border-bottom:1px solid #f0f0f0">
-          <td style="padding:9px 8px;font-weight:600">${name}</td>
-          <td style="padding:9px 8px">${phone}</td>
-          <td style="padding:9px 8px">
-            <input type="text" id="tag-${uid}" value="${tags}" placeholder="例: VIP, まつ毛, 新規"
-              style="border:1.5px solid #ddd;border-radius:6px;padding:4px 8px;font-size:12px;width:200px;outline:none">
-          </td>
-          <td style="padding:9px 8px">
-            <button class="btn btn-green btn-sm" onclick="saveTag('${uid}')">保存</button>
+        const currentTags = (f['タグ']||'').split(',').map(t=>t.trim()).filter(Boolean);
+        const currentBadges = currentTags.map(t => {
+          const tm = tagMaster.find(m => m.name === t);
+          const color = tm ? tm.color : '#888';
+          return `<span style="background:${color};color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t}</span>`;
+        }).join('');
+        return `<tr>
+          <td><strong>${name}</strong></td>
+          <td>${phone}</td>
+          <td>${currentBadges || '―'}</td>
+          <td>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px" id="chips-${uid}">
+              ${tagMaster.map(t => {
+                const sel = currentTags.includes(t.name);
+                return `<span onclick="toggleTagChip(this,'${uid}')" data-tag="${t.name}"
+                  style="display:inline-block;padding:3px 10px;border-radius:12px;border:1.5px solid ${t.color};color:${sel?'#fff':t.color};font-size:11px;cursor:pointer;margin:2px;background:${sel?t.color:'#fff'};font-weight:600;transition:all .15s">${t.name}</span>`;
+              }).join('')}
+            </div>
+            <button class="btn btn-green btn-sm" onclick="saveTagFromChips('${uid}')">保存</button>
             <span id="tag-status-${uid}" style="font-size:11px;color:#888;margin-left:6px"></span>
           </td>
         </tr>`;
@@ -1579,17 +2104,100 @@ function renderTags(friends) {
     </div>`;
 }
 
-async function saveTag(lineUid) {
-  const tags = document.getElementById(`tag-${lineUid}`).value.trim();
+function toggleTagChip(el, uid) {
+  const isSelected = el.style.background !== 'rgb(255, 255, 255)' && el.style.background !== '#fff' && el.style.background !== '';
+  const tagName = el.dataset.tag;
+  const tm = tagMaster.find(m => m.name === tagName);
+  const color = tm ? tm.color : '#888';
+  if (isSelected) {
+    el.style.background = '#fff';
+    el.style.color = color;
+  } else {
+    el.style.background = color;
+    el.style.color = '#fff';
+  }
+}
+
+async function saveTagFromChips(lineUid) {
+  const chips = document.querySelectorAll(`#chips-${lineUid} span`);
+  const selected = [];
+  chips.forEach(chip => {
+    const bg = chip.style.background;
+    if (bg && bg !== '#fff' && bg !== 'rgb(255, 255, 255)') selected.push(chip.dataset.tag);
+  });
+  const tags = selected.join(',');
   const statusEl = document.getElementById(`tag-status-${lineUid}`);
   statusEl.textContent = '保存中...';
   try {
-    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags: tags});
+    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags});
     if (r.error) throw new Error(r.error);
     statusEl.textContent = '✅';
     setTimeout(() => { statusEl.textContent = ''; }, 2000);
+    // allFriendsも更新
+    const f = allFriends.find(f => f['LINE_UID'] === lineUid);
+    if (f) f['タグ'] = tags;
+  } catch(e) { statusEl.textContent = '❌'; }
+}
+
+async function saveTag(lineUid) {
+  const tags = document.getElementById(`tag-${lineUid}`)?.value.trim() || '';
+  const statusEl = document.getElementById(`tag-status-${lineUid}`);
+  if (statusEl) statusEl.textContent = '保存中...';
+  try {
+    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags});
+    if (r.error) throw new Error(r.error);
+    if (statusEl) { statusEl.textContent = '✅'; setTimeout(() => { statusEl.textContent = ''; }, 2000); }
+  } catch(e) { if (statusEl) statusEl.textContent = '❌'; }
+}
+
+// ══════════════════════════════════════════════════════════
+// 配信結果・コンバージョン
+// ══════════════════════════════════════════════════════════
+async function loadBroadcastStats() {
+  const el = document.getElementById('broadcastStatsList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_broadcast_stats');
+    const list = data.list || [];
+    if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa">配信履歴がありません</div>'; return; }
+    el.innerHTML = `
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>配信日時</th><th>種別</th><th>対象タグ</th><th>内容</th><th>送信数</th><th>クリック数</th><th>クリック率</th></tr></thead>
+        <tbody>${list.map(b => {
+          const ctr = b.sent_count > 0 ? Math.round(b.click_count / b.sent_count * 100) : 0;
+          const ctrColor = ctr >= 10 ? '#00b900' : ctr >= 5 ? '#f59e0b' : '#888';
+          return `<tr>
+            <td style="white-space:nowrap">${String(b.sent_at).substring(0,16)}</td>
+            <td>${b.type || 'text'}</td>
+            <td>${b.tag || '全員'}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.preview}</td>
+            <td style="text-align:center">${b.sent_count}</td>
+            <td style="text-align:center;font-weight:700;color:#1a73e8">${b.click_count}</td>
+            <td style="text-align:center;font-weight:700;color:${ctrColor}">${ctr}%</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      </div>`;
   } catch(e) {
-    statusEl.textContent = '❌';
+    el.innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// 画像プレビュー
+// ══════════════════════════════════════════════════════════
+function previewBroadcastImage() {
+  const url = document.getElementById('broadcastImageUrl').value.trim();
+  const previewDiv = document.getElementById('broadcastImagePreview');
+  const img = document.getElementById('broadcastImageEl');
+  if (url) {
+    img.src = url;
+    previewDiv.style.display = 'block';
+  } else {
+    previewDiv.style.display = 'none';
   }
 }
 
@@ -1615,7 +2223,7 @@ function renderTalkList(list) {
     return;
   }
   document.getElementById('talkList').innerHTML = list.map(item => `
-    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')}"
+    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')"
       style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .15s"
       onmouseover="this.style.background='#f5f6fa'" onmouseout="this.style.background=''">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
@@ -1629,7 +2237,7 @@ function renderTalkList(list) {
 }
 
 async function openTalk(lineUid, name) {
-  currentTalkUid = lineUid;
+  currentTalkUid = lineUid.trim();
   currentTalkName = name;
   document.getElementById('talkHeader').textContent = '💬 ' + name;
   document.getElementById('talkMessages').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa"><span class="spinner"></span> 読込中...</div>';
@@ -1677,6 +2285,109 @@ async function sendTalkReply() {
     alert('送信エラー: ' + e.message);
   }
 }
+
+// ══════════════════════════════════════════════════════════
+// 顧客プロフィール
+// ══════════════════════════════════════════════════════════
+async function openCustomerProfile(lineUid) {
+  if (!lineUid) return;
+  const modal = document.getElementById('customerProfileModal');
+  const body  = document.getElementById('customerProfileBody');
+  modal.style.display = 'flex';
+  body.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_customer_profile', {line_uid: lineUid});
+    if (data.error) throw new Error(data.error);
+    renderCustomerProfile(data);
+  } catch(e) {
+    body.innerHTML = `<div class="notice-red">❌ ${e.message}</div>`;
+  }
+}
+
+function closeCustomerProfile() {
+  document.getElementById('customerProfileModal').style.display = 'none';
+}
+
+function renderCustomerProfile(data) {
+  const f  = data.friend || {};
+  const rs = data.reservations || [];
+  const cs = data.counseling || [];
+  const name = f.name || f.display_name || '未設定';
+
+  const reservRows = rs.length ? rs.map(r => `
+    <tr>
+      <td style="white-space:nowrap">${r.visit_date}</td>
+      <td>${r.store}</td>
+      <td>${r.menu}</td>
+      <td>${r.staff || '―'}</td>
+      <td>${r.status}</td>
+      <td style="text-align:right">${r.amount ? Number(r.amount).toLocaleString()+'円' : '―'}</td>
+    </tr>`).join('') :
+    '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">予約データなし（電話番号を登録してください）</td></tr>';
+
+  const counselRows = cs.length ? cs.map(c => `
+    <tr>
+      <td style="white-space:nowrap">${String(c['来店日']||'').substring(0,10)}</td>
+      <td>${c['メニュー']||'―'}</td>
+      <td>${c['本日の要望']||'―'}</td>
+      <td>${c['施術メモ']||'―'}</td>
+      <td>${c['次回提案']||'―'}</td>
+    </tr>`).join('') :
+    '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">カウンセリング記録なし</td></tr>';
+
+  document.getElementById('customerProfileBody').innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="flex:1;min-width:200px;background:#f0fff0;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">来店回数</div>
+        <div style="font-size:28px;font-weight:700;color:#00b900">${data.visit_count}<span style="font-size:14px;font-weight:400"> 回</span></div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f0f4ff;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">最終来店日</div>
+        <div style="font-size:18px;font-weight:700;color:#1a73e8">${data.last_visit || '―'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#fff8f0;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">電話番号</div>
+        <div style="font-size:16px;font-weight:600">${f.phone || '未登録'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;background:#f5f5f5;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">友だち登録日</div>
+        <div style="font-size:14px">${String(f.registered_at||'').substring(0,10) || '―'}</div>
+        <div style="font-size:11px;color:#888;margin-top:4px">タグ: ${f.tags || 'なし'}</div>
+      </div>
+    </div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📅 予約履歴（${rs.length}件）</div>
+    <div class="tbl-scroll" style="margin-bottom:20px">
+      <table class="tbl">
+        <thead><tr><th>来店日</th><th>店舗</th><th>メニュー</th><th>担当</th><th>ステータス</th><th>金額</th></tr></thead>
+        <tbody>${reservRows}</tbody>
+      </table>
+    </div>
+
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📋 カウンセリング履歴（${cs.length}件）</div>
+    <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr><th>来店日</th><th>メニュー</th><th>要望</th><th>施術メモ</th><th>次回提案</th></tr></thead>
+        <tbody>${counselRows}</tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;text-align:right">
+      <button class="btn btn-green btn-sm" onclick="openPushModal('${f.line_uid}','${name.replace(/'/g,"\\'")}');closeCustomerProfile()">📨 メッセージ送信</button>
+    </div>`;
+}
 </script>
+
+<!-- 顧客プロフィールモーダル -->
+<div id="customerProfileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:860px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:1">
+      <div style="font-weight:700;font-size:16px">👤 顧客プロフィール</div>
+      <button onclick="closeCustomerProfile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888;line-height:1">×</button>
+    </div>
+    <div id="customerProfileBody" style="padding:20px"></div>
+  </div>
+</div>
+
 </body>
 </html>
