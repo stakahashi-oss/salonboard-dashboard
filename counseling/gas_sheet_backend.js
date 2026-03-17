@@ -21,6 +21,8 @@ function doPost(e) {
     if (action === "log_line")           return resp(logLine(body.data));
     if (action === "register_friend")    return resp(registerFriend(body.data));
     if (action === "get_line_friends")   return resp(getLineFriends());
+    if (action === "update_setting")     return resp(updateSetting(body.key_name, body.value));
+    if (action === "send_push")          return resp(sendPush(body.line_uid, body.message));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -35,6 +37,7 @@ function doGet(e) {
   if (act === "get_stats")        return resp(getStats());
   if (act === "search_phone")     return resp(searchByPhone(e.parameter.phone));
   if (act === "get_line_friends") return resp(getLineFriends());
+  if (act === "get_settings")     return resp(getSettings());
   return resp({error: "unknown action"});
 }
 
@@ -114,6 +117,14 @@ function setupSheet(sheet, name) {
     sheet.appendRow(["ステップ1_日数", "14"]);
     sheet.appendRow(["ステップ2_日数", "30"]);
     sheet.appendRow(["ステップ3_日数", "60"]);
+    sheet.appendRow(["タイミング_フォロー1", "1"]);
+    sheet.appendRow(["タイミング_フォロー2", "14"]);
+    sheet.appendRow(["タイミング_フォロー3", "30"]);
+    sheet.appendRow(["タイミング_フォロー4", "60"]);
+    sheet.appendRow(["メッセージ_お礼", "本日はご来店いただきありがとうございました🙏\n{store}スタッフ一同より\n\n{name}様にご満足いただけましたでしょうか？✨\n\n➡️ 次回のおすすめ\n「{next_menu}」\n目安は{next_timing}ごろです📅\n\nまたのご来店をお待ちしております🌸\nご予約・ご相談はこちらのLINEへ📱"]);
+    sheet.appendRow(["メッセージ_14日後", "{store}です💬\n\nご来店から2週間が経ちました✨\nまつげの状態はいかがでしょうか？\n\nそろそろメンテナンスの時期が近づいています😊\nお気軽にご予約ください📅"]);
+    sheet.appendRow(["メッセージ_30日後", "{store}です🌸\n\nご来店から1ヶ月が経ちました✨\nそろそろ整える時期です😊\n\n今月もご来店いただけると嬉しいです！\nご予約はこちらのLINEへ📱"]);
+    sheet.appendRow(["メッセージ_60日後", "{store}です💝\n\nご来店から2ヶ月が経ちました！\n{name}様にまた会いたいなとご連絡しました😊\n\nぜひまたご来店ください✨\nご予約・ご相談はこちらのLINEへ🌸"]);
   }
 }
 
@@ -270,6 +281,209 @@ function searchByPhone(phone) {
   } catch(e) {}
 
   return {reservations: reservations, past_counseling: past};
+}
+
+// ══════════════════════════════════════════════════════════
+//  自動フォロー（毎朝9時にトリガー実行）
+// ══════════════════════════════════════════════════════════
+function dailyFollowUp() {
+  var sheet = getSheet("カウンセリング記録");
+  var data = sheet.getDataRange().getValues();
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 設定シートからタイミングを読む（デフォルト値つき）
+  var timing1 = parseInt(getSetting("タイミング_フォロー1") || "1");
+  var timing2 = parseInt(getSetting("タイミング_フォロー2") || "14");
+  var timing3 = parseInt(getSetting("タイミング_フォロー3") || "30");
+  var timing4 = parseInt(getSetting("タイミング_フォロー4") || "60");
+
+  var sent = 0;
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var visitDateRaw = row[3];  // 来店日
+    var phone        = String(row[5]);
+    var name         = String(row[6]);
+    var store        = String(row[2]);
+    var menu         = String(row[7]);
+    var nextMenu     = String(row[15]);
+    var nextTiming   = String(row[16]);
+    var lineUid      = String(row[17]);
+    var lineSent     = String(row[18]);
+
+    if (!visitDateRaw || !lineUid || lineUid === "" || lineUid === "未送信") continue;
+
+    var visitDate = new Date(visitDateRaw);
+    visitDate.setHours(0, 0, 0, 0);
+    var daysAfter = Math.round((today - visitDate) / 86400000);
+
+    var msgType = null;
+    if (daysAfter === timing1 && !isAlreadySent(phone, "お礼"))       msgType = "お礼";
+    if (daysAfter === timing2 && !isAlreadySent(phone, "ステップ14日")) msgType = "ステップ14日";
+    if (daysAfter === timing3 && !isAlreadySent(phone, "ステップ30日")) msgType = "ステップ30日";
+    if (daysAfter === timing4 && !isAlreadySent(phone, "ステップ60日")) msgType = "ステップ60日";
+
+    if (!msgType) continue;
+
+    var msg = buildFollowMessage(msgType, {name: name, store: store, menu: menu, nextMenu: nextMenu, nextTiming: nextTiming});
+    if (!msg) continue;
+
+    var ok = pushLineMessage(lineUid, msg);
+    logLine({
+      phone: phone, name: name, line_uid: lineUid,
+      type: msgType, content: msg.substring(0, 80),
+      status: ok ? "成功" : "失敗", error: ""
+    });
+    if (ok) sent++;
+  }
+
+  Logger.log("自動フォロー完了: " + sent + "件送信");
+}
+
+function buildFollowMessage(type, d) {
+  var name      = d.name      || "お客様";
+  var store     = d.store     || "当店";
+  var nextMenu  = d.nextMenu  || "";
+  var nextTiming = d.nextTiming || "";
+
+  var templateKey = null;
+  if (type === "お礼")         templateKey = "メッセージ_お礼";
+  if (type === "ステップ14日") templateKey = "メッセージ_14日後";
+  if (type === "ステップ30日") templateKey = "メッセージ_30日後";
+  if (type === "ステップ60日") templateKey = "メッセージ_60日後";
+
+  if (templateKey) {
+    var template = getSetting(templateKey);
+    if (template) {
+      return template
+        .replace(/\{name\}/g,        name)
+        .replace(/\{store\}/g,       store)
+        .replace(/\{next_menu\}/g,   nextMenu)
+        .replace(/\{next_timing\}/g, nextTiming);
+    }
+  }
+
+  // フォールバック（設定シートにテンプレートがない場合）
+  if (type === "お礼") {
+    var msg = "本日はご来店いただきありがとうございました\uD83D\uDE4F\n" + store + "です\u2728\n\n" + name + "\u69D8\u306B\u3054\u6E80\u8DB3\u3044\u305F\u3060\u3051\u307E\u3057\u305F\u3067\u3057\u3087\u3046\u304B\uFF1F";
+    if (nextMenu) {
+      msg += "\n\n\u27A1\uFE0F \u6B21\u56DE\u306E\u304A\u3059\u3059\u3081\n\u300C" + nextMenu + "\u300D";
+      if (nextTiming) msg += "\n\u76EE\u5B89\u306F" + nextTiming + "\u3054\u308D\uD83D\uDCC5";
+    }
+    msg += "\n\n\u307E\u305F\u306E\u3054\u6765\u5E97\u3092\u304A\u5F85\u3061\u3057\u3066\u304A\u308A\u307E\u3059\uD83C\uDF38\n\u3054\u4E88\u7D04\u306F\u3053\u3061\u3089\u306ELINE\u3078\uD83D\uDCF1";
+    return msg;
+  }
+  if (type === "ステップ14日") {
+    return store + "\u3067\u3059\uD83D\uDCAC\n\nご来店から2週間が経ちました\u2728\nまつげの状態はいかがでしょうか？\n\nそろそろメンテナンスの時期が近づいています\uD83D\uDE0A\nお気軽にご予約ください\uD83D\uDCC5";
+  }
+  if (type === "ステップ30日") {
+    return store + "\u3067\u3059\uD83C\uDF38\n\nご来店から1ヶ月が経ちました\u2728\nそろそろ整える時期です\uD83D\uDE0A\n\n今月もご来店いただけると嬉しいです！\nご予約はこちらのLINEへ\uD83D\uDCF1";
+  }
+  if (type === "ステップ60日") {
+    return store + "\u3067\u3059\uD83D\uDC9D\n\nご来店から2ヶ月が経ちました！\n" + name + "\u69D8\u306B\u307E\u305F\u4F1A\u3044\u305F\u3044\u306A\u3068\u601D\u3044\u3054\u9023\u7D61\u3057\u307E\u3057\u305F\uD83D\uDE0A\n\nぜひまたご来店ください\u2728\nご予約・ご相談はこちらのLINEへ\uD83C\uDF38";
+  }
+  return null;
+}
+
+function isAlreadySent(phone, type) {
+  var norm = String(phone).replace(/-/g, "");
+  var sheet = getSheet("LINE配信ログ");
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][2]).replace(/-/g, "") === norm && String(data[i][5]) === type) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function pushLineMessage(lineUid, text) {
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    headers: {Authorization: "Bearer " + LINE_TOKEN},
+    payload: JSON.stringify({to: lineUid, messages: [{type: "text", text: text}]}),
+    muteHttpExceptions: true
+  };
+  try {
+    var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
+    return res.getResponseCode() === 200;
+  } catch(e) {
+    return false;
+  }
+}
+
+// ── 設定シート操作 ─────────────────────────────────────
+function getSetting(key) {
+  var sheet = getSheet("設定");
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === key) {
+      return String(data[i][1]);
+    }
+  }
+  return null;
+}
+
+function getSettings() {
+  var sheet = getSheet("設定");
+  var data = sheet.getDataRange().getValues();
+  var result = {};
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0]) {
+      result[String(data[i][0])] = String(data[i][1]);
+    }
+  }
+  return {settings: result};
+}
+
+function updateSetting(key, value) {
+  if (!key) return {error: "key required"};
+  var sheet = getSheet("設定");
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === key) {
+      sheet.getRange(i + 1, 2).setValue(value);
+      return {status: "updated", key: key};
+    }
+  }
+  // キーが存在しなければ新規追加
+  sheet.appendRow([key, value]);
+  return {status: "created", key: key};
+}
+
+// ── 個別LINE送信 ──────────────────────────────────────
+function sendPush(lineUid, message) {
+  if (!lineUid || !message) return {error: "line_uid and message required"};
+  var ok = pushLineMessage(lineUid, message);
+  if (ok) {
+    logLine({
+      phone: "", name: "", line_uid: lineUid,
+      type: "個別送信", content: message.substring(0, 80),
+      status: "成功", error: ""
+    });
+    return {status: "ok"};
+  } else {
+    return {status: "error", error: "LINE送信失敗"};
+  }
+}
+
+// ── トリガー自動設定（初回1回だけ実行） ─────────────────
+function setupDailyTrigger() {
+  // 既存トリガー削除
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === "dailyFollowUp") {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+  // 毎朝9時に実行
+  ScriptApp.newTrigger("dailyFollowUp")
+    .timeBased()
+    .everyDays(1)
+    .atHour(9)
+    .create();
+  Logger.log("毎朝9時の自動フォロートリガーを設定しました");
 }
 
 // ── LINE友だち一覧取得 ───────────────────────────────────
