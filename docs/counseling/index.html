@@ -163,6 +163,30 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
 </div>
 
 <!-- ══════════════════════════════════════════ -->
+<!-- Screen LINE-NEW: LINEからの新規入力 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen" id="screen-line-new">
+  <div style="text-align:center;padding:24px 0 16px">
+    <div style="font-size:50px;margin-bottom:10px">📋</div>
+    <div style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:4px">カウンセリングシート</div>
+    <div style="font-size:13px;color:var(--sub)">SSIN STUDIO / most eyes / LUMISS</div>
+  </div>
+  <div class="notice notice-green" style="text-align:center">✅ LINEと連携済み｜回答が自動で紐づきます</div>
+  <div class="card">
+    <div class="card-title">👤 お客様情報</div>
+    <div class="field">
+      <label>フルネーム <span style="color:red">※必須</span></label>
+      <input type="text" id="lineNewName" placeholder="例：山田 花子" autocomplete="name">
+    </div>
+    <div class="field">
+      <label>電話番号</label>
+      <input type="tel" id="lineNewPhone" placeholder="09012345678" inputmode="numeric" maxlength="11">
+    </div>
+    <button class="btn btn-green" onclick="startLineNew()">次へ → カウンセリング入力</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
 <!-- Screen 2: 予約検索結果 -->
 <!-- ══════════════════════════════════════════ -->
 <div class="screen" id="screen-search">
@@ -468,6 +492,10 @@ function toggleAllergyDetail() {
 
 // ── フォーム送信 ─────────────────────────────────────────
 async function submitForm() {
+  if (LINE_UID_FROM_URL && !currentCustomer.name) {
+    alert("フルネームを入力してください");
+    return;
+  }
   const data = {
     store:           currentCustomer.store || "",
     visit_date:      currentCustomer.visit_date || "",
@@ -551,9 +579,18 @@ function resetForm() {
   screenHistory = ["screen-start"];
 }
 
-// LINE UID があればバッジ表示
+// LINE UID があれば名前入力画面を直接表示
 if (LINE_UID_FROM_URL) {
   document.getElementById("lineLinkedBadge").style.display = "";
+  showScreen("screen-line-new");
+}
+
+function startLineNew() {
+  const name = document.getElementById("lineNewName").value.trim();
+  const phone = document.getElementById("lineNewPhone").value.replace(/-/g,"").trim();
+  if (!name) { alert("フルネームを入力してください"); return; }
+  currentCustomer = { name: name, phone: phone, line_uid: LINE_UID_FROM_URL };
+  showFormScreen();
 }
 
 // ── LINE友だち登録 ────────────────────────────────────────
