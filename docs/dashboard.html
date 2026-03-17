@@ -1180,7 +1180,7 @@ function confirmHomeBroadcast() {
   const timingEl = document.querySelector('input[name="homeTiming"]:checked');
   const timing = timingEl ? timingEl.value : 'now';
   if (timing === 'schedule') { executeHomeBroadcast(); return; }
-  document.getElementById('sendConfirm').style.display = '';
+  document.getElementById('sendConfirm').style.display = 'block';
 }
 
 function cancelConfirm() { document.getElementById('sendConfirm').style.display = 'none'; }
