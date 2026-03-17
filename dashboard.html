@@ -357,6 +357,24 @@ textarea.msg-input:focus { border-color:#00b900; }
         <textarea class="msg-input" id="campaignContent" style="min-height:140px"></textarea>
       </div>
 
+      <!-- 画像追加 -->
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:12px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🖼 画像を追加（任意）</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #00b900;color:#00b900;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">
+            📁 画像をアップロード
+            <input type="file" id="homeImageFile" accept="image/*" style="display:none" onchange="uploadHomeImage(this)">
+          </label>
+          <span style="align-self:center;color:#aaa;font-size:12px">または</span>
+          <input id="homeImageUrl" type="url" placeholder="画像URL（https://...）" style="flex:1;min-width:180px;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" oninput="previewHomeImage()">
+        </div>
+        <div id="homeImageUploadStatus" style="font-size:12px;color:#888;margin-bottom:4px"></div>
+        <div id="homeImagePreview" style="display:none">
+          <img id="homeImageEl" src="" style="max-width:200px;border-radius:8px;border:1px solid #ddd">
+          <button onclick="clearHomeImage()" style="display:block;margin-top:6px;background:none;border:none;color:#e74c3c;font-size:12px;cursor:pointer">✕ 画像を削除</button>
+        </div>
+      </div>
+
       <!-- 配信日時 -->
       <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:14px">
         <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🕐 配信日時</div>
@@ -1291,6 +1309,7 @@ async function sendHomeTest() {
 async function executeHomeBroadcast() {
   const content = getMessageContent();
   if (!content) { alert('メッセージを入力してください'); return; }
+  const imageUrl = (document.getElementById('homeImageUrl') || {}).value || '';
   const timing = document.querySelector('input[name="homeTiming"]:checked').value;
   const schedTime = document.getElementById('homeScheduleTime').value;
   const statusEl = document.getElementById('homeBroadcastStatus');
@@ -1301,7 +1320,7 @@ async function executeHomeBroadcast() {
     if (!schedTime) { alert('配信日時を選択してください'); return; }
     statusEl.textContent = '予約中...';
     try {
-      await gasPost({action:'schedule_broadcast', schedule_time:schedTime, tag:'', type:'text', message:content, flex:''});
+      await gasPost({action:'schedule_broadcast', schedule_time:schedTime, tag:'', type:'text', message:content, flex:'', image_url:imageUrl});
       statusEl.textContent = `✅ ${schedTime} に予約しました`;
       loadHomeScheduledList();
       setTimeout(() => { statusEl.textContent = ''; }, 5000);
@@ -1309,23 +1328,20 @@ async function executeHomeBroadcast() {
     return;
   }
 
-  // 今すぐ送信
+  // 今すぐ送信（send_broadcast_all 経由で画像対応）
   const targets = allFriends.filter(f => f['LINE_UID']);
   if (!targets.length) { alert('送信対象がいません'); return; }
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
-  statusEl.textContent = `送信中... 0/${targets.length}`;
-  let success = 0;
-  for (let i = 0; i < targets.length; i++) {
-    try {
-      await gasPost({action:'send_push', line_uid:targets[i]['LINE_UID'], message:content});
-      success++;
-    } catch(e) {}
-    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  statusEl.textContent = '送信中...';
+  try {
+    const res = await gasPost({action:'send_broadcast_all', message:content, image_url:imageUrl, tag:''});
+    statusEl.textContent = `✅ 完了 ${res.sent || 0}/${res.total || targets.length}件`;
+  } catch(e) {
+    statusEl.textContent = `❌ ${e.message}`;
   }
-  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
   btn.disabled = false;
-  btn.textContent = '📤 一斉配信する';
+  clearHomeImage();
   setTimeout(() => { statusEl.textContent = ''; }, 5000);
 }
 
@@ -2333,6 +2349,44 @@ async function uploadBroadcastImage(input) {
   } catch(e) {
     status.textContent = '❌ エラー: ' + e.message;
     status.style.color = '#e74c3c';
+  }
+}
+
+function previewHomeImage() {
+  const url = document.getElementById('homeImageUrl').value.trim();
+  const el = document.getElementById('homeImagePreview');
+  const img = document.getElementById('homeImageEl');
+  if (url) { img.src = url; el.style.display = 'block'; }
+  else { el.style.display = 'none'; }
+}
+
+function clearHomeImage() {
+  document.getElementById('homeImageUrl').value = '';
+  document.getElementById('homeImagePreview').style.display = 'none';
+  document.getElementById('homeImageFile').value = '';
+  document.getElementById('homeImageUploadStatus').textContent = '';
+}
+
+async function uploadHomeImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('homeImageUploadStatus');
+  status.textContent = '⏳ アップロード中...'; status.style.color = '#888';
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const res = await gasPost({action:'upload_image', filename:file.name, mime_type:file.type, base64:base64});
+    if (res.status === 'ok' && res.url) {
+      document.getElementById('homeImageUrl').value = res.url;
+      previewHomeImage();
+      status.textContent = '✅ アップロード完了'; status.style.color = '#00b900';
+    } else { throw new Error(res.error || 'アップロード失敗'); }
+  } catch(e) {
+    status.textContent = '❌ エラー: ' + e.message; status.style.color = '#e74c3c';
   }
 }
 
