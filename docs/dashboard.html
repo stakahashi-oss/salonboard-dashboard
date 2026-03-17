@@ -1615,7 +1615,7 @@ function renderTalkList(list) {
     return;
   }
   document.getElementById('talkList').innerHTML = list.map(item => `
-    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')}"
+    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')"
       style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .15s"
       onmouseover="this.style.background='#f5f6fa'" onmouseout="this.style.background=''">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
