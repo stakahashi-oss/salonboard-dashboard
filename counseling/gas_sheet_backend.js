@@ -32,6 +32,7 @@ function doPost(e) {
     if (action === "log_conversion")     return resp(logConversion(body.broadcast_id, body.line_uid, body.url));
     if (action === "send_broadcast_all") return resp(sendBroadcastAll(body));
     if (action === "upload_image")       return resp(uploadImageToDrive(body.base64, body.filename, body.mime_type));
+    if (action === "import_followers")   return resp(importFollowers());
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -51,6 +52,7 @@ function doGet(e) {
   if (act === "get_talks_list")       return resp(getTalksList());
   if (act === "get_talks")            return resp(getTalks(e.parameter.line_uid));
   if (act === "get_customer_profile") return resp(getCustomerProfile(e.parameter.line_uid));
+  if (act === "get_customer_profile_ext") return resp(getCustomerProfileExt(e.parameter.line_uid));
   if (act === "get_tags")             return resp(getTags());
   if (act === "get_conversions")      return resp(getConversions(e.parameter.broadcast_id));
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
@@ -1324,12 +1326,61 @@ function getCustomerProfile(lineUid) {
     friendSheet.getRange(friendRowIdx + 1, colLastVis + 1).setValue(lastVisit);
   }
 
+  // 来店周期・よく使うメニュー・担当スタッフ・平均単価を計算
+  var completedVisits = reservations.filter(function(r){ return r.status === "会計済み"; });
+  completedVisits.sort(function(a,b){ return a.visit_date.localeCompare(b.visit_date); });
+
+  // 平均来店周期（日数）
+  var avgCycle = 0;
+  if (completedVisits.length >= 2) {
+    var totalDays = 0;
+    for (var cv = 1; cv < completedVisits.length; cv++) {
+      var d1 = new Date(completedVisits[cv-1].visit_date.replace(/\//g,"-"));
+      var d2 = new Date(completedVisits[cv].visit_date.replace(/\//g,"-"));
+      totalDays += Math.round((d2 - d1) / 86400000);
+    }
+    avgCycle = Math.round(totalDays / (completedVisits.length - 1));
+  }
+
+  // よく使うメニュー
+  var menuCount = {};
+  for (var m = 0; m < completedVisits.length; m++) {
+    var mn = completedVisits[m].menu || "";
+    if (mn) menuCount[mn] = (menuCount[mn] || 0) + 1;
+  }
+  var favoriteMenu = "";
+  var maxMenuCnt = 0;
+  for (var mk in menuCount) { if (menuCount[mk] > maxMenuCnt) { maxMenuCnt = menuCount[mk]; favoriteMenu = mk; } }
+
+  // 担当スタッフ
+  var staffCount = {};
+  for (var st = 0; st < completedVisits.length; st++) {
+    var sn = completedVisits[st].staff || "";
+    if (sn) staffCount[sn] = (staffCount[sn] || 0) + 1;
+  }
+  var favoriteStaff = "";
+  var maxStaffCnt = 0;
+  for (var sk in staffCount) { if (staffCount[sk] > maxStaffCnt) { maxStaffCnt = staffCount[sk]; favoriteStaff = sk; } }
+
+  // 平均単価
+  var totalAmount = 0;
+  var amountCount = 0;
+  for (var am = 0; am < completedVisits.length; am++) {
+    var amt = parseInt(String(completedVisits[am].amount || "").replace(/[^0-9]/g,""));
+    if (!isNaN(amt) && amt > 0) { totalAmount += amt; amountCount++; }
+  }
+  var avgAmount = amountCount > 0 ? Math.round(totalAmount / amountCount) : 0;
+
   return {
-    friend:       friend,
-    reservations: reservations,
-    counseling:   counseling,
-    visit_count:  visitCount,
-    last_visit:   lastVisit
+    friend:        friend,
+    reservations:  reservations,
+    counseling:    counseling,
+    visit_count:   visitCount,
+    last_visit:    lastVisit,
+    avg_cycle:     avgCycle,
+    favorite_menu: favoriteMenu,
+    favorite_staff: favoriteStaff,
+    avg_amount:    avgAmount
   };
 }
 
@@ -1427,6 +1478,37 @@ function getStepStats() {
   for (var k in stepMap) steps.push(stepMap[k]);
   steps.sort(function(a,b){ return a.type.localeCompare(b.type); });
   return {steps: steps};
+}
+
+// ══════════════════════════════════════════════════════════
+//  既存フォロワー一括インポート
+// ══════════════════════════════════════════════════════════
+function importFollowers() {
+  var imported = 0;
+  var skipped  = 0;
+  var nextToken = null;
+
+  do {
+    var url = "https://api.line.me/v2/bot/followers/ids?limit=300";
+    if (nextToken) url += "&start=" + nextToken;
+    var res = UrlFetchApp.fetch(url, {
+      headers: {Authorization: "Bearer " + LINE_TOKEN},
+      muteHttpExceptions: true
+    });
+    if (res.getResponseCode() !== 200) break;
+    var data = JSON.parse(res.getContentText());
+    var uids = data.userIds || [];
+
+    for (var i = 0; i < uids.length; i++) {
+      var result = registerFriend({line_uid: uids[i], phone: "", name: "", display_name: ""});
+      if (result.status === "registered") imported++;
+      else skipped++;
+    }
+
+    nextToken = data.next || null;
+  } while (nextToken);
+
+  return {status: "ok", imported: imported, skipped: skipped};
 }
 
 // ══════════════════════════════════════════════════════════

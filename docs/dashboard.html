@@ -510,6 +510,7 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="card-header">
         <div class="card-title">👥 LINE友だち一覧</div>
         <button class="btn btn-green btn-sm" onclick="loadLineFriendsMgmt()">🔄 更新</button>
+        <button class="btn btn-sm" style="background:#1a73e8;color:#fff" onclick="importFollowers()">📥 既存友だちを一括インポート</button>
       </div>
       <div class="friends-search-row">
         <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号・タグで絞り込み" oninput="filterFriendsMgmt()">
@@ -1404,6 +1405,23 @@ async function gasPost(body) {
 // LINE友だち管理
 // ══════════════════════════════════════════════════════════
 let allFriends = [];
+
+async function importFollowers() {
+  if (!confirm('既存の全フォロワーをLINE友だちシートに登録します。\n（表示名・電話番号は後から紐付けされます）\n実行しますか？')) return;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ インポート中...';
+  try {
+    const res = await gasPost({action: 'import_followers'});
+    alert(`✅ インポート完了\n新規登録: ${res.imported}件\nスキップ（既存）: ${res.skipped}件`);
+    loadLineFriendsMgmt();
+  } catch(e) {
+    alert('❌ エラー: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📥 既存友だちを一括インポート';
+  }
+}
 
 async function loadLineFriendsMgmt() {
   document.getElementById('friendsMgmtResult').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
@@ -2524,6 +2542,16 @@ function renderCustomerProfile(data) {
     </tr>`).join('') :
     '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">カウンセリング記録なし</td></tr>';
 
+  const cycleHtml = data.avg_cycle > 0
+    ? `<div style="background:#f0f9ff;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="text-align:center"><div style="font-size:11px;color:#888">来店回数</div><div style="font-size:20px;font-weight:700;color:#00b900">${data.visit_count}回</div></div>
+        <div style="text-align:center"><div style="font-size:11px;color:#888">平均来店周期</div><div style="font-size:20px;font-weight:700;color:#1a73e8">${data.avg_cycle}日</div></div>
+        <div style="text-align:center"><div style="font-size:11px;color:#888">よく使うメニュー</div><div style="font-size:13px;font-weight:600;color:#333">${data.favorite_menu||'-'}</div></div>
+        <div style="text-align:center"><div style="font-size:11px;color:#888">担当スタッフ</div><div style="font-size:13px;font-weight:600;color:#333">${data.favorite_staff||'-'}</div></div>
+        <div style="text-align:center;grid-column:1/-1"><div style="font-size:11px;color:#888">平均単価</div><div style="font-size:18px;font-weight:700;color:#f59e0b">${data.avg_amount>0?'¥'+data.avg_amount.toLocaleString():'-'}</div></div>
+      </div>`
+    : '';
+
   document.getElementById('customerProfileBody').innerHTML = `
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
       <div style="flex:1;min-width:200px;background:#f0fff0;border-radius:10px;padding:14px">
@@ -2544,6 +2572,8 @@ function renderCustomerProfile(data) {
         <div style="font-size:11px;color:#888;margin-top:4px">タグ: ${f.tags || 'なし'}</div>
       </div>
     </div>
+
+    ${cycleHtml}
 
     <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📅 予約履歴（${rs.length}件）</div>
     <div class="tbl-scroll" style="margin-bottom:20px">
