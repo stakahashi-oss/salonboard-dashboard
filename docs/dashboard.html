@@ -1177,7 +1177,8 @@ function toggleHomeSchedule(val) {
 function confirmHomeBroadcast() {
   const content = getMessageContent();
   if (!content) { alert('メッセージを入力してください'); return; }
-  const timing = document.querySelector('input[name="homeTiming"]:checked').value;
+  const timingEl = document.querySelector('input[name="homeTiming"]:checked');
+  const timing = timingEl ? timingEl.value : 'now';
   if (timing === 'schedule') { executeHomeBroadcast(); return; }
   document.getElementById('sendConfirm').style.display = '';
 }
