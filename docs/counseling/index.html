@@ -96,7 +96,7 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
   <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">← 戻る</button>
   <div>
     <h1 id="headerTitle">📋 カウンセリングシート</h1>
-    <div class="header-sub" id="headerSub">スタッフ用入力画面</div>
+    <div class="header-sub" id="headerSub">ご来店前にご記入ください</div>
   </div>
 </div>
 
@@ -248,7 +248,7 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
         <textarea id="request" placeholder="例：自然なカール感で。仕上がりを少し強めにしたい。"></textarea>
       </div>
     </div>
-    <button class="btn btn-green" onclick="goFormPage(2)">次へ → 施術メモ</button>
+    <button class="btn btn-green" id="formPage1NextBtn" onclick="goFormPage(2)">次へ → 施術メモ</button>
   </div>
 
   <div id="formPage2" style="display:none">
@@ -279,7 +279,7 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
 
     <div style="display:flex;gap:10px;margin-bottom:12px">
       <button class="btn btn-gray btn-sm" onclick="goFormPage(1)" style="flex:1">← 戻る</button>
-      <button class="btn btn-green" onclick="submitForm()" style="flex:2">💾 保存する</button>
+      <button class="btn btn-green" onclick="submitForm()" style="flex:2" id="submitBtn">💾 保存する</button>
     </div>
   </div>
 </div>
@@ -531,7 +531,7 @@ async function submitForm() {
   } catch(e) {
     alert("保存に失敗しました: " + e.message);
   } finally {
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "💾 保存する"; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = LINE_UID_FROM_URL ? "✅ 送信する" : "💾 保存する"; }
   }
 }
 
@@ -579,10 +579,28 @@ function resetForm() {
   screenHistory = ["screen-start"];
 }
 
-// LINE UID があれば名前入力画面を直接表示
+// LINE UID があれば名前入力画面を直接表示・お客様モードに切り替え
 if (LINE_UID_FROM_URL) {
   document.getElementById("lineLinkedBadge").style.display = "";
   showScreen("screen-line-new");
+
+  // ステップ表示をお客様向けに変更
+  document.getElementById("step3").style.display = "none";
+
+  // 「次へ」ボタンを「送信する」に変更して直接送信
+  const nextBtn = document.getElementById("formPage1NextBtn");
+  if (nextBtn) {
+    nextBtn.textContent = "✅ 送信する";
+    nextBtn.onclick = submitForm;
+  }
+
+  // 施術メモ・次回提案（formPage2）を非表示
+  const page2 = document.getElementById("formPage2");
+  if (page2) page2.style.display = "none";
+
+  // 送信ボタンのテキスト変更
+  const submitBtnEl = document.getElementById("submitBtn");
+  if (submitBtnEl) submitBtnEl.textContent = "✅ 送信する";
 }
 
 function startLineNew() {
