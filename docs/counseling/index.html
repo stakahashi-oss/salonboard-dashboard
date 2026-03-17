@@ -212,6 +212,19 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
   <!-- フォームページ切り替え -->
   <div id="formPage1">
     <div class="card">
+      <div class="card-title">💇 本日のメニュー <span style="color:red;font-size:12px">※必須</span></div>
+      <div class="field">
+        <div class="radio-group" id="todayMenu">
+          <div class="radio-btn" onclick="selectRadio(this,'todayMenu')">まつ毛パーマ</div>
+          <div class="radio-btn" onclick="selectRadio(this,'todayMenu')">眉毛ワックス</div>
+          <div class="radio-btn" onclick="selectRadio(this,'todayMenu')">まつ毛パーマ＋眉毛ワックス</div>
+          <div class="radio-btn" onclick="selectRadio(this,'todayMenu')">眉毛パーマ</div>
+          <div class="radio-btn" onclick="selectRadio(this,'todayMenu')">マツエク</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-title">💆 肌の状態</div>
       <div class="field">
         <label>肌質</label>
@@ -496,13 +509,17 @@ async function submitForm() {
     alert("フルネームを入力してください");
     return;
   }
+  if (!getSelected("todayMenu")) {
+    alert("本日のメニューを選択してください");
+    return;
+  }
   const data = {
     store:           currentCustomer.store || "",
     visit_date:      currentCustomer.visit_date || "",
     reservation_id:  currentCustomer.reservation_id || "",
     phone:           currentCustomer.phone || "",
     name:            currentCustomer.name || "",
-    menu:            currentCustomer.menu || "",
+    menu:            getSelected("todayMenu") || currentCustomer.menu || "",
     staff:           currentCustomer.staff || "",
     skin_type:       getSelected("skinType"),
     allergy:         getSelected("allergy"),
