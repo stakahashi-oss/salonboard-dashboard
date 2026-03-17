@@ -160,6 +160,9 @@ textarea.msg-input:focus { border-color:#00b900; }
 .scenario-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
 .scenario-preview { background:#dcf8c6; border-radius:12px; padding:14px 16px; font-size:13px; white-space:pre-wrap; margin-top:10px; border-left:4px solid #00b900; min-height:40px; display:none; }
 .friends-search-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.broadcast-tab { padding:8px 16px; border:1.5px solid #ddd; border-radius:20px; font-size:13px; cursor:pointer; background:#f8f8f8; color:#555; transition:all .15s; }
+.broadcast-tab.active-tab { border-color:#00b900; background:#00b900; color:#fff; font-weight:700; }
+.scheduled-item { background:#f0fff0; border:1px solid #c8e6c9; border-radius:8px; padding:10px 14px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
 .friends-search-input { flex:1; min-width:200px; padding:8px 14px; border:1.5px solid #ddd; border-radius:8px; font-size:13px; outline:none; transition:border-color .2s; }
 .friends-search-input:focus { border-color:#00b900; }
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9999; display:flex; align-items:center; justify-content:center; padding:16px; }
@@ -448,55 +451,77 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="kpi-card"><div class="kpi-label">🔗 カウンセリング連携済み</div><div class="kpi-value" id="kpi-friends-linked">-</div></div>
     </div>
 
-    <!-- 一斉送信 -->
+    <!-- 統合配信パネル -->
     <div class="card" style="margin-bottom:16px">
-      <div class="card-header"><div class="card-title">📢 一斉送信</div></div>
+      <div class="card-header"><div class="card-title">📢 配信作成</div></div>
       <div style="padding:4px 0 12px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-          <label style="font-size:13px;color:#555">送信対象:</label>
+
+        <!-- 送信対象 -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+          <label style="font-size:13px;font-weight:600;color:#555">送信対象:</label>
           <select id="broadcastTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateBroadcastCount()">
             <option value="">👥 全員</option>
           </select>
           <span id="broadcastCount" style="font-size:12px;color:#888"></span>
         </div>
-        <textarea id="broadcastMsg" placeholder="送信するメッセージを入力..." style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:90px;font-family:inherit;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-          <button class="btn btn-green" onclick="sendBroadcast()">📢 一斉送信</button>
-          <span id="broadcastStatus" style="font-size:12px;color:#888"></span>
-        </div>
-      </div>
-    </div>
 
-    <!-- クーポン送信 -->
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-header"><div class="card-title">🎫 クーポン送信</div></div>
-      <div style="padding:4px 0 12px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-          <label style="font-size:13px;color:#555">送信対象:</label>
-          <select id="couponTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateCouponCount()">
-            <option value="">👥 全員</option>
-          </select>
-          <span id="couponCount" style="font-size:12px;color:#888"></span>
-        </div>
-        <div style="display:grid;gap:8px;margin-bottom:10px">
-          <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
-          <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
-          <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
-        </div>
-        <!-- プレビュー -->
-        <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-bottom:10px">
-          <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
-          <div style="padding:14px;background:#fff">
-            <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px" id="couponPreviewTitle">タイトル</div>
-            <div style="font-size:12px;color:#888;margin-bottom:12px" id="couponPreviewDesc">説明文</div>
-            <div style="background:#00b900;color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:700">クーポンを使う</div>
+        <!-- 配信日時 -->
+        <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🕐 配信日時</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+              <input type="radio" name="broadcastTiming" value="now" checked onchange="toggleSchedule(this.value)"> 今すぐ送信
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+              <input type="radio" name="broadcastTiming" value="schedule" onchange="toggleSchedule(this.value)"> 日時指定
+            </label>
+            <input type="datetime-local" id="broadcastScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
           </div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
-          <button class="btn btn-gray btn-sm" onclick="previewCoupon()">👁 プレビュー</button>
-          <button class="btn btn-green" onclick="sendCouponBroadcast()">🎫 クーポン送信</button>
-          <span id="couponStatus" style="font-size:12px;color:#888"></span>
+
+        <!-- 配信内容タブ -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <button id="tab-text-btn" class="broadcast-tab active-tab" onclick="switchBroadcastTab('text')">💬 テキスト</button>
+          <button id="tab-coupon-btn" class="broadcast-tab" onclick="switchBroadcastTab('coupon')">🎫 クーポン</button>
+          <button id="tab-vacancy-btn" class="broadcast-tab" onclick="switchBroadcastTab('vacancy')">📅 空き情報</button>
         </div>
+
+        <!-- テキスト -->
+        <div id="broadcast-tab-text">
+          <textarea id="broadcastMsg" placeholder="送信するメッセージを入力..." style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:100px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- クーポン -->
+        <div id="broadcast-tab-coupon" style="display:none">
+          <div style="display:grid;gap:8px">
+            <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+            <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+            <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+          </div>
+          <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-top:10px">
+            <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
+            <div style="padding:14px;background:#fff">
+              <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px" id="couponPreviewTitle"></div>
+              <div style="font-size:12px;color:#888;margin-bottom:12px" id="couponPreviewDesc"></div>
+              <div style="background:#00b900;color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:700">クーポンを使う</div>
+            </div>
+          </div>
+          <button class="btn btn-gray btn-sm" onclick="previewCoupon()" style="margin-top:8px">👁 プレビュー</button>
+        </div>
+
+        <!-- 空き情報 -->
+        <div id="broadcast-tab-vacancy" style="display:none">
+          <textarea id="vacancyMsg" placeholder="例：【空き情報】\n本日空きあります！\n・14:00〜\n・16:00〜\nご予約はこちらのLINEへ🌸" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:120px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-green" onclick="executeBroadcast()" id="broadcastSendBtn">📢 配信する</button>
+          <span id="broadcastStatus" style="font-size:12px;color:#888"></span>
+        </div>
+
+        <!-- 予約済み一覧 -->
+        <div id="scheduledList" style="margin-top:14px"></div>
       </div>
     </div>
 
@@ -1196,9 +1221,7 @@ async function loadLineFriendsMgmt() {
     const broadcastTagHtml = ['<option value="">👥 全員</option>',
       ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
     document.getElementById('broadcastTagFilter').innerHTML = broadcastTagHtml;
-    document.getElementById('couponTagFilter').innerHTML = broadcastTagHtml;
     updateBroadcastCount();
-    updateCouponCount();
 
     renderFriendsMgmt(allFriends);
   } catch(e) {
@@ -1290,71 +1313,118 @@ async function sendBroadcast() {
   setTimeout(() => { statusEl.textContent = ''; }, 5000);
 }
 
-function updateCouponCount() {
-  const tag = document.getElementById('couponTagFilter').value;
-  let targets = allFriends.filter(f => f['LINE_UID']);
-  if (tag) targets = targets.filter(f =>
-    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
-  document.getElementById('couponCount').textContent = `（${targets.length}人に送信）`;
+let currentBroadcastTab = 'text';
+
+function switchBroadcastTab(tab) {
+  currentBroadcastTab = tab;
+  ['text','coupon','vacancy'].forEach(t => {
+    document.getElementById(`broadcast-tab-${t}`).style.display = t === tab ? '' : 'none';
+    document.getElementById(`tab-${t}-btn`).classList.toggle('active-tab', t === tab);
+  });
 }
+
+function toggleSchedule(val) {
+  document.getElementById('broadcastScheduleTime').style.display = val === 'schedule' ? '' : 'none';
+  document.getElementById('broadcastSendBtn').textContent = val === 'schedule' ? '📅 予約する' : '📢 配信する';
+}
+
+function updateCouponCount() {}  // 統合カウントに統一
 
 function previewCoupon() {
   const title = document.getElementById('couponTitle').value.trim();
   const desc  = document.getElementById('couponDesc').value.trim();
-  const preview = document.getElementById('couponPreview');
   if (!title) { alert('クーポンタイトルを入力してください'); return; }
   document.getElementById('couponPreviewTitle').textContent = title;
   document.getElementById('couponPreviewDesc').textContent  = desc;
-  preview.style.display = preview.style.display === 'block' ? 'none' : 'block';
+  const p = document.getElementById('couponPreview');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
 }
 
-async function sendCouponBroadcast() {
-  const title  = document.getElementById('couponTitle').value.trim();
-  const desc   = document.getElementById('couponDesc').value.trim();
-  const url    = document.getElementById('couponUrl').value.trim();
-  const tag    = document.getElementById('couponTagFilter').value;
-  const statusEl = document.getElementById('couponStatus');
-  if (!title) { alert('クーポンタイトルを入力してください'); return; }
-  if (!url)   { alert('クーポンURLを入力してください'); return; }
-
-  let targets = allFriends.filter(f => f['LINE_UID']);
-  if (tag) targets = targets.filter(f =>
-    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
-  if (!targets.length) { alert('送信対象がいません'); return; }
-  if (!confirm(`${targets.length}人にクーポンを送信しますか？`)) return;
-
-  const flex = {
+function buildCouponFlex(title, desc, url) {
+  return {
     type: 'flex',
     altText: `🎫 ${title}`,
     contents: {
       type: 'bubble',
       header: {
-        type: 'box', layout: 'vertical',
-        backgroundColor: '#00b900', paddingAll: '12px',
-        contents: [{type:'text', text:'🎫 クーポン', color:'#ffffff', size:'sm', weight:'bold'}]
+        type:'box', layout:'vertical', backgroundColor:'#00b900', paddingAll:'12px',
+        contents:[{type:'text', text:'🎫 クーポン', color:'#ffffff', size:'sm', weight:'bold'}]
       },
       body: {
-        type: 'box', layout: 'vertical', spacing: 'md',
-        contents: [
-          {type:'text', text: title, size:'xl', weight:'bold', color:'#1a1a2e', wrap: true},
-          {type:'text', text: desc || ' ', size:'sm', color:'#888888', wrap: true}
+        type:'box', layout:'vertical', spacing:'md',
+        contents:[
+          {type:'text', text:title, size:'xl', weight:'bold', color:'#1a1a2e', wrap:true},
+          {type:'text', text:desc||' ', size:'sm', color:'#888888', wrap:true}
         ]
       },
       footer: {
-        type: 'box', layout: 'vertical',
-        contents: [{
-          type:'button', style:'primary', color:'#00b900',
-          action: {type:'uri', label:'クーポンを使う', uri: url}
-        }]
+        type:'box', layout:'vertical',
+        contents:[{type:'button', style:'primary', color:'#00b900',
+          action:{type:'uri', label:'クーポンを使う', uri:url}}]
       }
     }
   };
+}
 
+async function executeBroadcast() {
+  const tag      = document.getElementById('broadcastTagFilter').value;
+  const timing   = document.querySelector('input[name="broadcastTiming"]:checked').value;
+  const schedTime = document.getElementById('broadcastScheduleTime').value;
+  const statusEl = document.getElementById('broadcastStatus');
+
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  if (!targets.length) { alert('送信対象がいません'); return; }
+
+  // コンテンツ取得
+  let msgText = '', flexData = null;
+  if (currentBroadcastTab === 'text') {
+    msgText = document.getElementById('broadcastMsg').value.trim();
+    if (!msgText) { alert('メッセージを入力してください'); return; }
+  } else if (currentBroadcastTab === 'coupon') {
+    const title = document.getElementById('couponTitle').value.trim();
+    const desc  = document.getElementById('couponDesc').value.trim();
+    const url   = document.getElementById('couponUrl').value.trim();
+    if (!title) { alert('クーポンタイトルを入力してください'); return; }
+    if (!url)   { alert('クーポンURLを入力してください'); return; }
+    flexData = buildCouponFlex(title, desc, url);
+  } else if (currentBroadcastTab === 'vacancy') {
+    msgText = document.getElementById('vacancyMsg').value.trim();
+    if (!msgText) { alert('空き情報を入力してください'); return; }
+  }
+
+  // 予約送信
+  if (timing === 'schedule') {
+    if (!schedTime) { alert('配信日時を選択してください'); return; }
+    if (!confirm(`${targets.length}人に ${schedTime} に配信予約しますか？`)) return;
+    statusEl.textContent = '予約中...';
+    try {
+      await gasPost({
+        action: 'schedule_broadcast',
+        schedule_time: schedTime,
+        tag: tag,
+        type: currentBroadcastTab,
+        message: msgText,
+        flex: flexData ? JSON.stringify(flexData) : ''
+      });
+      statusEl.textContent = `✅ ${schedTime} に予約しました`;
+      loadScheduledBroadcasts();
+    } catch(e) { statusEl.textContent = `❌ エラー: ${e.message}`; }
+    return;
+  }
+
+  // 今すぐ送信
+  if (!confirm(`${targets.length}人に配信しますか？`)) return;
   statusEl.textContent = `送信中... 0/${targets.length}`;
   let success = 0;
   for (let i = 0; i < targets.length; i++) {
     try {
-      await gasPost({action: 'send_flex', line_uid: targets[i]['LINE_UID'], flex: JSON.stringify(flex)});
+      if (flexData) {
+        await gasPost({action:'send_flex', line_uid:targets[i]['LINE_UID'], flex:JSON.stringify(flexData)});
+      } else {
+        await gasPost({action:'send_push', line_uid:targets[i]['LINE_UID'], message:msgText});
+      }
       success++;
     } catch(e) {}
     statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
@@ -1362,6 +1432,32 @@ async function sendCouponBroadcast() {
   statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
   setTimeout(() => { statusEl.textContent = ''; }, 5000);
 }
+
+async function loadScheduledBroadcasts() {
+  try {
+    const data = await gasGet('get_scheduled');
+    const list = data.list || [];
+    const el = document.getElementById('scheduledList');
+    if (!list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">📅 予約済み配信</div>' +
+      list.map(s => `
+        <div class="scheduled-item">
+          <div>
+            <div style="font-weight:600">${s.type === 'coupon' ? '🎫' : s.type === 'vacancy' ? '📅' : '💬'} ${s.schedule_time}</div>
+            <div style="color:#888;font-size:11px">${s.tag ? '🏷️ '+s.tag : '👥 全員'} ／ ${s.preview}</div>
+          </div>
+          <button onclick="cancelScheduled('${s.id}')" style="border:none;background:#fee;color:#c00;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px">取消</button>
+        </div>`).join('');
+  } catch(e) {}
+}
+
+async function cancelScheduled(id) {
+  if (!confirm('予約を取消しますか？')) return;
+  await gasPost({action:'cancel_scheduled', id});
+  loadScheduledBroadcasts();
+}
+
+async function sendBroadcast() { await executeBroadcast(); }
 
 function openPushModal(lineUid, name) {
   const html = `
