@@ -233,7 +233,7 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
 <!-- ══════════════════════════════════════════ -->
 <!-- Screen: スタート（スタッフ用） -->
 <!-- ══════════════════════════════════════════ -->
-<div class="screen active" id="screen-start">
+<div class="screen" id="screen-start">
   <div class="page">
     <div class="form-header-card">
       <div class="form-header-banner"></div>
@@ -751,7 +751,7 @@ function resetForm() {
   screenHistory = ["screen-start"];
 }
 
-// LINE UID があればお客様モードに切り替え
+// 初期画面表示（LINE UIDがあればお客様モード、なければスタッフ用スタート画面）
 if (LINE_UID_FROM_URL) {
   document.getElementById("lineLinkedBadge") && (document.getElementById("lineLinkedBadge").style.display = "");
   showScreen("screen-line-new");
@@ -759,6 +759,8 @@ if (LINE_UID_FROM_URL) {
   if (nextBtn) { nextBtn.textContent = "送信する"; nextBtn.onclick = submitForm; }
   const page2 = document.getElementById("formPage2");
   if (page2) page2.style.display = "none";
+} else {
+  showScreen("screen-start");
 }
 
 function startLineNew() {
