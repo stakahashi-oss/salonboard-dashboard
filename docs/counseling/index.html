@@ -290,9 +290,9 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
 <div class="screen" id="screen-done">
   <div style="text-align:center;padding:40px 0">
     <div style="font-size:70px;margin-bottom:16px">✅</div>
-    <div style="font-size:20px;font-weight:700;margin-bottom:8px">保存しました！</div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:8px" id="doneTitleMsg">保存しました！</div>
     <div style="font-size:14px;color:var(--sub);margin-bottom:30px" id="doneMsg">カウンセリングシートを記録しました</div>
-    <button class="btn btn-green" onclick="showScreen('screen-start');resetForm()" style="max-width:300px;margin:0 auto">📋 次のお客様へ</button>
+    <button class="btn btn-green" id="doneBtn" onclick="showScreen('screen-start');resetForm()" style="max-width:300px;margin:0 auto">📋 次のお客様へ</button>
   </div>
 </div>
 
@@ -524,8 +524,15 @@ async function submitForm() {
       body: JSON.stringify({key: SECRET, action: "save_counseling", data}),
     }).then(r => r.json());
     if (res.error) throw new Error(res.error);
-    document.getElementById("doneMsg").textContent =
-      `${data.name||data.phone}様のカウンセリングを記録しました（ID: ${res.id||""}）`;
+    if (LINE_UID_FROM_URL) {
+      document.getElementById("doneTitleMsg").textContent = "送信しました！";
+      document.getElementById("doneMsg").textContent = "スタッフにお声がけください";
+      document.getElementById("doneBtn").textContent = "閉じる";
+      document.getElementById("doneBtn").onclick = () => window.close();
+    } else {
+      document.getElementById("doneTitleMsg").textContent = "保存しました！";
+      document.getElementById("doneMsg").textContent = `${data.name||data.phone}様のカウンセリングを記録しました（ID: ${res.id||""}）`;
+    }
     showScreen("screen-done");
     resetForm();
   } catch(e) {
