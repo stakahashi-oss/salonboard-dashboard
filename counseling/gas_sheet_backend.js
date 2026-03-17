@@ -177,7 +177,9 @@ function saveCounseling(data) {
   var lineUid = data.line_uid || findLineUidByPhone(data.phone || "");
   var lineSent = "未送信";
 
-  if (lineUid) {
+  // カウンセリング提出時即時送信は「有効_カウンセリング即時お礼」がONの場合のみ
+  // デフォルトOFF（来店・会計後に自動送信するのが正しいフロー）
+  if (lineUid && getSetting("有効_カウンセリング即時お礼") === "ON") {
     var msg = buildFollowMessage("お礼", {
       name: data.name || "お客様",
       store: data.store || "当店",

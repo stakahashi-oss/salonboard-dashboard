@@ -1805,8 +1805,21 @@ const SCENARIO_STEPS = [
     placeholder: '{name} {store} {visit_date} {start_time} {menu}',
   },
   {
+    id: 'counseling_immediate',
+    label: 'カウンセリング提出時 即時送信',
+    icon: '📋',
+    enableKey: '有効_カウンセリング即時お礼',
+    timingKey: null,
+    timingUnit: null,
+    msgKey: null,
+    defaultTiming: null,
+    defaultMsg: null,
+    note: '⚠️ OFFを推奨：カウンセリングはご来店前に記入するため、提出直後のお礼送信は不自然です。ONにすると提出と同時にお礼メッセージが送信されます。',
+    placeholder: null,
+  },
+  {
     id: 'thanks',
-    label: 'お礼メッセージ（来店当日/翌日）',
+    label: 'お礼メッセージ（会計済み翌日に自動送信）',
     icon: '🙏',
     enableKey: '有効_会計後お礼',
     timingKey: null,
@@ -1902,9 +1915,9 @@ async function saveSendHour() {
 function renderScenarioSteps() {
   document.getElementById('scenarioSteps').innerHTML = SCENARIO_STEPS.map((step, idx) => {
     const timing  = step.timingKey ? (scenarioSettings[step.timingKey] || step.defaultTiming) : null;
-    const msg     = scenarioSettings[step.msgKey] || step.defaultMsg;
+    const msg     = step.msgKey ? (scenarioSettings[step.msgKey] || step.defaultMsg || '') : null;
     const enabled = step.enableKey ? (scenarioSettings[step.enableKey] !== 'OFF') : true;
-    const placeholders = (step.placeholder || '{name} {store}').split(' ').map(p => `<code>${p}</code>`).join(' ');
+    const placeholders = step.placeholder ? step.placeholder.split(' ').map(p => `<code>${p}</code>`).join(' ') : null;
 
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
@@ -1915,6 +1928,23 @@ function renderScenarioSteps() {
         <div style="font-size:12px;color:#888;margin-bottom:10px">
           ⚡ 自動検知トリガー（タイミング設定なし）
         </div>`;
+
+    const noteRow = step.note ? `
+        <div style="font-size:12px;color:#b45309;background:#fef9c3;border:1px solid #fde047;border-radius:6px;padding:8px 10px;margin-bottom:10px">
+          ${step.note}
+        </div>` : '';
+
+    const msgSection = msg !== null ? `
+        ${placeholders ? `<div class="scenario-placeholder-hint">使えるプレースホルダー: ${placeholders}</div>` : ''}
+        <textarea class="scenario-textarea" id="msg-${step.id}" placeholder="メッセージテンプレートを入力...">${msg}</textarea>
+        <div class="scenario-actions">
+          <button class="btn btn-green" onclick="saveScenarioStep('${step.id}',${idx})">💾 保存</button>
+          <button class="btn btn-blue btn-sm" onclick="previewScenarioStep('${step.id}')">👁 プレビュー</button>
+          <button class="btn btn-gray btn-sm" onclick="resetScenarioStep('${step.id}',${idx})">↩ リセット</button>
+          <span id="save-status-${step.id}" style="font-size:12px;color:#888;align-self:center"></span>
+        </div>
+        <div class="scenario-preview" id="preview-${step.id}"></div>` : `
+        <span id="save-status-${step.id}" style="font-size:12px;color:#888"></span>`;
 
     return `
       <div class="scenario-step ${enabled ? 'active-step' : ''}" id="scenario-${step.id}">
@@ -1932,17 +1962,8 @@ function renderScenarioSteps() {
           </div>
         </div>
         ${timingRow}
-        <div class="scenario-placeholder-hint">
-          使えるプレースホルダー: ${placeholders}
-        </div>
-        <textarea class="scenario-textarea" id="msg-${step.id}" placeholder="メッセージテンプレートを入力...">${msg}</textarea>
-        <div class="scenario-actions">
-          <button class="btn btn-green" onclick="saveScenarioStep('${step.id}',${idx})">💾 保存</button>
-          <button class="btn btn-blue btn-sm" onclick="previewScenarioStep('${step.id}')">👁 プレビュー</button>
-          <button class="btn btn-gray btn-sm" onclick="resetScenarioStep('${step.id}',${idx})">↩ リセット</button>
-          <span id="save-status-${step.id}" style="font-size:12px;color:#888;align-self:center"></span>
-        </div>
-        <div class="scenario-preview" id="preview-${step.id}"></div>
+        ${noteRow}
+        ${msgSection}
       </div>`;
   }).join('');
 }
@@ -1961,9 +1982,12 @@ async function toggleScenarioStep(id, enableKey, checked) {
 
 async function saveScenarioStep(id, idx) {
   const step     = SCENARIO_STEPS[idx];
-  const msg      = document.getElementById(`msg-${id}`).value.trim();
   const statusEl = document.getElementById(`save-status-${id}`);
 
+  // msgKey がない場合（例: counseling_immediate）はメッセージ保存不要
+  if (!step.msgKey) return;
+
+  const msg = document.getElementById(`msg-${id}`).value.trim();
   if (!msg) { alert('メッセージを入力してください'); return; }
   statusEl.textContent = '保存中...';
 
@@ -2008,8 +2032,10 @@ function resetScenarioStep(id, idx) {
   if (!confirm('デフォルトのメッセージに戻しますか？')) return;
   const step = SCENARIO_STEPS[idx];
   if (step.timingKey) document.getElementById(`timing-${id}`).value = step.defaultTiming;
-  document.getElementById(`msg-${id}`).value = step.defaultMsg;
-  document.getElementById(`preview-${id}`).style.display = 'none';
+  if (step.msgKey) {
+    document.getElementById(`msg-${id}`).value = step.defaultMsg;
+    document.getElementById(`preview-${id}`).style.display = 'none';
+  }
 }
 
 // ══════════════════════════════════════════════════════════
