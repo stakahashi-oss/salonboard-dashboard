@@ -173,8 +173,6 @@ textarea.msg-input:focus { border-color:#00b900; }
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">📊 管理ダッシュボード</div>
-  <div class="sidebar-plan">プラン: <strong>プロ</strong></div>
-  <div class="sidebar-quota" id="quotaBar"><div class="quota-row"><span>Lステップ</span><span style="color:#00b900">読込中...</span></div></div>
   <div style="padding:8px 0">
     <div class="nav-section">メイン</div>
     <div class="nav-item active" onclick="showTab('dashboard',this);loadDashboard()">🏠 ホーム</div>
@@ -183,6 +181,8 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-section">LINE管理</div>
     <div class="nav-item" onclick="showTab('line-friends-mgmt',this);loadLineFriendsMgmt()">👥 友だち管理</div>
     <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
+    <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
+    <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
   </div>
 </nav>
 
@@ -456,6 +456,41 @@ textarea.msg-input:focus { border-color:#00b900; }
         <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号で絞り込み" oninput="filterFriendsMgmt()">
       </div>
       <div id="friendsMgmtResult"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ タグ管理 ═══════ -->
+  <div class="section" id="tab-line-tags">
+    <div class="notice-green" style="margin-bottom:16px">
+      🏷️ <strong>タグ管理</strong> — LINE友だちにタグを付けてセグメント管理ができます。
+    </div>
+    <div class="friends-search-row">
+      <input class="friends-search-input" type="text" id="tagSearch" placeholder="名前・電話番号・タグで絞り込み" oninput="filterTags()">
+    </div>
+    <div id="tagsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+  </div>
+
+  <!-- ═══════ トーク画面 ═══════ -->
+  <div class="section" id="tab-line-talk">
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;height:calc(100vh - 140px);min-height:500px">
+      <!-- 左: 会話リスト -->
+      <div class="card" style="overflow-y:auto;padding:0">
+        <div style="padding:14px 16px;border-bottom:1px solid #eee;font-weight:700;font-size:14px">💬 トーク一覧</div>
+        <div id="talkList"><div class="loading" style="padding:20px"><span class="spinner"></span>読込中...</div></div>
+      </div>
+      <!-- 右: チャット画面 -->
+      <div class="card" style="display:flex;flex-direction:column;padding:0">
+        <div style="padding:14px 16px;border-bottom:1px solid #eee;font-weight:700;font-size:14px" id="talkHeader">友だちを選択してください</div>
+        <div id="talkMessages" style="flex:1;overflow-y:auto;padding:16px;background:#f0f2f5;display:flex;flex-direction:column;gap:8px">
+          <div style="text-align:center;color:#aaa;font-size:13px;margin-top:40px">左のリストから友だちを選択してください</div>
+        </div>
+        <div style="border-top:1px solid #eee;padding:12px;background:#fff">
+          <div style="display:flex;gap:8px;align-items:flex-end">
+            <textarea id="talkReplyMsg" placeholder="メッセージを入力..." style="flex:1;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;resize:none;height:60px;outline:none" onkeydown="if(event.key==='Enter'&&event.ctrlKey)sendTalkReply()"></textarea>
+            <button class="btn btn-green" onclick="sendTalkReply()" style="height:60px;padding:0 20px">送信<br><span style="font-size:10px">Ctrl+Enter</span></button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1409,6 +1444,169 @@ function resetScenarioStep(id, idx) {
   if (step.timingKey) document.getElementById(`timing-${id}`).value = step.defaultTiming;
   document.getElementById(`msg-${id}`).value = step.defaultMsg;
   document.getElementById(`preview-${id}`).style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════
+// タグ管理
+// ══════════════════════════════════════════════════════════
+let tagsAll = [];
+
+async function loadTags() {
+  document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_line_friends');
+    tagsAll = data.friends || [];
+    renderTags(tagsAll);
+  } catch(e) {
+    document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+function filterTags() {
+  const q = document.getElementById('tagSearch').value.trim().toLowerCase();
+  if (!q) { renderTags(tagsAll); return; }
+  renderTags(tagsAll.filter(f =>
+    (f['お名前']||'').toLowerCase().includes(q) ||
+    (f['LINE表示名']||'').toLowerCase().includes(q) ||
+    (f['電話番号']||'').includes(q) ||
+    (f['タグ']||'').toLowerCase().includes(q)
+  ));
+}
+
+function renderTags(friends) {
+  if (!friends.length) {
+    document.getElementById('tagsList').innerHTML = '<div style="text-align:center;padding:30px;color:#999">友だちがいません</div>';
+    return;
+  }
+  document.getElementById('tagsList').innerHTML = `
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="background:#f5f6fa">
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">お名前</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">電話番号</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">タグ</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee">操作</th>
+      </tr></thead>
+      <tbody>${friends.map(f => {
+        const uid = f['LINE_UID'] || '';
+        const name = f['お名前'] || f['LINE表示名'] || '未設定';
+        const phone = f['電話番号'] || '―';
+        const tags = f['タグ'] || '';
+        return `<tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:9px 8px;font-weight:600">${name}</td>
+          <td style="padding:9px 8px">${phone}</td>
+          <td style="padding:9px 8px">
+            <input type="text" id="tag-${uid}" value="${tags}" placeholder="例: VIP, まつ毛, 新規"
+              style="border:1.5px solid #ddd;border-radius:6px;padding:4px 8px;font-size:12px;width:200px;outline:none">
+          </td>
+          <td style="padding:9px 8px">
+            <button class="btn btn-green btn-sm" onclick="saveTag('${uid}')">保存</button>
+            <span id="tag-status-${uid}" style="font-size:11px;color:#888;margin-left:6px"></span>
+          </td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+async function saveTag(lineUid) {
+  const tags = document.getElementById(`tag-${lineUid}`).value.trim();
+  const statusEl = document.getElementById(`tag-status-${lineUid}`);
+  statusEl.textContent = '保存中...';
+  try {
+    const r = await gasPost({action: 'tag_friend', line_uid: lineUid, tags: tags});
+    if (r.error) throw new Error(r.error);
+    statusEl.textContent = '✅';
+    setTimeout(() => { statusEl.textContent = ''; }, 2000);
+  } catch(e) {
+    statusEl.textContent = '❌';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// トーク画面
+// ══════════════════════════════════════════════════════════
+let currentTalkUid = '';
+let currentTalkName = '';
+
+async function loadTalkList() {
+  document.getElementById('talkList').innerHTML = '<div class="loading" style="padding:20px"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_talks_list');
+    renderTalkList(data.list || []);
+  } catch(e) {
+    document.getElementById('talkList').innerHTML = `<div style="color:red;padding:16px">エラー: ${e.message}</div>`;
+  }
+}
+
+function renderTalkList(list) {
+  if (!list.length) {
+    document.getElementById('talkList').innerHTML = '<div style="padding:20px;color:#aaa;text-align:center;font-size:13px">まだトーク履歴がありません</div>';
+    return;
+  }
+  document.getElementById('talkList').innerHTML = list.map(item => `
+    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')}"
+      style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .15s"
+      onmouseover="this.style.background='#f5f6fa'" onmouseout="this.style.background=''">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="font-weight:700;font-size:13px">${item.name || '名前未設定'}</div>
+        <div style="font-size:10px;color:#aaa">${String(item.last_at).substring(5,16)}</div>
+      </div>
+      <div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        ${item.direction === '送信' ? '▶ ' : '◀ '}${item.last_msg}
+      </div>
+    </div>`).join('');
+}
+
+async function openTalk(lineUid, name) {
+  currentTalkUid = lineUid;
+  currentTalkName = name;
+  document.getElementById('talkHeader').textContent = '💬 ' + name;
+  document.getElementById('talkMessages').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa"><span class="spinner"></span> 読込中...</div>';
+  try {
+    const data = await gasGet('get_talks', {line_uid: lineUid});
+    renderTalkMessages(data.talks || []);
+  } catch(e) {
+    document.getElementById('talkMessages').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+function renderTalkMessages(talks) {
+  if (!talks.length) {
+    document.getElementById('talkMessages').innerHTML = '<div style="text-align:center;padding:40px;color:#aaa;font-size:13px">まだメッセージがありません</div>';
+    return;
+  }
+  const html = talks.map(t => {
+    const isSent = t.direction === '送信';
+    return `<div style="display:flex;justify-content:${isSent ? 'flex-end' : 'flex-start'}">
+      <div style="max-width:70%">
+        <div style="background:${isSent ? '#00b900' : '#fff'};color:${isSent ? '#fff' : '#1a1a2e'};
+          padding:10px 14px;border-radius:${isSent ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};
+          font-size:13px;white-space:pre-wrap;box-shadow:0 1px 4px rgba(0,0,0,.1)">${t.content}</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px;text-align:${isSent ? 'right' : 'left'}">${String(t.datetime).substring(5,16)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const el = document.getElementById('talkMessages');
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendTalkReply() {
+  if (!currentTalkUid) { alert('送信先を選択してください'); return; }
+  const msg = document.getElementById('talkReplyMsg').value.trim();
+  if (!msg) return;
+  try {
+    const r = await gasPost({action: 'send_push', line_uid: currentTalkUid, message: msg});
+    if (r.error) throw new Error(r.error);
+    document.getElementById('talkReplyMsg').value = '';
+    await openTalk(currentTalkUid, currentTalkName);
+    // トーク一覧も更新
+    loadTalkList();
+  } catch(e) {
+    alert('送信エラー: ' + e.message);
+  }
 }
 </script>
 </body>

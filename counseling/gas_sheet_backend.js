@@ -20,6 +20,9 @@ function doPost(e) {
     if (action === "update_setting")   return resp(updateSetting(body.key_name, body.value));
     if (action === "send_push")        return resp(sendPush(body.line_uid, body.message));
     if (action === "reset_trigger")    return resp(resetTrigger());
+    if (action === "save_talk")        return resp(saveTalk(body.data));
+    if (action === "get_talks")        return resp(getTalks(body.line_uid));
+    if (action === "tag_friend")       return resp(tagFriend(body.line_uid, body.tags));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -35,6 +38,8 @@ function doGet(e) {
   if (act === "search_phone")     return resp(searchByPhone(e.parameter.phone));
   if (act === "get_line_friends") return resp(getLineFriends());
   if (act === "get_settings")     return resp(getSettings());
+  if (act === "get_talks_list")   return resp(getTalksList());
+  if (act === "get_talks")        return resp(getTalks(e.parameter.line_uid));
   return resp({error: "unknown action"});
 }
 
@@ -82,13 +87,15 @@ function setupSheet(sheet, name) {
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","肌質","アレルギー","アレルギー詳細","過去施術歴","本日の要望","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新"],
     "LINE配信ログ": ["ログID","送信日時","電話番号","お名前","LINE_UID","種別","内容","ステータス","エラー"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","メモ","登録日時","最終来店日"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日"],
+    "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"],
     "設定": ["キー","値"]
   };
   var colorMap = {
     "カウンセリング記録": "#00b900",
     "LINE配信ログ": "#1a73e8",
     "LINE友だち": "#0d7a0d",
+    "トーク履歴": "#e67e22",
     "設定": "#888888"
   };
   var headers = headerMap[name];
@@ -727,6 +734,7 @@ function sendPush(lineUid, message) {
   if (ok) {
     logLine({phone: "", name: "", line_uid: lineUid,
              type: "個別送信", content: message.substring(0, 80), status: "成功", error: ""});
+    saveTalk({line_uid: lineUid, direction: "送信", content: message.substring(0, 200)});
     return {status: "ok"};
   }
   return {status: "error", error: "LINE送信失敗"};
@@ -756,6 +764,93 @@ function getStats() {
     line_log_count:   Math.max(0, ll.length - 1),
     line_friends:     Math.max(0, lf.length - 1)
   };
+}
+
+// ── トーク履歴保存（受信メッセージ）─────────────────────
+function saveTalk(data) {
+  var sheet = getSheet("トーク履歴");
+  var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
+  var id = "T" + new Date().getTime();
+  // LINE友だちから名前を取得
+  var name = "";
+  if (data.line_uid) {
+    var friends = getSheet("LINE友だち").getDataRange().getValues();
+    for (var i = 1; i < friends.length; i++) {
+      if (String(friends[i][0]) === data.line_uid) {
+        name = String(friends[i][2] || friends[i][3] || "");
+        break;
+      }
+    }
+  }
+  sheet.appendRow([id, now, data.line_uid || "", name, data.direction || "受信", data.content || ""]);
+  return {status: "ok", id: id};
+}
+
+// ── トーク履歴取得（ユーザー別）──────────────────────────
+function getTalks(lineUid) {
+  var sheet = getSheet("トーク履歴");
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return {talks: []};
+  var talks = [];
+  for (var i = 1; i < data.length; i++) {
+    if (!lineUid || String(data[i][2]) === String(lineUid)) {
+      talks.push({
+        id:       String(data[i][0]),
+        datetime: String(data[i][1]),
+        line_uid: String(data[i][2]),
+        name:     String(data[i][3]),
+        direction: String(data[i][4]),
+        content:  String(data[i][5])
+      });
+    }
+  }
+  return {talks: talks};
+}
+
+// ── トーク一覧（ユーザーごとの最新メッセージ）────────────
+function getTalksList() {
+  var sheet = getSheet("トーク履歴");
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return {list: []};
+  var map = {};
+  for (var i = 1; i < data.length; i++) {
+    var uid = String(data[i][2]);
+    map[uid] = {
+      line_uid: uid,
+      name:     String(data[i][3]),
+      last_msg: String(data[i][5]),
+      last_at:  String(data[i][1]),
+      direction: String(data[i][4])
+    };
+  }
+  var list = [];
+  for (var k in map) list.push(map[k]);
+  list.sort(function(a, b) { return b.last_at.localeCompare(a.last_at); });
+  return {list: list};
+}
+
+// ── タグ付け ────────────────────────────────────────────
+function tagFriend(lineUid, tags) {
+  if (!lineUid) return {error: "line_uid required"};
+  var sheet = getSheet("LINE友だち");
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var tagColIdx = headers.indexOf("タグ");
+  if (tagColIdx === -1) {
+    // タグ列がなければ追加
+    var lastCol = sheet.getLastColumn();
+    sheet.getRange(1, lastCol + 1).setValue("タグ");
+    tagColIdx = lastCol;
+  } else {
+    tagColIdx = tagColIdx; // 0-based index
+  }
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(lineUid)) {
+      sheet.getRange(i + 1, tagColIdx + 1).setValue(tags);
+      return {status: "ok"};
+    }
+  }
+  return {error: "friend not found"};
 }
 
 // ══════════════════════════════════════════════════════════
