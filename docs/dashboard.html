@@ -1126,7 +1126,7 @@ async function gasGet(action, extra = {}) {
 async function gasPost(body) {
   const res = await fetch(DASH_GAS_URL, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify({key: DASH_SECRET, ...body})
   });
   return res.json();
