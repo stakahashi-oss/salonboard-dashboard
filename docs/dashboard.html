@@ -331,19 +331,47 @@ textarea.msg-input:focus { border-color:#00b900; }
         <textarea class="msg-input" id="campaignContent" style="min-height:140px"></textarea>
       </div>
 
+      <!-- 配信日時 -->
+      <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:14px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🕐 配信日時</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="homeTiming" value="now" checked onchange="toggleHomeSchedule(this.value)"> 今すぐ送信
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+            <input type="radio" name="homeTiming" value="schedule" onchange="toggleHomeSchedule(this.value)"> 日時指定
+          </label>
+          <input type="datetime-local" id="homeScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none">
+        </div>
+      </div>
+
+      <!-- テスト配信 -->
+      <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px;margin-top:10px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🧪 テスト配信</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="homeTestTargetUid" style="flex:1;min-width:160px;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;background:#fff">
+            <option value="">送信先を選択...</option>
+          </select>
+          <button class="btn btn-sm" style="background:#f59e0b;color:#fff;white-space:nowrap" onclick="sendHomeTest()">🧪 テスト送信</button>
+          <span id="homeTestStatus" style="font-size:12px;color:#888"></span>
+        </div>
+      </div>
+
       <!-- 送信確認 -->
-      <div class="send-confirm" id="sendConfirm">
+      <div class="send-confirm" id="sendConfirm" style="margin-top:14px">
         ⚠️ <strong>全友だちに一斉送信</strong>します。送信後は取り消せません。本当に送信しますか？
         <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn btn-red" onclick="executeBroadcast()">送信する</button>
+          <button class="btn btn-red" onclick="executeHomeBroadcast()">送信する</button>
           <button class="btn btn-gray" onclick="cancelConfirm()">キャンセル</button>
         </div>
       </div>
 
-      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-blue" onclick="previewMessage()">👁 プレビュー</button>
-        <button class="btn btn-green" id="sendBtn" onclick="confirmBroadcast()">📤 一斉配信する</button>
+        <button class="btn btn-green" id="sendBtn" onclick="confirmHomeBroadcast()">📤 一斉配信する</button>
+        <span id="homeBroadcastStatus" style="font-size:12px;color:#888"></span>
       </div>
+      <div id="homeScheduledList" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -1141,40 +1169,105 @@ function previewMessage() {
   </div>`;
 }
 
-function confirmBroadcast() {
+function toggleHomeSchedule(val) {
+  document.getElementById('homeScheduleTime').style.display = val === 'schedule' ? '' : 'none';
+  document.getElementById('sendBtn').textContent = val === 'schedule' ? '📅 予約する' : '📤 一斉配信する';
+}
+
+function confirmHomeBroadcast() {
   const content = getMessageContent();
-  if(!content){ alert('メッセージを入力してください'); return; }
+  if (!content) { alert('メッセージを入力してください'); return; }
+  const timing = document.querySelector('input[name="homeTiming"]:checked').value;
+  if (timing === 'schedule') { executeHomeBroadcast(); return; }
   document.getElementById('sendConfirm').style.display = '';
 }
 
 function cancelConfirm() { document.getElementById('sendConfirm').style.display = 'none'; }
 
-async function executeBroadcast() {
+async function sendHomeTest() {
+  const uid = document.getElementById('homeTestTargetUid').value;
+  const statusEl = document.getElementById('homeTestStatus');
+  if (!uid) { alert('送信先を選択してください'); return; }
   const content = getMessageContent();
-  const btn = document.getElementById('sendBtn');
-  btn.disabled = true;
-  btn.textContent = '送信中...';
-  document.getElementById('sendConfirm').style.display = 'none';
+  if (!content) { alert('メッセージを入力してください'); return; }
+  statusEl.textContent = '送信中...';
   try {
-    const r = await fetch('/api/line/broadcast', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ type:'text', content })
-    });
-    const data = await r.json();
-    const el = document.getElementById('broadcastResult');
-    if(data.status==='success') {
-      el.innerHTML = '<div class="notice-green">✅ 一斉配信しました！</div>';
-      await loadBroadcastLog();
-    } else {
-      el.innerHTML = `<div class="notice-red">❌ 送信エラー: ${JSON.stringify(data.detail||data)}</div>`;
-    }
+    await gasPost({action: 'send_push', line_uid: uid, message: content});
+    statusEl.textContent = '✅ テスト送信完了';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
   } catch(e) {
-    document.getElementById('broadcastResult').innerHTML = `<div class="notice-red">❌ エラー: ${e.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '📤 一斉配信する';
+    statusEl.textContent = `❌ ${e.message}`;
   }
 }
+
+async function executeHomeBroadcast() {
+  const content = getMessageContent();
+  if (!content) { alert('メッセージを入力してください'); return; }
+  const timing = document.querySelector('input[name="homeTiming"]:checked').value;
+  const schedTime = document.getElementById('homeScheduleTime').value;
+  const statusEl = document.getElementById('homeBroadcastStatus');
+  document.getElementById('sendConfirm').style.display = 'none';
+
+  // 予約送信
+  if (timing === 'schedule') {
+    if (!schedTime) { alert('配信日時を選択してください'); return; }
+    statusEl.textContent = '予約中...';
+    try {
+      await gasPost({action:'schedule_broadcast', schedule_time:schedTime, tag:'', type:'text', message:content, flex:''});
+      statusEl.textContent = `✅ ${schedTime} に予約しました`;
+      loadHomeScheduledList();
+      setTimeout(() => { statusEl.textContent = ''; }, 5000);
+    } catch(e) { statusEl.textContent = `❌ ${e.message}`; }
+    return;
+  }
+
+  // 今すぐ送信
+  const targets = allFriends.filter(f => f['LINE_UID']);
+  if (!targets.length) { alert('送信対象がいません'); return; }
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  statusEl.textContent = `送信中... 0/${targets.length}`;
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    try {
+      await gasPost({action:'send_push', line_uid:targets[i]['LINE_UID'], message:content});
+      success++;
+    } catch(e) {}
+    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
+  btn.disabled = false;
+  btn.textContent = '📤 一斉配信する';
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+async function loadHomeScheduledList() {
+  try {
+    const data = await gasGet('get_scheduled');
+    const list = (data.list || []);
+    const el = document.getElementById('homeScheduledList');
+    if (!list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px">📅 予約済み配信</div>' +
+      list.map(s => `<div class="scheduled-item">
+        <div><div style="font-weight:600">💬 ${s.schedule_time}</div>
+        <div style="color:#888;font-size:11px">${s.preview}</div></div>
+        <button onclick="cancelScheduled('${s.id}');loadHomeScheduledList()" style="border:none;background:#fee;color:#c00;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px">取消</button>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// 友だちリストをテスト配信プルダウンに反映（ホームタブ用）
+function refreshHomeTestSelect() {
+  const sel = document.getElementById('homeTestTargetUid');
+  if (!sel || !allFriends.length) return;
+  sel.innerHTML = '<option value="">送信先を選択...</option>' +
+    allFriends.filter(f => f['LINE_UID']).map(f => {
+      const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
+      return `<option value="${f['LINE_UID']}">${name}</option>`;
+    }).join('');
+}
+
+function confirmBroadcast() { confirmHomeBroadcast(); }
 
 // ── Refresh ─────────────────────────────────────────
 async function refreshAll() {
@@ -1237,6 +1330,7 @@ async function loadLineFriendsMgmt() {
     updateBroadcastCount();
 
     renderFriendsMgmt(allFriends);
+    refreshHomeTestSelect();
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
