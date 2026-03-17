@@ -183,6 +183,7 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item" onclick="showTab('counseling',this);loadCounseling()">📋 カウンセリング記録</div>
     <div class="nav-section">LINE管理</div>
     <div class="nav-item" onclick="showTab('line-friends-mgmt',this);loadLineFriendsMgmt()">👥 友だち管理</div>
+    <div class="nav-item" onclick="showTab('line-broadcast',this);loadBroadcastTab()">📢 配信</div>
     <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
     <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
     <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
@@ -450,8 +451,23 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="kpi-card blue"><div class="kpi-label">📅 今月追加</div><div class="kpi-value" id="kpi-friends-month">-</div></div>
       <div class="kpi-card"><div class="kpi-label">🔗 カウンセリング連携済み</div><div class="kpi-value" id="kpi-friends-linked">-</div></div>
     </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">👥 LINE友だち一覧</div>
+        <button class="btn btn-green btn-sm" onclick="loadLineFriendsMgmt()">🔄 更新</button>
+      </div>
+      <div class="friends-search-row">
+        <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号・タグで絞り込み" oninput="filterFriendsMgmt()">
+        <select id="friendsTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="filterFriendsMgmt()">
+          <option value="">🏷️ タグ絞り込み</option>
+        </select>
+      </div>
+      <div id="friendsMgmtResult"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+    </div>
+  </div>
 
-    <!-- 統合配信パネル -->
+  <!-- ═══════ 配信 ═══════ -->
+  <div class="section" id="tab-line-broadcast">
     <div class="card" style="margin-bottom:16px">
       <div class="card-header"><div class="card-title">📢 配信作成</div></div>
       <div style="padding:4px 0 12px">
@@ -475,7 +491,7 @@ textarea.msg-input:focus { border-color:#00b900; }
             <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
               <input type="radio" name="broadcastTiming" value="schedule" onchange="toggleSchedule(this.value)"> 日時指定
             </label>
-            <input type="datetime-local" id="broadcastScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+            <input type="datetime-local" id="broadcastScheduleTime" style="display:none;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none">
           </div>
         </div>
 
@@ -494,9 +510,9 @@ textarea.msg-input:focus { border-color:#00b900; }
         <!-- クーポン -->
         <div id="broadcast-tab-coupon" style="display:none">
           <div style="display:grid;gap:8px">
-            <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
-            <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
-            <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+            <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+            <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
+            <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%">
           </div>
           <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-top:10px">
             <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
@@ -511,7 +527,19 @@ textarea.msg-input:focus { border-color:#00b900; }
 
         <!-- 空き情報 -->
         <div id="broadcast-tab-vacancy" style="display:none">
-          <textarea id="vacancyMsg" placeholder="例：【空き情報】\n本日空きあります！\n・14:00〜\n・16:00〜\nご予約はこちらのLINEへ🌸" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:120px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+          <textarea id="vacancyMsg" placeholder="例：【空き情報】&#10;本日空きあります！&#10;・14:00〜&#10;・16:00〜&#10;ご予約はこちらのLINEへ🌸" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:120px;font-family:inherit;resize:vertical;outline:none" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        </div>
+
+        <!-- テスト配信 -->
+        <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px;margin-top:14px">
+          <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🧪 テスト配信</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select id="testTargetUid" style="flex:1;min-width:160px;border:1.5px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;background:#fff">
+              <option value="">送信先を選択...</option>
+            </select>
+            <button class="btn btn-sm" style="background:#f59e0b;color:#fff;white-space:nowrap" onclick="sendTestBroadcast()">🧪 テスト送信</button>
+            <span id="testStatus" style="font-size:12px;color:#888"></span>
+          </div>
         </div>
 
         <!-- 送信ボタン -->
@@ -523,21 +551,6 @@ textarea.msg-input:focus { border-color:#00b900; }
         <!-- 予約済み一覧 -->
         <div id="scheduledList" style="margin-top:14px"></div>
       </div>
-    </div>
-
-    <!-- 友だち一覧 -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">👥 LINE友だち一覧</div>
-        <button class="btn btn-green btn-sm" onclick="loadLineFriendsMgmt()">🔄 更新</button>
-      </div>
-      <div class="friends-search-row">
-        <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号・タグで絞り込み" oninput="filterFriendsMgmt()">
-        <select id="friendsTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="filterFriendsMgmt()">
-          <option value="">🏷️ タグ絞り込み</option>
-        </select>
-      </div>
-      <div id="friendsMgmtResult"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
   </div>
 
@@ -1458,6 +1471,63 @@ async function cancelScheduled(id) {
 }
 
 async function sendBroadcast() { await executeBroadcast(); }
+
+function loadBroadcastTab() {
+  // 友だちリストをテスト配信プルダウンに反映
+  const sel = document.getElementById('testTargetUid');
+  if (sel && allFriends.length) {
+    sel.innerHTML = '<option value="">送信先を選択...</option>' +
+      allFriends.filter(f => f['LINE_UID']).map(f => {
+        const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
+        return `<option value="${f['LINE_UID']}">${name}</option>`;
+      }).join('');
+  }
+  // タグフィルターを配信タブにも反映
+  const tagSet = new Set();
+  allFriends.forEach(f => {
+    if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
+  });
+  document.getElementById('broadcastTagFilter').innerHTML =
+    ['<option value="">👥 全員</option>',
+      ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+  updateBroadcastCount();
+  loadScheduledBroadcasts();
+}
+
+async function sendTestBroadcast() {
+  const uid = document.getElementById('testTargetUid').value;
+  const statusEl = document.getElementById('testStatus');
+  if (!uid) { alert('送信先を選択してください'); return; }
+
+  let msgText = '', flexData = null;
+  if (currentBroadcastTab === 'text') {
+    msgText = document.getElementById('broadcastMsg').value.trim();
+    if (!msgText) { alert('メッセージを入力してください'); return; }
+  } else if (currentBroadcastTab === 'coupon') {
+    const title = document.getElementById('couponTitle').value.trim();
+    const desc  = document.getElementById('couponDesc').value.trim();
+    const url   = document.getElementById('couponUrl').value.trim();
+    if (!title) { alert('クーポンタイトルを入力してください'); return; }
+    if (!url)   { alert('クーポンURLを入力してください'); return; }
+    flexData = buildCouponFlex(title, desc, url);
+  } else if (currentBroadcastTab === 'vacancy') {
+    msgText = document.getElementById('vacancyMsg').value.trim();
+    if (!msgText) { alert('空き情報を入力してください'); return; }
+  }
+
+  statusEl.textContent = '送信中...';
+  try {
+    if (flexData) {
+      await gasPost({action:'send_flex', line_uid:uid, flex:JSON.stringify(flexData)});
+    } else {
+      await gasPost({action:'send_push', line_uid:uid, message:msgText});
+    }
+    statusEl.textContent = '✅ テスト送信完了';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch(e) {
+    statusEl.textContent = `❌ エラー: ${e.message}`;
+  }
+}
 
 function openPushModal(lineUid, name) {
   const html = `
