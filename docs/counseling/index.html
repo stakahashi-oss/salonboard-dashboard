@@ -614,7 +614,8 @@ function startLineNew() {
   const name = document.getElementById("lineNewName").value.trim();
   const phone = document.getElementById("lineNewPhone").value.replace(/-/g,"").trim();
   if (!name) { alert("フルネームを入力してください"); return; }
-  currentCustomer = { name: name, phone: phone, line_uid: LINE_UID_FROM_URL };
+  const today = new Date().toLocaleDateString("ja-JP", {year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
+  currentCustomer = { name: name, phone: phone, line_uid: LINE_UID_FROM_URL, visit_date: today };
   showFormScreen();
 }
 
