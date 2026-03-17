@@ -211,7 +211,7 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item" onclick="showTab('line-broadcast',this);loadBroadcastTab()">📢 配信</div>
     <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
     <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
-    <div class="nav-item" onclick="showTab('line-stats',this);loadBroadcastStats()">📊 配信結果</div>
+    <div class="nav-item" onclick="showTab('line-stats',this);loadBroadcastStats();loadStepStats()">📊 配信結果</div>
     <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
   </div>
 </nav>
@@ -398,23 +398,6 @@ textarea.msg-input:focus { border-color:#00b900; }
         <span id="homeBroadcastStatus" style="font-size:12px;color:#888"></span>
       </div>
       <div id="homeScheduledList" style="margin-top:10px"></div>
-    </div>
-  </div>
-
-  <!-- ═══════ LINE 友だち統計 ═══════ -->
-  <div class="section" id="tab-line-stats">
-    <div class="kpi-grid" id="lineStatsKpi">
-      <div class="kpi-card line"><div class="kpi-label">👥 現在の友だち数</div><div class="kpi-value" id="statFollowers">-</div></div>
-      <div class="kpi-card red"><div class="kpi-label">🚫 ブロック数</div><div class="kpi-value" id="statBlocks">-</div></div>
-      <div class="kpi-card blue"><div class="kpi-label">📬 配信到達数</div><div class="kpi-value" id="statReach">-</div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title">📈 友だち数推移（過去30日）</div></div>
-      <div class="chart-wrap"><canvas id="followersChart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title">📤 メッセージ配信数推移</div></div>
-      <div class="chart-wrap"><canvas id="deliveryChart"></canvas></div>
     </div>
   </div>
 
@@ -648,12 +631,30 @@ textarea.msg-input:focus { border-color:#00b900; }
 
   <!-- ═══════ 配信結果 ═══════ -->
   <div class="section" id="tab-line-stats">
-    <div class="card">
-      <div class="card-header" style="margin-bottom:16px">
-        <div class="card-title">📊 配信結果・コンバージョン</div>
+    <!-- ファネルKPI -->
+    <div class="kpi-grid" id="statsKpiRow" style="margin-bottom:16px">
+      <div class="kpi-card line"><div class="kpi-label">📤 総配信数</div><div class="kpi-value" id="kpiTotalSent">-</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">🔗 平均クリック率</div><div class="kpi-value" id="kpiAvgCtr">-</div></div>
+      <div class="kpi-card"><div class="kpi-label">📅 平均予約率</div><div class="kpi-value" id="kpiAvgRes">-</div></div>
+      <div class="kpi-card green"><div class="kpi-label">✅ 平均来店率</div><div class="kpi-value" id="kpiAvgVisit">-</div></div>
+    </div>
+
+    <!-- 配信別ファネル表 -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">📊 配信別 コンバージョンファネル</div>
         <button class="btn btn-green btn-sm" onclick="loadBroadcastStats()">🔄 更新</button>
       </div>
       <div id="broadcastStatsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+    </div>
+
+    <!-- ステップ配信効果 -->
+    <div class="card">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title">🔁 ステップ配信 効果測定</div>
+        <button class="btn btn-green btn-sm" onclick="loadStepStats()">🔄 更新</button>
+      </div>
+      <div id="stepStatsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
   </div>
 
@@ -2160,26 +2161,110 @@ async function loadBroadcastStats() {
   try {
     const data = await gasGet('get_broadcast_stats');
     const list = data.list || [];
+
+    // KPIサマリー更新
+    const totalSent = list.reduce((s,b) => s + (b.sent_count||0), 0);
+    const avgCtr = list.length ? Math.round(list.reduce((s,b) => s + (b.sent_count>0?b.click_count/b.sent_count*100:0),0)/list.length) : 0;
+    const avgRes = list.length ? Math.round(list.reduce((s,b) => s + (b.sent_count>0?(b.reservation_count||0)/b.sent_count*100:0),0)/list.length) : 0;
+    const avgVisit = list.length ? Math.round(list.reduce((s,b) => s + (b.sent_count>0?(b.visit_count||0)/b.sent_count*100:0),0)/list.length) : 0;
+    const kpiSent = document.getElementById('kpiTotalSent');
+    const kpiCtr = document.getElementById('kpiAvgCtr');
+    const kpiRes = document.getElementById('kpiAvgRes');
+    const kpiVisit = document.getElementById('kpiAvgVisit');
+    if (kpiSent) kpiSent.textContent = totalSent.toLocaleString();
+    if (kpiCtr)  kpiCtr.textContent  = avgCtr + '%';
+    if (kpiRes)  kpiRes.textContent  = avgRes + '%';
+    if (kpiVisit) kpiVisit.textContent = avgVisit + '%';
+
     if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa">配信履歴がありません</div>'; return; }
+
     el.innerHTML = `
       <div class="tbl-scroll">
       <table class="tbl">
-        <thead><tr><th>配信日時</th><th>種別</th><th>対象タグ</th><th>内容</th><th>送信数</th><th>クリック数</th><th>クリック率</th></tr></thead>
+        <thead><tr>
+          <th>配信日時</th><th>種別</th><th>対象</th><th>内容</th>
+          <th>📤 配信数</th>
+          <th>🔗 クリック</th><th>クリック率</th>
+          <th>📅 予約数</th><th>予約率</th>
+          <th>✅ 来店数</th><th>来店率</th>
+        </tr></thead>
         <tbody>${list.map(b => {
-          const ctr = b.sent_count > 0 ? Math.round(b.click_count / b.sent_count * 100) : 0;
-          const ctrColor = ctr >= 10 ? '#00b900' : ctr >= 5 ? '#f59e0b' : '#888';
+          const sent = b.sent_count || 0;
+          const clicks = b.click_count || 0;
+          const res = b.reservation_count || 0;
+          const visits = b.visit_count || 0;
+          const ctr   = sent > 0 ? (clicks/sent*100).toFixed(1) : '0.0';
+          const resr  = sent > 0 ? (res/sent*100).toFixed(1) : '0.0';
+          const visitr = sent > 0 ? (visits/sent*100).toFixed(1) : '0.0';
+          const ctrColor   = parseFloat(ctr) >= 10 ? '#00b900' : parseFloat(ctr) >= 5 ? '#f59e0b' : '#888';
+          const resColor   = parseFloat(resr) >= 10 ? '#00b900' : parseFloat(resr) >= 5 ? '#f59e0b' : '#888';
+          const visitColor = parseFloat(visitr) >= 10 ? '#00b900' : parseFloat(visitr) >= 5 ? '#f59e0b' : '#888';
           return `<tr>
-            <td style="white-space:nowrap">${String(b.sent_at).substring(0,16)}</td>
-            <td>${b.type || 'text'}</td>
-            <td>${b.tag || '全員'}</td>
-            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.preview}</td>
-            <td style="text-align:center">${b.sent_count}</td>
-            <td style="text-align:center;font-weight:700;color:#1a73e8">${b.click_count}</td>
+            <td style="white-space:nowrap;font-size:12px">${String(b.sent_at).substring(0,16)}</td>
+            <td>${b.type==='coupon'?'🎫':b.type==='vacancy'?'📅':'💬'} ${b.type||'text'}</td>
+            <td>${b.tag||'全員'}</td>
+            <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${b.preview}</td>
+            <td style="text-align:center;font-weight:700">${sent}</td>
+            <td style="text-align:center;color:#1a73e8;font-weight:700">${clicks}</td>
             <td style="text-align:center;font-weight:700;color:${ctrColor}">${ctr}%</td>
+            <td style="text-align:center;color:#f59e0b;font-weight:700">${res}</td>
+            <td style="text-align:center;font-weight:700;color:${resColor}">${resr}%</td>
+            <td style="text-align:center;color:#00b900;font-weight:700">${visits}</td>
+            <td style="text-align:center;font-weight:700;color:${visitColor}">${visitr}%</td>
           </tr>`;
         }).join('')}
         </tbody>
       </table>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+async function loadStepStats() {
+  const el = document.getElementById('stepStatsList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_step_stats');
+    const steps = data.steps || [];
+    if (!steps.length) {
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa">ステップ配信の実績データがありません<br><small style="color:#bbb">配信ターゲットシートにデータが蓄積されると表示されます</small></div>';
+      return;
+    }
+    el.innerHTML = `
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr>
+          <th>ステップ種別</th>
+          <th>📤 送信数</th>
+          <th>📅 予約数</th><th>予約率</th>
+          <th>✅ 来店数</th><th>来店率</th>
+          <th>評価</th>
+        </tr></thead>
+        <tbody>${steps.map(s => {
+          const resr  = s.sent > 0 ? (s.reservations/s.sent*100).toFixed(1) : '0.0';
+          const visitr = s.sent > 0 ? (s.visits/s.sent*100).toFixed(1) : '0.0';
+          const resColor = parseFloat(resr) >= 15 ? '#00b900' : parseFloat(resr) >= 8 ? '#f59e0b' : '#888';
+          const visitColor = parseFloat(visitr) >= 15 ? '#00b900' : parseFloat(visitr) >= 8 ? '#f59e0b' : '#888';
+          const score = parseFloat(visitr);
+          const label = score >= 20 ? '🔥 高効果' : score >= 10 ? '✅ 効果あり' : score >= 5 ? '⚠️ 要改善' : '❌ 見直し';
+          const labelColor = score >= 20 ? '#00b900' : score >= 10 ? '#1a73e8' : score >= 5 ? '#f59e0b' : '#e74c3c';
+          return `<tr>
+            <td style="font-weight:600">${s.type}</td>
+            <td style="text-align:center">${s.sent}</td>
+            <td style="text-align:center;color:#f59e0b;font-weight:700">${s.reservations}</td>
+            <td style="text-align:center;font-weight:700;color:${resColor}">${resr}%</td>
+            <td style="text-align:center;color:#00b900;font-weight:700">${s.visits}</td>
+            <td style="text-align:center;font-weight:700;color:${visitColor}">${visitr}%</td>
+            <td style="text-align:center;font-weight:700;color:${labelColor}">${label}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:#f8f8f8;border-radius:8px;font-size:12px;color:#666">
+        💡 <strong>評価基準:</strong> 来店率 20%以上=🔥高効果 / 10%以上=✅効果あり / 5%以上=⚠️要改善 / 5%未満=❌メッセージ内容を見直してください
       </div>`;
   } catch(e) {
     el.innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;

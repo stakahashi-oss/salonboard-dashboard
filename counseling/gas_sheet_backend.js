@@ -53,6 +53,7 @@ function doGet(e) {
   if (act === "get_tags")             return resp(getTags());
   if (act === "get_conversions")      return resp(getConversions(e.parameter.broadcast_id));
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
+  if (act === "get_step_stats")       return resp(getStepStats());
   return resp({error: "unknown action"});
 }
 
@@ -105,7 +106,8 @@ function setupSheet(sheet, name) {
     "設定": ["キー","値"],
     "配信スケジュール": ["配信ID","作成日時","配信予定日時","種別","タグ","メッセージ","FlexJSON","ステータス","配信数","クリック数","画像URL"],
     "タグマスタ": ["タグ名","色","作成日時"],
-    "コンバージョンログ": ["ログID","日時","配信ID","LINE_UID","クリックURL"]
+    "コンバージョンログ": ["ログID","日時","配信ID","LINE_UID","クリックURL"],
+    "配信ターゲット": ["配信ID","種別","LINE_UID","送信日時","予約日時","来店日時"]
   };
   var colorMap = {
     "カウンセリング記録": "#00b900",
@@ -304,6 +306,7 @@ function dailyFollowUp() {
   checkPostCheckoutMessages();
   checkCancellationFollowup();
   checkStepMessages();
+  checkConversionByReservation();
 }
 
 // ── 1. 来店前リマインド ───────────────────────────────────
@@ -487,6 +490,10 @@ function checkStepMessages() {
     logLine({phone: phone, name: name, line_uid: lineUid,
              type: msgType, content: msg.substring(0, 80),
              status: ok ? "成功" : "失敗", error: ""});
+    if (ok) {
+      var stepId = "STEP_" + msgType + "_" + (new Date().getTime());
+      getSheet("配信ターゲット").appendRow([stepId, msgType, lineUid, Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss"), "", ""]);
+    }
     if (ok) sent++;
   }
   Logger.log("ステップ配信完了: " + sent + "件");
@@ -1110,19 +1117,36 @@ function getBroadcastStats() {
   var sheet = getSheet("配信スケジュール");
   var data = sheet.getDataRange().getValues();
   if (data.length <= 1) return {list: []};
+
+  // 配信ターゲットから予約数・来店数を集計
+  var targetSheet = getSheet("配信ターゲット");
+  var targets = targetSheet.getDataRange().getValues();
+  var reservationMap = {};
+  var visitMap = {};
+  for (var t = 1; t < targets.length; t++) {
+    var bid = String(targets[t][0]);
+    if (!reservationMap[bid]) reservationMap[bid] = 0;
+    if (!visitMap[bid]) visitMap[bid] = 0;
+    if (String(targets[t][4] || "")) reservationMap[bid]++;
+    if (String(targets[t][5] || "")) visitMap[bid]++;
+  }
+
   var list = [];
   for (var i = data.length - 1; i >= 1; i--) {
     if (data[i][7] === "送信済み") {
       var msg = String(data[i][5] || "");
+      var bid2 = String(data[i][0]);
       list.push({
-        id:            String(data[i][0]),
-        sent_at:       String(data[i][2]),
-        type:          String(data[i][3]),
-        tag:           String(data[i][4]),
-        preview:       msg.substring(0, 30) + (msg.length > 30 ? "…" : ""),
-        sent_count:    parseInt(data[i][8] || 0),
-        click_count:   parseInt(data[i][9] || 0),
-        image_url:     String(data[i][10] || "")
+        id:               bid2,
+        sent_at:          String(data[i][2]),
+        type:             String(data[i][3]),
+        tag:              String(data[i][4]),
+        preview:          msg.substring(0, 30) + (msg.length > 30 ? "…" : ""),
+        sent_count:       parseInt(data[i][8] || 0),
+        click_count:      parseInt(data[i][9] || 0),
+        image_url:        String(data[i][10] || ""),
+        reservation_count: reservationMap[bid2] || 0,
+        visit_count:       visitMap[bid2] || 0
       });
       if (list.length >= 30) break;
     }
@@ -1153,6 +1177,7 @@ function sendBroadcastAll(data) {
   }
 
   var sent = 0;
+  var sentAt = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
   for (var k = 0; k < targets.length; k++) {
     try {
       var messages = [];
@@ -1166,7 +1191,10 @@ function sendBroadcastAll(data) {
         muteHttpExceptions: true
       };
       var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
-      if (res.getResponseCode() === 200) sent++;
+      if (res.getResponseCode() === 200) {
+        sent++;
+        getSheet("配信ターゲット").appendRow([broadcastId, data.type || "text", targets[k], sentAt, "", ""]);
+      }
     } catch(e) { Logger.log(e); }
   }
 
@@ -1288,6 +1316,102 @@ function getCustomerProfile(lineUid) {
     visit_count:  visitCount,
     last_visit:   lastVisit
   };
+}
+
+// ══════════════════════════════════════════════════════════
+//  コンバージョン照合（毎日自動実行）
+//  配信ターゲットの各ユーザーが配信後に予約・来店したか照合
+// ══════════════════════════════════════════════════════════
+function checkConversionByReservation() {
+  var targetSheet = getSheet("配信ターゲット");
+  var targets = targetSheet.getDataRange().getValues();
+  if (targets.length <= 1) return;
+
+  var friendSheet = getSheet("LINE友だち");
+  var friends = friendSheet.getDataRange().getValues();
+
+  // LINE_UID → phone のマップ
+  var uidToPhone = {};
+  for (var f = 1; f < friends.length; f++) {
+    uidToPhone[String(friends[f][0]).trim()] = String(friends[f][1] || "");
+  }
+
+  var rdata = null;
+  try { rdata = getReservationData(); } catch(e) { return; }
+
+  for (var i = 1; i < targets.length; i++) {
+    var broadcastId = String(targets[i][0]);
+    var lineUid     = String(targets[i][2]).trim();
+    var sentAt      = String(targets[i][3]);
+    var resDate     = String(targets[i][4] || "");
+    var visitDate   = String(targets[i][5] || "");
+
+    // 両方埋まっていればスキップ
+    if (resDate && visitDate) continue;
+
+    var phone = uidToPhone[lineUid];
+    if (!phone) continue;
+    var norm = normalizePhone(phone);
+
+    var sentTime = new Date(sentAt);
+
+    for (var r = 1; r < rdata.length; r++) {
+      var row = rdata[r];
+      if (normalizePhone(String(row[14])) !== norm) continue;
+
+      var rawDate = String(row[6]); // YYYYMMDD
+      if (rawDate.length !== 8) continue;
+      var resDateParsed = new Date(rawDate.substring(0,4)+"-"+rawDate.substring(4,6)+"-"+rawDate.substring(6,8));
+
+      // 配信後の予約か
+      if (resDateParsed < sentTime) continue;
+
+      var status = String(row[1]);
+      var formattedDate = formatVisitDate(rawDate);
+
+      // 予約日時を記録（まだ未記録なら）
+      if (!resDate) {
+        targetSheet.getRange(i + 1, 5).setValue(formattedDate);
+        resDate = formattedDate;
+      }
+
+      // 来店済みなら来店日時も記録
+      if (!visitDate && status === "会計済み") {
+        targetSheet.getRange(i + 1, 6).setValue(formattedDate);
+        visitDate = formattedDate;
+      }
+
+      if (resDate && visitDate) break;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  配信ステップ別効果集計
+// ══════════════════════════════════════════════════════════
+function getStepStats() {
+  var targetSheet = getSheet("配信ターゲット");
+  var targets = targetSheet.getDataRange().getValues();
+  if (targets.length <= 1) return {steps: []};
+
+  var stepMap = {};
+  for (var i = 1; i < targets.length; i++) {
+    var type     = String(targets[i][1]);
+    var resDate  = String(targets[i][4] || "");
+    var visitDate = String(targets[i][5] || "");
+
+    if (!type.startsWith("ステップ") && !type.startsWith("STEP")) continue;
+
+    if (!stepMap[type]) stepMap[type] = {type: type, sent: 0, reservations: 0, visits: 0};
+    stepMap[type].sent++;
+    if (resDate) stepMap[type].reservations++;
+    if (visitDate) stepMap[type].visits++;
+  }
+
+  var steps = [];
+  for (var k in stepMap) steps.push(stepMap[k]);
+  steps.sort(function(a,b){ return a.type.localeCompare(b.type); });
+  return {steps: steps};
 }
 
 // ══════════════════════════════════════════════════════════
