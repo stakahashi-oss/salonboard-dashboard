@@ -2,8 +2,7 @@ var SECRET_KEY = "ssin2026";
 var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
 var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
 
-// ★ Cloudflare Pages にデプロイ後、以下のURLを更新してください
-var COUNSELING_FORM_URL = "https://[YOUR-PROJECT].pages.dev/counseling/";
+var COUNSELING_FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseling/";
 
 // ══════════════════════════════════════════════════════════
 //  エントリポイント
