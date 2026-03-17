@@ -1,11 +1,21 @@
 var SECRET_KEY = "ssin2026";
+var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
+var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
+
+// ★ GitHub Pages のカウンセリングフォームURL
+var COUNSELING_FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseling/";
 
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
-    if (body.key !== SECRET_KEY) {
-      return resp({error: "unauthorized"});
+
+    // LINE Webhook（友だち追加）
+    if (body.events) {
+      return handleLineWebhook(body);
     }
+
+    // 通常API
+    if (body.key !== SECRET_KEY) return resp({error: "unauthorized"});
     var action = body.action;
     if (action === "save_counseling") return resp(saveCounseling(body.data));
     if (action === "log_line")        return resp(logLine(body.data));
@@ -26,6 +36,43 @@ function doGet(e) {
   return resp({error: "unknown action"});
 }
 
+// ── LINE Webhook ──────────────────────────────────────────
+function handleLineWebhook(body) {
+  var events = body.events || [];
+  for (var i = 0; i < events.length; i++) {
+    var event = events[i];
+    if (event.type === "follow") {
+      var userId = event.source.userId;
+      sendCounselingLink(userId);
+      registerFriend({line_uid: userId, phone: "", name: ""});
+    }
+  }
+  return resp({status: "ok"});
+}
+
+function sendCounselingLink(userId) {
+  var formUrl = COUNSELING_FORM_URL + "?uid=" + userId;
+  var message = "友だち追加ありがとうございます！\uD83D\uDE0A\n"
+    + "SSIN STUDIO / most eyes / LUMISS です\u2728\n\n"
+    + "ご来店前に下記のカウンセリングシートにご記入いただけると\n"
+    + "スムーズにご案内できます\uD83D\uDCCB\n\n"
+    + "\u25BC カウンセリングシート\n" + formUrl + "\n\n"
+    + "ご不明点はこちらのLINE\u3078\u304A\u6C17\u8EFD\u306B\u3069\u3046\u305E\uD83C\uDF38";
+  var payload = {
+    to: userId,
+    messages: [{type: "text", text: message}]
+  };
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    headers: {Authorization: "Bearer " + LINE_TOKEN},
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
+}
+
+// ── スプレッドシート取得 ──────────────────────────────────
 function getSheet(name) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(name);
@@ -68,6 +115,7 @@ function setupSheet(sheet, name) {
   }
 }
 
+// ── カウンセリング保存 ────────────────────────────────────
 function saveCounseling(data) {
   var sheet = getSheet("カウンセリング記録");
   var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
@@ -84,6 +132,7 @@ function saveCounseling(data) {
   return {status: "ok", id: id};
 }
 
+// ── カウンセリング全件取得 ────────────────────────────────
 function getAllCounseling() {
   var sheet = getSheet("カウンセリング記録");
   var data = sheet.getDataRange().getValues();
@@ -100,25 +149,55 @@ function getAllCounseling() {
   return {records: records};
 }
 
+// ── 電話番号で検索（カウンセリング記録）─────────────────
 function searchByPhone(phone) {
   var norm = String(phone || "").replace(/-/g, "");
+
+  // カウンセリング履歴
   var sheet = getSheet("カウンセリング記録");
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
-  var results = [];
+  var past = [];
   for (var i = data.length - 1; i >= 1; i--) {
-    var rowPhone = String(data[i][5]).replace(/-/g, "");
-    if (rowPhone === norm) {
+    if (String(data[i][5]).replace(/-/g, "") === norm) {
       var obj = {};
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = data[i][j];
       }
-      results.push(obj);
+      past.push(obj);
     }
   }
-  return {records: results};
+
+  // 予約情報（予約スプレッドシートから）
+  var reservations = [];
+  try {
+    var ss = SpreadsheetApp.openById(RESERVATION_SS_ID);
+    var rsheet = ss.getSheets()[0];
+    var rdata = rsheet.getDataRange().getValues();
+    for (var r = 1; r < rdata.length; r++) {
+      var row = rdata[r];
+      if (String(row[14]).replace(/-/g, "") === norm) {
+        reservations.push({
+          reservation_id: String(row[0]),
+          status:         String(row[1]),
+          store:          String(row[2]),
+          staff:          String(row[4]),
+          visit_date:     String(row[6]),
+          start_time:     String(row[7]),
+          menu:           String(row[11]),
+          name:           String(row[13]),
+          phone:          String(row[14]),
+          first_visit:    String(row[20])
+        });
+        if (reservations.length >= 5) break;
+      }
+    }
+  } catch(e) {}
+
+  return {reservations: reservations, past_counseling: past};
 }
 
+// ── LINE配信ログ保存 ─────────────────────────────────────
 function logLine(data) {
   var sheet = getSheet("LINE配信ログ");
   var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
@@ -131,12 +210,15 @@ function logLine(data) {
   return {status: "ok", log_id: id};
 }
 
+// ── LINE友だち登録 ───────────────────────────────────────
 function registerFriend(data) {
   var sheet = getSheet("LINE友だち");
   var all = sheet.getDataRange().getValues();
   for (var i = 1; i < all.length; i++) {
     if (all[i][0] === data.line_uid) {
-      sheet.getRange(i + 1, 2, 1, 2).setValues([[data.phone || all[i][1], data.name || all[i][2]]]);
+      if (data.phone || data.name) {
+        sheet.getRange(i + 1, 2, 1, 2).setValues([[data.phone || all[i][1], data.name || all[i][2]]]);
+      }
       return {status: "updated"};
     }
   }
@@ -145,6 +227,7 @@ function registerFriend(data) {
   return {status: "registered"};
 }
 
+// ── 統計 ────────────────────────────────────────────────
 function getStats() {
   var cs = getSheet("カウンセリング記録").getDataRange().getValues();
   var ll = getSheet("LINE配信ログ").getDataRange().getValues();
@@ -156,6 +239,7 @@ function getStats() {
   };
 }
 
+// ── レスポンス ───────────────────────────────────────────
 function resp(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
