@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:#f0f2f5; color:#1a1a2e; display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar { width:230px; background:#1a1a2e; color:#fff; display:flex; flex-direction:column; position:fixed; height:100vh; overflow-y:auto; z-index:100; transition:transform .3s; }
+.sidebar-logo { background:#00b900; padding:16px 20px; font-size:17px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.sidebar-plan { background:#0d7a0d; padding:6px 20px; font-size:11px; color:#c8f5c8; }
+.sidebar-quota { background:#162016; padding:10px 20px; font-size:11px; border-bottom:1px solid #2a2a3e; }
+.quota-row { display:flex; justify-content:space-between; margin-bottom:3px; }
+.quota-bar { background:#333; border-radius:3px; height:6px; margin:3px 0; overflow:hidden; }
+.quota-fill { height:100%; border-radius:3px; }
+.nav-section { padding:14px 20px 5px; font-size:10px; color:#555; letter-spacing:1px; text-transform:uppercase; }
+.nav-item { display:flex; align-items:center; padding:10px 20px; font-size:13px; color:#bbb; cursor:pointer; gap:10px; transition:background .15s; }
+.nav-item:hover { background:#2a2a4e; color:#fff; }
+.nav-item.active { background:#00b900; color:#fff; }
+.nav-item .badge { background:#e74c3c; color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; margin-left:auto; }
+
+/* Main */
+.main { margin-left:230px; flex:1; padding:20px 24px; }
+@media(max-width:768px) { .sidebar { transform:translateX(-230px); } .sidebar.open { transform:translateX(0); } .main { margin-left:0; padding:12px; } .hamburger { display:flex !important; } }
+
+/* Header */
+.header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+.header h1 { font-size:20px; font-weight:700; }
+.hamburger { display:none; background:#1a1a2e; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:18px; }
+.updated-at { font-size:11px; color:#999; }
+.btn { padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:opacity .2s; }
+.btn:hover { opacity:.85; }
+.btn:disabled { opacity:.4; cursor:not-allowed; }
+.btn-green { background:#00b900; color:#fff; }
+.btn-blue { background:#3498db; color:#fff; }
+.btn-gray { background:#eee; color:#555; }
+.btn-red { background:#e74c3c; color:#fff; }
+.btn-sm { padding:5px 12px; font-size:12px; }
+
+/* KPI */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px; margin-bottom:20px; }
+.kpi-card { background:#fff; border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.06); border-left:4px solid #00b900; }
+.kpi-card.blue { border-left-color:#3498db; }
+.kpi-card.orange { border-left-color:#e67e22; }
+.kpi-card.purple { border-left-color:#9b59b6; }
+.kpi-card.red { border-left-color:#e74c3c; }
+.kpi-card.line { border-left-color:#00b900; background:linear-gradient(135deg,#f0fff0,#fff); }
+.kpi-label { font-size:11px; color:#888; margin-bottom:6px; }
+.kpi-value { font-size:26px; font-weight:700; line-height:1.2; }
+.kpi-sub { font-size:11px; color:#aaa; margin-top:4px; }
+
+/* Card */
+.card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,.06); margin-bottom:20px; }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+.card-title { font-size:15px; font-weight:700; }
+
+/* Grid */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:2fr 1fr; gap:16px; }
+@media(max-width:900px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+/* Table */
+.tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.tbl th { background:#f8f9fa; padding:10px 12px; text-align:left; font-size:12px; color:#666; border-bottom:2px solid #eee; white-space:nowrap; }
+.tbl td { padding:10px 12px; border-bottom:1px solid #f3f3f3; vertical-align:middle; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl tr:hover td { background:#f9fff9; }
+.tbl-scroll { overflow-x:auto; }
+
+/* Badge */
+.badge-green { background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; }
+.badge-orange { background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; }
+.badge-red { background:#fce4ec; color:#b71c1c; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; }
+.badge-gray { background:#f5f5f5; color:#777; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; }
+.badge-blue { background:#e3f2fd; color:#1565c0; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; }
+.badge-line { background:#e8f5e9; color:#00b900; padding:2px 8px; border-radius:10px; font-size:11px; white-space:nowrap; font-weight:600; }
+
+/* Rate bar */
+.rate-bar { display:flex; align-items:center; gap:8px; }
+.rate-bg { flex:1; background:#eee; border-radius:4px; height:8px; overflow:hidden; min-width:60px; }
+.rate-fill { background:#00b900; height:100%; border-radius:4px; }
+.rate-val { font-size:12px; color:#555; min-width:52px; }
+
+/* Schedule */
+.schedule-item { display:flex; align-items:stretch; gap:12px; padding:10px 0; border-bottom:1px solid #f3f3f3; }
+.schedule-item:last-child { border-bottom:none; }
+.schedule-time { font-size:13px; font-weight:700; min-width:50px; text-align:center; }
+.schedule-bar { width:4px; border-radius:4px; background:#00b900; flex-shrink:0; }
+.schedule-bar.cancel { background:#e74c3c; }
+.schedule-body { flex:1; }
+.schedule-name { font-size:14px; font-weight:600; }
+.schedule-meta { font-size:12px; color:#888; margin-top:2px; }
+
+/* Message composer */
+.composer { border:2px solid #e0e0e0; border-radius:12px; padding:16px; background:#fafafa; }
+.composer.active { border-color:#00b900; background:#f0fff0; }
+.msg-type-tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.msg-tab { padding:7px 16px; border-radius:20px; border:2px solid #ddd; background:#fff; cursor:pointer; font-size:13px; font-weight:600; color:#888; transition:all .2s; }
+.msg-tab.active { border-color:#00b900; background:#00b900; color:#fff; }
+textarea.msg-input { width:100%; border:1px solid #ddd; border-radius:8px; padding:12px; font-size:14px; font-family:inherit; resize:vertical; min-height:100px; outline:none; transition:border-color .2s; }
+textarea.msg-input:focus { border-color:#00b900; }
+.msg-preview { background:#e8f5e9; border-radius:12px; padding:14px 16px; font-size:14px; white-space:pre-wrap; margin-top:12px; border-left:4px solid #00b900; min-height:60px; }
+.char-count { font-size:11px; color:#aaa; text-align:right; margin-top:4px; }
+.send-confirm { background:#fff3e0; border:1px solid #ffc107; border-radius:8px; padding:12px; font-size:13px; color:#856404; margin-top:12px; display:none; }
+
+/* Loading/Notice */
+.loading { text-align:center; padding:30px; color:#aaa; font-size:14px; }
+.spinner { display:inline-block; width:22px; height:22px; border:3px solid #eee; border-top-color:#00b900; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.notice { background:#fff3cd; border:1px solid #ffc107; border-radius:8px; padding:10px 14px; font-size:13px; color:#856404; margin-bottom:16px; }
+.notice-green { background:#e8f5e9; border:1px solid #00b900; border-radius:8px; padding:10px 14px; font-size:13px; color:#2e7d32; margin-bottom:12px; }
+.notice-red { background:#fce4ec; border:1px solid #e74c3c; border-radius:8px; padding:10px 14px; font-size:13px; color:#b71c1c; margin-bottom:12px; }
+
+/* Chart */
+.chart-wrap { position:relative; height:220px; }
+.chart-wrap-sm { position:relative; height:160px; }
+
+/* Section */
+.section { display:none; }
+.section.active { display:block; }
+
+/* LINE specific */
+.line-account-header { display:flex; align-items:center; gap:16px; background:linear-gradient(135deg,#00b900,#0d7a0d); color:#fff; border-radius:12px; padding:20px; margin-bottom:20px; }
+.line-account-icon { width:60px; height:60px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+.line-account-name { font-size:18px; font-weight:700; }
+.line-account-id { font-size:13px; opacity:.8; }
+
+/* Template cards */
+.template-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:16px; }
+.template-card { border:2px solid #e0e0e0; border-radius:10px; padding:14px; cursor:pointer; transition:all .2s; background:#fff; }
+.template-card:hover { border-color:#00b900; background:#f0fff0; }
+.template-card.selected { border-color:#00b900; background:#e8f5e9; }
+.template-title { font-size:13px; font-weight:600; margin-bottom:4px; }
+.template-preview { font-size:11px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+</style>
+</head>
+<body>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">📊 管理ダッシュボード</div>
+  <div class="sidebar-plan">プラン: <strong>プロ</strong></div>
+  <div class="sidebar-quota" id="quotaBar"><div class="quota-row"><span>Lステップ</span><span style="color:#00b900">読込中...</span></div></div>
+  <div style="padding:8px 0">
+    <div class="nav-section">メイン</div>
+    <div class="nav-item active" onclick="showTab('dashboard',this)">🏠 ダッシュボード</div>
+    <div class="nav-item" onclick="showTab('reservations',this)">📅 予約管理</div>
+    <div class="nav-section">LINE 公式</div>
+    <div class="nav-item" onclick="showTab('line-broadcast',this)">📢 一斉配信</div>
+    <div class="nav-item" onclick="showTab('line-stats',this)">👥 友だち統計</div>
+    <div class="nav-item" onclick="showTab('line-log',this)">📋 配信履歴</div>
+    <div class="nav-section">Lステップ</div>
+    <div class="nav-item" onclick="showTab('lstep-broadcast',this)">📨 配信実績</div>
+    <div class="nav-item" onclick="showTab('analytics',this)">📈 送信数分析</div>
+    <div class="nav-section">店舗</div>
+    <div class="nav-item" onclick="showTab('stores',this)">🏪 店舗別集計</div>
+    <div class="nav-section">カウンセリング</div>
+    <div class="nav-item" onclick="showTab('counseling',this);loadCounseling()">📋 カウンセリング記録</div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div>
+        <h1>管理ダッシュボード</h1>
+        <div class="updated-at" id="updatedAt">読込中...</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="refreshAll()">🔄 更新</button>
+    </div>
+  </div>
+
+  <!-- ═══════ ダッシュボード ═══════ -->
+  <div class="section active" id="tab-dashboard">
+    <div class="kpi-grid">
+      <div class="kpi-card line"><div class="kpi-label">👥 LINE友だち数</div><div class="kpi-value" id="kpi-followers">-</div><div class="kpi-sub" id="kpi-blocks">ブロック: -</div></div>
+      <div class="kpi-card"><div class="kpi-label">📅 本日の予約</div><div class="kpi-value" id="kpi-today">-</div><div class="kpi-sub">本日来店</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">📋 今月予約総数</div><div class="kpi-value" id="kpi-total">-</div><div class="kpi-sub">スプレッドシート</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">📤 Lステップ今月配信</div><div class="kpi-value" id="kpi-lstep">-</div><div class="kpi-sub">リプライ + プッシュ</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">📬 直近配信 開封率</div><div class="kpi-value" id="kpi-open">-</div><div class="kpi-sub">最新一斉配信</div></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📅 本日の予約 <span id="todayDate" style="font-weight:400;font-size:13px;color:#888"></span></div>
+        </div>
+        <div id="todaySchedule"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">💬 最近のトーク</div></div>
+        <div id="recentTalks"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">📈 Lステップ 送信数（今月）</div></div>
+      <div class="chart-wrap"><canvas id="sendChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ═══════ 予約管理 ═══════ -->
+  <div class="section" id="tab-reservations">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📅 予約一覧</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="filterStore" class="btn btn-gray" onchange="renderReservations()" style="font-weight:400"><option value="">全店舗</option></select>
+          <select id="filterStatus" class="btn btn-gray" onchange="renderReservations()" style="font-weight:400">
+            <option value="">全ステータス</option>
+            <option>受付待ち</option><option>会計済み</option>
+            <option>キャンセル（顧客）</option><option>キャンセル（サロン）</option>
+          </select>
+          <input type="date" id="filterDate" class="btn btn-gray" onchange="renderReservations()" style="font-weight:400">
+        </div>
+      </div>
+      <div class="kpi-grid" id="resKpi"></div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead><tr><th>来店日</th><th>時間</th><th>お名前</th><th>店舗</th><th>スタッフ</th><th>メニュー</th><th>金額</th><th>ステータス</th><th>初来店</th></tr></thead>
+          <tbody id="resTableBody"><tr><td colspan="9" class="loading">読込中...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="resPagination" style="text-align:center;margin-top:12px;font-size:13px;color:#888"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ LINE 一斉配信 ═══════ -->
+  <div class="section" id="tab-line-broadcast">
+    <div class="line-account-header" id="lineAccountHeader">
+      <div class="line-account-icon">💬</div>
+      <div>
+        <div class="line-account-name" id="lineDisplayName">読込中...</div>
+        <div class="line-account-id" id="lineBasicId"></div>
+        <div style="font-size:12px;margin-top:4px">👥 友だち <strong id="lineFollowers">-</strong>人 &nbsp; 🚫 ブロック <strong id="lineBlocks">-</strong>人</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">✉️ メッセージ作成・送信</div></div>
+
+      <div id="broadcastResult"></div>
+
+      <!-- メッセージ種別 -->
+      <div class="msg-type-tabs">
+        <div class="msg-tab active" onclick="switchMsgType('text',this)">📝 テキスト</div>
+        <div class="msg-tab" onclick="switchMsgType('coupon',this)">🎫 クーポン</div>
+        <div class="msg-tab" onclick="switchMsgType('reminder',this)">🔔 来店リマインド</div>
+        <div class="msg-tab" onclick="switchMsgType('campaign',this)">🎉 キャンペーン</div>
+      </div>
+
+      <!-- テキスト -->
+      <div id="compose-text" class="composer active">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">メッセージ内容</label>
+        <textarea class="msg-input" id="textContent" placeholder="メッセージを入力してください..." oninput="updatePreview()"></textarea>
+        <div class="char-count"><span id="charCount">0</span> / 5000文字</div>
+        <div id="textPreview" class="msg-preview" style="display:none"></div>
+      </div>
+
+      <!-- クーポン -->
+      <div id="compose-coupon" style="display:none">
+        <div class="template-grid">
+          <div class="template-card selected" id="tmpl-coupon-1" onclick="selectTemplate('coupon',1)">
+            <div class="template-title">🎫 10%OFF クーポン</div>
+            <div class="template-preview">期間限定クーポンをお届けします</div>
+          </div>
+          <div class="template-card" id="tmpl-coupon-2" onclick="selectTemplate('coupon',2)">
+            <div class="template-title">🎁 初回限定特典</div>
+            <div class="template-preview">初めてのご来店に特別割引</div>
+          </div>
+          <div class="template-card" id="tmpl-coupon-3" onclick="selectTemplate('coupon',3)">
+            <div class="template-title">🌸 季節限定クーポン</div>
+            <div class="template-preview">この季節だけの特別メニュー</div>
+          </div>
+        </div>
+        <textarea class="msg-input" id="couponContent" style="min-height:140px" placeholder="クーポンメッセージを編集..."></textarea>
+      </div>
+
+      <!-- リマインド -->
+      <div id="compose-reminder" style="display:none">
+        <div class="template-grid">
+          <div class="template-card selected" onclick="setReminder(1)">
+            <div class="template-title">📅 前日リマインド</div>
+            <div class="template-preview">明日のご予約のご確認</div>
+          </div>
+          <div class="template-card" onclick="setReminder(2)">
+            <div class="template-title">📅 当日リマインド</div>
+            <div class="template-preview">本日のご予約のご確認</div>
+          </div>
+        </div>
+        <textarea class="msg-input" id="reminderContent" style="min-height:120px"></textarea>
+      </div>
+
+      <!-- キャンペーン -->
+      <div id="compose-campaign" style="display:none">
+        <div class="template-grid">
+          <div class="template-card selected" onclick="setCampaign(1)">
+            <div class="template-title">🌸 新メニュー告知</div>
+            <div class="template-preview">新しいメニューのご案内</div>
+          </div>
+          <div class="template-card" onclick="setCampaign(2)">
+            <div class="template-title">🎉 季節キャンペーン</div>
+            <div class="template-preview">期間限定キャンペーン開催中</div>
+          </div>
+          <div class="template-card" onclick="setCampaign(3)">
+            <div class="template-title">💝 誕生月特典</div>
+            <div class="template-preview">誕生月のお客様へ特別プレゼント</div>
+          </div>
+        </div>
+        <textarea class="msg-input" id="campaignContent" style="min-height:140px"></textarea>
+      </div>
+
+      <!-- 送信確認 -->
+      <div class="send-confirm" id="sendConfirm">
+        ⚠️ <strong>全友だちに一斉送信</strong>します。送信後は取り消せません。本当に送信しますか？
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-red" onclick="executeBroadcast()">送信する</button>
+          <button class="btn btn-gray" onclick="cancelConfirm()">キャンセル</button>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-blue" onclick="previewMessage()">👁 プレビュー</button>
+        <button class="btn btn-green" id="sendBtn" onclick="confirmBroadcast()">📤 一斉配信する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ LINE 友だち統計 ═══════ -->
+  <div class="section" id="tab-line-stats">
+    <div class="kpi-grid" id="lineStatsKpi">
+      <div class="kpi-card line"><div class="kpi-label">👥 現在の友だち数</div><div class="kpi-value" id="statFollowers">-</div></div>
+      <div class="kpi-card red"><div class="kpi-label">🚫 ブロック数</div><div class="kpi-value" id="statBlocks">-</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">📬 配信到達数</div><div class="kpi-value" id="statReach">-</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📈 友だち数推移（過去30日）</div></div>
+      <div class="chart-wrap"><canvas id="followersChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📤 メッセージ配信数推移</div></div>
+      <div class="chart-wrap"><canvas id="deliveryChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ═══════ LINE 配信履歴 ═══════ -->
+  <div class="section" id="tab-line-log">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 配信履歴</div></div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead><tr><th>送信日時</th><th>種類</th><th>内容</th><th>ステータス</th></tr></thead>
+          <tbody id="broadcastLogBody"><tr><td colspan="4" class="loading">読込中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Lステップ配信実績 ═══════ -->
+  <div class="section" id="tab-lstep-broadcast">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📨 Lステップ 一斉配信履歴</div>
+        <button class="btn btn-green btn-sm" onclick="refreshLstep()">🔄 Lステップ更新</button>
+      </div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead><tr><th>タイトル</th><th>配信日時</th><th>配信条件</th><th>配信数</th><th>開封率</th></tr></thead>
+          <tbody id="broadcastBody"><tr><td colspan="5" class="loading">読込中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ 送信数分析 ═══════ -->
+  <div class="section" id="tab-analytics">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 日別送信数</div></div>
+        <div class="tbl-scroll">
+          <table class="tbl">
+            <thead><tr><th>日付</th><th>曜日</th><th>リプライ</th><th>プッシュ</th><th>合計</th></tr></thead>
+            <tbody id="sendTableBody"><tr><td colspan="5" class="loading">読込中...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📬 配信別 開封率</div></div>
+        <div class="chart-wrap"><canvas id="openRateChart"></canvas></div>
+        <div id="quotaDetail" style="margin-top:16px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ 店舗別 ═══════ -->
+  <div class="section" id="tab-stores">
+    <div class="kpi-grid" id="storeKpi"></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏪 店舗別 予約数</div></div>
+        <div class="chart-wrap"><canvas id="storeChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 ステータス別</div></div>
+        <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ カウンセリング記録 ═══════ -->
+  <div class="section" id="tab-counseling">
+    <div class="kpi-grid" id="counselingKpi"></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📋 カウンセリング記録</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="counselingSearch" type="text" placeholder="電話番号・名前で検索" style="padding:6px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;width:200px" oninput="filterCounseling()">
+          <button class="btn btn-green btn-sm" onclick="loadCounseling()">🔄 更新</button>
+          <a href="/counseling/" target="_blank"><button class="btn btn-blue btn-sm">✏️ 入力フォームへ</button></a>
+        </div>
+      </div>
+      <div id="counselingTable"><div style="text-align:center;padding:30px;color:#999">カウンセリングタブを開くと読み込まれます</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── State ────────────────────────────────────────────
+let resData = [], lstepData = {}, lineInfo = {};
+let resPage = 1;
+const PAGE_SIZE = 30;
+let currentMsgType = 'text';
+let sendChartInst, openRateChartInst, storeChartInst, statusChartInst, followersChartInst, deliveryChartInst;
+
+const TEMPLATES = {
+  coupon: [
+    `🎫【期間限定クーポン】\n\nいつもご来店ありがとうございます✨\n\n今月限定！施術料金から\n━━━━━━━━━━━━━━\n　　　10% OFF\n━━━━━━━━━━━━━━\n\n予約はこちら▼\nhttps://lin.ee/xxxx\n\n有効期限：今月末まで`,
+    `🎁【初回限定特典】\n\nはじめまして！\nご登録ありがとうございます😊\n\n初回ご来店の方へ特別割引をご用意しました！\n\n► 初回20%OFF\n► カウンセリング無料\n\n詳細・ご予約はこちら▼`,
+    `🌸【季節限定メニュー】\n\nこの季節だけの特別なメニューをご用意しました🌸\n\n✨ スプリングまつげパーマ\n✨ 春の眉毛スタイリング\n\n期間限定のお得なセットも！\nお早めにご予約ください✨`,
+  ],
+  reminder: [
+    `📅【予約確認】明日のご予約について\n\nいつもありがとうございます。\n明日のご予約の確認です。\n\n▶ 日時：明日\n▶ 場所：[店舗名]\n\nご不明点はこのLINEにメッセージください😊\nお待ちしております✨`,
+    `📅【本日のご予約】確認のご連絡\n\nおはようございます！\n本日のご予約のご確認です。\n\nお気をつけてお越しください😊\nご不明点はこちらにご連絡ください✨`,
+  ],
+  campaign: [
+    `✨【新メニュー登場】\n\nお待たせしました！\n新しいメニューが始まります🎉\n\n━━━━━━━━━━━━━━\n新メニュー名\n━━━━━━━━━━━━━━\n\n詳細はこちら▼\nお早めにご予約を！`,
+    `🎉【キャンペーン開催中】\n\nいつもありがとうございます！\n期間限定キャンペーン実施中🎊\n\n► 期間：今月いっぱい\n► 対象：全メニュー\n\nこの機会にぜひご利用ください✨`,
+    `💝【誕生月特典】\n\nお誕生月のお客様へ\nスペシャルプレゼントをご用意しています🎂\n\n► 誕生月の方：施術15%OFF\n► バースデードリンクプレゼント\n\nご来店お待ちしています✨`,
+  ],
+};
+
+// ── Init ────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('filterDate').value = today;
+  document.getElementById('todayDate').textContent = today.replace(/-/g, '/');
+  loadAll();
+  setTemplate('coupon', 0);
+  setTemplate('reminder', 0);
+  setTemplate('campaign', 0);
+});
+
+async function loadAll() {
+  document.getElementById('updatedAt').textContent = 'データ読込中...';
+  await Promise.all([loadReservations(), loadLstep(), loadLineInfo()]);
+  document.getElementById('updatedAt').textContent = '最終更新: ' + new Date().toLocaleString('ja-JP');
+}
+
+// ── カウンセリング記録 ────────────────────────────────────
+let counselingAll = [];
+
+async function loadCounseling() {
+  document.getElementById('counselingTable').innerHTML = '<div style="text-align:center;padding:30px;color:#999">読込中...</div>';
+  try {
+    const res = await fetch('/api/counseling/list').then(r => r.json());
+    counselingAll = res.records || [];
+    // KPI
+    const total = counselingAll.length;
+    const withLine = counselingAll.filter(r => r.line_uid).length;
+    const today = new Date().toISOString().split('T')[0];
+    const todayCount = counselingAll.filter(r => (r.created_at||'').startsWith(today)).length;
+    document.getElementById('counselingKpi').innerHTML = `
+      <div class="kpi-card"><div class="kpi-label">📋 総記録数</div><div class="kpi-value">${total}</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">📅 本日記録</div><div class="kpi-value">${todayCount}</div></div>
+      <div class="kpi-card line"><div class="kpi-label">🟢 LINE連携済み</div><div class="kpi-value">${withLine}</div></div>
+    `;
+    renderCounseling(counselingAll);
+  } catch(e) {
+    document.getElementById('counselingTable').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
+  }
+}
+
+function filterCounseling() {
+  const q = document.getElementById('counselingSearch').value.trim().toLowerCase();
+  if (!q) { renderCounseling(counselingAll); return; }
+  renderCounseling(counselingAll.filter(r =>
+    (r.phone||'').includes(q) || (r.name||'').toLowerCase().includes(q)
+  ));
+}
+
+function renderCounseling(records) {
+  if (!records.length) {
+    document.getElementById('counselingTable').innerHTML = '<div style="text-align:center;padding:30px;color:#999">記録がありません</div>';
+    return;
+  }
+  document.getElementById('counselingTable').innerHTML = `
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="background:#f5f6fa">
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">記録日時</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">お名前</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">電話番号</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">店舗</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">メニュー</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">肌質</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">アレルギー</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">次回提案</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #eee;white-space:nowrap">LINE</th>
+      </tr></thead>
+      <tbody>${records.slice(0,100).map(r => `
+        <tr style="border-bottom:1px solid #f0f0f0" onclick="showCounselingDetail(${JSON.stringify(r).replace(/"/g,'&quot;')})" style="cursor:pointer">
+          <td style="padding:9px 8px;white-space:nowrap">${(r.created_at||'').substring(0,16)}</td>
+          <td style="padding:9px 8px;font-weight:600">${r.name||'―'}</td>
+          <td style="padding:9px 8px">${r.phone||'―'}</td>
+          <td style="padding:9px 8px;white-space:nowrap">${r.store||'―'}</td>
+          <td style="padding:9px 8px">${r.menu||'―'}</td>
+          <td style="padding:9px 8px">${r.skin_type||'―'}</td>
+          <td style="padding:9px 8px">${r.allergy||'―'}</td>
+          <td style="padding:9px 8px">${r.next_menu||'―'}</td>
+          <td style="padding:9px 8px;text-align:center">${r.line_uid ? '🟢' : '―'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    </div>
+  `;
+}
+
+function showCounselingDetail(r) {
+  const html = `
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px" onclick="this.remove()">
+      <div style="background:#fff;border-radius:14px;padding:24px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:16px;font-weight:700">📋 ${r.name||'詳細'}</div>
+          <button onclick="this.closest('[style*=fixed]').remove()" style="background:#eee;border:none;border-radius:8px;padding:4px 10px;cursor:pointer">✕</button>
+        </div>
+        ${[
+          ['記録日時', r.created_at], ['店舗', r.store], ['来店日', r.visit_date],
+          ['電話番号', r.phone], ['メニュー', r.menu], ['担当', r.staff],
+          ['肌質', r.skin_type], ['アレルギー', r.allergy], ['アレルギー詳細', r.allergy_detail],
+          ['過去施術歴', r.past_treatment], ['本日の要望', r.request],
+          ['施術メモ', r.treatment_memo], ['次回提案', r.next_menu], ['次回時期', r.next_timing],
+          ['LINE UID', r.line_uid], ['LINE送信', r.line_status],
+        ].filter(([,v])=>v).map(([k,v])=>`
+          <div style="margin-bottom:10px">
+            <div style="font-size:11px;color:#888">${k}</div>
+            <div style="font-size:14px;padding:6px 0;border-bottom:1px solid #f0f0f0">${v}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function showTab(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'stores') renderStoreCharts();
+  if (name === 'line-stats') loadLineStats();
+  if (name === 'line-log') loadBroadcastLog();
+}
+
+// ── Reservations ────────────────────────────────────
+async function loadReservations() {
+  try {
+    const r = await fetch('/api/reservations');
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    resData = data.records;
+    document.getElementById('kpi-today').textContent = data.summary.today;
+    document.getElementById('kpi-total').textContent = data.summary.total.toLocaleString();
+    populateStoreFilter(data.summary.stores);
+    renderResKpi(data.summary);
+    renderReservations();
+    renderTodaySchedule();
+  } catch(e) { console.error('reservations:', e); }
+}
+
+function renderResKpi(summary) {
+  document.getElementById('resKpi').innerHTML = Object.entries(summary.status).map(([k,v]) =>
+    `<div class="kpi-card ${k.includes('キャンセル')?'red':k==='会計済み'?'blue':''}">
+      <div class="kpi-label">${k}</div><div class="kpi-value">${v}</div></div>`
+  ).join('');
+  document.getElementById('storeKpi').innerHTML = Object.entries(summary.stores).map(([k,v]) =>
+    `<div class="kpi-card"><div class="kpi-label">${k}</div><div class="kpi-value">${v}</div><div class="kpi-sub">件</div></div>`
+  ).join('');
+}
+
+function populateStoreFilter(stores) {
+  const sel = document.getElementById('filterStore');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">全店舗</option>';
+  Object.keys(stores).forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    if (s === cur) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+
+function filteredRecords() {
+  const store  = document.getElementById('filterStore').value;
+  const status = document.getElementById('filterStatus').value;
+  const dt     = document.getElementById('filterDate').value;
+  return resData.filter(r =>
+    (!store  || r['店舗名']   === store)  &&
+    (!status || r['ステータス'] === status) &&
+    (!dt     || r['来店日']   === dt)
+  );
+}
+
+function renderReservations() {
+  resPage = 1;
+  renderResPage(filteredRecords());
+}
+
+function renderResPage(records) {
+  const start = (resPage-1) * PAGE_SIZE;
+  const paged = records.slice(start, start+PAGE_SIZE);
+  const tbody = document.getElementById('resTableBody');
+  if (!paged.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#aaa;padding:24px">該当なし</td></tr>';
+    document.getElementById('resPagination').textContent = '';
+    return;
+  }
+  tbody.innerHTML = paged.map(r => {
+    const sc = r['ステータス']?.includes('キャンセル') ? 'badge-red'
+             : r['ステータス'] === '会計済み' ? 'badge-blue'
+             : r['ステータス'] === '受付待ち'  ? 'badge-orange' : 'badge-gray';
+    const isNew = ['1','TRUE','初来店'].includes(String(r['初来店フラグ']));
+    const amt = Number(String(r['予約時合計金額']).replace(/[^0-9]/g,'')||0);
+    return `<tr>
+      <td>${r['来店日']||''}</td>
+      <td style="white-space:nowrap">${r['開始時間']||''} - ${r['終了時間']||''}</td>
+      <td><strong>${r['お名前']||r['氏名漢字']||''}</strong></td>
+      <td>${r['店舗名']||''}</td>
+      <td>${r['スタッフ名']||''}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r['予約時メニュー']||''}">${r['予約時メニュー']||''}</td>
+      <td style="text-align:right">¥${amt.toLocaleString()}</td>
+      <td><span class="${sc}">${r['ステータス']||''}</span></td>
+      <td>${isNew ? '<span class="badge-orange">初</span>' : ''}</td>
+    </tr>`;
+  }).join('');
+  const total = records.length;
+  const pages = Math.ceil(total/PAGE_SIZE);
+  document.getElementById('resPagination').innerHTML = pages > 1
+    ? `${start+1}〜${Math.min(start+PAGE_SIZE,total)} / ${total} 件 &nbsp;
+       <button class="btn btn-gray btn-sm" onclick="changePage(-1)" ${resPage<=1?'disabled':''}>◀</button>
+       ${resPage}/${pages}
+       <button class="btn btn-gray btn-sm" onclick="changePage(1)" ${resPage>=pages?'disabled':''}>▶</button>`
+    : `${total} 件`;
+}
+
+function changePage(d) { resPage += d; renderResPage(filteredRecords()); window.scrollTo(0,0); }
+
+function renderTodaySchedule() {
+  const today = new Date().toISOString().split('T')[0];
+  const recs = resData.filter(r => r['来店日'] === today)
+    .sort((a,b) => (a['開始時間']||'').localeCompare(b['開始時間']||''));
+  const el = document.getElementById('todaySchedule');
+  if (!recs.length) { el.innerHTML = '<div style="text-align:center;color:#aaa;padding:24px;font-size:14px">本日の予約はありません</div>'; return; }
+  el.innerHTML = recs.map(r => {
+    const cancel = r['ステータス']?.includes('キャンセル');
+    const amt = Number(String(r['予約時合計金額']).replace(/[^0-9]/g,'')||0);
+    return `<div class="schedule-item">
+      <div class="schedule-time">${(r['開始時間']||'').substring(0,5)}</div>
+      <div class="schedule-bar ${cancel?'cancel':''}"></div>
+      <div class="schedule-body">
+        <div class="schedule-name">${r['お名前']||r['氏名漢字']||''}</div>
+        <div class="schedule-meta">${r['店舗名']||''} / ${r['スタッフ名']||''} / ${(r['予約時メニュー']||'').substring(0,18)}</div>
+        ${cancel ? `<span class="badge-red" style="font-size:10px">${r['ステータス']}</span>` : ''}
+      </div>
+      <div style="font-size:12px;color:#888">¥${amt.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderStoreCharts() {
+  const sc={}, stc={};
+  resData.forEach(r => { sc[r['店舗名']||'不明']=(sc[r['店舗名']||'不明']||0)+1; stc[r['ステータス']||'不明']=(stc[r['ステータス']||'不明']||0)+1; });
+  const colors = ['#00b900','#3498db','#e67e22','#9b59b6','#e74c3c','#1abc9c'];
+  if (storeChartInst) storeChartInst.destroy();
+  storeChartInst = new Chart(document.getElementById('storeChart').getContext('2d'),{type:'bar',data:{labels:Object.keys(sc),datasets:[{label:'予約数',data:Object.values(sc),backgroundColor:colors,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+  if (statusChartInst) statusChartInst.destroy();
+  statusChartInst = new Chart(document.getElementById('statusChart').getContext('2d'),{type:'doughnut',data:{labels:Object.keys(stc),datasets:[{data:Object.values(stc),backgroundColor:['#00b900','#3498db','#e74c3c','#e67e22']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+}
+
+// ── Lステップ ───────────────────────────────────────
+async function loadLstep() {
+  try {
+    const r = await fetch('/api/lstep');
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    lstepData = data;
+    renderLstepKpi(data.stats);
+    renderBroadcast(data.stats);
+    renderSendTable(data.stats);
+    renderSendChart(data.stats);
+    renderOpenRateChart(data.stats);
+    renderRecentTalks(data.nav);
+    renderQuotaBar(data.nav);
+  } catch(e) { console.error('lstep:', e); }
+}
+
+function renderLstepKpi(stats) {
+  let reply=0, push=0;
+  (stats['送信数分析']||[]).forEach(r => { if(r.length===3 && r[0]==='合計'){reply=parseInt(r[1])||0; push=parseInt(r[2])||0;} });
+  document.getElementById('kpi-lstep').textContent = (reply+push).toLocaleString();
+  const broadcasts = (stats['一斉配信']||[]).slice(2);
+  for(const b of broadcasts){ const m=(b[6]||'').match(/([\d.]+)%/); if(m){document.getElementById('kpi-open').textContent=m[1]+'%'; break;} }
+}
+
+function renderBroadcast(stats) {
+  const rows = (stats['一斉配信']||[]).slice(2).filter(r=>r.length>3);
+  const tbody = document.getElementById('broadcastBody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">データなし</td></tr>';return;}
+  tbody.innerHTML = rows.map(r => {
+    const openText = r[6]||'';
+    const m = openText.match(/(\d+)（([\d.]+)%）/);
+    const rateHtml = m ? `<div class="rate-bar"><div class="rate-bg"><div class="rate-fill" style="width:${m[2]}%"></div></div><span class="rate-val">${m[1]}（${m[2]}%）</span></div>` : '<span style="color:#aaa">-</span>';
+    const cond = r[3]||'-';
+    return `<tr>
+      <td><strong>${(r[0]||'タイトルなし').substring(0,28)}</strong></td>
+      <td style="font-size:12px;white-space:nowrap">${(r[1]||'').replace('配信済み\n','').split('\n')[0]}</td>
+      <td><span class="${cond==='-'?'badge-gray':'badge-blue'}">${cond==='- '||cond==='-'?'全員':cond.substring(0,15)}</span></td>
+      <td><strong>${parseInt(r[7]||r[6]||0).toLocaleString()}</strong></td>
+      <td>${rateHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSendTable(stats) {
+  const rows = (stats['送信数分析']||[]).slice(3);
+  const tbody = document.getElementById('sendTableBody');
+  tbody.innerHTML = rows.map(r => {
+    if(r[0]==='合計') return `<tr style="font-weight:700;background:#f0fff0"><td colspan="2">合計</td><td>${r[1]}</td><td>${r[2]}</td><td>${(parseInt(r[1]||0)+parseInt(r[2]||0)).toLocaleString()}</td></tr>`;
+    const total = (parseInt(r[2]||0)+parseInt(r[3]||0));
+    return `<tr><td>${(r[0]||'').replace('2026-','')}</td><td style="color:#999;font-size:12px">${r[1]||''}</td><td>${r[2]||0}</td><td>${r[3]||0}</td><td ${total>=100?'style="color:#e74c3c;font-weight:700"':''}>${total}</td></tr>`;
+  }).join('');
+}
+
+function renderSendChart(stats) {
+  const rows = (stats['送信数分析']||[]).slice(3).filter(r=>r[0]!=='合計').reverse();
+  const labels = rows.map(r=>(r[0]||'').replace('2026-03-','3/').replace('2026-0',''));
+  if(sendChartInst) sendChartInst.destroy();
+  sendChartInst = new Chart(document.getElementById('sendChart').getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'リプライ',data:rows.map(r=>parseInt(r[2]||0)),backgroundColor:'rgba(52,152,219,.75)',borderRadius:4},{label:'プッシュ',data:rows.map(r=>parseInt(r[3]||0)),backgroundColor:'rgba(0,185,0,.75)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{ticks:{font:{size:10}}},y:{beginAtZero:true}}}});
+}
+
+function renderOpenRateChart(stats) {
+  const rows = (stats['一斉配信']||[]).slice(2).filter(r=>r.length>3);
+  const palette=['rgba(0,185,0,.8)','rgba(231,76,60,.8)','rgba(230,126,34,.8)','rgba(155,89,182,.8)'];
+  if(openRateChartInst) openRateChartInst.destroy();
+  openRateChartInst = new Chart(document.getElementById('openRateChart').getContext('2d'),{type:'bar',data:{labels:rows.map((r,i)=>(r[0]||'タイトルなし').substring(0,10)+'…'),datasets:[{label:'開封率',data:rows.map(r=>{const m=(r[6]||'').match(/([\d.]+)%/);return m?parseFloat(m[1]):null;}),backgroundColor:palette,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:80,ticks:{callback:v=>v+'%'}}}}});
+  const send = stats['送信数分析']||[];
+  let lstepMax='', lineMax='';
+  send.forEach(r=>{if((r[0]||'').includes('Lステップ送信上限'))lstepMax=r[1]||'';if((r[0]||'').includes('LINE公式'))lineMax=r[1]||'';});
+  document.getElementById('quotaDetail').innerHTML = `<div style="font-size:12px;color:#555;margin-bottom:8px"><strong>送信上限</strong></div><div style="font-size:13px;margin-bottom:4px">Lステップ: <strong>${lstepMax}</strong></div><div style="font-size:13px">LINE公式: <strong>${lineMax}</strong></div>`;
+}
+
+function renderRecentTalks(nav) {
+  const links = (nav.navigation||[]).filter(n=>n.href?.includes('/line/detail/'));
+  const el = document.getElementById('recentTalks');
+  if(!links.length){el.innerHTML='<div style="color:#aaa;text-align:center;padding:20px">データなし</div>';return;}
+  const seen=new Set(), unique=links.filter(l=>{if(seen.has(l.href))return false;seen.add(l.href);return true;});
+  el.innerHTML = unique.slice(0,6).map(l=>`<div class="schedule-item">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00b900,#0d7a0d);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0">${l.text.trim().charAt(0)}</div>
+    <div><div style="font-size:13px;font-weight:600">${l.text.trim()}</div><div style="font-size:11px;color:#aaa">Lステップトーク</div></div>
+  </div>`).join('');
+}
+
+function renderQuotaBar(nav) {
+  const links = nav.navigation||[];
+  let lu=0, li=0;
+  links.forEach(l=>{if(l.href==='/line/analytics/send'){const n=parseInt(l.text.replace(/,/g,''));if(!isNaN(n)){if(n>1000)lu=n;else li=n;}}});
+  document.getElementById('quotaBar').innerHTML=`
+    <div class="quota-row"><span>Lステップ送信数</span><span style="color:#00b900;font-weight:700">${lu.toLocaleString()} / 50,000</span></div>
+    <div class="quota-bar"><div class="quota-fill" style="width:${Math.min(lu/50000*100,100).toFixed(1)}%;background:#00b900"></div></div>
+    <div class="quota-row" style="margin-top:5px"><span>LINE公式</span><span style="color:#3498db;font-weight:700">${li.toLocaleString()} / 5,000</span></div>
+    <div class="quota-bar"><div class="quota-fill" style="width:${Math.min(li/5000*100,100).toFixed(1)}%;background:#3498db"></div></div>`;
+}
+
+async function refreshLstep() {
+  const r = await fetch('/api/refresh/lstep',{method:'POST'});
+  const d = await r.json();
+  alert(d.message||'Lステップ更新を開始しました');
+}
+
+// ── LINE API ────────────────────────────────────────
+async function loadLineInfo() {
+  try {
+    const r = await fetch('/api/line/info');
+    const data = await r.json();
+    lineInfo = data;
+    document.getElementById('lineDisplayName').textContent = data.displayName || 'LINE公式アカウント';
+    document.getElementById('lineBasicId').textContent = data.basicId || '';
+    document.getElementById('lineFollowers').textContent = (data.followers||0).toLocaleString();
+    document.getElementById('lineBlocks').textContent = (data.blocks||0).toLocaleString();
+    document.getElementById('kpi-followers').textContent = (data.followers||0).toLocaleString();
+    document.getElementById('kpi-blocks').textContent = 'ブロック: ' + (data.blocks||0).toLocaleString();
+  } catch(e) { console.error('line info:', e); }
+}
+
+async function loadLineStats() {
+  try {
+    document.getElementById('lineStatsKpi').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+    const [fr, dr] = await Promise.all([fetch('/api/line/followers'), fetch('/api/line/delivery')]);
+    const fData = await fr.json();
+    const dData = await dr.json();
+
+    const latest = fData.data?.[0];
+    if(latest) {
+      document.getElementById('statFollowers').textContent = (latest.followers||0).toLocaleString();
+      document.getElementById('statBlocks').textContent = (latest.blocks||0).toLocaleString();
+      document.getElementById('statReach').textContent = (latest.targetedReaches||0).toLocaleString();
+    }
+    document.getElementById('lineStatsKpi').innerHTML = `
+      <div class="kpi-card line"><div class="kpi-label">👥 現在の友だち数</div><div class="kpi-value">${(latest?.followers||0).toLocaleString()}</div></div>
+      <div class="kpi-card red"><div class="kpi-label">🚫 ブロック数</div><div class="kpi-value">${(latest?.blocks||0).toLocaleString()}</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">📬 配信到達数</div><div class="kpi-value">${(latest?.targetedReaches||0).toLocaleString()}</div></div>`;
+
+    // 友だち数グラフ
+    const fDates = (fData.data||[]).map(d=>d.date.replace('2026-','')).reverse();
+    const fVals  = (fData.data||[]).map(d=>d.followers).reverse();
+    if(followersChartInst) followersChartInst.destroy();
+    followersChartInst = new Chart(document.getElementById('followersChart').getContext('2d'),{type:'line',data:{labels:fDates,datasets:[{label:'友だち数',data:fVals,borderColor:'#00b900',backgroundColor:'rgba(0,185,0,.1)',fill:true,tension:.4,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:false}}}});
+
+    // 配信数グラフ
+    const dDates = (dData.data||[]).map(d=>d.date.replace('2026-','')).reverse();
+    const dBcast = (dData.data||[]).map(d=>d.broadcast||0).reverse();
+    if(deliveryChartInst) deliveryChartInst.destroy();
+    deliveryChartInst = new Chart(document.getElementById('deliveryChart').getContext('2d'),{type:'bar',data:{labels:dDates,datasets:[{label:'配信数',data:dBcast,backgroundColor:'rgba(52,152,219,.75)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+  } catch(e) { console.error('line stats:', e); }
+}
+
+async function loadBroadcastLog() {
+  try {
+    const r = await fetch('/api/line/broadcast/log');
+    const data = await r.json();
+    const tbody = document.getElementById('broadcastLogBody');
+    const logs = data.logs || [];
+    if(!logs.length){ tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#aaa;padding:24px">配信履歴なし</td></tr>'; return; }
+    tbody.innerHTML = logs.map(l=>`<tr>
+      <td style="white-space:nowrap">${l.sent_at}</td>
+      <td><span class="badge-line">${l.type}</span></td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.content}</td>
+      <td><span class="${l.status==='success'?'badge-green':'badge-red'}">${l.status==='success'?'成功':'エラー'}</span></td>
+    </tr>`).join('');
+  } catch(e) { console.error('broadcast log:', e); }
+}
+
+// ── Message Composer ────────────────────────────────
+function switchMsgType(type, el) {
+  currentMsgType = type;
+  document.querySelectorAll('.msg-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['text','coupon','reminder','campaign'].forEach(t => {
+    document.getElementById('compose-'+t).style.display = t===type ? '' : 'none';
+  });
+  document.getElementById('sendConfirm').style.display = 'none';
+  document.getElementById('broadcastResult').innerHTML = '';
+}
+
+function updatePreview() {
+  const txt = document.getElementById('textContent').value;
+  document.getElementById('charCount').textContent = txt.length;
+  const preview = document.getElementById('textPreview');
+  if(txt) { preview.style.display=''; preview.textContent = txt; }
+  else { preview.style.display='none'; }
+}
+
+function setTemplate(type, idx) {
+  const list = TEMPLATES[type];
+  if(!list || !list[idx]) return;
+  const el = document.getElementById(type+'Content');
+  if(el) el.value = list[idx];
+}
+
+function selectTemplate(type, num) {
+  document.querySelectorAll(`[id^="tmpl-${type}-"]`).forEach(e=>e.classList.remove('selected'));
+  document.getElementById(`tmpl-${type}-${num}`)?.classList.add('selected');
+  setTemplate(type, num-1);
+}
+
+function setReminder(num) { setTemplate('reminder', num-1); }
+function setCampaign(num) { setTemplate('campaign', num-1); }
+
+function getMessageContent() {
+  if(currentMsgType==='text') return document.getElementById('textContent').value.trim();
+  if(currentMsgType==='coupon') return document.getElementById('couponContent').value.trim();
+  if(currentMsgType==='reminder') return document.getElementById('reminderContent').value.trim();
+  if(currentMsgType==='campaign') return document.getElementById('campaignContent').value.trim();
+  return '';
+}
+
+function previewMessage() {
+  const content = getMessageContent();
+  if(!content){ alert('メッセージを入力してください'); return; }
+  const el = document.getElementById('broadcastResult');
+  el.innerHTML = `<div class="notice-green">
+    <strong>📱 プレビュー</strong><br>
+    <div style="background:#fff;border-radius:12px;padding:14px;margin-top:8px;white-space:pre-wrap;font-size:14px;border:1px solid #ddd">${content}</div>
+  </div>`;
+}
+
+function confirmBroadcast() {
+  const content = getMessageContent();
+  if(!content){ alert('メッセージを入力してください'); return; }
+  document.getElementById('sendConfirm').style.display = '';
+}
+
+function cancelConfirm() { document.getElementById('sendConfirm').style.display = 'none'; }
+
+async function executeBroadcast() {
+  const content = getMessageContent();
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  document.getElementById('sendConfirm').style.display = 'none';
+  try {
+    const r = await fetch('/api/line/broadcast', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'text', content })
+    });
+    const data = await r.json();
+    const el = document.getElementById('broadcastResult');
+    if(data.status==='success') {
+      el.innerHTML = '<div class="notice-green">✅ 一斉配信しました！</div>';
+      await loadBroadcastLog();
+    } else {
+      el.innerHTML = `<div class="notice-red">❌ 送信エラー: ${JSON.stringify(data.detail||data)}</div>`;
+    }
+  } catch(e) {
+    document.getElementById('broadcastResult').innerHTML = `<div class="notice-red">❌ エラー: ${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 一斉配信する';
+  }
+}
+
+// ── Refresh ─────────────────────────────────────────
+async function refreshAll() {
+  document.getElementById('updatedAt').textContent = '更新中...';
+  await loadAll();
+}
+</script>
+</body>
+</html>

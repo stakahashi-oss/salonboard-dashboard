@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.db
+*.log
+*.json
+!requirements.txt
+.env
+counseling_ss_id.txt
+lstep_*.json
+line_*.json
