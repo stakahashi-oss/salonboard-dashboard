@@ -447,13 +447,37 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="kpi-card blue"><div class="kpi-label">📅 今月追加</div><div class="kpi-value" id="kpi-friends-month">-</div></div>
       <div class="kpi-card"><div class="kpi-label">🔗 カウンセリング連携済み</div><div class="kpi-value" id="kpi-friends-linked">-</div></div>
     </div>
+
+    <!-- 一斉送信 -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">📢 一斉送信</div></div>
+      <div style="padding:4px 0 12px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+          <label style="font-size:13px;color:#555">送信対象:</label>
+          <select id="broadcastTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateBroadcastCount()">
+            <option value="">👥 全員</option>
+          </select>
+          <span id="broadcastCount" style="font-size:12px;color:#888"></span>
+        </div>
+        <textarea id="broadcastMsg" placeholder="送信するメッセージを入力..." style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;min-height:90px;font-family:inherit;resize:vertical;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <button class="btn btn-green" onclick="sendBroadcast()">📢 一斉送信</button>
+          <span id="broadcastStatus" style="font-size:12px;color:#888"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 友だち一覧 -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">👥 LINE友だち一覧</div>
         <button class="btn btn-green btn-sm" onclick="loadLineFriendsMgmt()">🔄 更新</button>
       </div>
       <div class="friends-search-row">
-        <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号で絞り込み" oninput="filterFriendsMgmt()">
+        <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号・タグで絞り込み" oninput="filterFriendsMgmt()">
+        <select id="friendsTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="filterFriendsMgmt()">
+          <option value="">🏷️ タグ絞り込み</option>
+        </select>
       </div>
       <div id="friendsMgmtResult"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
@@ -559,6 +583,8 @@ const TEMPLATES = {
 // ── Init ────────────────────────────────────────────
 window.addEventListener('load', () => {
   loadDashboard();
+  loadCounseling();
+  loadLineFriendsMgmt();
 });
 
 async function loadDashboard() {
@@ -1117,15 +1143,27 @@ async function loadLineFriendsMgmt() {
     const data = await gasGet('get_line_friends');
     allFriends = data.friends || [];
 
-    // KPI計算
+    // KPI
     const now = new Date();
     const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    const monthCount = allFriends.filter(f => (f['登録日時']||'').startsWith(thisMonth)).length;
+    const monthCount  = allFriends.filter(f => (f['登録日時']||'').startsWith(thisMonth)).length;
     const linkedCount = allFriends.filter(f => f['電話番号']).length;
-
-    document.getElementById('kpi-friends-total').textContent = allFriends.length.toLocaleString();
-    document.getElementById('kpi-friends-month').textContent = monthCount;
+    document.getElementById('kpi-friends-total').textContent  = allFriends.length.toLocaleString();
+    document.getElementById('kpi-friends-month').textContent  = monthCount;
     document.getElementById('kpi-friends-linked').textContent = linkedCount;
+
+    // タグ一覧を作成してフィルターに反映
+    const tagSet = new Set();
+    allFriends.forEach(f => {
+      if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
+    });
+    const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
+      ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
+    document.getElementById('friendsTagFilter').innerHTML  = tagOptions;
+    document.getElementById('broadcastTagFilter').innerHTML =
+      ['<option value="">👥 全員</option>',
+        ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+    updateBroadcastCount();
 
     renderFriendsMgmt(allFriends);
   } catch(e) {
@@ -1134,13 +1172,17 @@ async function loadLineFriendsMgmt() {
 }
 
 function filterFriendsMgmt() {
-  const q = document.getElementById('friendsMgmtSearch').value.trim().toLowerCase();
-  if (!q) { renderFriendsMgmt(allFriends); return; }
-  renderFriendsMgmt(allFriends.filter(f =>
+  const q   = document.getElementById('friendsMgmtSearch').value.trim().toLowerCase();
+  const tag = document.getElementById('friendsTagFilter').value;
+  let list  = allFriends;
+  if (q)   list = list.filter(f =>
     (f['お名前']||'').toLowerCase().includes(q) ||
     (f['LINE表示名']||'').toLowerCase().includes(q) ||
-    (f['電話番号']||'').includes(q)
-  ));
+    (f['電話番号']||'').includes(q) ||
+    (f['タグ']||'').toLowerCase().includes(q));
+  if (tag) list = list.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  renderFriendsMgmt(list);
 }
 
 function renderFriendsMgmt(friends) {
@@ -1152,38 +1194,65 @@ function renderFriendsMgmt(friends) {
   el.innerHTML = `
     <div class="tbl-scroll">
       <table class="tbl">
-        <thead>
-          <tr>
-            <th>登録日</th>
-            <th>名前</th>
-            <th>電話番号</th>
-            <th>カウンセリング</th>
-            <th>送信履歴</th>
-            <th>個別送信</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>タグ</th><th>カウンセリング</th><th>個別送信</th>
+        </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
-            const name = f['お名前'] || f['LINE表示名'] || '未設定';
-            const phone = f['電話番号'] || '―';
-            const linked = f['電話番号'] ? '<span class="badge-green">連携済み</span>' : '<span class="badge-gray">未連携</span>';
+            const name    = f['お名前'] || f['LINE表示名'] || '未設定';
+            const phone   = f['電話番号'] || '―';
+            const linked  = f['電話番号'] ? '<span class="badge-green">連携済み</span>' : '<span class="badge-gray">未連携</span>';
             const regDate = (f['登録日時']||'').substring(0,10) || '―';
-            const uid = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const tags    = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '―';
+            const uid     = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             const safeName = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             return `<tr>
               <td style="white-space:nowrap">${regDate}</td>
               <td><strong>${name}</strong></td>
               <td>${phone}</td>
+              <td>${tags}</td>
               <td>${linked}</td>
-              <td style="font-size:12px;color:#888">―</td>
               <td><button class="btn btn-green btn-sm" onclick="openPushModal('${uid}','${safeName}')">📨 送信</button></td>
             </tr>`;
           }).join('')}
         </tbody>
       </table>
     </div>
-    ${friends.length > 200 ? `<div style="text-align:center;padding:10px;font-size:12px;color:#aaa">上位200件を表示（全${friends.length}件）</div>` : ''}
-  `;
+    ${friends.length > 200 ? `<div style="text-align:center;padding:10px;font-size:12px;color:#aaa">上位200件を表示（全${friends.length}件）</div>` : ''}`;
+}
+
+function updateBroadcastCount() {
+  const tag = document.getElementById('broadcastTagFilter').value;
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  document.getElementById('broadcastCount').textContent = `（${targets.length}人に送信）`;
+}
+
+async function sendBroadcast() {
+  const tag = document.getElementById('broadcastTagFilter').value;
+  const msg = document.getElementById('broadcastMsg').value.trim();
+  const statusEl = document.getElementById('broadcastStatus');
+  if (!msg) { alert('メッセージを入力してください'); return; }
+
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  if (!targets.length) { alert('送信対象がいません'); return; }
+  if (!confirm(`${targets.length}人に送信しますか？`)) return;
+
+  statusEl.textContent = `送信中... 0/${targets.length}`;
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    try {
+      await gasPost({action: 'send_push', line_uid: targets[i]['LINE_UID'], message: msg});
+      success++;
+    } catch(e) {}
+    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
+  document.getElementById('broadcastMsg').value = '';
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
 }
 
 function openPushModal(lineUid, name) {
