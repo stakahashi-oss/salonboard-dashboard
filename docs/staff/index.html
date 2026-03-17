@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>スタッフアプリ</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; background:#f5f6fa; color:#1a1a2e; min-height:100vh; }
+
+/* ── ログイン ── */
+#loginScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:32px 24px; background:#fff; }
+.login-logo { width:64px; height:64px; background:#00b900; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:20px; }
+.login-title { font-size:20px; font-weight:700; margin-bottom:6px; }
+.login-sub { font-size:13px; color:#888; margin-bottom:32px; }
+.login-input { width:100%; padding:14px 16px; border:1.5px solid #ddd; border-radius:12px; font-size:16px; outline:none; margin-bottom:12px; transition:border-color .2s; }
+.login-input:focus { border-color:#00b900; }
+.login-btn { width:100%; padding:15px; background:#00b900; color:#fff; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; }
+.login-error { color:#e74c3c; font-size:13px; margin-top:8px; text-align:center; }
+
+/* ── アプリ本体 ── */
+#app { display:none; flex-direction:column; height:100vh; }
+
+/* ── ヘッダー ── */
+.header { background:#00b900; color:#fff; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+.header-title { font-size:16px; font-weight:700; }
+.header-back { font-size:22px; cursor:pointer; padding:4px 8px; }
+
+/* ── タブバー ── */
+.tabbar { background:#fff; border-top:1px solid #e0e0e0; display:flex; position:fixed; bottom:0; left:0; right:0; z-index:100; }
+.tabbar-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px 4px; cursor:pointer; color:#aaa; font-size:10px; gap:3px; transition:color .15s; }
+.tabbar-item.active { color:#00b900; }
+.tabbar-icon { font-size:22px; }
+
+/* ── コンテンツ ── */
+.screen { display:none; flex:1; overflow-y:auto; padding-bottom:70px; }
+.screen.active { display:block; }
+
+/* ── トーク一覧 ── */
+.talk-item { display:flex; align-items:center; padding:14px 16px; background:#fff; border-bottom:1px solid #f0f0f0; cursor:pointer; gap:12px; transition:background .1s; }
+.talk-item:active { background:#f5f5f5; }
+.talk-avatar { width:46px; height:46px; border-radius:50%; background:#00b900; color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+.talk-info { flex:1; min-width:0; }
+.talk-name { font-size:14px; font-weight:700; margin-bottom:3px; }
+.talk-preview { font-size:12px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.talk-meta { text-align:right; flex-shrink:0; }
+.talk-time { font-size:10px; color:#aaa; margin-bottom:4px; }
+.talk-badge { background:#00b900; color:#fff; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:700; }
+
+/* ── チャット画面 ── */
+#chatScreen { display:none; flex-direction:column; height:100vh; position:fixed; inset:0; background:#e8f5e9; z-index:200; }
+.chat-header { background:#00b900; color:#fff; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+.chat-header-back { font-size:24px; cursor:pointer; }
+.chat-header-name { font-size:15px; font-weight:700; flex:1; }
+.chat-header-profile { font-size:22px; cursor:pointer; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px 12px; display:flex; flex-direction:column; gap:10px; }
+.chat-input-bar { background:#fff; padding:10px 12px; display:flex; gap:8px; align-items:flex-end; border-top:1px solid #e0e0e0; }
+.chat-input { flex:1; border:1.5px solid #ddd; border-radius:20px; padding:10px 14px; font-size:14px; resize:none; outline:none; max-height:120px; font-family:inherit; }
+.chat-input:focus { border-color:#00b900; }
+.chat-send-btn { background:#00b900; color:#fff; border:none; border-radius:50%; width:42px; height:42px; font-size:18px; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+
+.msg-row { display:flex; align-items:flex-end; gap:6px; }
+.msg-row.sent { justify-content:flex-end; }
+.msg-row.recv { justify-content:flex-start; }
+.msg-bubble { max-width:72%; padding:10px 13px; border-radius:18px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+.msg-row.sent .msg-bubble { background:#00b900; color:#fff; border-bottom-right-radius:4px; }
+.msg-row.recv .msg-bubble { background:#fff; color:#1a1a2e; border-bottom-left-radius:4px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.msg-time { font-size:10px; color:#aaa; }
+
+/* ── カウンセリング一覧 ── */
+.counseling-item { background:#fff; margin:10px 12px; border-radius:12px; padding:14px 16px; box-shadow:0 1px 4px rgba(0,0,0,.07); cursor:pointer; }
+.counseling-item:active { opacity:.85; }
+.counseling-name { font-size:15px; font-weight:700; margin-bottom:4px; }
+.counseling-meta { font-size:12px; color:#888; display:flex; gap:10px; flex-wrap:wrap; }
+.counseling-menu { display:inline-block; background:#e8f5e9; color:#00b900; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; margin-top:6px; }
+
+/* ── カウンセリング詳細 ── */
+#counselingDetail { display:none; position:fixed; inset:0; background:#f5f6fa; z-index:200; overflow-y:auto; flex-direction:column; }
+.detail-header { background:#00b900; color:#fff; padding:12px 16px; display:flex; align-items:center; gap:12px; position:sticky; top:0; }
+.detail-card { background:#fff; margin:12px; border-radius:12px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+.detail-card-title { font-size:12px; color:#888; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:.5px; }
+.detail-row { display:flex; gap:12px; margin-bottom:10px; font-size:14px; }
+.detail-label { color:#888; min-width:90px; flex-shrink:0; font-size:13px; }
+.detail-value { color:#1a1a2e; flex:1; }
+
+/* ── ローディング ── */
+.loading-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; color:#aaa; gap:12px; }
+.spinner { width:28px; height:28px; border:3px solid #e0e0e0; border-top-color:#00b900; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.empty { text-align:center; padding:60px 20px; color:#aaa; font-size:14px; }
+
+/* ── 検索 ── */
+.search-bar { padding:10px 12px; background:#fff; border-bottom:1px solid #f0f0f0; }
+.search-input { width:100%; padding:9px 14px; border:1.5px solid #ddd; border-radius:20px; font-size:14px; outline:none; }
+.search-input:focus { border-color:#00b900; }
+
+/* ── プロフィールシート ── */
+#profileSheet { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:300; align-items:flex-end; }
+.profile-panel { background:#fff; border-radius:20px 20px 0 0; padding:20px 16px 40px; max-height:70vh; overflow-y:auto; }
+.profile-name { font-size:18px; font-weight:700; margin-bottom:4px; }
+.profile-sub { font-size:13px; color:#888; margin-bottom:16px; }
+.profile-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5; font-size:14px; }
+.profile-label { color:#888; }
+</style>
+</head>
+<body>
+
+<!-- ログイン -->
+<div id="loginScreen">
+  <div class="login-logo">💼</div>
+  <div class="login-title">スタッフアプリ</div>
+  <div class="login-sub">SSIN STUDIO / most eyes / LUMISS</div>
+  <input class="login-input" id="loginPass" type="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="login-btn" onclick="doLogin()">ログイン</button>
+  <div class="login-error" id="loginError"></div>
+</div>
+
+<!-- アプリ本体 -->
+<div id="app">
+  <div class="header">
+    <div class="header-title" id="headerTitle">💬 トーク</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.7)" id="headerSub"></div>
+  </div>
+
+  <!-- トーク一覧 -->
+  <div class="screen active" id="screenTalk">
+    <div class="search-bar">
+      <input class="search-input" id="talkSearch" placeholder="🔍 名前で検索" oninput="filterTalks()">
+    </div>
+    <div id="talkListEl"></div>
+  </div>
+
+  <!-- カウンセリング一覧 -->
+  <div class="screen" id="screenCounseling">
+    <div class="search-bar">
+      <input class="search-input" id="counselingSearch" placeholder="🔍 名前・メニューで検索" oninput="filterCounseling()">
+    </div>
+    <div id="counselingListEl"></div>
+  </div>
+
+  <!-- タブバー -->
+  <div class="tabbar">
+    <div class="tabbar-item active" id="tab-talk" onclick="switchTab('talk')">
+      <div class="tabbar-icon">💬</div>
+      <div>トーク</div>
+    </div>
+    <div class="tabbar-item" id="tab-counseling" onclick="switchTab('counseling')">
+      <div class="tabbar-icon">📋</div>
+      <div>カウンセリング</div>
+    </div>
+  </div>
+</div>
+
+<!-- チャット画面 -->
+<div id="chatScreen">
+  <div class="chat-header">
+    <div class="chat-header-back" onclick="closeChat()">‹</div>
+    <div class="chat-header-name" id="chatName"></div>
+    <div class="chat-header-profile" onclick="openProfile()">👤</div>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input-bar">
+    <textarea class="chat-input" id="chatInput" placeholder="メッセージを入力..." rows="1" oninput="autoResize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+    <button class="chat-send-btn" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<!-- カウンセリング詳細 -->
+<div id="counselingDetail">
+  <div class="detail-header">
+    <div class="chat-header-back" onclick="closeDetail()">‹</div>
+    <div style="font-size:15px;font-weight:700" id="detailTitle">カウンセリング詳細</div>
+  </div>
+  <div id="detailBody"></div>
+</div>
+
+<!-- プロフィールシート -->
+<div id="profileSheet" onclick="closeProfile()">
+  <div class="profile-panel" onclick="event.stopPropagation()">
+    <div class="profile-name" id="profileName"></div>
+    <div class="profile-sub" id="profileSub"></div>
+    <div id="profileRows"></div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
+const GAS_KEY = "ssin2026";
+const STAFF_PASS = "ssin2026";
+
+let allTalks = [];
+let allCounseling = [];
+let currentUid = "";
+let currentName = "";
+let currentFriend = null;
+
+// ── 認証 ──────────────────────────────────────────────────
+function doLogin() {
+  const pass = document.getElementById("loginPass").value;
+  if (pass === STAFF_PASS) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    loadTalks();
+    loadCounseling();
+  } else {
+    document.getElementById("loginError").textContent = "パスワードが違います";
+  }
+}
+
+// ── API ───────────────────────────────────────────────────
+async function gasGet(action, params = {}) {
+  const q = new URLSearchParams({key: GAS_KEY, action, ...params});
+  const res = await fetch(GAS_URL + "?" + q);
+  return await res.json();
+}
+
+async function gasPost(data) {
+  const res = await fetch(GAS_URL, {
+    method: "POST",
+    headers: {"Content-Type": "text/plain"},
+    body: JSON.stringify({key: GAS_KEY, ...data})
+  });
+  return await res.json();
+}
+
+// ── タブ切り替え ──────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".tabbar-item").forEach(t => t.classList.remove("active"));
+  document.getElementById("screen" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+  document.getElementById("tab-" + tab).classList.add("active");
+  if (tab === "talk") {
+    document.getElementById("headerTitle").textContent = "💬 トーク";
+  } else {
+    document.getElementById("headerTitle").textContent = "📋 カウンセリング";
+  }
+}
+
+// ── トーク一覧 ────────────────────────────────────────────
+async function loadTalks() {
+  document.getElementById("talkListEl").innerHTML = '<div class="loading-wrap"><div class="spinner"></div><div>読込中...</div></div>';
+  try {
+    const data = await gasGet("get_talks_list");
+    allTalks = data.list || [];
+    renderTalks(allTalks);
+  } catch(e) {
+    document.getElementById("talkListEl").innerHTML = '<div class="empty">読込エラー</div>';
+  }
+}
+
+function filterTalks() {
+  const q = document.getElementById("talkSearch").value.toLowerCase();
+  renderTalks(q ? allTalks.filter(t => (t.name||"").toLowerCase().includes(q)) : allTalks);
+}
+
+function renderTalks(list) {
+  if (!list.length) {
+    document.getElementById("talkListEl").innerHTML = '<div class="empty">トーク履歴がありません</div>';
+    return;
+  }
+  document.getElementById("talkListEl").innerHTML = list.map(t => {
+    const name = t.name || "名前未設定";
+    const initial = name.charAt(0);
+    const time = String(t.last_at || "").substring(5, 16);
+    const preview = (t.direction === "送信" ? "▶ " : "◀ ") + (t.last_msg || "");
+    const uid = (t.line_uid || "").replace(/'/g, "\\'");
+    const safeName = name.replace(/'/g, "\\'");
+    return `<div class="talk-item" onclick="openChat('${uid}','${safeName}')">
+      <div class="talk-avatar">${initial}</div>
+      <div class="talk-info">
+        <div class="talk-name">${name}</div>
+        <div class="talk-preview">${preview}</div>
+      </div>
+      <div class="talk-meta">
+        <div class="talk-time">${time}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── チャット ──────────────────────────────────────────────
+async function openChat(uid, name) {
+  currentUid  = uid;
+  currentName = name;
+  document.getElementById("chatName").textContent = name;
+  document.getElementById("chatScreen").style.display = "flex";
+  document.getElementById("chatMessages").innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+
+  // 友だちプロフィール取得
+  try {
+    const p = await gasGet("get_customer_profile", {line_uid: uid});
+    currentFriend = p.friend || null;
+  } catch(e) { currentFriend = null; }
+
+  await loadChatMessages();
+}
+
+function closeChat() {
+  document.getElementById("chatScreen").style.display = "none";
+  loadTalks();
+}
+
+async function loadChatMessages() {
+  try {
+    const data = await gasGet("get_talks", {line_uid: currentUid});
+    renderChatMessages(data.talks || []);
+  } catch(e) {
+    document.getElementById("chatMessages").innerHTML = '<div class="empty">読込エラー</div>';
+  }
+}
+
+function renderChatMessages(talks) {
+  const el = document.getElementById("chatMessages");
+  if (!talks.length) {
+    el.innerHTML = '<div class="empty">まだメッセージがありません</div>';
+    return;
+  }
+  el.innerHTML = talks.map(t => {
+    const sent = t.direction === "送信";
+    const time = String(t.datetime || "").substring(5, 16);
+    return `<div class="msg-row ${sent ? "sent" : "recv"}">
+      <div class="msg-bubble">${escHtml(t.content)}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+  }).join("");
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg || !currentUid) return;
+  input.value = "";
+  input.style.height = "";
+  try {
+    const r = await gasPost({action: "send_push", line_uid: currentUid, message: msg});
+    if (r.error) { alert("送信失敗: " + r.error); return; }
+    await loadChatMessages();
+  } catch(e) {
+    alert("送信エラー: " + e.message);
+  }
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
+}
+
+// ── プロフィール ──────────────────────────────────────────
+function openProfile() {
+  const f = currentFriend;
+  if (!f) { alert("プロフィール情報がありません"); return; }
+  document.getElementById("profileName").textContent = f.name || f.display_name || currentName;
+  document.getElementById("profileSub").textContent = "LINE表示名: " + (f.display_name || "―");
+  document.getElementById("profileRows").innerHTML = [
+    ["電話番号", f.phone || "未登録"],
+    ["登録日", String(f.registered_at || "").substring(0, 10) || "―"],
+    ["最終来店日", f.last_visit || "―"],
+    ["タグ", f.tags || "なし"],
+  ].map(([l, v]) => `<div class="profile-row"><div class="profile-label">${l}</div><div>${v}</div></div>`).join("");
+  document.getElementById("profileSheet").style.display = "flex";
+}
+
+function closeProfile() {
+  document.getElementById("profileSheet").style.display = "none";
+}
+
+// ── カウンセリング ────────────────────────────────────────
+async function loadCounseling() {
+  document.getElementById("counselingListEl").innerHTML = '<div class="loading-wrap"><div class="spinner"></div><div>読込中...</div></div>';
+  try {
+    const data = await gasGet("get_all");
+    allCounseling = data.records || [];
+    renderCounseling(allCounseling);
+  } catch(e) {
+    document.getElementById("counselingListEl").innerHTML = '<div class="empty">読込エラー</div>';
+  }
+}
+
+function filterCounseling() {
+  const q = document.getElementById("counselingSearch").value.toLowerCase();
+  renderCounseling(q ? allCounseling.filter(c =>
+    (c["お名前"]||"").toLowerCase().includes(q) ||
+    (c["メニュー"]||"").toLowerCase().includes(q)
+  ) : allCounseling);
+}
+
+function renderCounseling(list) {
+  if (!list.length) {
+    document.getElementById("counselingListEl").innerHTML = '<div class="empty">記録がありません</div>';
+    return;
+  }
+  document.getElementById("counselingListEl").innerHTML = list.slice(0, 100).map((c, i) => {
+    const name = c["お名前"] || "名前未設定";
+    const date = String(c["来店日"] || c["記録日時"] || "").substring(0, 10);
+    const menu = c["メニュー"] || "";
+    const store = c["店舗名"] || "";
+    return `<div class="counseling-item" onclick="openDetail(${i})">
+      <div class="counseling-name">${escHtml(name)}</div>
+      <div class="counseling-meta">
+        <span>📅 ${date}</span>
+        ${store ? `<span>🏪 ${escHtml(store)}</span>` : ""}
+        <span>📞 ${c["電話番号"] || "―"}</span>
+      </div>
+      ${menu ? `<div class="counseling-menu">${escHtml(menu)}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function openDetail(idx) {
+  const c = allCounseling[idx];
+  if (!c) return;
+  document.getElementById("detailTitle").textContent = c["お名前"] || "詳細";
+  const fields = [
+    ["来店日", c["来店日"]],
+    ["店舗名", c["店舗名"]],
+    ["担当スタッフ", c["担当スタッフ"]],
+    ["メニュー", c["メニュー"]],
+    ["電話番号", c["電話番号"]],
+    ["肌質", c["肌質"]],
+    ["アレルギー", c["アレルギー"]],
+    ["アレルギー詳細", c["アレルギー詳細"]],
+    ["過去施術歴", c["過去施術歴"]],
+    ["本日の要望", c["本日の要望"]],
+    ["施術メモ", c["施術メモ"]],
+    ["次回提案", c["次回提案"]],
+    ["次回提案時期", c["次回提案時期"]],
+    ["記録日時", c["記録日時"]],
+  ];
+  document.getElementById("detailBody").innerHTML = `
+    <div class="detail-card">
+      <div class="detail-card-title">基本情報</div>
+      ${fields.filter(([,v]) => v).map(([l, v]) => `
+        <div class="detail-row">
+          <div class="detail-label">${l}</div>
+          <div class="detail-value">${escHtml(String(v))}</div>
+        </div>`).join("")}
+    </div>
+    ${c["LINE_UID"] ? `<div style="margin:0 12px 12px;text-align:center">
+      <button onclick="openChatFromDetail('${(c["LINE_UID"]||"").replace(/'/g,"\\'")}','${(c["お名前"]||"").replace(/'/g,"\\'")}');closeDetail()" style="background:#00b900;color:#fff;border:none;border-radius:12px;padding:13px 32px;font-size:15px;font-weight:700;cursor:pointer;width:100%">💬 このお客様にメッセージ送信</button>
+    </div>` : ""}`;
+  document.getElementById("counselingDetail").style.display = "flex";
+}
+
+function closeDetail() {
+  document.getElementById("counselingDetail").style.display = "none";
+}
+
+function openChatFromDetail(uid, name) {
+  switchTab("talk");
+  openChat(uid, name);
+}
+
+// ── ユーティリティ ────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+</script>
+</body>
+</html>
