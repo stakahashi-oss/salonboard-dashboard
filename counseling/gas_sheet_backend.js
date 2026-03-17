@@ -122,6 +122,23 @@ function saveCounseling(data) {
   var sheet = getSheet("カウンセリング記録");
   var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
   var id = "C" + new Date().getTime();
+
+  // LINE UIDを電話番号から検索（未指定の場合）
+  var lineUid = data.line_uid || findLineUidByPhone(data.phone || "");
+  var lineSent = "未送信";
+
+  // LINE UID があればお礼メッセージを自動送信
+  if (lineUid) {
+    var sent = sendThankYouMessage(lineUid, data);
+    lineSent = sent ? "送信済み" : "送信失敗";
+    if (sent) {
+      logLine({
+        phone: data.phone || "", name: data.name || "", line_uid: lineUid,
+        type: "お礼", content: "カウンセリング保存時自動送信", status: "成功", error: ""
+      });
+    }
+  }
+
   sheet.appendRow([
     id, now,
     data.store || "", data.visit_date || "", data.reservation_id || "",
@@ -129,9 +146,65 @@ function saveCounseling(data) {
     data.skin_type || "", data.allergy || "なし", data.allergy_detail || "",
     data.past_treatment || "", data.request || "", data.treatment_memo || "",
     data.next_menu || "", data.next_timing || "",
-    data.line_uid || "", "未送信", now
+    lineUid, lineSent, now
   ]);
-  return {status: "ok", id: id};
+  return {status: "ok", id: id, line_sent: lineSent};
+}
+
+// ── 電話番号からLINE UIDを検索 ───────────────────────────
+function findLineUidByPhone(phone) {
+  if (!phone) return "";
+  var norm = String(phone).replace(/-/g, "");
+  var sheet = getSheet("LINE友だち");
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][1]).replace(/-/g, "") === norm && data[i][0]) {
+      return String(data[i][0]);
+    }
+  }
+  return "";
+}
+
+// ── お礼メッセージ送信 ───────────────────────────────────
+function sendThankYouMessage(lineUid, data) {
+  var name       = data.name || "お客様";
+  var store      = data.store || "当店";
+  var menu       = data.menu || "";
+  var nextMenu   = data.next_menu || "";
+  var nextTiming = data.next_timing || "";
+  var memo       = data.treatment_memo || "";
+
+  var msg = "本日はご来店いただきありがとうございました\uD83D\uDE4F\n"
+    + store + " \u30B9\u30BF\u30C3\u30D5\u4E00\u540C\u3088\u308A\n\n"
+    + name + "\u69D8\u306B\u3054\u6E80\u8DB3\u3044\u305F\u3060\u3051\u307E\u3057\u305F\u3067\u3057\u3087\u3046\u304B\uFF1F\u2728";
+
+  if (nextMenu) {
+    msg += "\n\n\u27A1\uFE0F \u6B21\u56DE\u306E\u304A\u3059\u3059\u3081\n"
+      + "\u300C" + nextMenu + "\u300D";
+    if (nextTiming) {
+      msg += "\n\u76EE\u5B89\u306F" + nextTiming + "\u3054\u308D\u3067\u3059\uD83D\uDCC5";
+    }
+  }
+
+  msg += "\n\n\u307E\u305F\u306E\u3054\u6765\u5E97\u3092\u30B9\u30BF\u30C3\u30D5\u4E00\u540C\u304A\u5F85\u3061\u3057\u3066\u304A\u308A\u307E\u3059\uD83C\uDF38\n\u3054\u4E88\u7D04\u30FB\u3054\u76F8\u8AC7\u306F\u3053\u3061\u3089\u306ELINE\u3078\uD83D\uDCF1";
+
+  var payload = {
+    to: lineUid,
+    messages: [{type: "text", text: msg}]
+  };
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    headers: {Authorization: "Bearer " + LINE_TOKEN},
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  try {
+    var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
+    return res.getResponseCode() === 200;
+  } catch(e) {
+    return false;
+  }
 }
 
 // ── カウンセリング全件取得 ────────────────────────────────
