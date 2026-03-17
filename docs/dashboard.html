@@ -467,6 +467,39 @@ textarea.msg-input:focus { border-color:#00b900; }
       </div>
     </div>
 
+    <!-- クーポン送信 -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">🎫 クーポン送信</div></div>
+      <div style="padding:4px 0 12px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+          <label style="font-size:13px;color:#555">送信対象:</label>
+          <select id="couponTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="updateCouponCount()">
+            <option value="">👥 全員</option>
+          </select>
+          <span id="couponCount" style="font-size:12px;color:#888"></span>
+        </div>
+        <div style="display:grid;gap:8px;margin-bottom:10px">
+          <input id="couponTitle" type="text" placeholder="クーポンタイトル（例：10%OFFクーポン）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+          <input id="couponDesc" type="text" placeholder="説明文（例：今月末まで有効）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+          <input id="couponUrl" type="url" placeholder="クーポンURL（公式LINEのクーポンURL）" style="border:1.5px solid #ddd;border-radius:8px;padding:10px 12px;font-size:13px;outline:none;width:100%" onfocus="this.style.borderColor='#00b900'" onblur="this.style.borderColor='#ddd'">
+        </div>
+        <!-- プレビュー -->
+        <div id="couponPreview" style="display:none;border:1.5px solid #00b900;border-radius:12px;overflow:hidden;max-width:300px;margin-bottom:10px">
+          <div style="background:#00b900;padding:10px 14px;color:#fff;font-size:12px;font-weight:700">🎫 クーポン</div>
+          <div style="padding:14px;background:#fff">
+            <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px" id="couponPreviewTitle">タイトル</div>
+            <div style="font-size:12px;color:#888;margin-bottom:12px" id="couponPreviewDesc">説明文</div>
+            <div style="background:#00b900;color:#fff;text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:700">クーポンを使う</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-gray btn-sm" onclick="previewCoupon()">👁 プレビュー</button>
+          <button class="btn btn-green" onclick="sendCouponBroadcast()">🎫 クーポン送信</button>
+          <span id="couponStatus" style="font-size:12px;color:#888"></span>
+        </div>
+      </div>
+    </div>
+
     <!-- 友だち一覧 -->
     <div class="card">
       <div class="card-header">
@@ -1160,10 +1193,12 @@ async function loadLineFriendsMgmt() {
     const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
       ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
     document.getElementById('friendsTagFilter').innerHTML  = tagOptions;
-    document.getElementById('broadcastTagFilter').innerHTML =
-      ['<option value="">👥 全員</option>',
-        ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+    const broadcastTagHtml = ['<option value="">👥 全員</option>',
+      ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+    document.getElementById('broadcastTagFilter').innerHTML = broadcastTagHtml;
+    document.getElementById('couponTagFilter').innerHTML = broadcastTagHtml;
     updateBroadcastCount();
+    updateCouponCount();
 
     renderFriendsMgmt(allFriends);
   } catch(e) {
@@ -1252,6 +1287,79 @@ async function sendBroadcast() {
   }
   statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
   document.getElementById('broadcastMsg').value = '';
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+function updateCouponCount() {
+  const tag = document.getElementById('couponTagFilter').value;
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  document.getElementById('couponCount').textContent = `（${targets.length}人に送信）`;
+}
+
+function previewCoupon() {
+  const title = document.getElementById('couponTitle').value.trim();
+  const desc  = document.getElementById('couponDesc').value.trim();
+  const preview = document.getElementById('couponPreview');
+  if (!title) { alert('クーポンタイトルを入力してください'); return; }
+  document.getElementById('couponPreviewTitle').textContent = title;
+  document.getElementById('couponPreviewDesc').textContent  = desc;
+  preview.style.display = preview.style.display === 'block' ? 'none' : 'block';
+}
+
+async function sendCouponBroadcast() {
+  const title  = document.getElementById('couponTitle').value.trim();
+  const desc   = document.getElementById('couponDesc').value.trim();
+  const url    = document.getElementById('couponUrl').value.trim();
+  const tag    = document.getElementById('couponTagFilter').value;
+  const statusEl = document.getElementById('couponStatus');
+  if (!title) { alert('クーポンタイトルを入力してください'); return; }
+  if (!url)   { alert('クーポンURLを入力してください'); return; }
+
+  let targets = allFriends.filter(f => f['LINE_UID']);
+  if (tag) targets = targets.filter(f =>
+    (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
+  if (!targets.length) { alert('送信対象がいません'); return; }
+  if (!confirm(`${targets.length}人にクーポンを送信しますか？`)) return;
+
+  const flex = {
+    type: 'flex',
+    altText: `🎫 ${title}`,
+    contents: {
+      type: 'bubble',
+      header: {
+        type: 'box', layout: 'vertical',
+        backgroundColor: '#00b900', paddingAll: '12px',
+        contents: [{type:'text', text:'🎫 クーポン', color:'#ffffff', size:'sm', weight:'bold'}]
+      },
+      body: {
+        type: 'box', layout: 'vertical', spacing: 'md',
+        contents: [
+          {type:'text', text: title, size:'xl', weight:'bold', color:'#1a1a2e', wrap: true},
+          {type:'text', text: desc || ' ', size:'sm', color:'#888888', wrap: true}
+        ]
+      },
+      footer: {
+        type: 'box', layout: 'vertical',
+        contents: [{
+          type:'button', style:'primary', color:'#00b900',
+          action: {type:'uri', label:'クーポンを使う', uri: url}
+        }]
+      }
+    }
+  };
+
+  statusEl.textContent = `送信中... 0/${targets.length}`;
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    try {
+      await gasPost({action: 'send_flex', line_uid: targets[i]['LINE_UID'], flex: JSON.stringify(flex)});
+      success++;
+    } catch(e) {}
+    statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  statusEl.textContent = `✅ 完了 ${success}/${targets.length}件`;
   setTimeout(() => { statusEl.textContent = ''; }, 5000);
 }
 
@@ -1495,6 +1603,10 @@ async function saveScenarioStep(id, idx) {
 function previewScenarioStep(id) {
   const msg = document.getElementById(`msg-${id}`).value;
   const previewEl = document.getElementById(`preview-${id}`);
+  if (previewEl.style.display === 'block') {
+    previewEl.style.display = 'none';
+    return;
+  }
   const previewText = msg
     .replace(/\{name\}/g,        '田中 花子')
     .replace(/\{store\}/g,       'SSIN STUDIO')
@@ -1503,7 +1615,7 @@ function previewScenarioStep(id) {
     .replace(/\{visit_date\}/g,  '2026/04/01')
     .replace(/\{start_time\}/g,  '10:00')
     .replace(/\{menu\}/g,        'まつげエクステ');
-  previewEl.style.display = previewEl.style.display === 'none' || !previewEl.style.display ? '' : 'none';
+  previewEl.style.display = 'block';
   previewEl.textContent = previewText;
 }
 
