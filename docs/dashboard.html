@@ -170,9 +170,34 @@ textarea.msg-input:focus { border-color:#00b900; }
 .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
 .modal-title { font-size:16px; font-weight:700; }
 .modal-close { background:#eee; border:none; border-radius:8px; padding:4px 12px; cursor:pointer; font-size:14px; }
+
+/* ── ログイン画面 ── */
+#loginOverlay { position:fixed; inset:0; background:#f0f2f5; z-index:9999; display:flex; align-items:center; justify-content:center; }
+.login-box { background:#fff; border-radius:16px; padding:40px 32px; width:100%; max-width:360px; box-shadow:0 4px 24px rgba(0,0,0,.1); text-align:center; }
+.login-box-logo { background:#00b900; width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 16px; }
+.login-box-title { font-size:20px; font-weight:700; margin-bottom:4px; }
+.login-box-sub { font-size:13px; color:#888; margin-bottom:28px; }
+.login-box-input { width:100%; padding:13px 16px; border:1.5px solid #ddd; border-radius:10px; font-size:15px; outline:none; margin-bottom:12px; transition:border-color .2s; }
+.login-box-input:focus { border-color:#00b900; }
+.login-box-btn { width:100%; padding:14px; background:#00b900; color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:opacity .15s; }
+.login-box-btn:hover { opacity:.9; }
+.login-box-error { color:#e74c3c; font-size:13px; margin-top:8px; min-height:18px; }
 </style>
 </head>
 <body>
+
+<!-- ログインオーバーレイ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-box-logo">📊</div>
+    <div class="login-box-title">管理ダッシュボード</div>
+    <div class="login-box-sub">SSIN STUDIO / most eyes / LUMISS</div>
+    <input class="login-box-input" id="dashLoginPass" type="password" placeholder="パスワードを入力"
+      onkeydown="if(event.key==='Enter')doDashLogin()">
+    <button class="login-box-btn" onclick="doDashLogin()">ログイン</button>
+    <div class="login-box-error" id="dashLoginError"></div>
+  </div>
+</div>
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">📊 管理ダッシュボード</div>
@@ -679,12 +704,24 @@ const TEMPLATES = {
   ],
 };
 
+// ── ログイン ─────────────────────────────────────────
+const DASH_PASS = "ssin2026";
+function doDashLogin() {
+  const val = document.getElementById('dashLoginPass').value;
+  if (val === DASH_PASS) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    initDashboard();
+  } else {
+    document.getElementById('dashLoginError').textContent = 'パスワードが違います';
+  }
+}
+
 // ── Init ────────────────────────────────────────────
-window.addEventListener('load', () => {
+function initDashboard() {
   loadDashboard();
   loadCounseling();
   loadLineFriendsMgmt();
-});
+}
 
 async function loadDashboard() {
   document.getElementById('updatedAt').textContent = 'データ読込中...';
