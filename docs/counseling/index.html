@@ -351,6 +351,15 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
     <!-- ページ1: カウンセリング -->
     <div id="formPage1">
 
+      <!-- LINE経由のお客様のみ: 名前・電話番号 -->
+      <div class="q-card" id="lineCustomerInfoCard" style="display:none">
+        <div class="q-label">フルネーム <span class="q-required">*</span></div>
+        <input class="gf-input" type="text" id="lineNewName" placeholder="例：山田 花子" autocomplete="name">
+        <div style="margin-top:20px" class="q-label">電話番号</div>
+        <input class="gf-input" type="tel" id="lineNewPhone" placeholder="例：090-0000-0000" inputmode="numeric" maxlength="11">
+        <div class="gf-hint">予約情報との紐付けに使用します</div>
+      </div>
+
       <div class="q-card">
         <div class="q-label">本日のメニュー <span class="q-required">*</span></div>
         <div class="gf-chip-group" id="todayMenu">
@@ -664,7 +673,14 @@ function goFormPage(n) {
 
 // ── フォーム送信 ──────────────────────────────────────────
 async function submitForm() {
-  if (LINE_UID_FROM_URL && !currentCustomer.name) { alert("フルネームを入力してください"); return; }
+  // LINE経由の場合、名前・電話番号をフォームから取得
+  if (LINE_UID_FROM_URL) {
+    const name = document.getElementById("lineNewName").value.trim();
+    const phone = document.getElementById("lineNewPhone").value.replace(/-/g,"").trim();
+    if (!name) { alert("フルネームを入力してください"); document.getElementById("lineNewName").focus(); return; }
+    currentCustomer.name = name;
+    currentCustomer.phone = phone;
+  }
   if (!getSelected("todayMenu")) { alert("本日のメニューを選択してください"); return; }
 
   const data = {
@@ -753,23 +769,21 @@ function resetForm() {
 
 // 初期画面表示（LINE UIDがあればお客様モード、なければスタッフ用スタート画面）
 if (LINE_UID_FROM_URL) {
-  document.getElementById("lineLinkedBadge") && (document.getElementById("lineLinkedBadge").style.display = "");
-  showScreen("screen-line-new");
+  // 名前・電話番号カードを表示
+  document.getElementById("lineCustomerInfoCard").style.display = "";
+  // フォームページ2（施術メモ）は非表示
+  document.getElementById("formPage2").style.display = "none";
+  // 送信ボタンに変更
   const nextBtn = document.getElementById("formPage1NextBtn");
   if (nextBtn) { nextBtn.textContent = "送信する"; nextBtn.onclick = submitForm; }
-  const page2 = document.getElementById("formPage2");
-  if (page2) page2.style.display = "none";
+  // 今日の日付をセット
+  const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
+  currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today };
+  // フォームを直接表示
+  goFormPage(1);
+  showScreen("screen-form");
 } else {
   showScreen("screen-start");
-}
-
-function startLineNew() {
-  const name  = document.getElementById("lineNewName").value.trim();
-  const phone = document.getElementById("lineNewPhone").value.replace(/-/g,"").trim();
-  if (!name) { alert("フルネームを入力してください"); return; }
-  const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
-  currentCustomer = {name, phone, line_uid: LINE_UID_FROM_URL, visit_date: today};
-  showFormScreen();
 }
 
 // ── LINE友だち ─────────────────────────────────────────────
