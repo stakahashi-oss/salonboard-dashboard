@@ -194,12 +194,15 @@ function saveCounseling(data) {
 
   // LINE友だちシートに電話番号・名前を逆引きで更新
   if (lineUid && data.phone) {
-    var friendSheet = getSheet("LINE友だち");
-    var friendData = friendSheet.getDataRange().getValues();
+    var friendSheet2 = getSheet("LINE友だち");
+    var friendData = friendSheet2.getDataRange().getValues();
+    var fH2 = friendData[0];
+    var fc2Phone = fH2.indexOf("電話番号"); if (fc2Phone < 0) fc2Phone = 1;
+    var fc2Name  = fH2.indexOf("お名前");   if (fc2Name  < 0) fc2Name  = 2;
     for (var fi = 1; fi < friendData.length; fi++) {
       if (friendData[fi][0] === lineUid) {
-        if (!friendData[fi][1]) friendSheet.getRange(fi + 1, 2).setValue(data.phone);
-        if (!friendData[fi][2]) friendSheet.getRange(fi + 1, 3).setValue(data.name || "");
+        if (!friendData[fi][fc2Phone]) friendSheet2.getRange(fi + 1, fc2Phone + 1).setValue(data.phone);
+        if (!friendData[fi][fc2Name])  friendSheet2.getRange(fi + 1, fc2Name  + 1).setValue(data.name || "");
         break;
       }
     }
@@ -1222,19 +1225,30 @@ function getCustomerProfile(lineUid) {
   // LINE友だち情報
   var friendSheet = getSheet("LINE友だち");
   var friends = friendSheet.getDataRange().getValues();
+  var fHeaders = friends[0];
+  // ヘッダー名で列インデックスを動的取得
+  function fCol(name) { return fHeaders.indexOf(name); }
+  var colPhone   = fCol("電話番号");      if (colPhone   < 0) colPhone   = 1;
+  var colName    = fCol("お名前");        if (colName    < 0) colName    = 2;
+  var colDisp    = fCol("LINE表示名");    if (colDisp    < 0) colDisp    = 3;
+  var colTag     = fCol("タグ");          if (colTag     < 0) colTag     = 4;
+  var colMemo    = fCol("メモ");          if (colMemo    < 0) colMemo    = 5;
+  var colRegAt   = fCol("登録日時");      if (colRegAt   < 0) colRegAt   = 6;
+  var colLastVis = fCol("最終来店日");    if (colLastVis < 0) colLastVis = 7;
+
   var friend = null;
   var friendRowIdx = -1;
   for (var i = 1; i < friends.length; i++) {
     if (String(friends[i][0]).trim() === lineUid) {
       friend = {
-        line_uid:     String(friends[i][0]),
-        phone:        String(friends[i][1] || ""),
-        name:         String(friends[i][2] || ""),
-        display_name: String(friends[i][3] || ""),
-        tags:         String(friends[i][4] || ""),
-        memo:         String(friends[i][5] || ""),
-        registered_at: String(friends[i][6] || ""),
-        last_visit:   String(friends[i][7] || "")
+        line_uid:      String(friends[i][0]),
+        phone:         String(friends[i][colPhone]   || ""),
+        name:          String(friends[i][colName]    || ""),
+        display_name:  String(friends[i][colDisp]    || ""),
+        tags:          String(friends[i][colTag]     || ""),
+        memo:          String(friends[i][colMemo]    || ""),
+        registered_at: String(friends[i][colRegAt]   || ""),
+        last_visit:    String(friends[i][colLastVis] || "")
       };
       friendRowIdx = i;
       break;
@@ -1307,7 +1321,7 @@ function getCustomerProfile(lineUid) {
     }
   }
   if (lastVisit && friendRowIdx > 0) {
-    friendSheet.getRange(friendRowIdx + 1, 8).setValue(lastVisit);
+    friendSheet.getRange(friendRowIdx + 1, colLastVis + 1).setValue(lastVisit);
   }
 
   return {
