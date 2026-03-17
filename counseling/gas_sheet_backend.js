@@ -31,6 +31,7 @@ function doPost(e) {
     if (action === "send_image")         return resp(sendImage(body.line_uid, body.image_url, body.caption));
     if (action === "log_conversion")     return resp(logConversion(body.broadcast_id, body.line_uid, body.url));
     if (action === "send_broadcast_all") return resp(sendBroadcastAll(body));
+    if (action === "upload_image")       return resp(uploadImageToDrive(body.base64, body.filename, body.mime_type));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -1417,6 +1418,27 @@ function getStepStats() {
 // ══════════════════════════════════════════════════════════
 //  レスポンス
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  Google Drive 画像アップロード
+// ══════════════════════════════════════════════════════════
+function uploadImageToDrive(base64Data, filename, mimeType) {
+  if (!base64Data || !filename) return {error: "base64 and filename required"};
+  try {
+    var folders = DriveApp.getFoldersByName("LINE配信画像");
+    var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder("LINE配信画像");
+    var decoded = Utilities.base64Decode(base64Data);
+    var blob = Utilities.newBlob(decoded, mimeType || "image/jpeg", filename);
+    var file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    var fileId = file.getId();
+    // LINE APIはGoogleDriveの直リンクを受け付けるURL形式
+    var url = "https://drive.google.com/uc?export=view&id=" + fileId;
+    return {status: "ok", url: url, file_id: fileId};
+  } catch(e) {
+    return {error: e.toString()};
+  }
+}
+
 function resp(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))

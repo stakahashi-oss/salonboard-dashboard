@@ -570,11 +570,21 @@ textarea.msg-input:focus { border-color:#00b900; }
         <!-- 画像付き配信（共通オプション） -->
         <div style="background:#f8f8f8;border-radius:10px;padding:12px;margin-top:12px">
           <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🖼 画像を追加（任意）</div>
-          <input id="broadcastImageUrl" type="url" placeholder="画像URL（https://...）" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" oninput="previewBroadcastImage()">
-          <div id="broadcastImagePreview" style="margin-top:8px;display:none">
-            <img id="broadcastImageEl" src="" style="max-width:200px;border-radius:8px;border:1px solid #ddd">
+          <!-- アップロード or URL -->
+          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #00b900;color:#00b900;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">
+              📁 画像をアップロード
+              <input type="file" id="broadcastImageFile" accept="image/*" style="display:none" onchange="uploadBroadcastImage(this)">
+            </label>
+            <span style="align-self:center;color:#aaa;font-size:12px">または</span>
+            <input id="broadcastImageUrl" type="url" placeholder="画像URL（https://...）" style="flex:1;min-width:180px;border:1.5px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;outline:none" oninput="previewBroadcastImage()">
           </div>
-          <div style="font-size:11px;color:#aaa;margin-top:4px">画像＋テキストの順で送信されます</div>
+          <div id="imageUploadStatus" style="font-size:12px;color:#888;margin-bottom:4px"></div>
+          <div id="broadcastImagePreview" style="margin-top:4px;display:none">
+            <img id="broadcastImageEl" src="" style="max-width:200px;border-radius:8px;border:1px solid #ddd">
+            <button onclick="clearBroadcastImage()" style="display:block;margin-top:6px;background:none;border:none;color:#e74c3c;font-size:12px;cursor:pointer">✕ 画像を削除</button>
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:4px">画像＋テキストの順で送信されます。アップロードするとGoogle Driveに保存されます。</div>
         </div>
 
         <!-- テスト配信 -->
@@ -2272,7 +2282,7 @@ async function loadStepStats() {
 }
 
 // ══════════════════════════════════════════════════════════
-// 画像プレビュー
+// 画像アップロード・プレビュー
 // ══════════════════════════════════════════════════════════
 function previewBroadcastImage() {
   const url = document.getElementById('broadcastImageUrl').value.trim();
@@ -2283,6 +2293,46 @@ function previewBroadcastImage() {
     previewDiv.style.display = 'block';
   } else {
     previewDiv.style.display = 'none';
+  }
+}
+
+function clearBroadcastImage() {
+  document.getElementById('broadcastImageUrl').value = '';
+  document.getElementById('broadcastImagePreview').style.display = 'none';
+  document.getElementById('broadcastImageFile').value = '';
+  document.getElementById('imageUploadStatus').textContent = '';
+}
+
+async function uploadBroadcastImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('imageUploadStatus');
+  status.textContent = '⏳ アップロード中...';
+  status.style.color = '#888';
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const res = await gasPost({
+      action: 'upload_image',
+      filename: file.name,
+      mime_type: file.type,
+      base64: base64
+    });
+    if (res.status === 'ok' && res.url) {
+      document.getElementById('broadcastImageUrl').value = res.url;
+      previewBroadcastImage();
+      status.textContent = '✅ アップロード完了';
+      status.style.color = '#00b900';
+    } else {
+      throw new Error(res.error || 'アップロード失敗');
+    }
+  } catch(e) {
+    status.textContent = '❌ エラー: ' + e.message;
+    status.style.color = '#e74c3c';
   }
 }
 
