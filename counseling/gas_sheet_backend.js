@@ -17,9 +17,10 @@ function doPost(e) {
     // 通常API
     if (body.key !== SECRET_KEY) return resp({error: "unauthorized"});
     var action = body.action;
-    if (action === "save_counseling") return resp(saveCounseling(body.data));
-    if (action === "log_line")        return resp(logLine(body.data));
-    if (action === "register_friend") return resp(registerFriend(body.data));
+    if (action === "save_counseling")    return resp(saveCounseling(body.data));
+    if (action === "log_line")           return resp(logLine(body.data));
+    if (action === "register_friend")    return resp(registerFriend(body.data));
+    if (action === "get_line_friends")   return resp(getLineFriends());
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -30,9 +31,10 @@ function doGet(e) {
   var key = e.parameter.key;
   var act = e.parameter.action;
   if (key !== SECRET_KEY) return resp({error: "unauthorized"});
-  if (act === "get_all")      return resp(getAllCounseling());
-  if (act === "get_stats")    return resp(getStats());
-  if (act === "search_phone") return resp(searchByPhone(e.parameter.phone));
+  if (act === "get_all")          return resp(getAllCounseling());
+  if (act === "get_stats")        return resp(getStats());
+  if (act === "search_phone")     return resp(searchByPhone(e.parameter.phone));
+  if (act === "get_line_friends") return resp(getLineFriends());
   return resp({error: "unknown action"});
 }
 
@@ -87,7 +89,7 @@ function setupSheet(sheet, name) {
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","肌質","アレルギー","アレルギー詳細","過去施術歴","本日の要望","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新"],
     "LINE配信ログ": ["ログID","送信日時","電話番号","お名前","LINE_UID","種別","内容","ステータス","エラー"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","登録日時","最終来店日"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","メモ","登録日時","最終来店日"],
     "設定": ["キー","値"]
   };
   var colorMap = {
@@ -197,6 +199,23 @@ function searchByPhone(phone) {
   return {reservations: reservations, past_counseling: past};
 }
 
+// ── LINE友だち一覧取得 ───────────────────────────────────
+function getLineFriends() {
+  var sheet = getSheet("LINE友だち");
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return {friends: []};
+  var headers = data[0];
+  var friends = [];
+  for (var i = data.length - 1; i >= 1; i--) {
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = data[i][j];
+    }
+    friends.push(obj);
+  }
+  return {friends: friends};
+}
+
 // ── LINE配信ログ保存 ─────────────────────────────────────
 function logLine(data) {
   var sheet = getSheet("LINE配信ログ");
@@ -223,7 +242,7 @@ function registerFriend(data) {
     }
   }
   var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
-  sheet.appendRow([data.line_uid, data.phone || "", data.name || "", now, ""]);
+  sheet.appendRow([data.line_uid, data.phone || "", data.name || "", data.display_name || "", data.memo || "", now, ""]);
   return {status: "registered"};
 }
 

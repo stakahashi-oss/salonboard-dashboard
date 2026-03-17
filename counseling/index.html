@@ -126,7 +126,39 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:var(--gray); 
 
   <div class="card">
     <button class="btn btn-blue" onclick="startNew()" style="margin-bottom:10px">✏️ 新規で入力する</button>
-    <button class="btn btn-gray" onclick="showHistory()">📊 記録一覧を見る</button>
+    <button class="btn btn-gray" onclick="showHistory()" style="margin-bottom:10px">📊 記録一覧を見る</button>
+    <button class="btn" style="background:#06c755;color:#fff" onclick="showScreen('screen-line')">🟢 LINE友だち登録・一覧</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- Screen LINE: LINE友だち登録・一覧 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen" id="screen-line">
+  <div class="card">
+    <div class="card-title">🟢 LINE友だち登録</div>
+    <div class="field">
+      <label>お名前</label>
+      <input type="text" id="lineRegName" placeholder="例：山田 花子">
+    </div>
+    <div class="field">
+      <label>電話番号</label>
+      <input type="tel" id="lineRegPhone" placeholder="09012345678" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>LINE表示名（わかれば）</label>
+      <input type="text" id="lineRegDisplayName" placeholder="例：はなちゃん">
+    </div>
+    <div class="field">
+      <label>メモ</label>
+      <input type="text" id="lineRegMemo" placeholder="例：常連・川崎店">
+    </div>
+    <button class="btn btn-green" onclick="registerLineFriend()">🟢 登録する</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 LINE友だち一覧</div>
+    <div id="lineFriendsList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
   </div>
 </div>
 
@@ -523,6 +555,75 @@ function resetForm() {
 if (LINE_UID_FROM_URL) {
   document.getElementById("lineLinkedBadge").style.display = "";
 }
+
+// ── LINE友だち登録 ────────────────────────────────────────
+async function registerLineFriend() {
+  const name  = document.getElementById("lineRegName").value.trim();
+  const phone = document.getElementById("lineRegPhone").value.replace(/-/g,"").trim();
+  const displayName = document.getElementById("lineRegDisplayName").value.trim();
+  const memo  = document.getElementById("lineRegMemo").value.trim();
+  if (!name && !phone) { alert("お名前か電話番号を入力してください"); return; }
+
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = "登録中...";
+  try {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        key: SECRET, action: "register_friend",
+        data: {
+          line_uid: "MANUAL_" + Date.now(),
+          phone: phone, name: name,
+          display_name: displayName, memo: memo
+        }
+      })
+    }).then(r => r.json());
+    if (res.error) throw new Error(res.error);
+    alert("✅ 登録しました！");
+    document.getElementById("lineRegName").value = "";
+    document.getElementById("lineRegPhone").value = "";
+    document.getElementById("lineRegDisplayName").value = "";
+    document.getElementById("lineRegMemo").value = "";
+    loadLineFriends();
+  } catch(e) {
+    alert("エラー: " + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "🟢 登録する";
+  }
+}
+
+// ── LINE友だち一覧取得 ────────────────────────────────────
+async function loadLineFriends() {
+  document.getElementById("lineFriendsList").innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const q = new URLSearchParams({key: SECRET, action: "get_line_friends"});
+    const res = await fetch(`${GAS_URL}?${q}`).then(r => r.json());
+    const friends = res.friends || [];
+    if (!friends.length) {
+      document.getElementById("lineFriendsList").innerHTML = '<div style="text-align:center;color:var(--sub);padding:16px">まだ登録がありません</div>';
+      return;
+    }
+    document.getElementById("lineFriendsList").innerHTML = friends.map(f =>
+      `<div class="history-item">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="history-menu">🟢 ${f["お名前"]||f["LINE_UID"]||"―"}</div>
+            <div class="history-date">${f["電話番号"]||""} ／ 登録: ${String(f["登録日時"]||"").substring(0,10)}</div>
+          </div>
+        </div>
+      </div>`
+    ).join("");
+  } catch(e) {
+    document.getElementById("lineFriendsList").innerHTML = `<div class="notice notice-red">エラー: ${e.message}</div>`;
+  }
+}
+
+// LINE友だち画面を開いたら自動で一覧読み込み
+const _origShowScreen = showScreen;
+showScreen = function(id) {
+  _origShowScreen(id);
+  if (id === "screen-line") loadLineFriends();
+};
 
 // ── API ヘルパー（GAS直接呼び出し）──────────────────────
 </script>
