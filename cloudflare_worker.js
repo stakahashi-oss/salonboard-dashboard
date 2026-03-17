@@ -4,6 +4,28 @@ const FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseli
 
 export default {
   async fetch(request, env, ctx) {
+    var url = new URL(request.url);
+
+    // コンバージョン追跡: /track?bid=配信ID&uid=LINE_UID&url=転送先URL
+    if (url.pathname === "/track") {
+      var bid = url.searchParams.get("bid") || "";
+      var uid = url.searchParams.get("uid") || "";
+      var dest = url.searchParams.get("url") || "";
+      if (bid && dest) {
+        ctx.waitUntil(fetch(GAS_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            key: "ssin2026",
+            action: "log_conversion",
+            data: {broadcast_id: bid, line_uid: uid, url: dest}
+          }),
+          redirect: "follow"
+        }));
+      }
+      return Response.redirect(dest || "https://stakahashi-oss.github.io/salonboard-dashboard/", 302);
+    }
+
     var body = null;
     if (request.method === "POST") {
       body = await request.json();
