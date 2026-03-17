@@ -488,6 +488,33 @@ textarea.msg-input:focus { border-color:#00b900; }
       ⚙️ <strong>Lステップ風シナリオ</strong> — 来店後に自動送信するメッセージの内容・タイミングを設定できます。<br>
       プレースホルダー: <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{name}</code> お名前 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{store}</code> 店舗名 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_menu}</code> 次回メニュー &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_timing}</code> 次回時期
     </div>
+    <!-- 送信時間設定 -->
+    <div style="background:#fff;border:1.5px solid #e0e0e0;border-radius:12px;padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:14px;">
+      <span style="font-size:15px;font-weight:700">🕐 毎日の送信時間</span>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px">
+        <select id="sendHourSelect" style="border:1.5px solid #ccc;border-radius:8px;padding:6px 10px;font-size:14px;background:#f8f8f8">
+          <option value="6">06:00</option>
+          <option value="7">07:00</option>
+          <option value="8">08:00</option>
+          <option value="9" selected>09:00</option>
+          <option value="10">10:00</option>
+          <option value="11">11:00</option>
+          <option value="12">12:00</option>
+          <option value="13">13:00</option>
+          <option value="14">14:00</option>
+          <option value="15">15:00</option>
+          <option value="16">16:00</option>
+          <option value="17">17:00</option>
+          <option value="18">18:00</option>
+          <option value="19">19:00</option>
+          <option value="20">20:00</option>
+          <option value="21">21:00</option>
+        </select>
+        <span style="font-size:12px;color:#888">に自動配信</span>
+      </div>
+      <button class="btn btn-green btn-sm" onclick="saveSendHour()">💾 時間を保存して反映</button>
+      <span id="sendHourStatus" style="font-size:12px;color:#888"></span>
+    </div>
     <div id="scenarioSteps"><div class="loading"><span class="spinner"></span>設定を読込中...</div></div>
   </div>
 </main>
@@ -1166,40 +1193,77 @@ async function executePush(lineUid) {
 // ══════════════════════════════════════════════════════════
 const SCENARIO_STEPS = [
   {
+    id: 'reminder',
+    label: '来店前リマインド',
+    icon: '📅',
+    enableKey: '有効_来店前リマインド',
+    timingKey: 'リマインド_来店前日数',
+    timingUnit: '日前',
+    timingNote: '来店の何日前に送るか',
+    msgKey: 'メッセージ_来店前リマインド',
+    defaultTiming: 2,
+    defaultMsg: '{store}です🌸\n\n{name}様、来店のご予約ありがとうございます✨\n\n📅 来店日時: {visit_date}\n⏰ 開始時間: {start_time}\n💆 メニュー: {menu}\n\nご来店をお待ちしております😊\n変更・キャンセルはこちらのLINEへ📱',
+    placeholder: '{name} {store} {visit_date} {start_time} {menu}',
+  },
+  {
     id: 'thanks',
-    label: 'お礼メッセージ（来店翌日）',
+    label: 'お礼メッセージ（来店当日/翌日）',
     icon: '🙏',
-    timingKey: 'タイミング_フォロー1',
+    enableKey: '有効_会計後お礼',
+    timingKey: null,
+    timingUnit: null,
     msgKey: 'メッセージ_お礼',
-    defaultTiming: 1,
+    defaultTiming: null,
     defaultMsg: '本日はご来店いただきありがとうございました🙏\n{store}スタッフ一同より\n\n{name}様にご満足いただけましたでしょうか？✨\n\n➡️ 次回のおすすめ\n「{next_menu}」\n目安は{next_timing}ごろです📅\n\nまたのご来店をお待ちしております🌸\nご予約・ご相談はこちらのLINEへ📱',
+    placeholder: '{name} {store} {next_menu} {next_timing}',
+  },
+  {
+    id: 'cancel',
+    label: 'キャンセル再予約促進',
+    icon: '💌',
+    enableKey: '有効_キャンセル再予約',
+    timingKey: null,
+    timingUnit: null,
+    msgKey: 'メッセージ_キャンセル再予約',
+    defaultTiming: null,
+    defaultMsg: '{store}です💝\n\n{name}様、このたびはご予約をキャンセルされたとのこと承知いたしました🙏\n\nまたご都合がよろしい時にぜひご来店ください✨\n\nご予約・ご相談はいつでもこちらのLINEへ🌸',
+    placeholder: '{name} {store}',
   },
   {
     id: 'step1',
     label: 'ステップ1（14日後）',
     icon: '💬',
+    enableKey: '有効_ステップ14日',
     timingKey: 'タイミング_フォロー2',
+    timingUnit: '日後',
     msgKey: 'メッセージ_14日後',
     defaultTiming: 14,
     defaultMsg: '{store}です💬\n\nご来店から2週間が経ちました✨\nまつげの状態はいかがでしょうか？\n\nそろそろメンテナンスの時期が近づいています😊\nお気軽にご予約ください📅',
+    placeholder: '{name} {store}',
   },
   {
     id: 'step2',
     label: 'ステップ2（30日後）',
     icon: '🌸',
+    enableKey: '有効_ステップ30日',
     timingKey: 'タイミング_フォロー3',
+    timingUnit: '日後',
     msgKey: 'メッセージ_30日後',
     defaultTiming: 30,
     defaultMsg: '{store}です🌸\n\nご来店から1ヶ月が経ちました✨\nそろそろ整える時期です😊\n\n今月もご来店いただけると嬉しいです！\nご予約はこちらのLINEへ📱',
+    placeholder: '{name} {store}',
   },
   {
     id: 'step3',
     label: 'ステップ3（60日後）',
     icon: '💝',
+    enableKey: '有効_ステップ60日',
     timingKey: 'タイミング_フォロー4',
+    timingUnit: '日後',
     msgKey: 'メッセージ_60日後',
     defaultTiming: 60,
     defaultMsg: '{store}です💝\n\nご来店から2ヶ月が経ちました！\n{name}様にまた会いたいなとご連絡しました😊\n\nぜひまたご来店ください✨\nご予約・ご相談はこちらのLINEへ🌸',
+    placeholder: '{name} {store} {next_menu} {next_timing}',
   },
 ];
 
@@ -1210,18 +1274,51 @@ async function loadScenarioSettings() {
   try {
     const data = await gasGet('get_settings');
     scenarioSettings = data.settings || {};
+    // 送信時間セレクトに反映
+    const hour = scenarioSettings['送信時間'] || '9';
+    const sel = document.getElementById('sendHourSelect');
+    if (sel) sel.value = hour;
     renderScenarioSteps();
   } catch(e) {
     document.getElementById('scenarioSteps').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
 }
 
+async function saveSendHour() {
+  const hour = document.getElementById('sendHourSelect').value;
+  const statusEl = document.getElementById('sendHourStatus');
+  statusEl.textContent = '保存中...';
+  try {
+    await gasPost({action: 'update_setting', key_name: '送信時間', value: hour});
+    const r = await gasPost({action: 'reset_trigger'});
+    if (r.error) throw new Error(r.error);
+    scenarioSettings['送信時間'] = hour;
+    statusEl.textContent = `✅ ${hour}:00 に設定しました`;
+    setTimeout(() => { statusEl.textContent = ''; }, 4000);
+  } catch(e) {
+    statusEl.textContent = `❌ エラー: ${e.message}`;
+  }
+}
+
 function renderScenarioSteps() {
   document.getElementById('scenarioSteps').innerHTML = SCENARIO_STEPS.map((step, idx) => {
-    const timing = scenarioSettings[step.timingKey] || step.defaultTiming;
-    const msg = scenarioSettings[step.msgKey] || step.defaultMsg;
+    const timing  = step.timingKey ? (scenarioSettings[step.timingKey] || step.defaultTiming) : null;
+    const msg     = scenarioSettings[step.msgKey] || step.defaultMsg;
+    const enabled = step.enableKey ? (scenarioSettings[step.enableKey] !== 'OFF') : true;
+    const placeholders = (step.placeholder || '{name} {store}').split(' ').map(p => `<code>${p}</code>`).join(' ');
+
+    const timingRow = step.timingKey ? `
+        <div class="scenario-timing-row">
+          <span class="scenario-timing-label">⏱ ${step.timingNote || 'タイミング'}:</span>
+          <input class="scenario-timing-input" type="number" id="timing-${step.id}" value="${timing}" min="1" max="365">
+          <span style="font-size:13px;color:#555">${step.timingUnit}</span>
+        </div>` : `
+        <div style="font-size:12px;color:#888;margin-bottom:10px">
+          ⚡ 自動検知トリガー（タイミング設定なし）
+        </div>`;
+
     return `
-      <div class="scenario-step active-step" id="scenario-${step.id}">
+      <div class="scenario-step ${enabled ? 'active-step' : ''}" id="scenario-${step.id}">
         <div class="scenario-step-header">
           <div class="scenario-step-title">
             <div class="scenario-step-num">${idx + 1}</div>
@@ -1229,24 +1326,19 @@ function renderScenarioSteps() {
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <label class="scenario-toggle" title="ON/OFFを切替">
-              <input type="checkbox" id="toggle-${step.id}" checked onchange="toggleScenarioStep('${step.id}',this.checked)">
+              <input type="checkbox" id="toggle-${step.id}" ${enabled ? 'checked' : ''} onchange="toggleScenarioStep('${step.id}','${step.enableKey}',this.checked)">
               <span class="scenario-toggle-slider"></span>
             </label>
-            <span style="font-size:12px;color:#888" id="toggle-label-${step.id}">ON</span>
+            <span style="font-size:12px;color:#888" id="toggle-label-${step.id}">${enabled ? 'ON' : 'OFF'}</span>
           </div>
         </div>
-        <div class="scenario-timing-row">
-          <span class="scenario-timing-label">⏱ タイミング（来店後）:</span>
-          <input class="scenario-timing-input" type="number" id="timing-${step.id}" value="${timing}" min="0" max="365">
-          <span style="font-size:13px;color:#555">日後</span>
-        </div>
+        ${timingRow}
         <div class="scenario-placeholder-hint">
-          使えるプレースホルダー:
-          <code>{name}</code> <code>{store}</code> <code>{next_menu}</code> <code>{next_timing}</code>
+          使えるプレースホルダー: ${placeholders}
         </div>
         <textarea class="scenario-textarea" id="msg-${step.id}" placeholder="メッセージテンプレートを入力...">${msg}</textarea>
         <div class="scenario-actions">
-          <button class="btn btn-green" onclick="saveScenarioStep('${step.id}','${step.timingKey}','${step.msgKey}')">💾 保存</button>
+          <button class="btn btn-green" onclick="saveScenarioStep('${step.id}',${idx})">💾 保存</button>
           <button class="btn btn-blue btn-sm" onclick="previewScenarioStep('${step.id}')">👁 プレビュー</button>
           <button class="btn btn-gray btn-sm" onclick="resetScenarioStep('${step.id}',${idx})">↩ リセット</button>
           <span id="save-status-${step.id}" style="font-size:12px;color:#888;align-self:center"></span>
@@ -1256,34 +1348,37 @@ function renderScenarioSteps() {
   }).join('');
 }
 
-function toggleScenarioStep(id, checked) {
-  const stepEl = document.getElementById(`scenario-${id}`);
+async function toggleScenarioStep(id, enableKey, checked) {
+  const stepEl  = document.getElementById(`scenario-${id}`);
   const labelEl = document.getElementById(`toggle-label-${id}`);
-  if (checked) {
-    stepEl.classList.add('active-step');
-    labelEl.textContent = 'ON';
-  } else {
-    stepEl.classList.remove('active-step');
-    labelEl.textContent = 'OFF';
+  const value   = checked ? 'ON' : 'OFF';
+  stepEl.classList.toggle('active-step', checked);
+  labelEl.textContent = value;
+  if (enableKey) {
+    await gasPost({action: 'update_setting', key_name: enableKey, value: value});
+    scenarioSettings[enableKey] = value;
   }
 }
 
-async function saveScenarioStep(id, timingKey, msgKey) {
-  const timing = document.getElementById(`timing-${id}`).value.trim();
-  const msg = document.getElementById(`msg-${id}`).value.trim();
+async function saveScenarioStep(id, idx) {
+  const step     = SCENARIO_STEPS[idx];
+  const msg      = document.getElementById(`msg-${id}`).value.trim();
   const statusEl = document.getElementById(`save-status-${id}`);
 
   if (!msg) { alert('メッセージを入力してください'); return; }
   statusEl.textContent = '保存中...';
 
   try {
-    const [r1, r2] = await Promise.all([
-      gasPost({action: 'update_setting', key_name: timingKey, value: timing}),
-      gasPost({action: 'update_setting', key_name: msgKey, value: msg}),
-    ]);
-    if (r1.error || r2.error) throw new Error(r1.error || r2.error);
-    scenarioSettings[timingKey] = timing;
-    scenarioSettings[msgKey] = msg;
+    const posts = [gasPost({action: 'update_setting', key_name: step.msgKey, value: msg})];
+    if (step.timingKey) {
+      const timing = document.getElementById(`timing-${id}`).value.trim();
+      posts.push(gasPost({action: 'update_setting', key_name: step.timingKey, value: timing}));
+      scenarioSettings[step.timingKey] = timing;
+    }
+    const results = await Promise.all(posts);
+    const err = results.find(r => r.error);
+    if (err) throw new Error(err.error);
+    scenarioSettings[step.msgKey] = msg;
     statusEl.textContent = '✅ 保存済み';
     setTimeout(() => { statusEl.textContent = ''; }, 3000);
   } catch(e) {
@@ -1295,10 +1390,13 @@ function previewScenarioStep(id) {
   const msg = document.getElementById(`msg-${id}`).value;
   const previewEl = document.getElementById(`preview-${id}`);
   const previewText = msg
-    .replace(/\{name\}/g, '田中 花子')
-    .replace(/\{store\}/g, 'SSIN STUDIO')
-    .replace(/\{next_menu\}/g, 'まつげパーマ')
-    .replace(/\{next_timing\}/g, '1ヶ月後');
+    .replace(/\{name\}/g,        '田中 花子')
+    .replace(/\{store\}/g,       'SSIN STUDIO')
+    .replace(/\{next_menu\}/g,   'まつげパーマ')
+    .replace(/\{next_timing\}/g, '1ヶ月後')
+    .replace(/\{visit_date\}/g,  '2026/04/01')
+    .replace(/\{start_time\}/g,  '10:00')
+    .replace(/\{menu\}/g,        'まつげエクステ');
   previewEl.style.display = previewEl.style.display === 'none' || !previewEl.style.display ? '' : 'none';
   previewEl.textContent = previewText;
 }
@@ -1306,7 +1404,7 @@ function previewScenarioStep(id) {
 function resetScenarioStep(id, idx) {
   if (!confirm('デフォルトのメッセージに戻しますか？')) return;
   const step = SCENARIO_STEPS[idx];
-  document.getElementById(`timing-${id}`).value = step.defaultTiming;
+  if (step.timingKey) document.getElementById(`timing-${id}`).value = step.defaultTiming;
   document.getElementById(`msg-${id}`).value = step.defaultMsg;
   document.getElementById(`preview-${id}`).style.display = 'none';
 }
