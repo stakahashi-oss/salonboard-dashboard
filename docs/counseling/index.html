@@ -508,9 +508,8 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
   <div class="page">
     <div class="done-card">
       <div class="done-icon">✅</div>
-      <div class="done-title" id="doneTitleMsg">送信しました！</div>
-      <div class="done-sub" id="doneMsg">スタッフにお声がけください</div>
-      <button class="done-close-btn" id="doneBtn">次のお客様へ</button>
+      <div class="done-title">ご回答ありがとうございました</div>
+      <div class="done-sub">スタッフにお声がけください</div>
     </div>
   </div>
 </div>
@@ -726,17 +725,6 @@ async function submitForm() {
       body: JSON.stringify({key: SECRET, action:"save_counseling", data}),
     }).then(r => r.json());
     if (res.error) throw new Error(res.error);
-    if (LINE_UID_FROM_URL) {
-      document.getElementById("doneTitleMsg").textContent = "送信しました！";
-      document.getElementById("doneMsg").textContent = "スタッフにお声がけください";
-      document.getElementById("doneBtn").textContent = "閉じる";
-      document.getElementById("doneBtn").onclick = () => window.close();
-    } else {
-      document.getElementById("doneTitleMsg").textContent = "保存しました！";
-      document.getElementById("doneMsg").textContent = `${data.name}様のカウンセリングを記録しました`;
-      document.getElementById("doneBtn").textContent = "次のお客様へ";
-      document.getElementById("doneBtn").onclick = () => { resetForm(); showScreen("screen-form"); };
-    }
     showScreen("screen-done");
     resetForm();
   } catch(e) {
