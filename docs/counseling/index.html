@@ -496,31 +496,6 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
 
       <div class="gf-btn-row" style="padding:0 4px">
         <div></div>
-        <button class="gf-submit-btn" id="formPage1NextBtn" onclick="goFormPage(2)">次へ →</button>
-      </div>
-    </div>
-
-    <!-- ページ2：施術メモ（スタッフ用） -->
-    <div id="formPage2" style="display:none">
-      <div class="q-card">
-        <div style="font-size:16px;font-weight:600;color:#202124;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #00b900">施術メモ（スタッフ記入）</div>
-        <div class="q-label">施術内容・注意点</div>
-        <textarea class="gf-textarea" id="treatmentMemo" placeholder="例：ロット1番使用。眉ワックス後に眉パーマ。" style="min-height:120px"></textarea>
-      </div>
-      <div class="q-card">
-        <div style="font-size:16px;font-weight:600;color:#202124;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #00b900">次回提案</div>
-        <div class="q-label">次回おすすめメニュー</div>
-        <input class="gf-input" type="text" id="nextMenu" placeholder="例：眉毛ワックス（リタッチ）">
-        <div style="margin-top:20px" class="q-label">次回来店の目安</div>
-        <div class="gf-radio-group" id="nextTiming">
-          <div class="gf-radio-item" onclick="selectRadio(this,'nextTiming')"><div class="gf-radio-circle"></div><div class="gf-radio-label">1ヶ月後</div></div>
-          <div class="gf-radio-item selected" onclick="selectRadio(this,'nextTiming')"><div class="gf-radio-circle"></div><div class="gf-radio-label">1.5ヶ月後</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'nextTiming')"><div class="gf-radio-circle"></div><div class="gf-radio-label">2ヶ月後</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'nextTiming')"><div class="gf-radio-circle"></div><div class="gf-radio-label">3ヶ月後</div></div>
-        </div>
-      </div>
-      <div class="gf-btn-row" style="padding:0 4px">
-        <button class="gf-back-btn" onclick="goFormPage(1)">← 戻る</button>
         <button class="gf-submit-btn" id="submitBtn" onclick="submitForm()">送信する</button>
       </div>
     </div>
@@ -687,15 +662,7 @@ function showFormScreen() {
 }
 
 function goFormPage(n) {
-  if (n === 2) {
-    const menu = getSelected("f_menu");
-    if (!menu) { document.getElementById("menuSelectPrompt").style.display = ""; alert("本日の施術内容を選択してください"); return; }
-    const name = document.getElementById("f_name").value.trim();
-    if (!name) { alert("お名前を入力してください"); document.getElementById("f_name").focus(); return; }
-    if (!getSelected("f_freq")) { alert("施術メニューの利用頻度を選択してください"); return; }
-  }
-  document.getElementById("formPage1").style.display = n===1 ? "" : "none";
-  document.getElementById("formPage2").style.display = n===2 ? "" : "none";
+  document.getElementById("formPage1").style.display = "";
   window.scrollTo(0,0);
 }
 
@@ -703,6 +670,10 @@ function goFormPage(n) {
 async function submitForm() {
   const name  = document.getElementById("f_name").value.trim();
   if (!name) { alert("お名前を入力してください"); return; }
+  if (!getSelected("f_menu")) {
+    document.getElementById("menuSelectPrompt").style.display = "";
+    alert("本日の施術内容を選択してください"); return;
+  }
 
   const data = {
     store:          currentCustomer.store || "",
@@ -745,10 +716,6 @@ async function submitForm() {
     l_design:       getSelected("l_design"),
     l_homecare:     document.getElementById("l_homecare").value.trim(),
     l_sns:          getSelected("l_sns"),
-    // スタッフ
-    treatment_memo: document.getElementById("treatmentMemo").value,
-    next_menu:      document.getElementById("nextMenu").value,
-    next_timing:    getSelected("nextTiming"),
   };
 
   const btn = document.getElementById("submitBtn");
@@ -808,19 +775,17 @@ async function showHistory() {
 function resetForm() {
   currentCustomer = {}; currentReservation = {};
   window._searchResults = []; window._pastCounseling = null;
-  ["f_name","f_address","f_phone","f_birthdate","f_job","l_homecare","treatmentMemo","nextMenu","searchPhone"]
+  ["f_name","f_address","f_phone","f_birthdate","f_job","l_homecare","searchPhone"]
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   ["f_source","f_transfer","f_freq","f_menu",
    "b_timing","b_self_care","b_surgery","b_color","b_design","b_impression",
-   "l_timing","l_glue","l_surgery","l_eye_look","l_design","l_sns","b_sns","nextTiming"]
+   "l_timing","l_glue","l_surgery","l_eye_look","l_design","l_sns","b_sns"]
     .forEach(g => document.querySelectorAll("#"+g+" .gf-radio-item").forEach(b => b.classList.remove("selected")));
   document.querySelectorAll(".gf-chip.selected, .gf-check-item.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("transferDetailField").style.display = "none";
   document.getElementById("section-brow").style.display = "none";
   document.getElementById("section-lash").style.display = "none";
   document.getElementById("menuSelectPrompt").style.display = "none";
-  const defaultTiming = document.querySelectorAll("#nextTiming .gf-radio-item")[1];
-  if (defaultTiming) defaultTiming.classList.add("selected");
   screenHistory = ["screen-start"];
 }
 
@@ -876,9 +841,6 @@ showScreen = function(id) {
   const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
   if (LINE_UID_FROM_URL) {
     currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today };
-    document.getElementById("formPage2").style.display = "none";
-    const nextBtn = document.getElementById("formPage1NextBtn");
-    if (nextBtn) { nextBtn.textContent = "送信する"; nextBtn.onclick = submitForm; }
   } else {
     currentCustomer = { visit_date: today };
   }

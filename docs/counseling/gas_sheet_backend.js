@@ -13,7 +13,8 @@ function doPost(e) {
     if (body.events) return handleLineWebhook(body);
     if (body.key !== SECRET_KEY) return resp({error: "unauthorized"});
     var action = body.action;
-    if (action === "save_counseling")  return resp(saveCounseling(body.data));
+    if (action === "save_counseling")    return resp(saveCounseling(body.data));
+    if (action === "update_counseling")  return resp(updateCounseling(body.record_id, body));
     if (action === "log_line")         return resp(logLine(body.data));
     if (action === "register_friend")  return resp(registerFriend(body.data));
     if (action === "get_line_friends") return resp(getLineFriends());
@@ -225,6 +226,33 @@ function saveCounseling(data) {
     data.homecare || "", data.sns_ok || "", data.consent || ""
   ]);
   return {status: "ok", id: id, line_sent: lineSent};
+}
+
+// ══════════════════════════════════════════════════════════
+//  カウンセリング スタッフ追記（施術メモ・次回提案）
+// ══════════════════════════════════════════════════════════
+function updateCounseling(recordId, body) {
+  if (!recordId) return {error: "record_id required"};
+  var sheet = getSheet("カウンセリング記録");
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var idIdx   = headers.indexOf("記録ID");
+  var memoIdx = headers.indexOf("施術メモ");
+  var nextIdx = headers.indexOf("次回提案");
+  var timingIdx = headers.indexOf("次回提案時期");
+  var updatedIdx = headers.indexOf("最終更新");
+  if (idIdx < 0) return {error: "記録IDカラムが見つかりません"};
+  var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][idIdx]) === String(recordId)) {
+      if (memoIdx   >= 0) sheet.getRange(i+1, memoIdx+1).setValue(body.treatment_memo || "");
+      if (nextIdx   >= 0) sheet.getRange(i+1, nextIdx+1).setValue(body.next_menu || "");
+      if (timingIdx >= 0) sheet.getRange(i+1, timingIdx+1).setValue(body.next_timing || "");
+      if (updatedIdx >= 0) sheet.getRange(i+1, updatedIdx+1).setValue(now);
+      return {status: "ok"};
+    }
+  }
+  return {error: "record not found: " + recordId};
 }
 
 // ══════════════════════════════════════════════════════════

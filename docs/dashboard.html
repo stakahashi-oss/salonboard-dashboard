@@ -844,6 +844,7 @@ function refreshAll() { loadDashboard(); }
 // ── GASレコードをダッシュボード用にマッピング ────────────
 function mapGasRecord(r) {
   return {
+    record_id:      String(r['記録ID']        || ''),
     created_at:     String(r['記録日時']      || ''),
     store:          String(r['店舗名']        || ''),
     visit_date:     String(r['来店日']        || ''),
@@ -852,11 +853,10 @@ function mapGasRecord(r) {
     name:           String(r['お名前']        || ''),
     menu:           String(r['メニュー']      || ''),
     staff:          String(r['担当スタッフ']  || ''),
-    skin_type:      String(r['肌質']          || ''),
+    freq:           String(r['施術頻度']      || ''),
     allergy:        String(r['アレルギー']    || ''),
-    allergy_detail: String(r['アレルギー詳細']|| ''),
-    past_treatment: String(r['過去施術歴']    || ''),
-    request:        String(r['本日の要望']    || ''),
+    b_design:       String(r['デザイン希望']  || ''),
+    l_design:       String(r['まつ毛デザイン希望'] || ''),
     treatment_memo: String(r['施術メモ']      || ''),
     next_menu:      String(r['次回提案']      || ''),
     next_timing:    String(r['次回提案時期']  || ''),
@@ -936,28 +936,82 @@ function renderCounseling(records) {
 }
 
 function showCounselingDetail(r) {
+  const hasMemo = !!r.treatment_memo;
   const html = `
-    <div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px" onclick="this.remove()">
-      <div style="background:#fff;border-radius:14px;padding:24px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div id="counselingModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px" onclick="this.remove()">
+      <div style="background:#fff;border-radius:14px;padding:24px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto" onclick="event.stopPropagation()">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div style="font-size:16px;font-weight:700">📋 ${r.name||'詳細'}</div>
-          <button onclick="this.closest('[style*=fixed]').remove()" style="background:#eee;border:none;border-radius:8px;padding:4px 10px;cursor:pointer">✕</button>
+          <button onclick="document.getElementById('counselingModal').remove()" style="background:#eee;border:none;border-radius:8px;padding:4px 10px;cursor:pointer">✕</button>
         </div>
-        ${[
-          ['記録日時', r.created_at], ['店舗', r.store], ['来店日', r.visit_date],
-          ['電話番号', r.phone], ['メニュー', r.menu], ['担当', r.staff],
-          ['肌質', r.skin_type], ['アレルギー', r.allergy], ['アレルギー詳細', r.allergy_detail],
-          ['過去施術歴', r.past_treatment], ['本日の要望', r.request],
-          ['施術メモ', r.treatment_memo], ['次回提案', r.next_menu], ['次回時期', r.next_timing],
-          ['LINE UID', r.line_uid], ['LINE送信', r.line_status],
-        ].filter(([,v])=>v).map(([k,v])=>`
-          <div style="margin-bottom:10px">
-            <div style="font-size:11px;color:#888">${k}</div>
-            <div style="font-size:14px;padding:6px 0;border-bottom:1px solid #f0f0f0">${v}</div>
-          </div>`).join('')}
+
+        <!-- お客様情報 -->
+        <div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px">
+          ${[
+            ['記録日時', r.created_at?.substring(0,16)], ['店舗', r.store], ['来店日', r.visit_date],
+            ['電話番号', r.phone], ['本日のメニュー', r.menu], ['担当', r.staff],
+            ['施術頻度', r.freq], ['アレルギー', r.allergy],
+            ['眉毛デザイン', r.b_design], ['まつ毛デザイン', r.l_design],
+            ['LINE送信', r.line_status],
+          ].filter(([,v])=>v).map(([k,v])=>`
+            <div style="display:flex;gap:8px;margin-bottom:6px">
+              <div style="color:#888;min-width:110px;flex-shrink:0">${k}</div>
+              <div style="font-weight:500">${v}</div>
+            </div>`).join('')}
+        </div>
+
+        <!-- スタッフ記入欄 -->
+        <div style="border-top:2px solid #00b900;padding-top:16px">
+          <div style="font-size:14px;font-weight:700;color:#00b900;margin-bottom:12px">✏️ スタッフ記入</div>
+
+          <div style="margin-bottom:12px">
+            <div style="font-size:12px;color:#666;margin-bottom:6px">施術メモ</div>
+            <textarea id="modal_memo" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px;font-size:14px;font-family:inherit;min-height:80px;resize:vertical" placeholder="施術内容・使用ロット・注意点など">${r.treatment_memo||''}</textarea>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <div style="font-size:12px;color:#666;margin-bottom:6px">次回おすすめメニュー</div>
+            <input id="modal_next_menu" type="text" value="${r.next_menu||''}" placeholder="例：眉毛ワックス（リタッチ）" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px;font-size:14px">
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-size:12px;color:#666;margin-bottom:8px">次回来店の目安</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${['1ヶ月後','1.5ヶ月後','2ヶ月後','3ヶ月後'].map(t=>`
+                <button onclick="document.querySelectorAll('.timing-btn').forEach(b=>b.style.background='#f0f0f0');this.style.background='#00b900';this.style.color='#fff';document.getElementById('modal_next_timing').value=this.textContent"
+                  class="timing-btn"
+                  style="padding:7px 16px;border:1.5px solid #ddd;border-radius:20px;cursor:pointer;font-size:13px;background:${r.next_timing===t?'#00b900':'#f0f0f0'};color:${r.next_timing===t?'#fff':'#333'}">${t}</button>
+              `).join('')}
+            </div>
+            <input type="hidden" id="modal_next_timing" value="${r.next_timing||''}">
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button onclick="document.getElementById('counselingModal').remove()" style="padding:10px 20px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:14px">キャンセル</button>
+            <button onclick="saveCounselingStaff('${r.record_id}')" style="padding:10px 24px;background:#00b900;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600">💾 保存</button>
+          </div>
+        </div>
       </div>
     </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
+}
+
+async function saveCounselingStaff(recordId) {
+  const memo      = document.getElementById('modal_memo').value;
+  const nextMenu  = document.getElementById('modal_next_menu').value.trim();
+  const nextTiming = document.getElementById('modal_next_timing').value;
+  try {
+    const res = await gasPost({ action: 'update_counseling', record_id: recordId, treatment_memo: memo, next_menu: nextMenu, next_timing: nextTiming });
+    if (res.error) throw new Error(res.error);
+    document.getElementById('counselingModal').remove();
+    // ローカルの一覧も更新
+    const idx = counselingAll.findIndex(r => r.record_id === recordId);
+    if (idx >= 0) { counselingAll[idx].treatment_memo = memo; counselingAll[idx].next_menu = nextMenu; counselingAll[idx].next_timing = nextTiming; }
+    renderCounseling(counselingAll);
+    alert('✅ 保存しました');
+  } catch(e) {
+    alert('保存に失敗しました: ' + e.message);
+  }
 }
 
 function showTab(name, el) {
