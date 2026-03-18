@@ -389,6 +389,39 @@ textarea.msg-input:focus { border-color:#00b900; }
         </div>
       </div>
 
+      <!-- 配信条件（絞り込み） -->
+      <div style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px;margin-top:14px">
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:10px">🎯 配信条件（絞り込み）</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
+          <div style="flex:1;min-width:160px">
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:4px">🏷️ タグ</label>
+            <select id="broadcastTagFilter" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:7px 10px;font-size:13px;background:#fff">
+              <option value="">👥 全員</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:4px">🏠 来店回数</label>
+            <div style="display:flex;align-items:center;gap:4px">
+              <input type="number" id="broadcastMinVisits" placeholder="0" min="0" style="width:55px;border:1.5px solid #ddd;border-radius:8px;padding:6px 8px;font-size:13px;text-align:center">
+              <span style="font-size:12px;color:#888">〜</span>
+              <input type="number" id="broadcastMaxVisits" placeholder="∞" min="0" style="width:55px;border:1.5px solid #ddd;border-radius:8px;padding:6px 8px;font-size:13px;text-align:center">
+              <span style="font-size:12px;color:#888">回</span>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#666;display:block;margin-bottom:4px">📅 最終来店から</label>
+            <div style="display:flex;align-items:center;gap:4px">
+              <input type="number" id="broadcastMinLastDays" placeholder="0" min="0" style="width:55px;border:1.5px solid #ddd;border-radius:8px;padding:6px 8px;font-size:13px;text-align:center">
+              <span style="font-size:12px;color:#888">〜</span>
+              <input type="number" id="broadcastMaxLastDays" placeholder="∞" min="0" style="width:55px;border:1.5px solid #ddd;border-radius:8px;padding:6px 8px;font-size:13px;text-align:center">
+              <span style="font-size:12px;color:#888">日経過</span>
+            </div>
+          </div>
+          <button class="btn btn-sm" style="background:#6366f1;color:#fff;white-space:nowrap" onclick="previewBroadcastTargets()">👥 対象人数を確認</button>
+        </div>
+        <div id="broadcastTargetPreview" style="margin-top:8px;font-size:13px;color:#555"></div>
+      </div>
+
       <!-- テスト配信 -->
       <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px;margin-top:10px">
         <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">🧪 テスト配信</div>
@@ -403,7 +436,7 @@ textarea.msg-input:focus { border-color:#00b900; }
 
       <!-- 送信確認 -->
       <div class="send-confirm" id="sendConfirm" style="margin-top:14px">
-        ⚠️ <strong>全友だちに一斉送信</strong>します。送信後は取り消せません。本当に送信しますか？
+        ⚠️ <span id="sendConfirmText"><strong>全友だちに一斉送信</strong></span>します。送信後は取り消せません。本当に送信しますか？
         <div style="margin-top:10px;display:flex;gap:8px">
           <button class="btn btn-red" onclick="executeHomeBroadcast()">送信する</button>
           <button class="btn btn-gray" onclick="cancelConfirm()">キャンセル</button>
@@ -1280,13 +1313,59 @@ function toggleHomeSchedule(val) {
   document.getElementById('sendBtn').textContent = val === 'schedule' ? '📅 予約する' : '📤 一斉配信する';
 }
 
-function confirmHomeBroadcast() {
+async function confirmHomeBroadcast() {
   const content = getMessageContent();
   if (!content) { alert('メッセージを入力してください'); return; }
   const timingEl = document.querySelector('input[name="homeTiming"]:checked');
   const timing = timingEl ? timingEl.value : 'now';
   if (timing === 'schedule') { executeHomeBroadcast(); return; }
+  // 対象人数を取得して確認ダイアログに表示
+  const cond = getBroadcastConditions();
+  const hasFilter = cond.tag || cond.min_visits || cond.max_visits || cond.min_last_days || cond.max_last_days;
+  const confirmTextEl = document.getElementById('sendConfirmText');
+  if (hasFilter) {
+    try {
+      const params = {tag_filter: cond.tag};
+      if (cond.min_visits) params.min_visits = cond.min_visits;
+      if (cond.max_visits) params.max_visits = cond.max_visits;
+      if (cond.min_last_days) params.min_last_days = cond.min_last_days;
+      if (cond.max_last_days) params.max_last_days = cond.max_last_days;
+      const r = await gasGet('get_friends_filtered', params);
+      const count = (r.count || 0);
+      const tagLabel = cond.tag ? `「${cond.tag}」タグの` : '';
+      confirmTextEl.innerHTML = `<strong>${tagLabel}${count}人に送信</strong>`;
+    } catch(e) { confirmTextEl.innerHTML = '<strong>条件対象者に送信</strong>'; }
+  } else {
+    confirmTextEl.innerHTML = '<strong>全友だちに一斉送信</strong>';
+  }
   document.getElementById('sendConfirm').style.display = 'block';
+}
+
+function getBroadcastConditions() {
+  return {
+    tag:           (document.getElementById('broadcastTagFilter') || {}).value || '',
+    min_visits:    (document.getElementById('broadcastMinVisits') || {}).value || '',
+    max_visits:    (document.getElementById('broadcastMaxVisits') || {}).value || '',
+    min_last_days: (document.getElementById('broadcastMinLastDays') || {}).value || '',
+    max_last_days: (document.getElementById('broadcastMaxLastDays') || {}).value || ''
+  };
+}
+
+async function previewBroadcastTargets() {
+  const el = document.getElementById('broadcastTargetPreview');
+  el.textContent = '確認中...';
+  const cond = getBroadcastConditions();
+  try {
+    const params = {tag_filter: cond.tag};
+    if (cond.min_visits) params.min_visits = cond.min_visits;
+    if (cond.max_visits) params.max_visits = cond.max_visits;
+    if (cond.min_last_days) params.min_last_days = cond.min_last_days;
+    if (cond.max_last_days) params.max_last_days = cond.max_last_days;
+    const r = await gasGet('get_friends_filtered', params);
+    const count = r.count || 0;
+    const tagLabel = cond.tag ? `タグ「${cond.tag}」` : '全員';
+    el.innerHTML = `👥 <strong>${count}人</strong>が対象（${tagLabel}）`;
+  } catch(e) { el.textContent = 'エラー: ' + e.message; }
 }
 
 function cancelConfirm() { document.getElementById('sendConfirm').style.display = 'none'; }
@@ -1330,14 +1409,18 @@ async function executeHomeBroadcast() {
   }
 
   // 今すぐ送信（send_broadcast_all 経由で画像対応）
-  const targets = allFriends.filter(f => f['LINE_UID']);
-  if (!targets.length) { alert('送信対象がいません'); return; }
+  const cond = getBroadcastConditions();
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
   statusEl.textContent = '送信中...';
   try {
-    const res = await gasPost({action:'send_broadcast_all', message:content, image_url:imageUrl, tag:''});
-    statusEl.textContent = `✅ 完了 ${res.sent || 0}/${res.total || targets.length}件`;
+    const payload = {action:'send_broadcast_all', message:content, image_url:imageUrl, tag: cond.tag};
+    if (cond.min_visits)    payload.min_visits    = parseInt(cond.min_visits);
+    if (cond.max_visits)    payload.max_visits    = parseInt(cond.max_visits);
+    if (cond.min_last_days) payload.min_last_days = parseInt(cond.min_last_days);
+    if (cond.max_last_days) payload.max_last_days = parseInt(cond.max_last_days);
+    const res = await gasPost(payload);
+    statusEl.textContent = `✅ 完了 ${res.sent || 0}/${res.total || 0}件`;
   } catch(e) {
     statusEl.textContent = `❌ ${e.message}`;
   }
