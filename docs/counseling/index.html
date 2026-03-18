@@ -533,6 +533,7 @@ let screenHistory = ["screen-start"];
 
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const LINE_UID_FROM_URL = URL_PARAMS.get("uid") || "";
+const STORE_FROM_URL = URL_PARAMS.get("store") || "";
 
 // ── 画面遷移 ─────────────────────────────────────────────
 function showScreen(id) {
@@ -823,9 +824,9 @@ showScreen = function(id) {
 {
   const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
   if (LINE_UID_FROM_URL) {
-    currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today };
+    currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today, store: STORE_FROM_URL };
   } else {
-    currentCustomer = { visit_date: today };
+    currentCustomer = { visit_date: today, store: STORE_FROM_URL };
   }
   showScreen("screen-form");
 }

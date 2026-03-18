@@ -14,10 +14,14 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
 #loginScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:32px 24px; background:#fff; }
 .login-logo { width:64px; height:64px; background:linear-gradient(135deg,#667eea,#764ba2); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:20px; }
 .login-title { font-size:20px; font-weight:700; margin-bottom:6px; }
-.login-sub { font-size:13px; color:#888; margin-bottom:32px; }
+.login-sub { font-size:13px; color:#888; margin-bottom:24px; }
+.login-label { font-size:12px; color:#888; font-weight:600; margin-bottom:6px; align-self:flex-start; }
+.login-select { width:100%; padding:14px 16px; border:1.5px solid #ddd; border-radius:12px; font-size:15px; outline:none; margin-bottom:12px; background:#fff; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+.login-select:focus { border-color:#667eea; }
 .login-input { width:100%; padding:14px 16px; border:1.5px solid #ddd; border-radius:12px; font-size:16px; outline:none; margin-bottom:12px; }
 .login-input:focus { border-color:#667eea; }
 .login-btn { width:100%; padding:15px; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; }
+.login-btn:disabled { opacity:.5; }
 .login-error { color:#e74c3c; font-size:13px; margin-top:8px; text-align:center; }
 
 /* ── アプリ本体 ── */
@@ -96,8 +100,20 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
 <div id="loginScreen">
   <div class="login-logo">💼</div>
   <div class="login-title">スタッフ管理</div>
-  <div class="login-sub">SSIN STUDIO / most eyes / LUMISS</div>
-  <input class="login-input" id="loginPass" type="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')doLogin()">
+  <div class="login-sub">店舗を選択してログイン</div>
+  <div class="login-label">ブランド</div>
+  <select class="login-select" id="loginBrand" onchange="updateStoreList()">
+    <option value="">-- ブランドを選択 --</option>
+    <option value="most eyes">most eyes</option>
+    <option value="SSIN STUDIO">SSIN STUDIO</option>
+    <option value="LUMISS">LUMISS</option>
+    <option value="Patra eyes">Patra eyes</option>
+  </select>
+  <div class="login-label">店舗</div>
+  <select class="login-select" id="loginStore">
+    <option value="">-- 先にブランドを選択 --</option>
+  </select>
+  <input class="login-input" id="loginPass" type="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:4px">
   <button class="login-btn" onclick="doLogin()">ログイン</button>
   <div class="login-error" id="loginError"></div>
 </div>
@@ -158,22 +174,46 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyL
 const GAS_KEY = "ssin2026";
 const STAFF_PASS = "ssin2026";
 
+const STORE_MAP = {
+  "most eyes":   ["下北沢","立川","川崎","所沢","横浜"],
+  "SSIN STUDIO": ["高田馬場","川崎","札幌","熊本","二子玉川","藤沢","中野","立川"],
+  "LUMISS":      ["川崎","札幌","高田馬場","二子玉川"],
+  "Patra eyes":  ["下北沢","所沢","川崎"]
+};
+
 let allCounseling = [];
 let allTalks = [];
 let currentTab = "counseling";
 let currentUid = "";
 let currentName = "";
+let selectedStore = "";
+
+function updateStoreList() {
+  const brand = document.getElementById("loginBrand").value;
+  const storeEl = document.getElementById("loginStore");
+  if (!brand) {
+    storeEl.innerHTML = '<option value="">-- 先にブランドを選択 --</option>';
+    return;
+  }
+  const stores = STORE_MAP[brand] || [];
+  storeEl.innerHTML = '<option value="">-- 店舗を選択 --</option>'
+    + stores.map(s => '<option value="' + brand + ' ' + s + '">' + s + '</option>').join("");
+}
 
 function doLogin() {
+  const brand = document.getElementById("loginBrand").value;
+  const store = document.getElementById("loginStore").value;
   const pass = document.getElementById("loginPass").value;
-  if (pass === STAFF_PASS) {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").style.display = "flex";
-    document.getElementById("app").style.flexDirection = "column";
-    loadCounseling();
-  } else {
-    document.getElementById("loginError").textContent = "パスワードが違います";
-  }
+  const errEl = document.getElementById("loginError");
+  if (!brand) { errEl.textContent = "ブランドを選択してください"; return; }
+  if (!store) { errEl.textContent = "店舗を選択してください"; return; }
+  if (pass !== STAFF_PASS) { errEl.textContent = "パスワードが違います"; return; }
+  selectedStore = store;
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  document.getElementById("app").style.flexDirection = "column";
+  document.getElementById("headerTitle").textContent = "📋 " + store;
+  loadCounseling();
 }
 
 async function gasGet(action, params) {
@@ -215,7 +255,16 @@ async function loadCounseling() {
   try {
     const data = await gasGet("get_all");
     if (data.error) throw new Error(data.error);
-    allCounseling = data.records || [];
+    const all = data.records || [];
+    // 店舗名でフィルタ（店舗名列がない古いデータはスキップしない）
+    allCounseling = selectedStore
+      ? all.filter(c => (c["店舗名"] || "") === selectedStore || (c["店舗名"] || "") === "")
+      : all;
+    // 店舗名がある場合は確実に店舗でフィルタ
+    if (selectedStore) {
+      const withStore = all.filter(c => (c["店舗名"] || "") === selectedStore);
+      allCounseling = withStore.length > 0 ? withStore : all.filter(c => !(c["店舗名"]));
+    }
     renderCounseling(allCounseling);
   } catch(e) {
     document.getElementById("counselingListEl").innerHTML = '<div class="error-msg">⚠️ データ取得に失敗しました<br><small>' + e.message + '</small><br><br>GASの再デプロイが必要な場合があります</div>';
