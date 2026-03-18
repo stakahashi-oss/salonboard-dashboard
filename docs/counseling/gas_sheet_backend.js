@@ -102,7 +102,7 @@ function getSheet(name) {
 
 function setupSheet(sheet, name) {
   var headerMap = {
-    "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","肌質","アレルギー","アレルギー詳細","過去施術歴","本日の要望","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新"],
+    "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","グルーかぶれ歴","目元トラブル中","体調","直近施術","アレルギー","肌炎症歴","目の見え方希望","デザイン希望","カール希望","ホームケア商品","SNS使用同意","施術同意"],
     "LINE配信ログ": ["ログID","送信日時","電話番号","お名前","LINE_UID","種別","内容","ステータス","エラー"],
     "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日"],
     "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"],
@@ -214,10 +214,15 @@ function saveCounseling(data) {
     id, now,
     data.store || "", data.visit_date || "", data.reservation_id || "",
     data.phone || "", data.name || "", data.menu || "", data.staff || "",
-    data.skin_type || "", data.allergy || "なし", data.allergy_detail || "",
-    data.past_treatment || "", data.request || "", data.treatment_memo || "",
-    data.next_menu || "", data.next_timing || "",
-    lineUid, lineSent, now
+    data.treatment_memo || "", data.next_menu || "", data.next_timing || "",
+    lineUid, lineSent, now,
+    data.address || "", data.birthdate || "", data.job || "",
+    data.source || "", data.reason || "", data.transfer || "", data.complaint || "",
+    data.freq || "", data.interest || "",
+    data.glue_allergy || "", data.eye_trouble || "", data.condition || "", data.recent_surgery || "",
+    data.allergy || "", data.skin_trouble || "",
+    data.eye_look || "", data.design || "", data.curl || "",
+    data.homecare || "", data.sns_ok || "", data.consent || ""
   ]);
   return {status: "ok", id: id, line_sent: lineSent};
 }
