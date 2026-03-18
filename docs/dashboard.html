@@ -1988,6 +1988,7 @@ function renderScenarioSteps() {
     const msg     = scenarioSettings[step.msgKey] || step.defaultMsg;
     const enabled = step.enableKey ? (scenarioSettings[step.enableKey] !== 'OFF') : true;
     const placeholders = (step.placeholder || '{name} {store}').split(' ').map(p => `<code>${p}</code>`).join(' ');
+    const tagFilter = scenarioSettings[`シナリオタグ_${step.id}`] || '';
 
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
@@ -1997,6 +1998,19 @@ function renderScenarioSteps() {
         </div>` : `
         <div style="font-size:12px;color:#888;margin-bottom:10px">
           ⚡ 自動検知トリガー（タイミング設定なし）
+        </div>`;
+
+    const tagOptions = ['<option value="">👥 全員（絞り込みなし）</option>',
+      ...tagMaster.map(t => `<option value="${t.name}" ${tagFilter === t.name ? 'selected' : ''}>🏷️ ${t.name}</option>`)
+    ].join('');
+
+    const tagRow = `
+        <div class="scenario-timing-row" style="margin-bottom:10px">
+          <span class="scenario-timing-label">🏷️ 対象タグ:</span>
+          <select id="tag-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:5px 10px;font-size:13px;background:#fff;min-width:180px">
+            ${tagOptions}
+          </select>
+          <span style="font-size:11px;color:#aaa">このステップの配信対象を絞り込む</span>
         </div>`;
 
     return `
@@ -2015,6 +2029,7 @@ function renderScenarioSteps() {
           </div>
         </div>
         ${timingRow}
+        ${tagRow}
         <div class="scenario-placeholder-hint">
           使えるプレースホルダー: ${placeholders}
         </div>
@@ -2051,16 +2066,19 @@ async function saveScenarioStep(id, idx) {
   statusEl.textContent = '保存中...';
 
   try {
+    const tagFilterVal = (document.getElementById(`tag-${id}`) || {}).value || '';
     const posts = [gasPost({action: 'update_setting', key_name: step.msgKey, value: msg})];
     if (step.timingKey) {
       const timing = document.getElementById(`timing-${id}`).value.trim();
       posts.push(gasPost({action: 'update_setting', key_name: step.timingKey, value: timing}));
       scenarioSettings[step.timingKey] = timing;
     }
+    posts.push(gasPost({action: 'update_setting', key_name: `シナリオタグ_${id}`, value: tagFilterVal}));
     const results = await Promise.all(posts);
     const err = results.find(r => r.error);
     if (err) throw new Error(err.error);
     scenarioSettings[step.msgKey] = msg;
+    scenarioSettings[`シナリオタグ_${id}`] = tagFilterVal;
     statusEl.textContent = '✅ 保存済み';
     setTimeout(() => { statusEl.textContent = ''; }, 3000);
   } catch(e) {
