@@ -235,7 +235,10 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
     <div class="form-header-card">
       <div class="form-header-banner"></div>
       <div class="form-header-body" id="basicInfoContent">
-        <div class="form-title">カウンセリングシート</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="form-title">カウンセリングシート</div>
+          <button onclick="showScreen('screen-start')" style="background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;padding:0;margin-top:4px">⚙ スタッフ</button>
+        </div>
         <div class="form-subtitle">LUMISS 札幌</div>
         <div class="form-required-note">* 必須項目</div>
       </div>
@@ -750,7 +753,7 @@ async function submitForm() {
       document.getElementById("doneTitleMsg").textContent = "保存しました！";
       document.getElementById("doneMsg").textContent = `${data.name||data.phone}様のカウンセリングを記録しました`;
       document.getElementById("doneBtn").textContent = "次のお客様へ";
-      document.getElementById("doneBtn").onclick = () => { showScreen("screen-start"); resetForm(); };
+      document.getElementById("doneBtn").onclick = () => { resetForm(); showScreen("screen-form"); };
     }
     showScreen("screen-done");
     resetForm();
@@ -863,16 +866,18 @@ showScreen = function(id) {
 };
 
 // ── 初期表示 ──────────────────────────────────────────────
-if (LINE_UID_FROM_URL) {
+{
   const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"}).replace(/\//g,"-");
-  currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today };
-  // スタッフページを非表示・次へボタンを送信ボタンに
-  document.getElementById("formPage2").style.display = "none";
-  const nextBtn = document.getElementById("formPage1NextBtn");
-  if (nextBtn) { nextBtn.textContent = "送信する"; nextBtn.onclick = function(){ if(validatePage1()) submitForm(); }; }
+  if (LINE_UID_FROM_URL) {
+    currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today };
+    // お客様モード：スタッフページ非表示・直接送信
+    document.getElementById("formPage2").style.display = "none";
+    const nextBtn = document.getElementById("formPage1NextBtn");
+    if (nextBtn) { nextBtn.textContent = "送信する"; nextBtn.onclick = function(){ if(validatePage1()) submitForm(); }; }
+  } else {
+    currentCustomer = { visit_date: today };
+  }
   showScreen("screen-form");
-} else {
-  showScreen("screen-start");
 }
 </script>
 </body>
