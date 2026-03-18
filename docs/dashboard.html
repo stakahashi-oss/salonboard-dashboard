@@ -203,16 +203,16 @@ textarea.msg-input:focus { border-color:#00b900; }
   <div class="sidebar-logo">📊 管理ダッシュボード</div>
   <div style="padding:8px 0">
     <div class="nav-section">メイン</div>
-    <div class="nav-item active" onclick="showTab('dashboard',this);loadDashboard()">🏠 ホーム</div>
+    <div class="nav-item active" onclick="showTab('dashboard',this)">🏠 ホーム</div>
     <div class="nav-section">カウンセリング</div>
-    <div class="nav-item" onclick="showTab('counseling',this);loadCounseling()">📋 カウンセリング記録</div>
+    <div class="nav-item" onclick="showTab('counseling',this);if(!isLoaded('counseling'))loadCounseling()">📋 カウンセリング記録</div>
     <div class="nav-section">LINE管理</div>
-    <div class="nav-item" onclick="showTab('line-friends-mgmt',this);loadLineFriendsMgmt()">👥 友だち管理</div>
-    <div class="nav-item" onclick="showTab('line-broadcast',this);loadBroadcastTab()">📢 配信</div>
-    <div class="nav-item" onclick="showTab('line-scenario',this);loadScenarioSettings()">⚙️ シナリオ設定</div>
-    <div class="nav-item" onclick="showTab('line-tags',this);loadTags()">🏷️ タグ管理</div>
-    <div class="nav-item" onclick="showTab('line-stats',this);loadBroadcastStats();loadStepStats()">📊 配信結果</div>
-    <div class="nav-item" onclick="showTab('line-talk',this);loadTalkList()">💬 トーク</div>
+    <div class="nav-item" onclick="showTab('line-friends-mgmt',this);if(!isLoaded('friends'))loadLineFriendsMgmt()">👥 友だち管理</div>
+    <div class="nav-item" onclick="showTab('line-broadcast',this);if(!isLoaded('broadcast'))loadBroadcastTab()">📢 配信</div>
+    <div class="nav-item" onclick="showTab('line-scenario',this);if(!isLoaded('scenario'))loadScenarioSettings()">⚙️ シナリオ設定</div>
+    <div class="nav-item" onclick="showTab('line-tags',this);if(!isLoaded('tags'))loadTags()">🏷️ タグ管理</div>
+    <div class="nav-item" onclick="showTab('line-stats',this);if(!isLoaded('stats')){loadBroadcastStats();loadStepStats()}">📊 配信結果</div>
+    <div class="nav-item" onclick="showTab('line-talk',this);if(!isLoaded('talk'))loadTalkList()">💬 トーク</div>
   </div>
 </nav>
 
@@ -819,10 +819,13 @@ function doDashLogin() {
 }
 
 // ── Init ────────────────────────────────────────────
+// キャッシュ管理（一度読み込んだタブは再取得しない）
+const _loaded = {};
+function markLoaded(tab) { _loaded[tab] = Date.now(); }
+function isLoaded(tab, ttlMs = 120000) { return _loaded[tab] && (Date.now() - _loaded[tab]) < ttlMs; }
+
 function initDashboard() {
-  loadDashboard();
-  loadCounseling();
-  loadLineFriendsMgmt();
+  loadDashboard(); // ホームだけ初期読み込み（他は各タブを開いた時に遅延読み込み）
 }
 
 async function loadDashboard() {
@@ -870,6 +873,7 @@ async function loadCounseling() {
   try {
     const res = await gasGet('get_all');
     counselingAll = (res.records || []).map(mapGasRecord);
+    markLoaded('counseling');
     // KPI
     const total = counselingAll.length;
     const withLine = counselingAll.filter(r => r.line_uid && r.line_uid !== '').length;
@@ -1536,6 +1540,7 @@ async function loadLineFriendsMgmt() {
 
     renderFriendsMgmt(allFriends);
     refreshHomeTestSelect();
+    markLoaded('friends');
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
@@ -1794,6 +1799,7 @@ function loadBroadcastTab() {
       ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
   updateBroadcastCount();
   loadScheduledBroadcasts();
+  markLoaded('broadcast');
 }
 
 async function sendTestBroadcast() {
@@ -1961,6 +1967,7 @@ async function loadScenarioSettings() {
     const sel = document.getElementById('sendHourSelect');
     if (sel) sel.value = hour;
     renderScenarioSteps();
+    markLoaded('scenario');
   } catch(e) {
     document.getElementById('scenarioSteps').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
@@ -2130,6 +2137,7 @@ async function loadTags() {
     tagMaster = tagsData.tags || [];
     renderTagMaster();
     renderTagFriends(tagsAll);
+    markLoaded('tags');
   } catch(e) {
     document.getElementById('tagsList').innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
   }
@@ -2361,6 +2369,7 @@ async function loadBroadcastStats() {
         </tbody>
       </table>
       </div>`;
+    markLoaded('stats');
   } catch(e) {
     el.innerHTML = `<div style="color:red;padding:20px">エラー: ${e.message}</div>`;
   }
@@ -2520,6 +2529,7 @@ async function loadTalkList() {
   try {
     const data = await gasGet('get_talks_list');
     renderTalkList(data.list || []);
+    markLoaded('talk');
   } catch(e) {
     document.getElementById('talkList').innerHTML = `<div style="color:red;padding:16px">エラー: ${e.message}</div>`;
   }
