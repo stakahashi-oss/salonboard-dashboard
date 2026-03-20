@@ -342,50 +342,18 @@ function openDetail(idx) {
     ["記録日時",         c["記録日時"]],
   ];
 
-  const recordId = c["記録ID"] || "";
-  const memo = esc(c["施術メモ"] || "");
-  const nextMenu = esc(c["次回提案"] || "");
-  const nextTiming = c["次回提案時期"] || "";
-
-  const timingOptions = ["1ヶ月以内", "2ヶ月以内", "3ヶ月以内", "未定"].map(o =>
-    '<option value="' + o + '"' + (nextTiming === o ? " selected" : "") + '>' + o + '</option>'
-  ).join("");
-
   document.getElementById("detailBody").innerHTML =
     '<div class="detail-card">'
     + '<div class="detail-card-title">基本情報</div>'
-    + fields.filter(function(f){ return f[1]; }).map(function(f){
-        return '<div class="detail-row"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + esc(String(f[1])) + '</div></div>';
+    + fields.map(function(f){
+        return '<div class="detail-row"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + (f[1] ? esc(String(f[1])) : '<span style="color:#bbb">―</span>') + '</div></div>';
       }).join("")
     + '</div>'
-    + '<div class="detail-card">'
-    + '<div class="detail-card-title">スタッフメモ</div>'
-    + '<div style="margin-bottom:10px"><div class="detail-label" style="margin-bottom:6px">施術メモ</div>'
-    + '<textarea class="staff-memo-area" id="d_memo">' + memo + '</textarea></div>'
-    + '<div style="margin-bottom:10px"><div class="detail-label" style="margin-bottom:6px">次回提案メニュー</div>'
-    + '<input class="staff-memo-area" id="d_next_menu" style="min-height:auto;padding:10px 12px" value="' + nextMenu + '"></div>'
-    + '<div style="margin-bottom:10px"><div class="detail-label" style="margin-bottom:6px">次回来店時期</div>'
-    + '<select class="staff-memo-area" id="d_next_timing" style="min-height:auto;padding:10px 12px"><option value="">選択...</option>' + timingOptions + '</select></div>'
-    + (recordId ? '<button class="save-btn" onclick="saveStaffMemo(\'' + recordId + '\')">💾 保存する</button>' : '')
-    + '</div>'
-    + (c["LINE UID"] || c["LINE_UID"] ? '<div style="margin:0 12px 20px"><button onclick="openChatFromDetail(\'' + esc(c["LINE UID"]||c["LINE_UID"]) + '\',\'' + esc(c["お名前"]||"") + '\')" style="width:100%;padding:13px;background:#00b900;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💬 LINEメッセージを送る</button></div>' : '');
+    + (c["LINE_UID"] || c["LINE UID"] ? '<div style="margin:0 12px 20px"><button onclick="openChatFromDetail(\'' + esc(c["LINE_UID"]||c["LINE UID"]) + '\',\'' + esc(c["お名前"]||"") + '\')" style="width:100%;padding:13px;background:#00b900;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💬 LINEメッセージを送る</button></div>' : '');
 
   document.getElementById("detailPanel").style.display = "block";
 }
 
-async function saveStaffMemo(recordId) {
-  const memo = document.getElementById("d_memo").value;
-  const nextMenu = document.getElementById("d_next_menu").value;
-  const nextTiming = document.getElementById("d_next_timing").value;
-  try {
-    const r = await gasPost({action: "update_counseling", record_id: recordId, treatment_memo: memo, next_menu: nextMenu, next_timing: nextTiming});
-    if (r.error) throw new Error(r.error);
-    alert("保存しました");
-    loadCounseling();
-  } catch(e) {
-    alert("保存失敗: " + e.message);
-  }
-}
 
 function closeDetail() {
   document.getElementById("detailPanel").style.display = "none";
