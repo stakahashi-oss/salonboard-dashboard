@@ -26,6 +26,8 @@ body { font-family:'Hiragino Sans','Meiryo',sans-serif; background:#f0f2f5; colo
 /* Main */
 .main { margin-left:230px; flex:1; padding:20px 24px; }
 @media(max-width:768px) { .sidebar { transform:translateX(-230px); } .sidebar.open { transform:translateX(0); } .main { margin-left:0; padding:12px; } .hamburger { display:flex !important; } }
+.sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:99; }
+@media(max-width:768px) { .sidebar.open ~ .sidebar-overlay, .sidebar-overlay.active { display:block; } }
 
 /* Header */
 .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
@@ -215,11 +217,12 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item" onclick="showTab('line-talk',this);if(!isLoaded('talk'))loadTalkList()">💬 トーク</div>
   </div>
 </nav>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active')"></div>
 
 <main class="main">
   <div class="header">
     <div style="display:flex;align-items:center;gap:12px">
-      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active')">☰</button>
       <div>
         <h1>管理ダッシュボード</h1>
         <div class="updated-at" id="updatedAt">読込中...</div>
@@ -1019,6 +1022,8 @@ function showTab(name, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
   if (name === 'stores') renderStoreCharts();
   if (name === 'line-stats') loadLineStats();
   if (name === 'line-log') loadBroadcastLog();
