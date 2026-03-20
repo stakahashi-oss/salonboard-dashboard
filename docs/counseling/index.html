@@ -661,20 +661,87 @@ function goFormPage(n) {
   window.scrollTo(0,0);
 }
 
+// ── バリデーション用ハイライト ────────────────────────────
+function highlightError(el) {
+  if (!el) return;
+  const card = el.closest(".q-card, .section-card");
+  if (card) {
+    card.style.boxShadow = "0 0 0 2px #d93025";
+    setTimeout(() => { card.style.boxShadow = ""; }, 3000);
+  }
+}
+
 // ── フォーム送信 ─────────────────────────────────────────
 async function submitForm() {
-  const name  = document.getElementById("f_name").value.trim();
-  if (!name) { alert("お名前を入力してください"); return; }
-  if (!getSelected("f_menu")) {
+  const missing = [];
+  const firstEls = [];
+
+  // お名前
+  const nameEl = document.getElementById("f_name");
+  if (!nameEl.value.trim()) { missing.push("お名前（フルネーム）"); firstEls.push(nameEl); }
+
+  // 住所
+  const addrEl = document.getElementById("f_address");
+  if (!addrEl.value.trim()) { missing.push("住所"); firstEls.push(addrEl); }
+
+  // 生年月日
+  const bdEl = document.getElementById("f_birthdate");
+  if (!bdEl.value) { missing.push("生年月日"); firstEls.push(bdEl); }
+
+  // 職業
+  const jobEl = document.getElementById("f_job");
+  if (!jobEl.value.trim()) { missing.push("職業"); firstEls.push(jobEl); }
+
+  // 知ったきっかけ
+  if (!getSelected("f_source")) {
+    missing.push("当サロンを最初に知ったきっかけ");
+    firstEls.push(document.getElementById("f_source"));
+  }
+
+  // 選んだ理由
+  if (!getChips("f_reason")) {
+    missing.push("当サロンを選んだ理由");
+    firstEls.push(document.getElementById("f_reason"));
+  }
+
+  // 施術頻度
+  if (!getSelected("f_freq")) {
+    missing.push("施術メニューの利用頻度");
+    firstEls.push(document.getElementById("f_freq"));
+  }
+
+  // 本日の施術内容
+  const menuVal = getSelected("f_menu");
+  if (!menuVal) {
     document.getElementById("menuSelectPrompt").style.display = "";
-    alert("本日の施術内容を選択してください"); return;
+    missing.push("本日の施術内容");
+    firstEls.push(document.getElementById("f_menu"));
+  } else {
+    document.getElementById("menuSelectPrompt").style.display = "none";
+    const showBrow = menuVal === "眉毛" || menuVal === "両方（眉毛 ＋ まつ毛）";
+    const showLash = menuVal === "まつ毛" || menuVal === "両方（眉毛 ＋ まつ毛）";
+    if (showBrow && !getChecks("b_agree")) {
+      missing.push("眉毛カウンセリングの注意事項確認");
+      firstEls.push(document.getElementById("b_agree"));
+    }
+    if (showLash && !getChecks("l_agree")) {
+      missing.push("まつ毛カウンセリングの注意事項確認");
+      firstEls.push(document.getElementById("l_agree"));
+    }
+  }
+
+  if (missing.length > 0) {
+    firstEls.forEach(el => highlightError(el));
+    alert("以下の必須項目を入力してください：\n\n" + missing.map(m => "・" + m).join("\n"));
+    if (firstEls[0]) firstEls[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
   }
 
   const data = {
-    store:          currentCustomer.store || "",
+    store:          currentCustomer.store || STORE_FROM_URL || "",
     visit_date:     currentCustomer.visit_date || "",
     reservation_id: currentCustomer.reservation_id || "",
-    name,
+    name:           nameEl.value.trim(),
     phone:          document.getElementById("f_phone").value.replace(/-/g,"").trim() || currentCustomer.phone || "",
     menu:           getSelected("f_menu"),
     staff:          currentCustomer.staff || "",
