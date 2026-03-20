@@ -36,6 +36,7 @@ function doPost(e) {
     if (action === "send_broadcast_all") return resp(sendBroadcastAll(body));
     if (action === "upload_image")       return resp(uploadImageToDrive(body.base64, body.filename, body.mime_type));
     if (action === "import_followers")   return resp(importFollowers());
+    if (action === "fix_headers")        return resp(fixAllHeaders());
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -101,6 +102,39 @@ function getSheet(name) {
     setupSheet(sheet, name);
   }
   return sheet;
+}
+
+// 既存シートのヘッダーを強制修正（データは保持）
+function fixAllHeaders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var headerMap = {
+    "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","グルーかぶれ歴","目元トラブル中","体調","直近施術","アレルギー","肌炎症歴","目の見え方希望","デザイン希望","カール希望","ホームケア商品","SNS使用同意","施術同意"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日"],
+    "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"]
+  };
+  var results = [];
+  for (var name in headerMap) {
+    var sheet = ss.getSheetByName(name);
+    if (!sheet) { results.push(name + ": シートなし"); continue; }
+    var headers = headerMap[name];
+    // 現在の1行目を取得
+    var currentHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), headers.length)).getValues()[0];
+    // 1行目がヘッダーでなければ挿入、あればそのまま上書き
+    var firstCell = String(currentHeaders[0] || "");
+    if (firstCell === headers[0]) {
+      // ヘッダー行を上書き（列数が足りない場合に備えて）
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    } else {
+      // ヘッダー行を先頭に挿入
+      sheet.insertRowBefore(1);
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    }
+    sheet.getRange(1, 1, 1, headers.length)
+      .setFontWeight("bold").setBackground("#00b900").setFontColor("#ffffff");
+    sheet.setFrozenRows(1);
+    results.push(name + ": OK");
+  }
+  return {status: "ok", results: results};
 }
 
 function setupSheet(sheet, name) {
