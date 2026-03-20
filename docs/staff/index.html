@@ -405,11 +405,14 @@ function renderTalks(list) {
     const preview = (t.direction === "送信" ? "▶ " : "◀ ") + (t.last_msg || "");
     const uid = String(t.line_uid || "").replace(/'/g, "\\'");
     const safeName = name.replace(/'/g, "\\'");
-    return '<div class="talk-item" onclick="openChat(\'' + uid + '\',\'' + safeName + '\')">'
+    return '<div class="talk-item">'
+      + '<div onclick="openChat(\'' + uid + '\',\'' + safeName + '\')" style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">'
       + '<div class="talk-avatar">' + name.charAt(0) + '</div>'
       + '<div class="talk-info"><div class="talk-name">' + esc(name) + '</div>'
       + '<div class="talk-preview">' + esc(preview) + '</div></div>'
       + '<div class="talk-time">' + time + '</div>'
+      + '</div>'
+      + '<button onclick="deleteTalksByUid(\'' + uid + '\',\'' + safeName + '\')" style="background:none;border:none;color:#ddd;font-size:18px;cursor:pointer;padding:4px;flex-shrink:0">🗑️</button>'
       + '</div>';
   }).join("");
 }
@@ -440,11 +443,39 @@ function renderMessages(talks) {
     const sent = t.direction === "送信";
     const time = String(t.datetime || "").substring(5, 16);
     return '<div class="msg-row ' + (sent ? "sent" : "recv") + '">'
-      + '<div class="msg-bubble">' + esc(t.content) + '</div>'
-      + '<div class="msg-time">' + time + '</div>'
+      + (sent ? '<button onclick="deleteTalkMsg(\'' + t.id + '\')" style="background:none;border:none;color:#ddd;font-size:12px;cursor:pointer;padding:2px;align-self:flex-end;margin-bottom:16px">🗑️</button>' : '')
+      + '<div><div class="msg-bubble">' + esc(t.content) + '</div>'
+      + '<div class="msg-time">' + time + '</div></div>'
+      + (!sent ? '<button onclick="deleteTalkMsg(\'' + t.id + '\')" style="background:none;border:none;color:#ddd;font-size:12px;cursor:pointer;padding:2px;align-self:flex-end;margin-bottom:16px">🗑️</button>' : '')
       + '</div>';
   }).join("");
   el.scrollTop = el.scrollHeight;
+}
+
+async function deleteTalkMsg(talkId) {
+  if (!confirm("このメッセージを削除しますか？")) return;
+  try {
+    const r = await gasPost({action: "delete_talk", talk_id: talkId});
+    if (r.error) throw new Error(r.error);
+    const data = await gasGet("get_talks", {line_uid: currentUid});
+    renderMessages(data.talks || []);
+  } catch(e) {
+    alert("削除エラー: " + e.message);
+  }
+}
+
+async function deleteTalksByUid(uid, name) {
+  if (!confirm(name + " さんのトーク履歴をすべて削除しますか？")) return;
+  try {
+    const r = await gasPost({action: "delete_talks_by_uid", line_uid: uid});
+    if (r.error) throw new Error(r.error);
+    if (currentUid === uid) {
+      document.getElementById("chatScreen").style.display = "none";
+    }
+    loadTalks();
+  } catch(e) {
+    alert("削除エラー: " + e.message);
+  }
 }
 
 async function sendChat() {

@@ -26,6 +26,8 @@ function doPost(e) {
     if (action === "reset_trigger")    return resp(resetTrigger());
     if (action === "save_talk")        return resp(saveTalk(body.data));
     if (action === "get_talks")        return resp(getTalks(body.line_uid));
+    if (action === "delete_talk")      return resp(deleteTalk(body.talk_id));
+    if (action === "delete_talks_by_uid") return resp(deleteTalksByUid(body.line_uid));
     if (action === "tag_friend")         return resp(tagFriend(body.line_uid, body.tags));
     if (action === "create_tag")         return resp(createTag(body.tag_name, body.color));
     if (action === "delete_tag")         return resp(deleteTag(body.tag_name));
@@ -1002,6 +1004,35 @@ function getTalks(lineUid) {
     }
   }
   return {talks: talks};
+}
+
+// ── トーク削除（1件）────────────────────────────────────
+function deleteTalk(talkId) {
+  if (!talkId) return {error: "talk_id required"};
+  var sheet = getSheet("トーク履歴");
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(talkId)) {
+      sheet.deleteRow(i + 1);
+      return {status: "ok"};
+    }
+  }
+  return {error: "not found"};
+}
+
+// ── トーク削除（ユーザーの全履歴）──────────────────────
+function deleteTalksByUid(lineUid) {
+  if (!lineUid) return {error: "line_uid required"};
+  var sheet = getSheet("トーク履歴");
+  var data = sheet.getDataRange().getValues();
+  var deleted = 0;
+  for (var i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][2]) === String(lineUid)) {
+      sheet.deleteRow(i + 1);
+      deleted++;
+    }
+  }
+  return {status: "ok", deleted: deleted};
 }
 
 // ── トーク一覧（ユーザーごとの最新メッセージ）────────────

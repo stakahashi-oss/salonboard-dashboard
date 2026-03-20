@@ -2600,16 +2600,20 @@ function renderTalkList(list) {
     return;
   }
   document.getElementById('talkList').innerHTML = list.map(item => `
-    <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')"
-      style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .15s"
+    <div style="padding:12px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;transition:background .15s"
       onmouseover="this.style.background='#f5f6fa'" onmouseout="this.style.background=''">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <div style="font-weight:700;font-size:13px">${item.name || '名前未設定'}</div>
-        <div style="font-size:10px;color:#aaa">${String(item.last_at).substring(5,16)}</div>
+      <div onclick="openTalk('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}')" style="flex:1;cursor:pointer;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div style="font-weight:700;font-size:13px">${item.name || '名前未設定'}</div>
+          <div style="font-size:10px;color:#aaa">${String(item.last_at).substring(5,16)}</div>
+        </div>
+        <div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          ${item.direction === '送信' ? '▶ ' : '◀ '}${item.last_msg}
+        </div>
       </div>
-      <div style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${item.direction === '送信' ? '▶ ' : '◀ '}${item.last_msg}
-      </div>
+      <button onclick="deleteTalksByUid('${item.line_uid}','${(item.name||'名前未設定').replace(/'/g,"\\'")}',event)"
+        style="background:none;border:none;color:#ddd;font-size:16px;cursor:pointer;padding:4px;flex-shrink:0"
+        title="このユーザーのトーク履歴を全削除">🗑️</button>
     </div>`).join('');
 }
 
@@ -2633,13 +2637,15 @@ function renderTalkMessages(talks) {
   }
   const html = talks.map(t => {
     const isSent = t.direction === '送信';
-    return `<div style="display:flex;justify-content:${isSent ? 'flex-end' : 'flex-start'}">
+    return `<div style="display:flex;justify-content:${isSent ? 'flex-end' : 'flex-start'};align-items:flex-end;gap:4px">
+      ${isSent ? `<button onclick="deleteTalk('${t.id}')" style="background:none;border:none;color:#ddd;font-size:12px;cursor:pointer;padding:2px;flex-shrink:0;margin-bottom:16px" title="削除">🗑️</button>` : ''}
       <div style="max-width:70%">
         <div style="background:${isSent ? '#00b900' : '#fff'};color:${isSent ? '#fff' : '#1a1a2e'};
           padding:10px 14px;border-radius:${isSent ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};
           font-size:13px;white-space:pre-wrap;box-shadow:0 1px 4px rgba(0,0,0,.1)">${t.content}</div>
         <div style="font-size:10px;color:#aaa;margin-top:3px;text-align:${isSent ? 'right' : 'left'}">${String(t.datetime).substring(5,16)}</div>
       </div>
+      ${!isSent ? `<button onclick="deleteTalk('${t.id}')" style="background:none;border:none;color:#ddd;font-size:12px;cursor:pointer;padding:2px;flex-shrink:0;margin-bottom:16px" title="削除">🗑️</button>` : ''}
     </div>`;
   }).join('');
   const el = document.getElementById('talkMessages');
@@ -2660,6 +2666,33 @@ async function sendTalkReply() {
     loadTalkList();
   } catch(e) {
     alert('送信エラー: ' + e.message);
+  }
+}
+
+async function deleteTalk(talkId) {
+  if (!confirm('このメッセージを削除しますか？')) return;
+  try {
+    const r = await gasPost({action: 'delete_talk', talk_id: talkId});
+    if (r.error) throw new Error(r.error);
+    await openTalk(currentTalkUid, currentTalkName);
+  } catch(e) {
+    alert('削除エラー: ' + e.message);
+  }
+}
+
+async function deleteTalksByUid(lineUid, name, e) {
+  e.stopPropagation();
+  if (!confirm(name + ' さんのトーク履歴をすべて削除しますか？')) return;
+  try {
+    const r = await gasPost({action: 'delete_talks_by_uid', line_uid: lineUid});
+    if (r.error) throw new Error(r.error);
+    if (currentTalkUid === lineUid) {
+      document.getElementById('talkMessages').innerHTML = '';
+      document.getElementById('talkHeader').textContent = '友だちを選択してください';
+    }
+    loadTalkList();
+  } catch(e) {
+    alert('削除エラー: ' + e.message);
   }
 }
 
