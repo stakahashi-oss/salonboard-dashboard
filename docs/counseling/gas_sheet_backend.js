@@ -736,7 +736,13 @@ function getAllCounseling() {
   var records = [];
   for (var i = data.length - 1; i >= 1; i--) {
     var obj = {};
-    for (var j = 0; j < headers.length; j++) obj[headers[j]] = data[i][j];
+    for (var j = 0; j < headers.length; j++) {
+      var val = data[i][j];
+      if (val instanceof Date) {
+        val = Utilities.formatDate(val, "Asia/Tokyo", "yyyy-MM-dd");
+      }
+      obj[headers[j]] = val === null || val === undefined ? "" : val;
+    }
     records.push(obj);
   }
   return {records: records};
