@@ -208,6 +208,7 @@ textarea.msg-input:focus { border-color:#00b900; }
     <div class="nav-item active" onclick="showTab('dashboard',this)">🏠 ホーム</div>
     <div class="nav-section">カウンセリング</div>
     <div class="nav-item" onclick="showTab('counseling',this);if(!isLoaded('counseling'))loadCounseling()">📋 カウンセリング記録</div>
+    <div class="nav-item" onclick="showTab('analysis',this);if(!isLoaded('analysis'))loadAnalysis()">📈 顧客分析</div>
     <div class="nav-section">LINE管理</div>
     <div class="nav-item" onclick="showTab('line-friends-mgmt',this);if(!isLoaded('friends'))loadLineFriendsMgmt()">👥 友だち管理</div>
     <div class="nav-item" onclick="showTab('line-broadcast',this);if(!isLoaded('broadcast'))loadBroadcastTab()">📢 配信</div>
@@ -532,6 +533,66 @@ textarea.msg-input:focus { border-color:#00b900; }
         </div>
       </div>
       <div id="counselingTable"><div style="text-align:center;padding:30px;color:#999">カウンセリングタブを開くと読み込まれます</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ 顧客分析 ═══════ -->
+  <div class="section" id="tab-analysis">
+    <div style="background:#fffde7;border:1px solid #ffd54f;border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#795548">
+      💡 <strong>coming-soonコンセプト</strong>：失客率を半分にするだけで売上は倍になる。お客様ごとの来店サイクルを把握し、そろそろ来店するタイミングにアプローチすることが重要です。
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card orange"><div class="kpi-label">🔁 リピーター率</div><div class="kpi-value" id="kpi-repeat-rate">-</div><div class="kpi-sub">2回以上来店の割合</div></div>
+      <div class="kpi-card red"><div class="kpi-label">⚠️ 失客リスク</div><div class="kpi-value" id="kpi-churn-risk">-</div><div class="kpi-sub">60日以上来店なし</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">📅 平均来店サイクル</div><div class="kpi-value" id="kpi-avg-cycle">-</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">👥 ユニーク顧客数</div><div class="kpi-value" id="kpi-unique-customers">-</div></div>
+    </div>
+    <!-- 失客リスク一覧 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚠️ 失客リスク顧客（60日以上来店なし）</div>
+        <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
+      </div>
+      <div style="font-size:12px;color:#e67e22;margin-bottom:12px">🚨 高リスク＝120日以上　⚠️ 中リスク＝90日以上　要注意＝60日以上</div>
+      <div id="churnRiskTable"><div style="text-align:center;padding:20px;color:#999">読込中...</div></div>
+    </div>
+    <!-- チャート2列 -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 施術頻度分布</div></div>
+        <canvas id="freqChart" height="220"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📍 知ったきっかけ</div></div>
+        <canvas id="sourceChart" height="220"></canvas>
+      </div>
+    </div>
+    <!-- LTVシミュレーター -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💰 LTVシミュレーター</div>
+      </div>
+      <div style="font-size:13px;color:#666;margin-bottom:16px">公式：<strong>LTV = 顧客数 × 客単価 ÷ 失客率(%)</strong>　※失客率を半分にするだけで売上は2倍に</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:20px">
+        <div>
+          <div style="font-size:12px;color:#666;margin-bottom:6px">有効顧客数（リピーター）</div>
+          <input type="number" id="ltv-customers" value="300" min="1" style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;font-weight:700" oninput="calcLtv()">
+        </div>
+        <div>
+          <div style="font-size:12px;color:#666;margin-bottom:6px">平均客単価（円）</div>
+          <input type="number" id="ltv-price" value="6000" min="1" style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;font-weight:700" oninput="calcLtv()">
+        </div>
+        <div>
+          <div style="font-size:12px;color:#666;margin-bottom:6px">現在の失客率（%）</div>
+          <input type="number" id="ltv-churn" value="20" min="1" max="99" style="width:100%;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;font-weight:700" oninput="calcLtv()">
+        </div>
+      </div>
+      <div id="ltvResult"></div>
+    </div>
+    <!-- 来店サイクル別顧客一覧 -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔁 来店サイクル別顧客一覧</div></div>
+      <div id="cycleTable"><div style="text-align:center;padding:20px;color:#999">読込中...</div></div>
     </div>
   </div>
 
@@ -1047,6 +1108,151 @@ async function saveCounselingStaff(recordId) {
   } catch(e) {
     alert('保存に失敗しました: ' + e.message);
   }
+}
+
+// ── 顧客分析 ─────────────────────────────────────────
+function safeEsc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadAnalysis() {
+  if (!counselingAll.length) {
+    await loadCounseling();
+  }
+  markLoaded('analysis');
+  renderAnalysis();
+  calcLtv();
+}
+
+function renderAnalysis() {
+  const records = counselingAll;
+  const today = new Date();
+
+  // 電話番号 or 名前でグループ化（ユニーク顧客）
+  const byKey = {};
+  records.forEach(r => {
+    const key = r.phone || r.name;
+    if (!key) return;
+    if (!byKey[key]) byKey[key] = { name: r.name, phone: r.phone, visits: [], sources: [] };
+    const d = r.visit_date || r.created_at;
+    if (d) byKey[key].visits.push(new Date(d));
+    if (r.source) byKey[key].sources.push(r.source);
+  });
+
+  const customers = Object.values(byKey);
+  const totalUnique = customers.length;
+  const repeaters = customers.filter(c => c.visits.length >= 2);
+  const repeatRate = totalUnique > 0 ? Math.round(repeaters.length / totalUnique * 100) : 0;
+
+  // 平均来店サイクル算出
+  let totalDays = 0, cycleCount = 0;
+  repeaters.forEach(c => {
+    const sorted = [...c.visits].sort((a, b) => a - b);
+    for (let i = 1; i < sorted.length; i++) {
+      totalDays += (sorted[i] - sorted[i-1]) / 86400000;
+      cycleCount++;
+    }
+  });
+  const avgCycle = cycleCount > 0 ? Math.round(totalDays / cycleCount) : null;
+
+  // 失客リスク（60日以上）
+  const withRisk = customers.map(c => {
+    const lastVisit = c.visits.length ? c.visits.reduce((a, b) => a > b ? a : b) : null;
+    const daysSince = lastVisit ? Math.floor((today - lastVisit) / 86400000) : null;
+    return { ...c, lastVisit, daysSince };
+  }).filter(c => c.daysSince !== null && c.daysSince >= 60)
+    .sort((a, b) => b.daysSince - a.daysSince);
+
+  // KPI更新
+  document.getElementById('kpi-unique-customers').textContent = totalUnique;
+  document.getElementById('kpi-repeat-rate').textContent = repeatRate + '%';
+  document.getElementById('kpi-churn-risk').textContent = withRisk.length;
+  document.getElementById('kpi-avg-cycle').textContent = avgCycle ? avgCycle + '日' : '-';
+
+  // 失客リスクテーブル
+  if (!withRisk.length) {
+    document.getElementById('churnRiskTable').innerHTML = '<div style="text-align:center;padding:20px;color:#999">失客リスクのお客様はいません</div>';
+  } else {
+    document.getElementById('churnRiskTable').innerHTML =
+      '<div class="tbl-scroll"><table class="tbl"><thead><tr>'
+      + '<th>お名前</th><th>電話番号</th><th>最終来店</th><th>経過日数</th><th>来店回数</th><th>リスク</th>'
+      + '</tr></thead><tbody>'
+      + withRisk.slice(0, 50).map(c => {
+          const lastStr = c.lastVisit ? c.lastVisit.toISOString().split('T')[0] : '-';
+          const cnt = c.visits.length;
+          const risk = c.daysSince >= 120
+            ? '<span class="badge-red">🚨 高リスク</span>'
+            : c.daysSince >= 90
+            ? '<span class="badge-orange">⚠️ 中リスク</span>'
+            : '<span class="badge-gray">要注意</span>';
+          return `<tr><td><strong>${safeEsc(c.name||'-')}</strong></td><td>${safeEsc(c.phone||'-')}</td><td>${lastStr}</td><td>${c.daysSince}日</td><td>${cnt}回</td><td>${risk}</td></tr>`;
+        }).join('')
+      + '</tbody></table></div>';
+  }
+
+  // 来店サイクル別一覧
+  const sorted = [...customers].filter(c => c.visits.length).sort((a, b) => {
+    const ad = a.daysSince ?? 0, bd = b.daysSince ?? 0;
+    return bd - ad;
+  });
+  document.getElementById('cycleTable').innerHTML =
+    '<div class="tbl-scroll"><table class="tbl"><thead><tr>'
+    + '<th>お名前</th><th>電話番号</th><th>来店回数</th><th>最終来店</th><th>経過日数</th><th>ステータス</th>'
+    + '</tr></thead><tbody>'
+    + sorted.slice(0, 100).map(c => {
+        const cnt = c.visits.length;
+        const lastStr = c.lastVisit ? c.lastVisit.toISOString().split('T')[0] : '-';
+        const days = c.daysSince ?? '-';
+        const status = days === '-' ? '' : days >= 120 ? '<span class="badge-red">失客リスク高</span>' : days >= 60 ? '<span class="badge-orange">要アプローチ</span>' : cnt >= 3 ? '<span class="badge-green">優良顧客</span>' : '<span class="badge-gray">通常</span>';
+        return `<tr><td><strong>${safeEsc(c.name||'-')}</strong></td><td>${safeEsc(c.phone||'-')}</td><td>${cnt}回</td><td>${lastStr}</td><td>${days === '-' ? '-' : days + '日'}</td><td>${status}</td></tr>`;
+      }).join('')
+    + '</tbody></table></div>';
+
+  // 施術頻度チャート
+  const freqMap = {};
+  records.forEach(r => { if (r.freq) freqMap[r.freq] = (freqMap[r.freq]||0) + 1; });
+  const freqCtx = document.getElementById('freqChart').getContext('2d');
+  if (window._freqChart) window._freqChart.destroy();
+  window._freqChart = new Chart(freqCtx, {
+    type: 'doughnut',
+    data: { labels: Object.keys(freqMap), datasets: [{ data: Object.values(freqMap), backgroundColor: ['#00b900','#3498db','#e67e22','#9b59b6','#e74c3c','#1abc9c','#f39c12'] }] },
+    options: { plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+  });
+
+  // 知ったきっかけチャート
+  const srcMap = {};
+  records.forEach(r => { if (r.source) srcMap[r.source] = (srcMap[r.source]||0) + 1; });
+  const srcCtx = document.getElementById('sourceChart').getContext('2d');
+  if (window._srcChart) window._srcChart.destroy();
+  window._srcChart = new Chart(srcCtx, {
+    type: 'doughnut',
+    data: { labels: Object.keys(srcMap), datasets: [{ data: Object.values(srcMap), backgroundColor: ['#00b900','#3498db','#e67e22','#9b59b6','#e74c3c','#1abc9c','#f39c12','#2ecc71'] }] },
+    options: { plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+  });
+}
+
+function calcLtv() {
+  const n = parseInt(document.getElementById('ltv-customers').value) || 0;
+  const p = parseInt(document.getElementById('ltv-price').value) || 0;
+  const c = parseFloat(document.getElementById('ltv-churn').value) || 1;
+  const ltv  = Math.round(n * p * 100 / c);
+  const ltv2 = Math.round(n * p * 100 / (c / 2));
+  document.getElementById('ltvResult').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px">
+      <div style="background:#f0fff0;border:2px solid #00b900;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:12px;color:#666;margin-bottom:4px">現在のLTV（失客率 ${c}%）</div>
+        <div style="font-size:30px;font-weight:700;color:#00b900">${ltv.toLocaleString()}円</div>
+      </div>
+      <div style="background:#fff8f0;border:2px solid #e67e22;border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:12px;color:#666;margin-bottom:4px">💡 失客率を半分（${c/2}%）にしたら</div>
+        <div style="font-size:30px;font-weight:700;color:#e67e22">${ltv2.toLocaleString()}円</div>
+        <div style="font-size:12px;color:#e67e22;margin-top:4px">+${(ltv2-ltv).toLocaleString()}円 アップ（2倍）</div>
+      </div>
+    </div>
+    <div style="background:#fffde7;border-radius:8px;padding:12px;font-size:13px;color:#795548">
+      📖 coming-soonより：<strong>「失客が半分になれば、売上は倍になる」</strong><br>
+      失客率を下げるには → 来店サイクルに合わせた早めのアプローチが効果的です
+    </div>`;
 }
 
 function showTab(name, el) {
