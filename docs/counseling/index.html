@@ -5,84 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>カウンセリングシート</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #eef2ff;
+  --primary-border: #c7d2fe;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-sub: #64748b;
+  --text-muted: #94a3b8;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-focus: 0 0 0 3px rgba(99,102,241,.15);
+}
+
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf8; color:#202124; min-height:100vh; }
+body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
-.page { max-width:640px; margin:0 auto; padding:12px 12px 60px; }
+.page { max-width:640px; margin:0 auto; padding:16px 16px 72px; }
 
-.form-header-card { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.15); margin-bottom:12px; }
-.form-header-banner { background:#00b900; height:10px; border-radius:8px 8px 0 0; }
-.form-header-body { padding:20px 24px 18px; }
-.form-title { font-size:22px; font-weight:400; color:#202124; margin-bottom:6px; }
-.form-subtitle { font-size:14px; color:#70757a; line-height:1.6; }
-.form-required-note { font-size:13px; color:#d93025; margin-top:8px; }
+/* ── ヘッダーカード ── */
+.form-header-card { background:var(--surface); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:12px; border:1px solid var(--border); }
+.form-header-banner { background:linear-gradient(135deg, var(--primary) 0%, #818cf8 100%); height:5px; }
+.form-header-body { padding:22px 24px 18px; }
+.form-title { font-size:20px; font-weight:700; color:var(--text); margin-bottom:5px; letter-spacing:-.3px; }
+.form-subtitle { font-size:13px; color:var(--text-sub); line-height:1.6; }
+.form-required-note { font-size:12px; color:var(--danger); margin-top:8px; font-weight:500; }
 
-.q-card { background:#fff; border-radius:8px; padding:20px 24px; box-shadow:0 1px 3px rgba(0,0,0,.12); margin-bottom:12px; transition:box-shadow .15s; }
-.q-card:focus-within { box-shadow:0 1px 3px rgba(0,0,0,.12), 0 0 0 2px #00b900; }
-.q-label { font-size:15px; color:#202124; margin-bottom:14px; line-height:1.5; }
-.q-label-sm { font-size:14px; color:#202124; margin-top:20px; margin-bottom:10px; line-height:1.5; }
-.q-required { color:#d93025; margin-left:4px; }
+/* ── カード ── */
+.q-card { background:var(--surface); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow-sm); margin-bottom:10px; transition:box-shadow .2s; border:1px solid var(--border); }
+.q-card:focus-within { box-shadow:var(--shadow-sm), var(--shadow-focus); border-color:var(--primary-border); }
+.q-label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:14px; line-height:1.55; }
+.q-label-sm { font-size:13px; font-weight:600; color:var(--text); margin-top:20px; margin-bottom:10px; line-height:1.55; }
+.q-required { color:var(--danger); margin-left:3px; font-size:13px; }
 
-.gf-input { width:100%; border:none; border-bottom:1px solid #dadce0; padding:8px 0; font-size:15px; font-family:inherit; outline:none; background:transparent; color:#202124; transition:border-color .15s; }
-.gf-input:focus { border-bottom:2px solid #00b900; margin-bottom:-1px; }
-.gf-input::placeholder { color:#b0b0b0; }
-.gf-textarea { width:100%; border:none; border-bottom:1px solid #dadce0; padding:8px 0; font-size:15px; font-family:inherit; outline:none; background:transparent; color:#202124; resize:none; min-height:72px; transition:border-color .15s; }
-.gf-textarea:focus { border-bottom:2px solid #00b900; margin-bottom:-1px; }
-.gf-hint { font-size:12px; color:#70757a; margin-top:6px; }
+/* ── インプット ── */
+.gf-input { width:100%; border:none; border-bottom:1.5px solid var(--border); padding:9px 0; font-size:15px; font-family:inherit; outline:none; background:transparent; color:var(--text); transition:border-color .15s; }
+.gf-input:focus { border-bottom:2px solid var(--primary); margin-bottom:-0.5px; }
+.gf-input::placeholder { color:var(--text-muted); }
+.gf-textarea { width:100%; border:none; border-bottom:1.5px solid var(--border); padding:9px 0; font-size:15px; font-family:inherit; outline:none; background:transparent; color:var(--text); resize:none; min-height:72px; transition:border-color .15s; }
+.gf-textarea:focus { border-bottom:2px solid var(--primary); margin-bottom:-0.5px; }
+.gf-hint { font-size:12px; color:var(--text-sub); margin-top:6px; }
 
-.gf-radio-group { display:flex; flex-direction:column; gap:0; }
-.gf-radio-item { display:flex; align-items:center; gap:14px; padding:9px 0; cursor:pointer; border-radius:4px; transition:background .1s; }
-.gf-radio-item:hover { background:#f8f9fa; margin:0 -8px; padding:9px 8px; }
-.gf-radio-circle { width:20px; height:20px; border:2px solid #70757a; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:border-color .15s; }
-.gf-radio-item.selected .gf-radio-circle { border-color:#00b900; }
-.gf-radio-item.selected .gf-radio-circle::after { content:''; width:10px; height:10px; background:#00b900; border-radius:50%; }
-.gf-radio-label { font-size:15px; color:#202124; }
+/* ── ラジオ ── */
+.gf-radio-group { display:flex; flex-direction:column; gap:2px; }
+.gf-radio-item { display:flex; align-items:center; gap:12px; padding:9px 10px; cursor:pointer; border-radius:8px; transition:background .12s; margin:0 -10px; }
+.gf-radio-item:hover { background:#f1f5f9; }
+.gf-radio-circle { width:18px; height:18px; border:2px solid var(--text-muted); border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:border-color .15s, background .15s; }
+.gf-radio-item.selected .gf-radio-circle { border-color:var(--primary); background:var(--primary); }
+.gf-radio-item.selected .gf-radio-circle::after { content:''; width:6px; height:6px; background:#fff; border-radius:50%; }
+.gf-radio-label { font-size:14px; color:var(--text); line-height:1.4; }
+.gf-radio-item.selected .gf-radio-label { color:var(--primary); font-weight:500; }
 
-.gf-chip-group { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
-.gf-chip { padding:8px 16px; border:1px solid #dadce0; border-radius:20px; font-size:14px; cursor:pointer; transition:all .15s; background:#fff; color:#3c4043; user-select:none; }
-.gf-chip.selected { background:#e6f4ea; border-color:#00b900; color:#137333; font-weight:500; }
+/* ── チップ ── */
+.gf-chip-group { display:flex; flex-wrap:wrap; gap:7px; margin-top:4px; }
+.gf-chip { padding:7px 15px; border:1.5px solid var(--border); border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; background:var(--surface); color:var(--text-sub); user-select:none; }
+.gf-chip:hover { border-color:var(--primary-border); color:var(--primary); background:var(--primary-light); }
+.gf-chip.selected { background:var(--primary-light); border-color:var(--primary); color:var(--primary); font-weight:600; }
 
-.gf-check-group { display:flex; flex-direction:column; gap:0; }
-.gf-check-item { display:flex; align-items:center; gap:14px; padding:9px 0; cursor:pointer; border-radius:4px; transition:background .1s; }
-.gf-check-item:hover { background:#f8f9fa; margin:0 -8px; padding:9px 8px; }
-.gf-check-box { width:18px; height:18px; border:2px solid #70757a; border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .15s; }
-.gf-check-item.selected .gf-check-box { border-color:#00b900; background:#00b900; }
-.gf-check-item.selected .gf-check-box::after { content:'✓'; font-size:12px; color:#fff; font-weight:700; }
-.gf-check-label { font-size:15px; color:#202124; }
+/* ── チェックボックス ── */
+.gf-check-group { display:flex; flex-direction:column; gap:2px; }
+.gf-check-item { display:flex; align-items:center; gap:12px; padding:9px 10px; cursor:pointer; border-radius:8px; transition:background .12s; margin:0 -10px; }
+.gf-check-item:hover { background:#f1f5f9; }
+.gf-check-box { width:17px; height:17px; border:2px solid var(--text-muted); border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.gf-check-item.selected .gf-check-box { border-color:var(--primary); background:var(--primary); }
+.gf-check-item.selected .gf-check-box::after { content:'✓'; font-size:11px; color:#fff; font-weight:700; line-height:1; }
+.gf-check-label { font-size:14px; color:var(--text); }
+.gf-check-item.selected .gf-check-label { color:var(--primary); font-weight:500; }
 
-.gf-btn-row { display:flex; align-items:center; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:12px; }
-.gf-submit-btn { background:#00b900; color:#fff; border:none; border-radius:4px; padding:12px 32px; font-size:15px; font-weight:500; cursor:pointer; transition:background .15s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
-.gf-submit-btn:hover { background:#009a00; }
-.gf-submit-btn:disabled { background:#c5c5c5; cursor:default; }
-.gf-back-btn { background:none; border:none; color:#00b900; font-size:15px; font-weight:500; cursor:pointer; padding:12px 0; }
+/* ── ボタン ── */
+.gf-btn-row { display:flex; align-items:center; justify-content:flex-end; margin-top:8px; flex-wrap:wrap; gap:12px; }
+.gf-submit-btn { background:var(--primary); color:#fff; border:none; border-radius:10px; padding:13px 36px; font-size:15px; font-weight:600; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(99,102,241,.3); font-family:inherit; letter-spacing:.2px; }
+.gf-submit-btn:hover { background:var(--primary-dark); box-shadow:0 6px 20px rgba(99,102,241,.4); transform:translateY(-1px); }
+.gf-submit-btn:disabled { background:#cbd5e1; box-shadow:none; cursor:default; transform:none; }
+.gf-back-btn { background:none; border:none; color:var(--primary); font-size:14px; font-weight:600; cursor:pointer; padding:10px 0; font-family:inherit; }
+.gf-back-btn:hover { color:var(--primary-dark); }
 
-.section-card { background:#fff; border-radius:8px; padding:20px 24px; box-shadow:0 1px 3px rgba(0,0,0,.12); margin-bottom:12px; border-top:3px solid #00b900; }
-.section-title { font-size:16px; font-weight:600; color:#202124; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid #e8eaed; }
+/* ── セクションカード ── */
+.section-card { background:var(--surface); border-radius:var(--radius); padding:22px 22px; box-shadow:var(--shadow-sm); margin-bottom:10px; border:1px solid var(--border); border-top:3px solid var(--primary); }
+.section-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--border); letter-spacing:-.2px; }
 
-.notice-box { background:#f8f9fa; border-radius:6px; padding:16px; font-size:13px; color:#3c4043; line-height:2; margin-bottom:14px; border:1px solid #e8eaed; }
+/* ── 注意事項ボックス ── */
+.notice-box { background:#f8fafc; border-radius:8px; padding:16px 18px; font-size:12.5px; color:var(--text-sub); line-height:2; margin-bottom:14px; border:1px solid var(--border); }
 
-.done-card { background:#fff; border-radius:8px; padding:48px 24px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.12); }
-.done-icon { font-size:64px; margin-bottom:20px; }
-.done-title { font-size:22px; font-weight:400; color:#202124; margin-bottom:10px; }
-.done-sub { font-size:14px; color:#70757a; line-height:1.6; }
-.done-close-btn { margin-top:24px; background:#00b900; color:#fff; border:none; border-radius:4px; padding:12px 32px; font-size:15px; cursor:pointer; }
+/* ── 完了カード ── */
+.done-card { background:var(--surface); border-radius:var(--radius); padding:52px 24px; text-align:center; box-shadow:var(--shadow); border:1px solid var(--border); }
+.done-icon { font-size:60px; margin-bottom:20px; }
+.done-title { font-size:20px; font-weight:700; color:var(--text); margin-bottom:10px; }
+.done-sub { font-size:14px; color:var(--text-sub); line-height:1.7; }
 
-.notice-banner { background:#e6f4ea; border-left:4px solid #00b900; padding:12px 16px; font-size:14px; color:#137333; border-radius:0 4px 4px 0; margin-bottom:12px; }
-
-.loading-card { background:#fff; border-radius:8px; padding:40px; text-align:center; }
-.spinner { display:inline-block; width:28px; height:28px; border:3px solid #e0e0e0; border-top-color:#00b900; border-radius:50%; animation:spin .7s linear infinite; }
+/* ── ローディング ── */
+.loading-card { background:var(--surface); border-radius:var(--radius); padding:40px; text-align:center; }
+.spinner { display:inline-block; width:26px; height:26px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin .7s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+/* ── 画面遷移 ── */
 .screen { display:none; }
 .screen.active { display:block; }
-.start-btn { display:block; width:100%; padding:14px 16px; background:#fff; border:1px solid #dadce0; border-radius:8px; font-size:15px; color:#3c4043; text-align:left; cursor:pointer; margin-bottom:8px; box-shadow:0 1px 2px rgba(0,0,0,.08); transition:box-shadow .15s; }
-.start-btn:hover { box-shadow:0 2px 6px rgba(0,0,0,.15); }
-.search-card { background:#fff; border-radius:8px; padding:20px 24px; box-shadow:0 1px 3px rgba(0,0,0,.12); margin-bottom:12px; }
-.res-card { background:#e6f4ea; border:1px solid #00b900; border-radius:8px; padding:14px 16px; margin-bottom:8px; cursor:pointer; }
-.res-name { font-size:15px; font-weight:500; margin-bottom:4px; }
-.res-meta { font-size:13px; color:#70757a; }
-.badge-new { display:inline-block; background:#00b900; color:#fff; font-size:11px; padding:2px 8px; border-radius:10px; margin-left:6px; }
-.history-item { padding:12px 0; border-bottom:1px solid #f0f0f0; }
+
+/* ── スタートボタン ── */
+.start-btn { display:flex; align-items:center; width:100%; padding:15px 18px; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:14px; font-weight:500; color:var(--text); text-align:left; cursor:pointer; margin-bottom:8px; box-shadow:var(--shadow-sm); transition:all .18s; font-family:inherit; }
+.start-btn:hover { box-shadow:var(--shadow); border-color:var(--primary-border); color:var(--primary); transform:translateY(-1px); }
+
+/* ── 検索・結果カード ── */
+.search-card { background:var(--surface); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow-sm); margin-bottom:10px; border:1px solid var(--border); }
+.res-card { background:var(--primary-light); border:1.5px solid var(--primary-border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:8px; cursor:pointer; transition:all .15s; }
+.res-card:hover { border-color:var(--primary); box-shadow:0 4px 10px rgba(99,102,241,.15); }
+.res-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.res-meta { font-size:12px; color:var(--text-sub); line-height:1.7; }
+.badge-new { display:inline-block; background:var(--primary); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px; }
+
+/* ── 履歴 ── */
+.history-item { padding:12px 0; border-bottom:1px solid #f1f5f9; }
 .history-item:last-child { border:none; }
 </style>
 </head>
@@ -161,7 +203,7 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
 
       <!-- 基本情報 -->
       <div class="q-card">
-        <div style="font-size:16px;font-weight:600;color:#202124;margin-bottom:18px;padding-bottom:8px;border-bottom:2px solid #00b900">基本情報</div>
+        <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid #6366f1">基本情報</div>
         <div class="q-label">お名前（フルネーム）<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_name" placeholder="例：山田 花子" autocomplete="name">
         <div class="q-label-sm">住所<span class="q-required">*</span></div>
@@ -485,7 +527,7 @@ body { font-family:'Hiragino Sans','Meiryo',Roboto,sans-serif; background:#f0ebf
         </div>
       </div>
 
-      <div id="menuSelectPrompt" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:16px;text-align:center;font-size:14px;color:#856404;margin-bottom:12px;display:none">
+      <div id="menuSelectPrompt" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px;text-align:center;font-size:14px;color:#6366f1;margin-bottom:12px;display:none">
         ↑ 本日の施術内容を選択してください
       </div>
 
@@ -609,7 +651,7 @@ async function searchCustomer() {
         </div>`).join("");
       window._searchResults = reservations;
     } else {
-      html += '<div style="background:#fafafa;border:1px solid #dadce0;border-radius:8px;padding:16px;font-size:14px;color:#70757a;margin-bottom:12px">予約情報が見つかりませんでした</div>';
+      html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;font-size:14px;color:#64748b;margin-bottom:12px">予約情報が見つかりませんでした</div>';
       window._searchResults = [];
     }
     if (pastCounseling.length > 0) {
@@ -626,7 +668,7 @@ async function searchCustomer() {
     document.getElementById("searchResult").innerHTML = html;
     currentCustomer.phone = phone;
   } catch(e) {
-    document.getElementById("searchResult").innerHTML = `<div style="color:#d93025;padding:16px">エラー: ${e.message}</div>`;
+    document.getElementById("searchResult").innerHTML = `<div style="color:#ef4444;padding:16px">エラー: ${e.message}</div>`;
   }
 }
 
@@ -814,11 +856,11 @@ async function showHistory() {
         <div style="font-size:12px;color:#70757a">${r["記録日時"]||""} / ${r["店舗名"]||""}</div>
         <div style="font-size:14px;font-weight:500;margin-top:2px"><strong>${r["お名前"]||""}</strong>　${r["メニュー"]||""}</div>
         ${r["施術メモ"]?`<div style="font-size:13px;margin-top:3px">📝 ${String(r["施術メモ"]).substring(0,50)}${String(r["施術メモ"]).length>50?"…":""}</div>`:""}
-        ${r["次回提案"]?`<div style="font-size:13px;color:#00b900;margin-top:2px">➡ 次回: ${r["次回提案"]}</div>`:""}
+        ${r["次回提案"]?`<div style="font-size:13px;color:#6366f1;margin-top:2px">➡ 次回: ${r["次回提案"]}</div>`:""}
       </div>`
     ).join("");
   } catch(e) {
-    document.getElementById("historyContent").innerHTML = `<div style="color:#d93025">エラー: ${e.message}</div>`;
+    document.getElementById("historyContent").innerHTML = `<div style="color:#ef4444">エラー: ${e.message}</div>`;
   }
 }
 
@@ -877,7 +919,7 @@ async function loadLineFriends() {
         <div style="font-size:12px;color:#70757a">${f["電話番号"]||""} / 登録: ${String(f["登録日時"]||"").substring(0,10)}</div>
       </div>`).join("");
   } catch(e) {
-    document.getElementById("lineFriendsList").innerHTML = `<div style="color:#d93025">エラー: ${e.message}</div>`;
+    document.getElementById("lineFriendsList").innerHTML = `<div style="color:#ef4444">エラー: ${e.message}</div>`;
   }
 }
 
