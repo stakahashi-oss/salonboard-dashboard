@@ -126,6 +126,21 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 /* ── 履歴 ── */
 .history-item { padding:12px 0; border-bottom:1px solid #f1f5f9; }
 .history-item:last-child { border:none; }
+
+/* ── 画像ラジオ ── */
+.img-radio-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:8px; }
+.img-radio-card { border:2px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:all .2s; background:var(--surface); }
+.img-radio-card:hover { border-color:var(--primary-border); box-shadow:var(--shadow); transform:translateY(-1px); }
+.img-radio-card.selected { border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.12); }
+.img-radio-card img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:#f1f5f9; }
+.img-radio-label { padding:8px 10px; font-size:13px; font-weight:500; text-align:center; color:var(--text); border-top:1px solid var(--border); }
+.img-radio-card.selected .img-radio-label { color:var(--primary); font-weight:700; background:var(--primary-light); }
+.img-radio-text { display:flex; align-items:center; gap:12px; padding:10px 10px; cursor:pointer; border-radius:8px; transition:background .12s; margin:6px -10px 0; }
+.img-radio-text:hover { background:#f1f5f9; }
+.img-radio-text .gf-radio-circle { width:18px; height:18px; border:2px solid var(--text-muted); border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.img-radio-text.selected .gf-radio-circle { border-color:var(--primary); background:var(--primary); }
+.img-radio-text.selected .gf-radio-circle::after { content:''; width:6px; height:6px; background:#fff; border-radius:50%; }
+.img-radio-text.selected .gf-radio-label { color:var(--primary); font-weight:500; }
 </style>
 </head>
 <body>
@@ -374,12 +389,29 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
           </div>
 
           <div class="q-label-sm">ご希望のデザインイメージ</div>
-          <div class="gf-radio-group" id="b_design">
-            <div class="gf-radio-item" onclick="selectRadio(this,'b_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">平行</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'b_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">ストレート</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'b_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">ソフトアーチ</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'b_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">アーチ</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'b_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">わからない</div></div>
+          <div id="b_design">
+            <div class="img-radio-grid">
+              <div class="img-radio-card" onclick="selectImgRadio(this,'b_design')">
+                <img src="https://drive.google.com/thumbnail?id=1fVpnZQbqWUVQu4zZvmR2cZJLQ47BVGYaEmgxa2aapb6JIuk&sz=w400" alt="平行" loading="lazy">
+                <div class="img-radio-label">平行</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'b_design')">
+                <img src="https://drive.google.com/thumbnail?id=1IIKPrBxuLsk9ewhmbvgujuacw3IMtwQPSOsD2OoDbQISeyI&sz=w400" alt="ストレート" loading="lazy">
+                <div class="img-radio-label">ストレート</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'b_design')">
+                <img src="https://drive.google.com/thumbnail?id=1-Um2SfYqj0BYlfu4inTc5cfYsjwxOgmfkGXTEp5u3VUs18w&sz=w400" alt="ソフトアーチ" loading="lazy">
+                <div class="img-radio-label">ソフトアーチ</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'b_design')">
+                <img src="https://drive.google.com/thumbnail?id=1bgc9jJMcGwcKUxEn3eJb1QA3HBXcWtlk9C9jDxJSFjZZSB4&sz=w400" alt="アーチ" loading="lazy">
+                <div class="img-radio-label">アーチ</div>
+              </div>
+            </div>
+            <div class="img-radio-text" onclick="selectImgRadio(this,'b_design')">
+              <div class="gf-radio-circle"></div>
+              <div class="gf-radio-label">わからない</div>
+            </div>
           </div>
 
           <div class="q-label-sm">どんな印象に見られたいですか？</div>
@@ -483,12 +515,29 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
           </div>
 
           <div class="q-label-sm">ご希望のデザインイメージ</div>
-          <div class="gf-radio-group" id="l_design">
-            <div class="gf-radio-item" onclick="selectRadio(this,'l_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">根本から立ち上げストレート</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'l_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">ほんのりカール</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'l_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">ナチュラルカール</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'l_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">毛先までクルンとカール</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'l_design')"><div class="gf-radio-circle"></div><div class="gf-radio-label">わからない</div></div>
+          <div id="l_design">
+            <div class="img-radio-grid">
+              <div class="img-radio-card" onclick="selectImgRadio(this,'l_design')">
+                <img src="https://drive.google.com/thumbnail?id=1KcGPSqoEhF1gyoerrqllaUOfP2h3cQA8jckYc7bavk30Xj8&sz=w400" alt="根本から立ち上げストレート" loading="lazy">
+                <div class="img-radio-label">根本から立ち上げストレート</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'l_design')">
+                <img src="https://drive.google.com/thumbnail?id=1tjmXoSFmVWxzGlRS935pHre7z2wdcAFeOjeIElT-kyyOvOs&sz=w400" alt="ほんのりカール" loading="lazy">
+                <div class="img-radio-label">ほんのりカール</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'l_design')">
+                <img src="https://drive.google.com/thumbnail?id=1NOQtbMLKDxgUtR_rG33-B4gFC42UrPohP2drHNN6gxqtYTg&sz=w400" alt="ナチュラルカール" loading="lazy">
+                <div class="img-radio-label">ナチュラルカール</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'l_design')">
+                <img src="https://drive.google.com/thumbnail?id=1wZ4wMW7oRPW7Fkmz6m4PM65YQbViKZVfwUo8rg5UI49T9X8&sz=w400" alt="毛先までクルンとカール" loading="lazy">
+                <div class="img-radio-label">毛先までクルンとカール</div>
+              </div>
+            </div>
+            <div class="img-radio-text" onclick="selectImgRadio(this,'l_design')">
+              <div class="gf-radio-circle"></div>
+              <div class="gf-radio-label">わからない</div>
+            </div>
           </div>
 
           <div class="q-label-sm">普段ご利用のまつ毛ホームケア商品</div>
@@ -594,6 +643,20 @@ function selectRadio(el, groupId) {
 function getSelected(groupId) {
   const el = document.querySelector("#" + groupId + " .gf-radio-item.selected .gf-radio-label");
   return el ? el.textContent : "";
+}
+
+// ── 画像ラジオ ────────────────────────────────────────────
+function selectImgRadio(el, groupId) {
+  document.querySelectorAll("#" + groupId + " .img-radio-card, #" + groupId + " .img-radio-text")
+    .forEach(b => b.classList.remove("selected"));
+  el.classList.add("selected");
+}
+
+function getImgSelected(groupId) {
+  const card = document.querySelector("#" + groupId + " .img-radio-card.selected .img-radio-label");
+  if (card) return card.textContent;
+  const text = document.querySelector("#" + groupId + " .img-radio-text.selected .gf-radio-label");
+  return text ? text.textContent : "";
 }
 
 // ── チップ（単複選択兼用）────────────────────────────────
@@ -806,7 +869,7 @@ async function submitForm() {
     b_allergy:      getChecks("b_allergy"),
     b_skin:         getChecks("b_skin"),
     b_color:        getSelected("b_color"),
-    b_design:       getSelected("b_design"),
+    b_design:       getImgSelected("b_design"),
     b_impression:   getSelected("b_impression"),
     b_makeup:       getChecks("b_makeup"),
     b_sns:          getSelected("b_sns"),
@@ -817,7 +880,7 @@ async function submitForm() {
     l_allergy:      getChecks("l_allergy"),
     l_skin:         getChecks("l_skin"),
     l_eye_look:     getSelected("l_eye_look"),
-    l_design:       getSelected("l_design"),
+    l_design:       getImgSelected("l_design"),
     l_homecare:     document.getElementById("l_homecare").value.trim(),
     l_sns:          getSelected("l_sns"),
   };
@@ -876,6 +939,7 @@ function resetForm() {
     .forEach(g => document.querySelectorAll("#"+g+" .gf-radio-item").forEach(b => b.classList.remove("selected")));
   document.querySelectorAll(".gf-chip.selected, .gf-check-item.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("transferDetailField").style.display = "none";
+  document.querySelectorAll(".img-radio-card.selected, .img-radio-text.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("section-brow").style.display = "none";
   document.getElementById("section-lash").style.display = "none";
   document.getElementById("menuSelectPrompt").style.display = "none";
