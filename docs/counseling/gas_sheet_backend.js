@@ -37,6 +37,7 @@ function doPost(e) {
     if (action === "upload_image")       return resp(uploadImageToDrive(body.base64, body.filename, body.mime_type));
     if (action === "import_followers")   return resp(importFollowers());
     if (action === "fix_headers")        return resp(fixAllHeaders());
+    if (action === "save_auto_tag_rules") return resp(saveAutoTagRules(body.rules));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -61,6 +62,7 @@ function doGet(e) {
   if (act === "get_conversions")      return resp(getConversions(e.parameter.broadcast_id));
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
   if (act === "get_step_stats")       return resp(getStepStats());
+  if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
   return resp({error: "unknown action"});
 }
 
@@ -267,6 +269,8 @@ function saveCounseling(data) {
     data.l_allergy || "", data.l_skin || "", data.l_eye_look || "",
     data.l_design || "", data.l_homecare || "", data.l_sns || ""
   ]);
+  // 自動タグ付け
+  applyAutoTags(data, lineUid);
   return {status: "ok", id: id, line_sent: lineSent};
 }
 
@@ -1639,6 +1643,65 @@ function uploadImageToDrive(base64Data, filename, mimeType) {
     return {status: "ok", url: url, file_id: fileId};
   } catch(e) {
     return {error: e.toString()};
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  自動タグルール
+// ══════════════════════════════════════════════════════════
+function getAutoTagRules() {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty("AUTO_TAG_RULES");
+  var rules = raw ? JSON.parse(raw) : [];
+  return {rules: rules};
+}
+
+function saveAutoTagRules(rules) {
+  var props = PropertiesService.getScriptProperties();
+  props.setProperty("AUTO_TAG_RULES", JSON.stringify(rules || []));
+  return {status: "ok"};
+}
+
+function applyAutoTags(data, lineUid) {
+  if (!lineUid) return;
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var raw = props.getProperty("AUTO_TAG_RULES");
+    if (!raw) return;
+    var rules = JSON.parse(raw);
+    var matchedTags = [];
+    for (var i = 0; i < rules.length; i++) {
+      var rule = rules[i];
+      if (!rule.enabled) continue;
+      var fieldVal = String(data[rule.field] || "");
+      var matched = false;
+      if (rule.condition === "equals")    matched = fieldVal === rule.value;
+      else if (rule.condition === "contains")  matched = fieldVal.indexOf(rule.value) !== -1;
+      else if (rule.condition === "not_empty") matched = fieldVal !== "";
+      if (matched) matchedTags.push(rule.tag);
+    }
+    if (matchedTags.length === 0) return;
+    var sheet = getSheet("LINE友だち");
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var tagColIdx = headers.indexOf("タグ");
+    if (tagColIdx === -1) {
+      sheet.getRange(1, sheet.getLastColumn() + 1).setValue("タグ");
+      tagColIdx = sheet.getLastColumn() - 1;
+    }
+    var friendData = sheet.getDataRange().getValues();
+    for (var j = 1; j < friendData.length; j++) {
+      if (String(friendData[j][0]) === String(lineUid)) {
+        var existing = String(friendData[j][tagColIdx] || "");
+        var existingArr = existing ? existing.split(",").map(function(t){ return t.trim(); }) : [];
+        matchedTags.forEach(function(t) {
+          if (existingArr.indexOf(t) === -1) existingArr.push(t);
+        });
+        sheet.getRange(j + 1, tagColIdx + 1).setValue(existingArr.join(", "));
+        break;
+      }
+    }
+  } catch(e) {
+    Logger.log("applyAutoTags error: " + e.toString());
   }
 }
 
