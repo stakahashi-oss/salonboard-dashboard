@@ -1,5 +1,7 @@
 var SECRET_KEY = "ssin2026";
-var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
+var SALES_SS_ID = "1B2eQ8K4oN7DgvTU3-mWF8ZShfDDVPXM8aU6GuxlWwMI";
+var SALES_SHEET_GID = 50056376;
+var LINE_TOKEN ="E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
 var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
 
 var COUNSELING_FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseling/";
@@ -63,6 +65,7 @@ function doGet(e) {
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
   if (act === "get_step_stats")       return resp(getStepStats());
   if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
+  if (act === "get_sales")            return resp(getSalesData());
   return resp({error: "unknown action"});
 }
 
@@ -1702,6 +1705,88 @@ function applyAutoTags(data, lineUid) {
     }
   } catch(e) {
     Logger.log("applyAutoTags error: " + e.toString());
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  売上データ取得（ダッシュボード用）
+// ══════════════════════════════════════════════════════════
+function getSalesData() {
+  try {
+    var ss = SpreadsheetApp.openById(SALES_SS_ID);
+    var sheets = ss.getSheets();
+    var sheet = null;
+    for (var i = 0; i < sheets.length; i++) {
+      if (sheets[i].getSheetId() === SALES_SHEET_GID) { sheet = sheets[i]; break; }
+    }
+    if (!sheet) sheet = sheets[0];
+
+    var data = sheet.getDataRange().getValues();
+    if (data.length < 2) return {error: "no data", stores: {}, meta: {}};
+
+    var headers = data[0];
+    var storeIdx=-1, dateIdx=-1, amtIdx=-1, typeIdx=-1, acctIdx=-1;
+    for (var c = 0; c < headers.length; c++) {
+      var h = String(headers[c]);
+      if (h === 'お店名')    storeIdx = c;
+      if (h === '会計日')    dateIdx  = c;
+      if (h === '金額')      amtIdx   = c;
+      if (h === '新規再来')  typeIdx  = c;
+      if (h === '会計ID')    acctIdx  = c;
+    }
+    if (storeIdx < 0 || dateIdx < 0 || amtIdx < 0) {
+      return {error: "header not found", headers: headers.slice(0,5)};
+    }
+
+    var now = new Date();
+    var ym = Utilities.formatDate(now, "Asia/Tokyo", "yyyyMM");
+    var dayOfMonth = parseInt(Utilities.formatDate(now, "Asia/Tokyo", "d"));
+    var daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+
+    var stores = {};
+    for (var r = 1; r < data.length; r++) {
+      var row = data[r];
+      var dateVal = String(row[dateIdx]).replace(/-/g,'').replace(/\//g,'').replace(/ .*/,'');
+      if (!dateVal.startsWith(ym)) continue;
+
+      var storeName = String(row[storeIdx]);
+      var amt = Number(row[amtIdx]) || 0;
+      var nrType = typeIdx >= 0 ? String(row[typeIdx] || '') : '';
+      var acctId = (acctIdx >= 0 ? String(row[acctIdx]) : '') + '_' + dateVal;
+
+      if (!stores[storeName]) {
+        stores[storeName] = {revenue: 0, newCount: 0, returnCount: 0, seenAcct: {}};
+      }
+      stores[storeName].revenue += amt;
+      if (!stores[storeName].seenAcct[acctId]) {
+        stores[storeName].seenAcct[acctId] = true;
+        if (nrType === '新規') stores[storeName].newCount++;
+        else if (nrType === '再来') stores[storeName].returnCount++;
+      }
+    }
+
+    var result = {};
+    for (var s in stores) {
+      var d = stores[s];
+      result[s] = {
+        revenue: d.revenue,
+        newCount: d.newCount,
+        returnCount: d.returnCount,
+        totalCustomers: d.newCount + d.returnCount
+      };
+    }
+
+    return {
+      stores: result,
+      meta: {
+        yearMonth: ym,
+        dayOfMonth: dayOfMonth,
+        daysInMonth: daysInMonth,
+        updatedAt: Utilities.formatDate(now, "Asia/Tokyo", "yyyy-MM-dd HH:mm")
+      }
+    };
+  } catch(e) {
+    return {error: e.toString(), stores: {}, meta: {}};
   }
 }
 
