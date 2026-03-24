@@ -1712,6 +1712,13 @@ function applyAutoTags(data, lineUid) {
 //  売上データ取得（ダッシュボード用）
 // ══════════════════════════════════════════════════════════
 function getSalesData() {
+  // カラム定義（ヘッダー行なし）
+  // 0:店舗略称 1:店舗名 2:会計日 3:時間 4:会計ID 5:会計区分
+  // 6:区分 7:ジャンル 8:カテゴリ 9:メニュー 10:単価 11:単価区分
+  // 12:個数 13:金額 14:スタッフ 15:指名 16:客名 17:客番号
+  // 18:フリガナ 19:予約経路 20:性別 21:新規再来 22:年月
+  var COL = {abbr:0, date:2, acct:4, menu:9, amt:13, nr:21};
+
   try {
     var ss = SpreadsheetApp.openById(SALES_SS_ID);
     var sheets = ss.getSheets();
@@ -1724,44 +1731,34 @@ function getSalesData() {
     var data = sheet.getDataRange().getValues();
     if (data.length < 2) return {error: "no data", stores: {}, meta: {}};
 
-    var headers = data[0];
-    var storeIdx=-1, dateIdx=-1, amtIdx=-1, typeIdx=-1, acctIdx=-1;
-    for (var c = 0; c < headers.length; c++) {
-      var h = String(headers[c]);
-      if (h === 'お店名')    storeIdx = c;
-      if (h === '会計日')    dateIdx  = c;
-      if (h === '金額')      amtIdx   = c;
-      if (h === '新規再来')  typeIdx  = c;
-      if (h === '会計ID')    acctIdx  = c;
-    }
-    if (storeIdx < 0 || dateIdx < 0 || amtIdx < 0) {
-      return {error: "header not found", headers: headers.slice(0,5)};
-    }
-
     var now = new Date();
     var ym = Utilities.formatDate(now, "Asia/Tokyo", "yyyyMM");
     var dayOfMonth = parseInt(Utilities.formatDate(now, "Asia/Tokyo", "d"));
     var daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
 
     var stores = {};
-    for (var r = 1; r < data.length; r++) {
+    for (var r = 0; r < data.length; r++) {
       var row = data[r];
-      var dateVal = String(row[dateIdx]).replace(/-/g,'').replace(/\//g,'').replace(/ .*/,'');
+      if (!row[COL.abbr]) continue;
+      var dateVal = String(row[COL.date]).replace(/-/g,'').replace(/\//g,'').replace(/ .*/,'');
       if (!dateVal.startsWith(ym)) continue;
 
-      var storeName = String(row[storeIdx]);
-      var amt = Number(row[amtIdx]) || 0;
-      var nrType = typeIdx >= 0 ? String(row[typeIdx] || '') : '';
-      var acctId = (acctIdx >= 0 ? String(row[acctIdx]) : '') + '_' + dateVal;
+      var abbr = String(row[COL.abbr]);
+      var amt = Number(row[COL.amt]) || 0;
+      var nrType = String(row[COL.nr] || '');
+      var acctId = String(row[COL.acct] || '') + '_' + dateVal;
+      var menu = String(row[COL.menu] || '');
+      var isKaisu = menu.indexOf('回数券') >= 0 || menu.indexOf('コース') >= 0;
 
-      if (!stores[storeName]) {
-        stores[storeName] = {revenue: 0, newCount: 0, returnCount: 0, seenAcct: {}};
+      if (!stores[abbr]) {
+        stores[abbr] = {revenue:0, kaisuRev:0, newCount:0, returnCount:0, seenAcct:{}};
       }
-      stores[storeName].revenue += amt;
-      if (!stores[storeName].seenAcct[acctId]) {
-        stores[storeName].seenAcct[acctId] = true;
-        if (nrType === '新規') stores[storeName].newCount++;
-        else if (nrType === '再来') stores[storeName].returnCount++;
+      stores[abbr].revenue += amt;
+      if (isKaisu) stores[abbr].kaisuRev += amt;
+      if (!stores[abbr].seenAcct[acctId]) {
+        stores[abbr].seenAcct[acctId] = true;
+        if (nrType === '新規') stores[abbr].newCount++;
+        else if (nrType === '再来') stores[abbr].returnCount++;
       }
     }
 
@@ -1770,6 +1767,7 @@ function getSalesData() {
       var d = stores[s];
       result[s] = {
         revenue: d.revenue,
+        kaisuRev: d.kaisuRev,
         newCount: d.newCount,
         returnCount: d.returnCount,
         totalCustomers: d.newCount + d.returnCount
