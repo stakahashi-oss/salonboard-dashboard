@@ -665,11 +665,11 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
             </div>
           </div>
 
-          <div class="q-label-sm">カールの種類</div>
-          <div class="gf-radio-group" id="e_curl">
-            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Jカール（ナチュラル）</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Cカール（スタンダード）</div></div>
-            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Dカール（しっかりカール）</div></div>
+          <div style="font-size:13px;color:#64748b;font-weight:600;margin-top:16px;margin-bottom:8px">カールの種類</div>
+          <div class="gf-chip-group" id="e_curl">
+            <div class="gf-chip" onclick="toggleChip(this)">Jカール（ナチュラル）</div>
+            <div class="gf-chip" onclick="toggleChip(this)">Cカール（スタンダード）</div>
+            <div class="gf-chip" onclick="toggleChip(this)">Dカール（しっかりカール）</div>
           </div>
 
           <div class="q-label-sm">SNS・ブログへの写真掲載</div>
@@ -1026,7 +1026,7 @@ async function submitForm() {
     e_allergy:      getChecks("e_allergy"),
     e_eye_look:     getSelected("e_eye_look"),
     e_design:       getImgSelected("e_design"),
-    e_curl:         getSelected("e_curl"),
+    e_curl:         getChips("e_curl"),
     e_sns:          getSelected("e_sns"),
   };
 
@@ -1081,7 +1081,7 @@ function resetForm() {
   ["f_source","f_transfer","f_freq","f_menu",
    "b_timing","b_self_care","b_surgery","b_color","b_design","b_impression",
    "l_timing","l_glue","l_surgery","l_eye_look","l_design","l_sns","b_sns",
-   "e_glue","e_trouble","e_condition","e_surgery","e_eye_look","e_design","e_curl","e_sns"]
+   "e_glue","e_trouble","e_condition","e_surgery","e_eye_look","e_design","e_sns"]
     .forEach(g => document.querySelectorAll("#"+g+" .gf-radio-item").forEach(b => b.classList.remove("selected")));
   document.querySelectorAll(".gf-chip.selected, .gf-check-item.selected, #f_homecare_product .gf-check-item.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("transferDetailField").style.display = "none";
