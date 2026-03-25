@@ -5,567 +5,338 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>眉毛直営店MTG 議事録｜2026.03.25</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
-  padding: 40px 20px 80px;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 15px;
+  line-height: 1.8;
 }
 
-.doc {
-  max-width: 760px;
+.page {
+  max-width: 780px;
   margin: 0 auto;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 48px 56px;
+  padding: 60px 48px 100px;
 }
 
 /* Header */
-.doc-header {
-  border-bottom: 2px solid #0f172a;
-  padding-bottom: 24px;
+.doc-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.doc-meta {
+  color: #555;
+  font-size: 13px;
   margin-bottom: 32px;
-}
-.doc-header .tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #6366f1;
-  margin-bottom: 8px;
-}
-.doc-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.doc-header .meta {
-  display: flex;
-  gap: 24px;
-  font-size: 13px;
-  color: #64748b;
-}
-.doc-header .meta span::before {
-  content: attr(data-label) ': ';
-  font-weight: 600;
-  color: #475569;
-}
-
-/* Goal box */
-.goal-box {
-  background: #eef2ff;
-  border-left: 4px solid #6366f1;
-  border-radius: 0 8px 8px 0;
-  padding: 14px 18px;
-  margin-bottom: 36px;
-  font-size: 13px;
-  color: #3730a3;
-  line-height: 1.6;
-}
-.goal-box strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
-
-/* KPI row */
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 36px;
-}
-.kpi {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 14px;
-  text-align: center;
-}
-.kpi .val { font-size: 20px; font-weight: 700; color: #0f172a; }
-.kpi .lbl { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }
-
-/* Section */
-h2 {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: #64748b;
-  margin-bottom: 14px;
-  margin-top: 36px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-/* Decision list */
-.decisions {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 4px;
 }
-.decision {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 12px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 13px;
-}
-.decision .num {
-  min-width: 22px; height: 22px;
-  background: #eef2ff;
-  color: #6366f1;
-  font-size: 11px;
+
+/* Sections */
+h2 {
+  font-size: 17px;
   font-weight: 700;
-  border-radius: 5px;
-  display: flex; align-items: center; justify-content: center;
+  margin: 36px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
 }
-.decision .body .title { font-weight: 600; }
-.decision .body .desc { color: #64748b; font-size: 12px; margin-top: 2px; line-height: 1.5; }
 
-/* Flow */
-.flow { margin-bottom: 4px; }
-.flow-step {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  position: relative;
+h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 20px 0 8px;
 }
-.flow-step:not(:last-child)::before {
-  content: '';
-  position: absolute;
-  left: 15px; top: 34px;
-  width: 2px;
-  height: calc(100% - 10px);
-  background: #e2e8f0;
-}
-.flow-dot {
-  min-width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 2px solid #e2e8f0;
-  background: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  position: relative; z-index: 1;
-}
-.flow-dot.active { border-color: #6366f1; background: #eef2ff; }
-.flow-content { padding: 4px 0 20px; font-size: 13px; }
-.flow-content .step { font-size: 11px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }
-.flow-content .name { font-weight: 600; margin: 2px 0; }
-.flow-content .note { color: #64748b; font-size: 12px; line-height: 1.5; }
-.flow-content .tag {
-  display: inline-block;
-  margin-top: 5px;
-  font-size: 11px; font-weight: 600;
-  padding: 2px 8px; border-radius: 4px;
-}
-.tag-indigo { background: #eef2ff; color: #4338ca; }
-.tag-green  { background: #ecfdf5; color: #065f46; }
 
-/* Action table */
+p {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+ul, ol {
+  padding-left: 22px;
+  margin-bottom: 12px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  margin-bottom: 4px;
+  margin: 12px 0;
 }
+
 th {
-  background: #f8fafc;
-  padding: 9px 12px;
+  background: #f5f5f5;
   text-align: left;
-  font-size: 11px;
+  padding: 8px 10px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #64748b;
-  border-bottom: 1px solid #e2e8f0;
+  border: 1px solid #e0e0e0;
 }
+
 td {
-  padding: 11px 12px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
   vertical-align: top;
-  line-height: 1.5;
 }
-tr:last-child td { border-bottom: none; }
-td strong { display: block; margin-bottom: 2px; }
-td .sub { color: #64748b; font-size: 12px; }
-.badge {
-  display: inline-block;
-  font-size: 11px; font-weight: 600;
-  padding: 2px 8px; border-radius: 20px;
-  white-space: nowrap;
-}
-.b-lime    { background: #eff6ff; color: #1d4ed8; }
-.b-ts      { background: #fef3c7; color: #92400e; }
-.b-sv      { background: #f0fdf4; color: #166534; }
-.b-all     { background: #f5f3ff; color: #5b21b6; }
-.p-high { background: #fef2f2; color: #dc2626; font-size:11px; font-weight:700; padding:2px 7px; border-radius:4px; display:inline-block; }
-.p-mid  { background: #fffbeb; color: #d97706; font-size:11px; font-weight:700; padding:2px 7px; border-radius:4px; display:inline-block; }
 
-/* NA */
-.na-item {
-  padding: 11px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 8px;
+tr:nth-child(even) td {
+  background: #fafafa;
 }
-.na-item .title { font-weight: 600; margin-bottom: 3px; }
-.na-item .desc { color: #64748b; font-size: 12px; line-height: 1.5; }
-.na-item .status { display: inline-block; margin-top: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #f1f5f9; color: #475569; }
 
-/* Next */
-.next-box {
-  background: #0f172a;
-  border-radius: 8px;
-  padding: 20px 24px;
-  color: #fff;
-  margin-top: 4px;
+.tag-high { color: #c0392b; font-weight: 700; }
+.tag-mid { color: #d97706; font-weight: 700; }
+
+/* Divider */
+hr { border: none; border-top: 1px solid #e0e0e0; margin: 28px 0; }
+
+/* Callout box */
+.callout {
+  background: #f8f8f8;
+  border-left: 3px solid #999;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #444;
 }
-.next-box .label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
-.next-box .title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
-.next-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.next-box ul li { font-size: 13px; color: #cbd5e1; padding-left: 16px; position: relative; }
-.next-box ul li::before { content: '→'; position: absolute; left: 0; color: #6366f1; }
 
-/* ===== TOOLBAR ===== */
+/* Toolbar */
 .toolbar {
   position: fixed;
-  top: 16px; right: 16px;
+  bottom: 24px;
+  right: 24px;
   display: flex;
   gap: 8px;
   z-index: 100;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 8px 10px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
-.toolbar button {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  transition: background 0.15s;
-}
-.btn-edit  { background: #eef2ff; color: #4338ca; }
-.btn-edit:hover  { background: #e0e7ff; }
-.btn-save  { background: #10b981; color: #fff; }
-.btn-save:hover  { background: #059669; }
-.btn-print { background: #f1f5f9; color: #475569; }
-.btn-print:hover { background: #e2e8f0; }
-.btn-clear { background: #fef2f2; color: #dc2626; }
-.btn-clear:hover { background: #fee2e2; }
-.saved-indicator {
-  font-size: 11px;
-  color: #10b981;
-  font-weight: 600;
-  align-self: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.saved-indicator.show { opacity: 1; }
 
-/* ===== EDIT MODE ===== */
-body.editing [contenteditable] {
-  outline: none;
-  border-radius: 4px;
-  padding: 2px 4px;
-  margin: -2px -4px;
-  background: #fffbeb;
-  border: 1px dashed #fbbf24;
+.toolbar button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.toolbar button:hover { background: #f5f5f5; }
+.btn-save { background: #1a1a1a !important; color: #fff !important; border-color: #1a1a1a !important; }
+.btn-save:hover { background: #333 !important; }
+
+.saved-msg {
+  display: none;
+  align-items: center;
+  padding: 8px 14px;
+  background: #333;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.saved-msg.show { display: flex; }
+
+/* Edit mode */
+body.editing [data-id] {
+  outline: 1.5px dashed #aaa;
+  border-radius: 2px;
   cursor: text;
-  min-width: 20px;
-  display: inline-block;
 }
-body.editing [contenteditable]:focus {
-  background: #fefce8;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
+
+body.editing [data-id]:focus {
+  outline: 2px solid #555;
+  background: #fffbe6;
 }
-body.editing .doc {
-  outline: 2px dashed #fbbf2430;
-}
+
 .edit-hint {
   display: none;
-  text-align: center;
   font-size: 12px;
-  color: #f59e0b;
-  font-weight: 600;
-  padding: 6px;
-  background: #fffbeb;
-  border-radius: 6px;
-  margin-bottom: 12px;
+  color: #888;
+  margin-bottom: 20px;
 }
 body.editing .edit-hint { display: block; }
 
 @media print {
-  body { background: #fff; padding: 0; }
-  .doc { border: none; border-radius: 0; box-shadow: none; }
   .toolbar { display: none; }
-  .edit-hint { display: none !important; }
-}
-@media (max-width: 600px) {
-  .doc { padding: 28px 20px; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .toolbar { top: auto; bottom: 16px; right: 8px; left: 8px; justify-content: center; }
+  body { font-size: 13px; }
+  .page { padding: 0; }
 }
 </style>
 </head>
 <body>
 
-<!-- TOOLBAR -->
 <div class="toolbar">
-  <button class="btn-edit" onclick="toggleEdit()" id="editBtn">✏️ 編集</button>
-  <button class="btn-save" onclick="saveDoc()" id="saveBtn" style="display:none">💾 保存</button>
-  <button class="btn-clear" onclick="clearSaved()" id="clearBtn" style="display:none" title="保存データをリセット">↩ リセット</button>
-  <button class="btn-print" onclick="window.print()">🖨 印刷</button>
-  <span class="saved-indicator" id="savedMsg">保存しました</span>
+  <button onclick="toggleEdit()" id="editBtn">✏️ 編集</button>
+  <button class="btn-save" onclick="saveDoc()" id="saveBtn" style="display:none">保存</button>
+  <button onclick="clearSaved()" id="clearBtn" style="display:none">リセット</button>
+  <button onclick="window.print()">印刷</button>
+  <span class="saved-msg" id="savedMsg">保存しました</span>
 </div>
 
-<div class="doc">
-<div class="edit-hint">✏️ 編集モード — テキストをクリックして直接編集できます</div>
+<div class="page">
 
-  <!-- Header -->
-  <div class="doc-header">
-    <div class="tag" data-id="tag">Meeting Notes</div>
-    <h1 data-id="title" contenteditable="false">眉毛直営店MTG 議事録</h1>
-    <div class="meta">
-      <span data-label="日時" data-id="meta-date" contenteditable="false">2026年3月25日</span>
-      <span data-label="参加者" data-id="meta-members" contenteditable="false">責任者：土田・宮脇　／　EM：梅田・澤・内山　／　SV：髙橋</span>
-      <span data-label="テーマ" data-id="meta-theme" contenteditable="false">再来店最大化・次回予約強化</span>
-    </div>
-  </div>
+<p class="edit-hint">編集モード：テキストをクリックして直接書き換えられます</p>
 
-  <!-- Goal -->
-  <div class="goal-box">
-    <strong>会議のゴール</strong>
-    <span data-id="goal" contenteditable="false">次回予約と再獲得について、直営店に関わる全メンバーが共通認識を持ち、目標達成に向けたアクションに取り組める状態にする</span>
-  </div>
+<div class="doc-meta">
+  <span>📅 <span data-id="meta-date" contenteditable="false">2026年3月25日</span></span>
+  <span>👥 責任者：<span data-id="meta-owners" contenteditable="false">土田・宮脇</span>　／　EM：<span data-id="meta-ems" contenteditable="false">梅田・澤・内山</span>　／　SV：<span data-id="meta-svs" contenteditable="false">髙橋</span></span>
+  <span>🎯 テーマ：<span data-id="meta-theme" contenteditable="false">再来店最大化・次回予約強化</span></span>
+</div>
 
-  <!-- KPIs -->
-  <div class="kpi-row">
-    <div class="kpi"><div class="val" data-id="kpi1-val" contenteditable="false">35%</div><div class="lbl" data-id="kpi1-lbl" contenteditable="false">新規再来率<br>目標</div></div>
-    <div class="kpi"><div class="val" data-id="kpi2-val" contenteditable="false">70〜80%</div><div class="lbl" data-id="kpi2-lbl" contenteditable="false">現状の<br>新規離脱率</div></div>
-    <div class="kpi"><div class="val" data-id="kpi3-val" contenteditable="false">2回</div><div class="lbl" data-id="kpi3-lbl" contenteditable="false">次回予約の<br>提案タイミング</div></div>
-    <div class="kpi"><div class="val" data-id="kpi4-val" contenteditable="false">29%</div><div class="lbl" data-id="kpi4-lbl" contenteditable="false">提案できていない<br>スタッフ比率</div></div>
-  </div>
+<h1 class="doc-title" data-id="title">眉毛直営店MTG 議事録</h1>
 
-  <!-- Decisions -->
-  <h2>主要決定事項</h2>
-  <div class="decisions">
-    <div class="decision">
-      <div class="num">1</div>
-      <div class="body">
-        <div class="title" data-id="d1-title" contenteditable="false">次回予約を再来最大化の最優先手段に統一</div>
-        <div class="desc" data-id="d1-desc" contenteditable="false">指名・回数券・HPB等の複数手段の中から「次回予約」を最優先として全店舗で統一して取り組む</div>
-      </div>
-    </div>
-    <div class="decision">
-      <div class="num">2</div>
-      <div class="body">
-        <div class="title" data-id="d2-title" contenteditable="false">新規再来率の目標を 35% に設定</div>
-        <div class="desc" data-id="d2-desc" contenteditable="false">過去統計より、次回予約強化時期が新規再来率で最高値を記録。現状70〜80%の離脱率に対し、次回予約取得で35%の再来見込みが可能</div>
-      </div>
-    </div>
-    <div class="decision">
-      <div class="num">3</div>
-      <div class="body">
-        <div class="title" data-id="d3-title" contenteditable="false">次回予約の提案は「サンドイッチ方式」2回に統一</div>
-        <div class="desc" data-id="d3-desc" contenteditable="false">①仕上がりを見せた時（ジャブ）　②お会計前（クロージング）。「どうしますか？」ではなく「取っていきます」前提で促す</div>
-      </div>
-    </div>
-    <div class="decision">
-      <div class="num">4</div>
-      <div class="body">
-        <div class="title" data-id="d4-title" contenteditable="false">物販・オプション提案は3回目以降に後回し</div>
-        <div class="desc" data-id="d4-desc" contenteditable="false">新規顧客への情報量を絞り次回予約を最優先。再来顧客は回数券移行を目標とした同線を設計する</div>
-      </div>
-    </div>
-    <div class="decision">
-      <div class="num">5</div>
-      <div class="body">
-        <div class="title" data-id="d5-title" contenteditable="false">ルミス川崎店でHPBクーポン戦略をテスト運用</div>
-        <div class="desc" data-id="d5-desc" contenteditable="false">2回目・3回目まで新規と同価格のクーポンをテスト。結果が出るまで全店舗で次回予約の取り組みを統一して進める</div>
-      </div>
-    </div>
-    <div class="decision">
-      <div class="num">6</div>
-      <div class="body">
-        <div class="title" data-id="d6-title" contenteditable="false">ゲリラクーポン動線が未整備の店舗は作成・提出</div>
-        <div class="desc" data-id="d6-desc" contenteditable="false">ゲリラ来客からリピーターへの動線が未整備の店舗多数。各SVが確認し、未整備の場合は動線を作成して提出する</div>
-      </div>
-    </div>
-  </div>
+<h2>会議のゴール</h2>
+<p data-id="goal">次回予約と再獲得について、直営店に関わる全メンバーが共通認識を持ち、目標達成に向けたアクションに取り組める状態にする。</p>
 
-  <!-- Flow -->
-  <h2>次回予約 導線設計（新規顧客フロー）</h2>
-  <div class="flow">
-    <div class="flow-step">
-      <div class="flow-dot">🎨</div>
-      <div class="flow-content">
-        <div class="step">Step 1</div>
-        <div class="name">施術中</div>
-        <div class="note">通常通り施術を進める</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-dot active">🪞</div>
-      <div class="flow-content">
-        <div class="step">Step 2 — ジャブ①</div>
-        <div class="name">仕上がりを見せたタイミング</div>
-        <div class="note">鏡を見せながら「次回は〇週間後が目安です。早めに取っておくと◯◯ですよ」と伝える。判断を委ねず、自然に次を意識させる</div>
-        <span class="tag tag-indigo">提案タイミング①</span>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-dot">💄</div>
-      <div class="flow-content">
-        <div class="step">Step 3</div>
-        <div class="name">メイク・アフターケア説明</div>
-        <div class="note">この時間を確保するため施術時間を事前調整する（29%が時間不足で提案できていない原因を解消）</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-dot active">💳</div>
-      <div class="flow-content">
-        <div class="step">Step 4 — クロージング②</div>
-        <div class="name">お会計前</div>
-        <div class="note">
-          「次回〇月〇日頃いかがですか？取っていきますね」とカレンダーや特典を提示しながら詳細を伝える<br>
-          ❌「どうしますか？」　→　✅「取っていきます」
-        </div>
-        <span class="tag tag-indigo">提案タイミング②</span>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-dot active">✅</div>
-      <div class="flow-content">
-        <div class="step">Goal</div>
-        <div class="name">次回予約確定 → 新規再来率 35% を目指す</div>
-        <div class="note">2回目以降は回数券への移行を目標。再来顧客フローも同じ2回提案で進める</div>
-        <span class="tag tag-green">目標: 新規再来率 35%</span>
-      </div>
-    </div>
-  </div>
+<h2>主要決定事項</h2>
 
-  <!-- Actions -->
-  <h2>アクションアイテム</h2>
-  <table>
-    <thead>
-      <tr>
-        <th style="width:36px;">#</th>
-        <th>アクション</th>
-        <th style="width:130px;">担当</th>
-        <th style="width:100px;">期限</th>
-        <th style="width:70px;">優先度</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-1</td>
-        <td>
-          <strong data-id="a1-title" contenteditable="false">ルミス川崎店でHPBクーポン戦略テスト</strong>
-          <span class="sub" data-id="a1-desc" contenteditable="false">2回目・3回目まで新規同価格のクーポンを打ち出す。結果を見て全店舗展開の方向性を決定</span>
-        </td>
-        <td><span class="badge b-ts" data-id="a1-owner" contenteditable="false">宮脇</span></td>
-        <td style="font-size:12px;" data-id="a1-due" contenteditable="false">次回MTGまで</td>
-        <td><span class="p-high" data-id="a1-pri" contenteditable="false">HIGH</span></td>
-      </tr>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-2</td>
-        <td>
-          <strong data-id="a2-title" contenteditable="false">新規・再来 同線資料をブランド別に作成・共有</strong>
-          <span class="sub" data-id="a2-desc" contenteditable="false">ルミス用・シーン用それぞれ作成。マストで伝える内容＋時間目安を含める。次回MTGで同線確定の話し合いを行う</span>
-        </td>
-        <td><span class="badge b-all" data-id="a2-owner" contenteditable="false">EM</span></td>
-        <td style="font-size:12px; color:#d97706; font-weight:600;" data-id="a2-due" contenteditable="false">各自設定→報告</td>
-        <td><span class="p-high" data-id="a2-pri" contenteditable="false">HIGH</span></td>
-      </tr>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-3</td>
-        <td>
-          <strong data-id="a3-title" contenteditable="false">各店舗のゲリラクーポン動線確認・未整備は作成・提出</strong>
-          <span class="sub" data-id="a3-desc" contenteditable="false">ゲリラ来客からリピーターへの動線が整備されているか各SVが確認。未整備の場合は作成して提出する</span>
-        </td>
-        <td><span class="badge b-all" data-id="a3-owner" contenteditable="false">EM</span></td>
-        <td style="font-size:12px; color:#d97706; font-weight:600;" data-id="a3-due" contenteditable="false">期限設定必要</td>
-        <td><span class="p-high" data-id="a3-pri" contenteditable="false">HIGH</span></td>
-      </tr>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-4</td>
-        <td>
-          <strong data-id="a4-title" contenteditable="false">A-2・A-3のタスク期限を設定する</strong>
-          <span class="sub" data-id="a4-desc" contenteditable="false">宮脇さん（Lime）からタカショーへの依頼。各アクションに期限を設定して管理する</span>
-        </td>
-        <td><span class="badge b-ts" data-id="a4-owner" contenteditable="false">タカショー</span></td>
-        <td style="font-size:12px; color:#dc2626; font-weight:600;" data-id="a4-due" contenteditable="false">即対応</td>
-        <td><span class="p-high" data-id="a4-pri" contenteditable="false">HIGH</span></td>
-      </tr>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-5</td>
-        <td>
-          <strong data-id="a5-title" contenteditable="false">スタッフへのカルテ確認を全店舗で徹底</strong>
-          <span class="sub" data-id="a5-desc" contenteditable="false">施術前に前回来店日時・施術履歴確認を全店舗で標準化する</span>
-        </td>
-        <td><span class="badge b-lime" data-id="a5-owner" contenteditable="false">Lime</span></td>
-        <td style="font-size:12px;" data-id="a5-due" contenteditable="false">即日〜</td>
-        <td><span class="p-mid" data-id="a5-pri" contenteditable="false">MID</span></td>
-      </tr>
-      <tr>
-        <td style="font-weight:700; color:#6366f1;">A-6</td>
-        <td>
-          <strong data-id="a6-title" contenteditable="false">紹介割引が回数券に適用できない旨を明記</strong>
-          <span class="sub" data-id="a6-desc" contenteditable="false">紹介10%OFFは回数券には使えない旨を規約・ポップ等に記載。適用可否の最終確認も必要</span>
-        </td>
-        <td><span class="badge b-sv" data-id="a6-owner" contenteditable="false">髙橋</span></td>
-        <td style="font-size:12px;" data-id="a6-due" contenteditable="false">要確認</td>
-        <td><span class="p-mid" data-id="a6-pri" contenteditable="false">MID</span></td>
-      </tr>
-    </tbody>
-  </table>
+<h3 data-id="d1-title">1. 次回予約を再来最大化の最優先手段に統一</h3>
+<p data-id="d1-desc">指名・回数券・HPB等の複数手段がある中から「次回予約」を最優先として全店舗で統一して取り組む。</p>
 
-  <!-- NA -->
-  <h2>N/A — 議論されたが決定・アクション未定</h2>
-  <div class="na-item">
-    <div class="title">指名 vs 次回予約の優先順位</div>
-    <div class="desc">指名より次回予約の母数を取りやすいとして次回予約を優先する方針で合意。指名促進自体は否定していない</div>
-    <span class="status">方針合意のみ・追加アクションなし</span>
-  </div>
-  <div class="na-item">
-    <div class="title">回数券への移行タイミング</div>
-    <div class="desc">新規→次回予約（同価格）→3回目から回数券という流れを提案（立川店モデル）。資料化はA-2に含まれる</div>
-    <span class="status">A-2に含む</span>
-  </div>
-  <div class="na-item">
-    <div class="title">クーポン本数の最適化</div>
-    <div class="desc">多クーポンが効果的なエリアとゲリラ集中が良いエリアがある。1つに絞るか2つにするかは店舗ごとに話し合いが必要</div>
-    <span class="status">店舗ごと要検討</span>
-  </div>
-  <div class="na-item">
-    <div class="title">Lステップ活用によるリマインド強化</div>
-    <div class="desc">梅田SVより有効な手段として提案された。具体的な導入アクションは未確定</div>
-    <span class="status">次回以降の議題</span>
-  </div>
+<h3 data-id="d2-title">2. 新規再来率の目標を 35% に設定</h3>
+<p data-id="d2-desc">過去統計より、次回予約強化時期が新規再来率で最高値を記録。現状70〜80%の離脱率に対し、次回予約取得で35%の再来が見込める。</p>
 
-  <!-- Next -->
-  <h2>次回MTG</h2>
-  <div class="next-box">
-    <div class="label">Next Meeting Agenda</div>
-    <div class="title">同線資料の確定 + テスト結果共有</div>
-    <ul>
-      <li>ルミス川崎HPBクーポンテスト結果の共有</li>
-      <li>ブランド別同線資料（ルミス用・シーン用）の確定</li>
-      <li>ゲリラクーポン動線の提出確認</li>
-    </ul>
-  </div>
+<h3 data-id="d3-title">3. 次回予約の提案は「サンドイッチ方式」2回に統一</h3>
+<p data-id="d3-desc">①仕上がりを見せた時（ジャブ）　②お会計前（クロージング）。「どうしますか？」ではなく「取っていきます」前提で促す。</p>
+
+<h3 data-id="d4-title">4. 物販・オプション提案は3回目以降に後回し</h3>
+<p data-id="d4-desc">新規顧客への情報量を絞り次回予約を最優先。再来顧客は回数券移行を目標とした導線を設計する。</p>
+
+<h3 data-id="d5-title">5. ルミス川崎店でHPBクーポン戦略をテスト運用</h3>
+<p data-id="d5-desc">2回目・3回目まで新規と同価格のクーポンをテスト。結果が出るまで全店舗で次回予約の取り組みを統一して進める。</p>
+
+<h3 data-id="d6-title">6. ゲリラクーポン導線が未整備の店舗は作成・提出</h3>
+<p data-id="d6-desc">ゲリラ来客からリピーターへの導線が整備されているか各SVが確認。未整備の場合は導線を作成して提出する。</p>
+
+<hr>
+
+<h2>次回予約 導線設計（新規顧客フロー）</h2>
+
+<ol>
+  <li data-id="flow1"><strong>施術中</strong>：通常通り施術を進める</li>
+  <li data-id="flow2"><strong>仕上がりを見せた時（ジャブ①）</strong>：鏡を見せながら「次回は〇週間後が目安です。早めに取っておくと◯◯ですよ」と伝える。判断を委ねず、自然に次を意識させる</li>
+  <li data-id="flow3"><strong>メイク・アフターケア説明</strong>：この時間を確保するため施術時間を事前調整する（29%が時間不足で提案できていない原因を解消）</li>
+  <li data-id="flow4"><strong>お会計前（クロージング②）</strong>：「次回〇月〇日頃いかがですか？取っていきますね」とカレンダーや特典を提示しながら詳細を伝える。❌「どうしますか？」→ ✅「取っていきます」</li>
+  <li data-id="flow5"><strong>次回予約確定</strong>：2回目以降は回数券への移行を目標。再来顧客フローも同じ2回提案で進める</li>
+</ol>
+
+<div class="callout" data-id="flow-note">目標：新規再来率 35%。回数券移行後は再来導線を別途設計する。</div>
+
+<hr>
+
+<h2>アクションアイテム</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>アクション</th>
+      <th>担当</th>
+      <th>期限</th>
+      <th>優先度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A-1</td>
+      <td>
+        <span data-id="a1-title" contenteditable="false">ルミス川崎店でHPBクーポン戦略テスト</span><br>
+        <small data-id="a1-desc" contenteditable="false">2回目・3回目まで新規同価格のクーポンを打ち出す。結果を見て全店舗展開の方向性を決定</small>
+      </td>
+      <td data-id="a1-owner" contenteditable="false">宮脇</td>
+      <td data-id="a1-due" contenteditable="false">次回MTGまで</td>
+      <td class="tag-high" data-id="a1-pri" contenteditable="false">HIGH</td>
+    </tr>
+    <tr>
+      <td>A-2</td>
+      <td>
+        <span data-id="a2-title" contenteditable="false">新規・再来 導線資料をブランド別に作成・共有</span><br>
+        <small data-id="a2-desc" contenteditable="false">ルミス用・シーン用それぞれ作成。マストで伝える内容＋時間目安を含める。次回MTGで導線確定の話し合いを行う</small>
+      </td>
+      <td data-id="a2-owner" contenteditable="false">EM</td>
+      <td data-id="a2-due" contenteditable="false">各自設定→報告</td>
+      <td class="tag-high" data-id="a2-pri" contenteditable="false">HIGH</td>
+    </tr>
+    <tr>
+      <td>A-3</td>
+      <td>
+        <span data-id="a3-title" contenteditable="false">各店舗のゲリラクーポン導線確認・未整備は作成・提出</span><br>
+        <small data-id="a3-desc" contenteditable="false">ゲリラ来客からリピーターへの導線が整備されているか各SVが確認。未整備の場合は作成して提出する</small>
+      </td>
+      <td data-id="a3-owner" contenteditable="false">EM</td>
+      <td data-id="a3-due" contenteditable="false">期限設定必要</td>
+      <td class="tag-high" data-id="a3-pri" contenteditable="false">HIGH</td>
+    </tr>
+    <tr>
+      <td>A-4</td>
+      <td>
+        <span data-id="a4-title" contenteditable="false">A-2・A-3のタスク期限を設定する</span><br>
+        <small data-id="a4-desc" contenteditable="false">宮脇さんからの依頼。各アクションに期限を設定して管理する</small>
+      </td>
+      <td data-id="a4-owner" contenteditable="false">タカショー</td>
+      <td data-id="a4-due" contenteditable="false">即対応</td>
+      <td class="tag-high" data-id="a4-pri" contenteditable="false">HIGH</td>
+    </tr>
+    <tr>
+      <td>A-5</td>
+      <td>
+        <span data-id="a5-title" contenteditable="false">スタッフへのカルテ確認を全店舗で徹底</span><br>
+        <small data-id="a5-desc" contenteditable="false">施術前に前回来店日時・施術履歴確認を全店舗で標準化する</small>
+      </td>
+      <td data-id="a5-owner" contenteditable="false">Lime</td>
+      <td data-id="a5-due" contenteditable="false">即日〜</td>
+      <td class="tag-mid" data-id="a5-pri" contenteditable="false">MID</td>
+    </tr>
+    <tr>
+      <td>A-6</td>
+      <td>
+        <span data-id="a6-title" contenteditable="false">紹介割引が回数券に適用できない旨を明記</span><br>
+        <small data-id="a6-desc" contenteditable="false">紹介10%OFFは回数券には使えない旨を規約・ポップ等に記載。適用可否の最終確認も必要</small>
+      </td>
+      <td data-id="a6-owner" contenteditable="false">髙橋</td>
+      <td data-id="a6-due" contenteditable="false">要確認</td>
+      <td class="tag-mid" data-id="a6-pri" contenteditable="false">MID</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>N/A — 議論されたが決定・アクション未定</h2>
+
+<h3 data-id="na1-title">指名 vs 次回予約の優先順位</h3>
+<p data-id="na1-desc">指名より次回予約の母数を取りやすいとして次回予約を優先する方針で合意。指名促進自体は否定していない。</p>
+
+<h3 data-id="na2-title">回数券への移行タイミング</h3>
+<p data-id="na2-desc">新規→次回予約（同価格）→3回目から回数券という流れを提案（立川店モデル）。資料化はA-2に含まれる。</p>
+
+<h3 data-id="na3-title">クーポン本数の最適化</h3>
+<p data-id="na3-desc">多クーポンが効果的なエリアとゲリラ集中が良いエリアがある。1つに絞るか2つにするかは店舗ごとに話し合いが必要。</p>
+
+<h3 data-id="na4-title">Lステップ活用によるリマインド強化</h3>
+<p data-id="na4-desc">梅田SVより有効な手段として提案された。具体的な導入アクションは未確定。</p>
+
+<hr>
+
+<h2>次回MTG</h2>
+<p data-id="next-title"><strong>テーマ：導線資料の確定 + テスト結果共有</strong></p>
+<ul>
+  <li data-id="next1" contenteditable="false">ルミス川崎HPBクーポンテスト結果の共有</li>
+  <li data-id="next2" contenteditable="false">ブランド別導線資料（ルミス用・シーン用）の確定</li>
+  <li data-id="next3" contenteditable="false">ゲリラクーポン導線の提出確認</li>
+</ul>
 
 </div>
 
@@ -589,8 +360,8 @@ function toggleEdit() {
     el.contentEditable = editing ? 'true' : 'false';
   });
   document.getElementById('editBtn').textContent = editing ? '👁 閲覧' : '✏️ 編集';
-  document.getElementById('saveBtn').style.display = editing ? 'flex' : 'none';
-  document.getElementById('clearBtn').style.display = editing ? 'flex' : 'none';
+  document.getElementById('saveBtn').style.display = editing ? 'inline-block' : 'none';
+  document.getElementById('clearBtn').style.display = editing ? 'inline-block' : 'none';
 }
 
 function saveDoc() {
