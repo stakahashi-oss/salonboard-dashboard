@@ -121,6 +121,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
 <!-- アプリ本体 -->
 <div id="app">
   <div class="header">
+    <button class="reload-btn" onclick="goLogin()">← 店舗変更</button>
     <div class="header-title" id="headerTitle">📋 カウンセリング</div>
     <button class="reload-btn" onclick="reloadCurrent()">🔄 更新</button>
   </div>
@@ -199,6 +200,16 @@ function updateStoreList() {
   const stores = STORE_MAP[brand] || [];
   storeEl.innerHTML = '<option value="">-- 店舗を選択 --</option>'
     + stores.map(s => '<option value="' + brand + ' ' + s + '">' + s + '</option>').join("");
+}
+
+function goLogin() {
+  selectedStore = "";
+  allCounseling = []; allTalks = [];
+  document.getElementById("app").style.display = "none";
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("loginBrand").value = "";
+  document.getElementById("loginStore").innerHTML = '<option value="">-- 先にブランドを選択 --</option>';
+  document.getElementById("loginError").textContent = "";
 }
 
 function doLogin() {
