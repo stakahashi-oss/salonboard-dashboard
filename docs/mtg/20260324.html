@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>直営マーケMTG 第1回 議事録｜2026.03.24</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; padding: 40px 20px 80px; }
+
+.doc { max-width: 820px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 48px 56px; }
+
+/* Header */
+.doc-header { border-bottom: 2px solid #0f172a; padding-bottom: 24px; margin-bottom: 32px; }
+.doc-header .tag { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6366f1; margin-bottom: 8px; }
+.doc-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+.doc-header .meta { display: flex; gap: 28px; font-size: 13px; flex-wrap: wrap; }
+.doc-header .meta span { color: #475569; }
+.doc-header .meta strong { color: #0f172a; }
+
+/* Summary callout */
+.summary-box { background: #eef2ff; border-left: 4px solid #6366f1; border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 32px; }
+.summary-box .label { font-size: 11px; font-weight: 700; color: #6366f1; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.summary-box p { font-size: 13.5px; color: #334155; line-height: 1.7; }
+
+/* KPI row */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
+.kpi { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: center; }
+.kpi .val { font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.kpi .val.warn { color: #dc2626; }
+.kpi .val.ok { color: #16a34a; }
+.kpi .lbl { font-size: 11px; color: #64748b; line-height: 1.4; }
+
+/* Section */
+h2 { font-size: 15px; font-weight: 700; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+
+/* Store cards */
+.store-card { border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+.store-card .store-header { background: #f8fafc; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
+.store-card .store-name { font-size: 14px; font-weight: 700; }
+.store-card .store-sv { font-size: 12px; color: #64748b; }
+.store-card .store-body { padding: 16px 18px; }
+.store-card table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 10px; }
+.store-card th { background: #f1f5f9; padding: 6px 10px; text-align: left; font-weight: 600; border: 1px solid #e2e8f0; }
+.store-card td { padding: 6px 10px; border: 1px solid #e2e8f0; }
+.store-card td.warn { color: #dc2626; font-weight: 600; }
+.store-card td.ok { color: #16a34a; font-weight: 600; }
+.store-card .note { font-size: 12.5px; color: #475569; margin-top: 8px; line-height: 1.6; }
+.store-card .decision { font-size: 12.5px; color: #6366f1; font-weight: 600; margin-top: 6px; }
+.badge-achieved { background: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.badge-risk { background: #fee2e2; color: #b91c1c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+
+/* Structural issues */
+.issue-item { border: 1px solid #fde68a; background: #fffbeb; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+.issue-item .issue-title { font-size: 13.5px; font-weight: 700; color: #92400e; margin-bottom: 4px; }
+.issue-item .issue-desc { font-size: 13px; color: #78350f; line-height: 1.6; }
+
+/* Role table */
+.role-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+.role-table th { background: #f1f5f9; padding: 10px 14px; text-align: center; font-weight: 700; border: 1px solid #e2e8f0; }
+.role-table td { padding: 9px 14px; border: 1px solid #e2e8f0; }
+.role-table td:first-child { background: #eef2ff; font-weight: 500; color: #4338ca; }
+.role-table td:last-child { background: #f0fdf4; font-weight: 500; color: #166534; }
+
+/* Decisions */
+.decision { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
+.decision:last-child { border-bottom: none; }
+.decision .num { width: 28px; height: 28px; background: #6366f1; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.decision .body .title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.decision .body .desc { font-size: 13px; color: #475569; line-height: 1.6; }
+
+/* Feedback */
+.feedback-item { margin-bottom: 20px; }
+.feedback-item h3 { font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+.feedback-item p, .feedback-item li { font-size: 13px; color: #334155; line-height: 1.7; }
+.feedback-item ul, .feedback-item ol { padding-left: 18px; margin: 6px 0; }
+.example { background: #f8fafc; border-radius: 6px; padding: 10px 14px; font-size: 12.5px; margin: 8px 0; }
+.example .ng { color: #dc2626; }
+.example .ok { color: #16a34a; }
+
+/* Action store */
+.action-store { margin-bottom: 20px; }
+.action-store .store-label { font-size: 13px; font-weight: 700; color: #6366f1; margin-bottom: 8px; padding: 6px 12px; background: #eef2ff; border-radius: 6px; display: inline-block; }
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; gap: 8px; font-size: 13px; color: #334155; margin-bottom: 6px; line-height: 1.5; }
+.check-list li::before { content: "☐"; flex-shrink: 0; color: #6366f1; }
+.check-list li .deadline { color: #64748b; font-size: 11.5px; margin-left: 4px; }
+
+/* Next */
+.next-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 20px; }
+.next-box .label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+.next-box .title { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.next-box ul { list-style: none; padding: 0; }
+.next-box ul li { font-size: 13px; color: #475569; padding: 4px 0; border-bottom: 1px solid #f1f5f9; }
+.next-box ul li:last-child { border: none; }
+.next-box ul li::before { content: "→ "; color: #6366f1; font-weight: 700; }
+
+/* Toolbar */
+.toolbar { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 8px; z-index: 100; }
+.toolbar button { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-family: inherit; }
+.toolbar button:hover { background: #f8fafc; }
+.btn-save { background: #0f172a !important; color: #fff !important; border-color: #0f172a !important; }
+.saved-msg { display: none; align-items: center; padding: 8px 14px; background: #333; color: #fff; border-radius: 6px; font-size: 13px; }
+.saved-msg.show { display: flex; }
+body.editing [data-id] { outline: 1.5px dashed #94a3b8; border-radius: 2px; cursor: text; }
+body.editing [data-id]:focus { outline: 2px solid #6366f1; background: #fefce8; }
+.edit-hint { display: none; font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
+body.editing .edit-hint { display: block; }
+
+@media print { .toolbar { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="toggleEdit()" id="editBtn">✏️ 編集</button>
+  <button class="btn-save" onclick="saveDoc()" id="saveBtn" style="display:none">💾 保存</button>
+  <button onclick="clearSaved()" id="clearBtn" style="display:none">↩ リセット</button>
+  <button onclick="window.print()">🖨 印刷</button>
+  <span class="saved-msg" id="savedMsg">保存しました</span>
+</div>
+
+<div class="doc">
+<div class="edit-hint">✏️ 編集モード — テキストをクリックして直接編集できます</div>
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="tag">Meeting Notes — 第1回</div>
+  <h1 data-id="title" contenteditable="false">直営マーケMTG 第1回 議事録</h1>
+  <div class="meta">
+    <span><strong>日時：</strong><span data-id="meta-date" contenteditable="false">2026年3月24日（火）11:25〜</span></span>
+    <span><strong>参加者：</strong><span data-id="meta-members" contenteditable="false">天龍（事業部長）・あきほさん（現場責任者）・タカショー（集客KPI責任者）</span></span>
+    <span><strong>対象：</strong><span data-id="meta-target" contenteditable="false">タカショー担当6店舗 + 川崎エリア</span></span>
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="summary-box">
+  <div class="label">要約</div>
+  <p data-id="summary" contenteditable="false">タカショー担当6店舗の3月進捗を確認。月間目標950万に対し現在690万・着地見込956万（102%）。ただし達成見込はS札幌・S藤沢のみで、他4店舗は90%前後。全店共通でPV数低下・回数券販売率低下・眉毛ワックス単品比率の偏りが発生。あきほさんから「課題と原因がセットになっていない」「施策が的ずれしている」「現場・SV・マーケの役割分担が曖昧」と構造的な問題を指摘。新規→リピートの価格動線が未整備であることが根本課題として浮上した。</p>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row">
+  <div class="kpi"><div class="val" data-id="kpi1-val" contenteditable="false">¥9,560万</div><div class="lbl">着地見込<br>（目標比102%）</div></div>
+  <div class="kpi"><div class="val warn" data-id="kpi2-val" contenteditable="false">4店舗</div><div class="lbl">未達リスク<br>（目標比約90%）</div></div>
+  <div class="kpi"><div class="val warn" data-id="kpi3-val" contenteditable="false">全店</div><div class="lbl">PV数<br>低下</div></div>
+  <div class="kpi"><div class="val warn" data-id="kpi4-val" contenteditable="false">59%</div><div class="lbl">回数券消費時<br>0円会計率（熊本）</div></div>
+</div>
+
+<!-- Store KPIs -->
+<h2>1. 全体進捗（3月度）</h2>
+<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px;">
+  <thead><tr>
+    <th style="background:#f1f5f9;padding:8px 12px;border:1px solid #e2e8f0;font-weight:700;">指標</th>
+    <th style="background:#f1f5f9;padding:8px 12px;border:1px solid #e2e8f0;font-weight:700;">数値</th>
+  </tr></thead>
+  <tbody>
+    <tr><td style="padding:8px 12px;border:1px solid #e2e8f0;">月間目標</td><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;" data-id="prog1" contenteditable="false">¥9,500,000</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e2e8f0;">現在進捗</td><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;" data-id="prog2" contenteditable="false">¥6,900,000</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e2e8f0;">着地見込</td><td style="padding:8px 12px;border:1px solid #e2e8f0;font-weight:600;color:#16a34a;" data-id="prog3" contenteditable="false">¥9,560,000（102%）</td></tr>
+  </tbody>
+</table>
+
+<h2>2. 店舗別KPI・課題</h2>
+
+<!-- m所沢 -->
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name" data-id="s1-name" contenteditable="false">m所沢（Patra eyes）</span></div>
+    <div style="display:flex;gap:8px;align-items:center;"><span class="store-sv" data-id="s1-sv" contenteditable="false">SV: あきほさん</span><span class="badge-risk">未達リスク</span></div>
+  </div>
+  <div class="store-body">
+    <table>
+      <tr><th>指標</th><th>数値</th><th>備考</th></tr>
+      <tr><td>残り売上</td><td class="warn">¥450,000</td><td>入済¥190,000 / 差分¥260,000</td></tr>
+      <tr><td>PV数</td><td class="warn">先月比 -200PV</td><td></td></tr>
+      <tr><td>新規数着地</td><td>77%</td><td></td></tr>
+      <tr><td>再来数着地</td><td class="warn">0%</td><td>深刻</td></tr>
+      <tr><td>物販購入率</td><td>2%</td><td></td></tr>
+      <tr><td>オプション獲得率</td><td>26%</td><td></td></tr>
+      <tr><td>回数券</td><td>1件</td><td></td></tr>
+      <tr><td>新規再来率</td><td class="warn">SB上20% / 実態8%</td><td>計測方法で乖離</td></tr>
+    </table>
+    <div class="note">課題: 新規再来率・再来数・客単価。格安＋中間層サロン増加。レピア（韓国系）等との差別化未完成。</div>
+    <div class="decision">→ 店舗名を「リモストアイズ（Re:most eyes）」に変更し中価格帯へリブランディング決定</div>
+  </div>
+</div>
+
+<!-- S二子玉川 -->
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name" data-id="s2-name" contenteditable="false">S二子玉川（ニコタマ）</span></div>
+    <div style="display:flex;gap:8px;align-items:center;"><span class="store-sv">SV: 内山</span><span class="badge-risk">未達リスク</span></div>
+  </div>
+  <div class="store-body">
+    <table>
+      <tr><th>指標</th><th>数値</th></tr>
+      <tr><td>差分</td><td class="warn">¥320,000</td></tr>
+      <tr><td>PV数</td><td>3,015（先月比微減）</td></tr>
+      <tr><td>物販購入率</td><td>2%（新規物販3件）</td></tr>
+      <tr><td>オプション獲得率</td><td>18%（最大率38%）</td></tr>
+      <tr><td>回数券</td><td>4件</td></tr>
+      <tr><td>新規再来率（2月）</td><td class="warn">8%</td></tr>
+    </table>
+    <div class="note">根本問題（あきほさん指摘）: 新規¥6,600 → リピーター¥7,400のギャップが再来ハードル。特典¥500オフのみ。スタッフはこの価格構造を把握せず案内している。</div>
+    <div class="decision">→ あきほさんが3回目までの価格動線ポップを作成済み。回数券で差額¥300になる設計。物販棚をメイクブースへ移設（あきほさん提案）</div>
+  </div>
+</div>
+
+<!-- S熊本 -->
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name">S熊本</span></div>
+    <div style="display:flex;gap:8px;align-items:center;"><span class="store-sv">SV: 梅田</span><span class="badge-risk">未達リスク</span></div>
+  </div>
+  <div class="store-body">
+    <table>
+      <tr><th>指標</th><th>数値</th><th>備考</th></tr>
+      <tr><td>残り売上</td><td class="warn">¥470,000</td><td>入済¥210,000 / 差分¥250,000</td></tr>
+      <tr><td>PV数</td><td class="ok">約4,000（増加）</td><td>好材料</td></tr>
+      <tr><td>眉毛ワックス比率</td><td class="warn">35%</td><td>単品偏り</td></tr>
+      <tr><td>物販購入率</td><td>5%（新規物販0件）</td><td></td></tr>
+      <tr><td>オプション売上</td><td class="warn">月間¥30,000</td><td>極めて低い</td></tr>
+      <tr><td>回数券</td><td class="warn">12件（先月24件から減少）</td><td>SB内28件</td></tr>
+      <tr><td>総客数</td><td class="ok">目標比+約100人</td><td>客数は足りている</td></tr>
+    </table>
+    <div class="note">🚨 回数券消費時の0円会計問題：回数券利用22件中13件（59%）が0円会計で帰宅。T.Ran（8件中5件0円）、Y.mio（14件中8件0円）ともにアップセル意識が弱い。回数券消費時のオプション提案がルーティン化されていない。</div>
+    <div class="note">あきほさん指摘: 総客+100人なら再来の掘り起こしは不要。単価が何によって下がっているかの原因特定が先。</div>
+    <div class="decision">→ メンズ価格+¥4,000・メンズ回数券新設・販売開始</div>
+  </div>
+</div>
+
+<!-- S立川 -->
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name">S立川</span></div>
+    <div style="display:flex;gap:8px;align-items:center;"><span class="store-sv">SV: あきほさん</span><span class="badge-risk">最重要・未達</span></div>
+  </div>
+  <div class="store-body">
+    <table>
+      <tr><th>指標</th><th>数値</th></tr>
+      <tr><td>残り売上</td><td class="warn">¥530,000（差分¥410,000）</td></tr>
+      <tr><td>PV数</td><td class="warn">3,340（先月比-711PV）</td></tr>
+      <tr><td>眉毛ワックス比率</td><td class="warn">34%</td></tr>
+      <tr><td>物販購入率</td><td>3%（新規物販1件）</td></tr>
+      <tr><td>オプション獲得率</td><td>39%</td></tr>
+      <tr><td>回数券</td><td class="warn">1件</td></tr>
+    </table>
+    <div class="note">あきほさん指摘: 価格変更と動線設計はワンセットでスタッフに落とし込む必要がある。</div>
+    <div class="decision">→ 天龍作成の価格動線ポップを理解し、今後の価格変更時はワンセットで設計</div>
+  </div>
+</div>
+
+<!-- S藤沢・S札幌・川崎 -->
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name">S藤沢</span></div>
+    <div><span class="store-sv">SV: 内山</span><span class="badge-achieved" style="margin-left:8px;">達成見込み</span></div>
+  </div>
+  <div class="store-body">
+    <div class="note">PV 2,858（先月比-266）/ 物販9件（新規0件）/ 回数券5件。目標達成見込みのため特別な追加施策なし。</div>
+  </div>
+</div>
+
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name">S札幌</span></div>
+    <div><span class="store-sv">SV: 梅田</span><span class="badge-achieved" style="margin-left:8px;">達成見込み +¥40万</span></div>
+  </div>
+  <div class="store-body">
+    <div class="note">ラッシュアディクト新規3件売上。LUMISS注力＋平日クーポン実施中。<br>懸念: 近藤さん先月¥20万→今月¥4.4万（大幅減）、長谷山さん約¥6万減。</div>
+  </div>
+</div>
+
+<div class="store-card">
+  <div class="store-header">
+    <div><span class="store-name">川崎エリア（S川崎 / m川崎）</span></div>
+    <div><span class="store-sv">SV: あきほさん・澤</span></div>
+  </div>
+  <div class="store-body">
+    <div class="note">残り売上¥400万台。回数券販売が全店舗で唯一、維持〜増加。ゲリラ・通常クーポン両方実施中（通常の方が再来率高い）。<br>あきほさん:「回数券にネガティブだった川崎が一番売っている。上下関係がいい感じに機能している」</div>
+  </div>
+</div>
+
+<!-- Structural Issues -->
+<h2>3. 全店共通の構造的問題</h2>
+
+<div class="issue-item">
+  <div class="issue-title">① PV数の全店低下</div>
+  <div class="issue-desc">仮説: ビビビサイトの影響。ただし数値検証未完了。タカショーが確認すべき。</div>
+</div>
+<div class="issue-item">
+  <div class="issue-title">② 回数券販売率の全店低下（川崎除く）</div>
+  <div class="issue-desc">ビビビサイト経由で回数券クーポンを出していた影響の可能性。</div>
+</div>
+<div class="issue-item">
+  <div class="issue-title">③ メニュー比率の偏り（眉毛ワックス単品30〜40%超）</div>
+  <div class="issue-desc">あきほさん:「メニュー比率をクロスセルで上げるのはめちゃめちゃ無謀。スタッフに言わせるのではなく、クーポン設計・入口の仕組みで変えるべき。セットメニューのクーポンだけ安く出す、不要な単品は制限する等。入口を変えるのがタカショーのポジションでできること」</div>
+</div>
+<div class="issue-item">
+  <div class="issue-title">④ 新規→リピート動線の未整備（根本課題）</div>
+  <div class="issue-desc">天龍:「安いクーポンで入客するまではいい。問題はその後の動線。¥6,600で来た人が次回¥7,400になるのはハードルが高すぎる。回数券で3回目まで差額¥300になる設計をワンセットで落とし込まないと、ただの垂れ流し」</div>
+</div>
+
+<!-- Role Division -->
+<h2>4. 役割分担の明確化</h2>
+<table class="role-table">
+  <tr><th>タカショーの領域</th><th>SVの領域</th></tr>
+  <tr><td>クーポン設計・価格設定</td><td>スタッフへの落とし込み</td></tr>
+  <tr><td>HPB配信・LINE配信</td><td>次回予約の獲得指導</td></tr>
+  <tr><td>PV・集客の入口改善</td><td>回数券販売・アップセル</td></tr>
+  <tr><td>メニュー比率の仕組み改善</td><td>指名数向上の働きかけ</td></tr>
+  <tr><td>ゲリラクーポンの日程最適化</td><td>接客品質・技術指導</td></tr>
+</table>
+
+<!-- Decisions -->
+<h2>5. 決定事項</h2>
+<div class="decisions">
+  <div class="decision"><div class="num">①</div><div class="body"><div class="title">S立川: 価格動線ポップ展開</div><div class="desc">天龍作成済み→スタッフ落とし込み</div></div></div>
+  <div class="decision"><div class="num">②</div><div class="body"><div class="title">S熊本: メンズ価格+¥4,000アップ、メンズ回数券新設・販売開始</div><div class="desc"></div></div></div>
+  <div class="decision"><div class="num">③</div><div class="body"><div class="title">m所沢: 「リモストアイズ」へ改名、中価格帯リブランディング（4月中）</div><div class="desc">由来: LiMe（OEM名）+ most の組み合わせ</div></div></div>
+  <div class="decision"><div class="num">④</div><div class="body"><div class="title">S二子玉川: 物販棚をメイクブースへ移設</div><div class="desc">内山に動線確認→設置</div></div></div>
+  <div class="decision"><div class="num">⑤</div><div class="body"><div class="title">配信は1〜2本に絞る</div><div class="desc">切り札は来月に温存する判断も必要</div></div></div>
+  <div class="decision"><div class="num">⑥</div><div class="body"><div class="title">アクション提案は「課題＋原因＋施策＋期待効果」のセットで出す</div><div class="desc"></div></div></div>
+</div>
+
+<!-- Feedback -->
+<h2>6. タカショーへ：最も意識して改善すべきこと</h2>
+
+<div class="feedback-item">
+  <h3>1.「作業」で終わらせるな。「思考」を出せ</h3>
+  <p>施策が「課題の原因」とセットになっていないことが最大の指摘。</p>
+  <div class="example">
+    <div class="ng">❌ NG: 「客単価が低いです → オプションセット配信します」</div>
+    <div class="ok">✅ OK: 「客単価が低い → 原因は回数券消費時に0円で帰しているから → 回数券利用者向けにオプション限定配信 → 月¥3万→¥8万の改善見込み」</div>
+  </div>
+</div>
+
+<div class="feedback-item">
+  <h3>2. 自分のポジションでできることを理解しろ</h3>
+  <p>タカショーができるのは入口（集客・クーポン設計・配信）。現場オペレーション（回数券の売り方、指名獲得、クロスセル）はSVと現場スタッフの仕事。自分の領域外の課題が出てきたら切り分ける。ただし、事前にSVとすり合わせておくのはタカショーの仕事。</p>
+</div>
+
+<div class="feedback-item">
+  <h3>3.「仕組み」で変えろ。スタッフに頼るな</h3>
+  <ul>
+    <li>眉毛ワックス単品40% → セットクーポンだけ安く出して単品クーポンを制限する</li>
+    <li>再来率が低い → 2回目限定クーポンを設計して自動的に再来動線を作る</li>
+  </ul>
+</div>
+
+<div class="feedback-item">
+  <h3>4. 施策の弾は温存しろ</h3>
+  <p>1ヶ月に配信は1〜2本に絞る。今月だけで全部出すと来月何もなくなる。お客様も情報過多で何が何か分からなくなる。</p>
+</div>
+
+<!-- Actions -->
+<h2>7. タカショーのアクション一覧</h2>
+
+<div class="action-store">
+  <div class="store-label">S立川（差分¥41万・最重要）</div>
+  <ul class="check-list">
+    <li>平日限定クーポン設置<span class="deadline">→ 今週中</span></li>
+    <li>オプションセット（¥500/2つ¥800）を付け替えオフに設置<span class="deadline">→ 今週中</span></li>
+    <li>回数券の配信（LINE）<span class="deadline">→ 今週中</span></li>
+    <li>天龍作成の価格動線ポップを理解し、今後の価格変更時はワンセットで設計<span class="deadline">→ 継続</span></li>
+  </ul>
+</div>
+
+<div class="action-store">
+  <div class="store-label">S熊本（差分¥25万）</div>
+  <ul class="check-list">
+    <li>メンズ価格+¥4,000設定<span class="deadline">→ 今月中</span></li>
+    <li>メンズ回数券クーポン作成・販売開始<span class="deadline">→ 今月中</span></li>
+    <li>回数券利用者向け配信（ブラックコーティング等の限定オプション）<span class="deadline">→ 今週中</span></li>
+    <li>平日限定クーポン配信<span class="deadline">→ 今週中</span></li>
+  </ul>
+</div>
+
+<div class="action-store">
+  <div class="store-label">m所沢（差分¥26万）</div>
+  <ul class="check-list">
+    <li>オプション無料セットクーポンをHPBで配信<span class="deadline">→ 今週中</span></li>
+    <li>公式LINE再来配信<span class="deadline">→ 今月中</span></li>
+    <li>「リモストアイズ」への店舗名変更申請・リブランディング準備<span class="deadline">→ 4月中</span></li>
+  </ul>
+</div>
+
+<div class="action-store">
+  <div class="store-label">S二子玉川（差分¥32万）</div>
+  <ul class="check-list">
+    <li>2回目限定クーポンの設計（新規→リピートの動線）<span class="deadline">→ 今週中</span></li>
+    <li>40日以内の再来配信を仕組み化<span class="deadline">→ 今月中</span></li>
+    <li>内山に物販棚のメイクブース設置を依頼・動線確認<span class="deadline">→ 今週中</span></li>
+  </ul>
+</div>
+
+<div class="action-store">
+  <div class="store-label">MTG運営の改善（次回から）</div>
+  <ul class="check-list">
+    <li>報告形式を変える: 文章の羅列をやめ、横並び比較表＋グラフで出す</li>
+    <li>「課題＋原因＋施策＋期待効果」フォーマット: 全ての提案をこの4点セットで</li>
+    <li>店舗を1つに絞って深掘り → 他店舗に派生</li>
+    <li>「答えが出せていない課題」を持ち寄る</li>
+    <li>事前にSV（あきほさん/内山/梅田）と課題・施策を共有しておく</li>
+    <li>PV低下の原因をデータで説明（ビビビサイト影響か季節要因か）</li>
+    <li>配信は1〜2本に絞る判断: 弾の温存を意識</li>
+  </ul>
+</div>
+
+<!-- Next -->
+<h2>8. 次回に向けて</h2>
+<div class="next-box">
+  <div class="label">Next Actions</div>
+  <div class="title">次回マーケMTGで試すこと</div>
+  <ul>
+    <li>横並び比較表＋グラフ形式で提示</li>
+    <li>1店舗に絞って深掘り議論する形式を試行</li>
+    <li>1店舗「課題→原因→施策→期待効果」フォーマットで持ってくる</li>
+    <li>5月以降: m横浜への対応も視野に入れた準備</li>
+  </ul>
+</div>
+
+</div><!-- /doc -->
+
+<script>
+const STORAGE_KEY = 'mtg_20260324';
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    const data = JSON.parse(saved);
+    Object.entries(data).forEach(([id, html]) => {
+      const el = document.querySelector(`[data-id="${id}"]`);
+      if (el) el.innerHTML = html;
+    });
+  }
+});
+function toggleEdit() {
+  const editing = document.body.classList.toggle('editing');
+  document.querySelectorAll('[data-id]').forEach(el => { el.contentEditable = editing ? 'true' : 'false'; });
+  document.getElementById('editBtn').textContent = editing ? '👁 閲覧' : '✏️ 編集';
+  document.getElementById('saveBtn').style.display = editing ? 'inline-block' : 'none';
+  document.getElementById('clearBtn').style.display = editing ? 'inline-block' : 'none';
+}
+function saveDoc() {
+  const data = {};
+  document.querySelectorAll('[data-id]').forEach(el => { data[el.dataset.id] = el.innerHTML; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const msg = document.getElementById('savedMsg');
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 2000);
+}
+function clearSaved() {
+  if (confirm('保存した編集内容をリセットしますか？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+}
+</script>
+</body>
+</html>
