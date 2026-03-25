@@ -231,42 +231,131 @@ td .sub { color: #64748b; font-size: 12px; }
 .next-box ul li { font-size: 13px; color: #cbd5e1; padding-left: 16px; position: relative; }
 .next-box ul li::before { content: '→'; position: absolute; left: 0; color: #6366f1; }
 
+/* ===== TOOLBAR ===== */
+.toolbar {
+  position: fixed;
+  top: 16px; right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.toolbar button {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s;
+}
+.btn-edit  { background: #eef2ff; color: #4338ca; }
+.btn-edit:hover  { background: #e0e7ff; }
+.btn-save  { background: #10b981; color: #fff; }
+.btn-save:hover  { background: #059669; }
+.btn-print { background: #f1f5f9; color: #475569; }
+.btn-print:hover { background: #e2e8f0; }
+.btn-clear { background: #fef2f2; color: #dc2626; }
+.btn-clear:hover { background: #fee2e2; }
+.saved-indicator {
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 600;
+  align-self: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.saved-indicator.show { opacity: 1; }
+
+/* ===== EDIT MODE ===== */
+body.editing [contenteditable] {
+  outline: none;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  background: #fffbeb;
+  border: 1px dashed #fbbf24;
+  cursor: text;
+  min-width: 20px;
+  display: inline-block;
+}
+body.editing [contenteditable]:focus {
+  background: #fefce8;
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(251,191,36,0.2);
+}
+body.editing .doc {
+  outline: 2px dashed #fbbf2430;
+}
+.edit-hint {
+  display: none;
+  text-align: center;
+  font-size: 12px;
+  color: #f59e0b;
+  font-weight: 600;
+  padding: 6px;
+  background: #fffbeb;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+body.editing .edit-hint { display: block; }
+
 @media print {
   body { background: #fff; padding: 0; }
   .doc { border: none; border-radius: 0; box-shadow: none; }
+  .toolbar { display: none; }
+  .edit-hint { display: none !important; }
 }
 @media (max-width: 600px) {
   .doc { padding: 28px 20px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .toolbar { top: auto; bottom: 16px; right: 8px; left: 8px; justify-content: center; }
 }
 </style>
 </head>
 <body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="btn-edit" onclick="toggleEdit()" id="editBtn">✏️ 編集</button>
+  <button class="btn-save" onclick="saveDoc()" id="saveBtn" style="display:none">💾 保存</button>
+  <button class="btn-clear" onclick="clearSaved()" id="clearBtn" style="display:none" title="保存データをリセット">↩ リセット</button>
+  <button class="btn-print" onclick="window.print()">🖨 印刷</button>
+  <span class="saved-indicator" id="savedMsg">保存しました</span>
+</div>
+
 <div class="doc">
+<div class="edit-hint">✏️ 編集モード — テキストをクリックして直接編集できます</div>
 
   <!-- Header -->
   <div class="doc-header">
-    <div class="tag">Meeting Notes</div>
-    <h1>眉毛直営店MTG 議事録</h1>
+    <div class="tag" data-id="tag">Meeting Notes</div>
+    <h1 data-id="title" contenteditable="false">眉毛直営店MTG 議事録</h1>
     <div class="meta">
-      <span data-label="日時">2026年3月25日</span>
-      <span data-label="参加者">責任者：土田・宮脇　／　EM：梅田・澤・内山　／　SV：髙橋</span>
-      <span data-label="テーマ">再来店最大化・次回予約強化</span>
+      <span data-label="日時" data-id="meta-date" contenteditable="false">2026年3月25日</span>
+      <span data-label="参加者" data-id="meta-members" contenteditable="false">責任者：土田・宮脇　／　EM：梅田・澤・内山　／　SV：髙橋</span>
+      <span data-label="テーマ" data-id="meta-theme" contenteditable="false">再来店最大化・次回予約強化</span>
     </div>
   </div>
 
   <!-- Goal -->
   <div class="goal-box">
     <strong>会議のゴール</strong>
-    次回予約と再獲得について、直営店に関わる全メンバーが共通認識を持ち、目標達成に向けたアクションに取り組める状態にする
+    <span data-id="goal" contenteditable="false">次回予約と再獲得について、直営店に関わる全メンバーが共通認識を持ち、目標達成に向けたアクションに取り組める状態にする</span>
   </div>
 
   <!-- KPIs -->
   <div class="kpi-row">
-    <div class="kpi"><div class="val">35%</div><div class="lbl">新規再来率<br>目標</div></div>
-    <div class="kpi"><div class="val">70〜80%</div><div class="lbl">現状の<br>新規離脱率</div></div>
-    <div class="kpi"><div class="val">2回</div><div class="lbl">次回予約の<br>提案タイミング</div></div>
-    <div class="kpi"><div class="val">29%</div><div class="lbl">提案できていない<br>スタッフ比率</div></div>
+    <div class="kpi"><div class="val" data-id="kpi1-val" contenteditable="false">35%</div><div class="lbl" data-id="kpi1-lbl" contenteditable="false">新規再来率<br>目標</div></div>
+    <div class="kpi"><div class="val" data-id="kpi2-val" contenteditable="false">70〜80%</div><div class="lbl" data-id="kpi2-lbl" contenteditable="false">現状の<br>新規離脱率</div></div>
+    <div class="kpi"><div class="val" data-id="kpi3-val" contenteditable="false">2回</div><div class="lbl" data-id="kpi3-lbl" contenteditable="false">次回予約の<br>提案タイミング</div></div>
+    <div class="kpi"><div class="val" data-id="kpi4-val" contenteditable="false">29%</div><div class="lbl" data-id="kpi4-lbl" contenteditable="false">提案できていない<br>スタッフ比率</div></div>
   </div>
 
   <!-- Decisions -->
@@ -275,43 +364,43 @@ td .sub { color: #64748b; font-size: 12px; }
     <div class="decision">
       <div class="num">1</div>
       <div class="body">
-        <div class="title">次回予約を再来最大化の最優先手段に統一</div>
-        <div class="desc">指名・回数券・HPB等の複数手段の中から「次回予約」を最優先として全店舗で統一して取り組む</div>
+        <div class="title" data-id="d1-title" contenteditable="false">次回予約を再来最大化の最優先手段に統一</div>
+        <div class="desc" data-id="d1-desc" contenteditable="false">指名・回数券・HPB等の複数手段の中から「次回予約」を最優先として全店舗で統一して取り組む</div>
       </div>
     </div>
     <div class="decision">
       <div class="num">2</div>
       <div class="body">
-        <div class="title">新規再来率の目標を 35% に設定</div>
-        <div class="desc">過去統計より、次回予約強化時期が新規再来率で最高値を記録。現状70〜80%の離脱率に対し、次回予約取得で35%の再来見込みが可能</div>
+        <div class="title" data-id="d2-title" contenteditable="false">新規再来率の目標を 35% に設定</div>
+        <div class="desc" data-id="d2-desc" contenteditable="false">過去統計より、次回予約強化時期が新規再来率で最高値を記録。現状70〜80%の離脱率に対し、次回予約取得で35%の再来見込みが可能</div>
       </div>
     </div>
     <div class="decision">
       <div class="num">3</div>
       <div class="body">
-        <div class="title">次回予約の提案は「サンドイッチ方式」2回に統一</div>
-        <div class="desc">①仕上がりを見せた時（ジャブ）　②お会計前（クロージング）。「どうしますか？」ではなく「取っていきます」前提で促す</div>
+        <div class="title" data-id="d3-title" contenteditable="false">次回予約の提案は「サンドイッチ方式」2回に統一</div>
+        <div class="desc" data-id="d3-desc" contenteditable="false">①仕上がりを見せた時（ジャブ）　②お会計前（クロージング）。「どうしますか？」ではなく「取っていきます」前提で促す</div>
       </div>
     </div>
     <div class="decision">
       <div class="num">4</div>
       <div class="body">
-        <div class="title">物販・オプション提案は3回目以降に後回し</div>
-        <div class="desc">新規顧客への情報量を絞り次回予約を最優先。再来顧客は回数券移行を目標とした同線を設計する</div>
+        <div class="title" data-id="d4-title" contenteditable="false">物販・オプション提案は3回目以降に後回し</div>
+        <div class="desc" data-id="d4-desc" contenteditable="false">新規顧客への情報量を絞り次回予約を最優先。再来顧客は回数券移行を目標とした同線を設計する</div>
       </div>
     </div>
     <div class="decision">
       <div class="num">5</div>
       <div class="body">
-        <div class="title">ルミス川崎店でHPBクーポン戦略をテスト運用</div>
-        <div class="desc">2回目・3回目まで新規と同価格のクーポンをテスト。結果が出るまで全店舗で次回予約の取り組みを統一して進める</div>
+        <div class="title" data-id="d5-title" contenteditable="false">ルミス川崎店でHPBクーポン戦略をテスト運用</div>
+        <div class="desc" data-id="d5-desc" contenteditable="false">2回目・3回目まで新規と同価格のクーポンをテスト。結果が出るまで全店舗で次回予約の取り組みを統一して進める</div>
       </div>
     </div>
     <div class="decision">
       <div class="num">6</div>
       <div class="body">
-        <div class="title">ゲリラクーポン動線が未整備の店舗は作成・提出</div>
-        <div class="desc">ゲリラ来客からリピーターへの動線が未整備の店舗多数。各SVが確認し、未整備の場合は動線を作成して提出する</div>
+        <div class="title" data-id="d6-title" contenteditable="false">ゲリラクーポン動線が未整備の店舗は作成・提出</div>
+        <div class="desc" data-id="d6-desc" contenteditable="false">ゲリラ来客からリピーターへの動線が未整備の店舗多数。各SVが確認し、未整備の場合は動線を作成して提出する</div>
       </div>
     </div>
   </div>
@@ -383,62 +472,62 @@ td .sub { color: #64748b; font-size: 12px; }
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-1</td>
         <td>
-          <strong>ルミス川崎店でHPBクーポン戦略テスト</strong>
-          <span class="sub">2回目・3回目まで新規同価格のクーポンを打ち出す。結果を見て全店舗展開の方向性を決定</span>
+          <strong data-id="a1-title" contenteditable="false">ルミス川崎店でHPBクーポン戦略テスト</strong>
+          <span class="sub" data-id="a1-desc" contenteditable="false">2回目・3回目まで新規同価格のクーポンを打ち出す。結果を見て全店舗展開の方向性を決定</span>
         </td>
-        <td><span class="badge b-ts">宮脇</span></td>
-        <td style="font-size:12px;">次回MTGまで</td>
-        <td><span class="p-high">HIGH</span></td>
+        <td><span class="badge b-ts" data-id="a1-owner" contenteditable="false">宮脇</span></td>
+        <td style="font-size:12px;" data-id="a1-due" contenteditable="false">次回MTGまで</td>
+        <td><span class="p-high" data-id="a1-pri" contenteditable="false">HIGH</span></td>
       </tr>
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-2</td>
         <td>
-          <strong>新規・再来 同線資料をブランド別に作成・共有</strong>
-          <span class="sub">ルミス用・シーン用それぞれ作成。マストで伝える内容＋時間目安を含める。次回MTGで同線確定の話し合いを行う</span>
+          <strong data-id="a2-title" contenteditable="false">新規・再来 同線資料をブランド別に作成・共有</strong>
+          <span class="sub" data-id="a2-desc" contenteditable="false">ルミス用・シーン用それぞれ作成。マストで伝える内容＋時間目安を含める。次回MTGで同線確定の話し合いを行う</span>
         </td>
-        <td><span class="badge b-all">EM</span></td>
-        <td style="font-size:12px; color:#d97706; font-weight:600;">各自設定→報告</td>
-        <td><span class="p-high">HIGH</span></td>
+        <td><span class="badge b-all" data-id="a2-owner" contenteditable="false">EM</span></td>
+        <td style="font-size:12px; color:#d97706; font-weight:600;" data-id="a2-due" contenteditable="false">各自設定→報告</td>
+        <td><span class="p-high" data-id="a2-pri" contenteditable="false">HIGH</span></td>
       </tr>
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-3</td>
         <td>
-          <strong>各店舗のゲリラクーポン動線確認・未整備は作成・提出</strong>
-          <span class="sub">ゲリラ来客からリピーターへの動線が整備されているか各SVが確認。未整備の場合は作成して提出する</span>
+          <strong data-id="a3-title" contenteditable="false">各店舗のゲリラクーポン動線確認・未整備は作成・提出</strong>
+          <span class="sub" data-id="a3-desc" contenteditable="false">ゲリラ来客からリピーターへの動線が整備されているか各SVが確認。未整備の場合は作成して提出する</span>
         </td>
-        <td><span class="badge b-all">EM</span></td>
-        <td style="font-size:12px; color:#d97706; font-weight:600;">期限設定必要</td>
-        <td><span class="p-high">HIGH</span></td>
+        <td><span class="badge b-all" data-id="a3-owner" contenteditable="false">EM</span></td>
+        <td style="font-size:12px; color:#d97706; font-weight:600;" data-id="a3-due" contenteditable="false">期限設定必要</td>
+        <td><span class="p-high" data-id="a3-pri" contenteditable="false">HIGH</span></td>
       </tr>
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-4</td>
         <td>
-          <strong>A-2・A-3のタスク期限を設定する</strong>
-          <span class="sub">宮脇さん（Lime）からタカショーへの依頼。各アクションに期限を設定して管理する</span>
+          <strong data-id="a4-title" contenteditable="false">A-2・A-3のタスク期限を設定する</strong>
+          <span class="sub" data-id="a4-desc" contenteditable="false">宮脇さん（Lime）からタカショーへの依頼。各アクションに期限を設定して管理する</span>
         </td>
-        <td><span class="badge b-ts">タカショー</span></td>
-        <td style="font-size:12px; color:#dc2626; font-weight:600;">即対応</td>
-        <td><span class="p-high">HIGH</span></td>
+        <td><span class="badge b-ts" data-id="a4-owner" contenteditable="false">タカショー</span></td>
+        <td style="font-size:12px; color:#dc2626; font-weight:600;" data-id="a4-due" contenteditable="false">即対応</td>
+        <td><span class="p-high" data-id="a4-pri" contenteditable="false">HIGH</span></td>
       </tr>
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-5</td>
         <td>
-          <strong>スタッフへのカルテ確認を全店舗で徹底</strong>
-          <span class="sub">施術前に前回来店日時・施術履歴確認を全店舗で標準化する</span>
+          <strong data-id="a5-title" contenteditable="false">スタッフへのカルテ確認を全店舗で徹底</strong>
+          <span class="sub" data-id="a5-desc" contenteditable="false">施術前に前回来店日時・施術履歴確認を全店舗で標準化する</span>
         </td>
-        <td><span class="badge b-lime">Lime</span></td>
-        <td style="font-size:12px;">即日〜</td>
-        <td><span class="p-mid">MID</span></td>
+        <td><span class="badge b-lime" data-id="a5-owner" contenteditable="false">Lime</span></td>
+        <td style="font-size:12px;" data-id="a5-due" contenteditable="false">即日〜</td>
+        <td><span class="p-mid" data-id="a5-pri" contenteditable="false">MID</span></td>
       </tr>
       <tr>
         <td style="font-weight:700; color:#6366f1;">A-6</td>
         <td>
-          <strong>紹介割引が回数券に適用できない旨を明記</strong>
-          <span class="sub">紹介10%OFFは回数券には使えない旨を規約・ポップ等に記載。適用可否の最終確認も必要</span>
+          <strong data-id="a6-title" contenteditable="false">紹介割引が回数券に適用できない旨を明記</strong>
+          <span class="sub" data-id="a6-desc" contenteditable="false">紹介10%OFFは回数券には使えない旨を規約・ポップ等に記載。適用可否の最終確認も必要</span>
         </td>
-        <td><span class="badge b-sv">髙橋</span></td>
-        <td style="font-size:12px;">要確認</td>
-        <td><span class="p-mid">MID</span></td>
+        <td><span class="badge b-sv" data-id="a6-owner" contenteditable="false">髙橋</span></td>
+        <td style="font-size:12px;" data-id="a6-due" contenteditable="false">要確認</td>
+        <td><span class="p-mid" data-id="a6-pri" contenteditable="false">MID</span></td>
       </tr>
     </tbody>
   </table>
@@ -479,5 +568,48 @@ td .sub { color: #64748b; font-size: 12px; }
   </div>
 
 </div>
+
+<script>
+const STORAGE_KEY = 'mtg_20260325';
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    const data = JSON.parse(saved);
+    Object.entries(data).forEach(([id, html]) => {
+      const el = document.querySelector(`[data-id="${id}"]`);
+      if (el) el.innerHTML = html;
+    });
+  }
+});
+
+function toggleEdit() {
+  const editing = document.body.classList.toggle('editing');
+  document.querySelectorAll('[data-id]').forEach(el => {
+    el.contentEditable = editing ? 'true' : 'false';
+  });
+  document.getElementById('editBtn').textContent = editing ? '👁 閲覧' : '✏️ 編集';
+  document.getElementById('saveBtn').style.display = editing ? 'flex' : 'none';
+  document.getElementById('clearBtn').style.display = editing ? 'flex' : 'none';
+}
+
+function saveDoc() {
+  const data = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    data[el.dataset.id] = el.innerHTML;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const msg = document.getElementById('savedMsg');
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 2000);
+}
+
+function clearSaved() {
+  if (confirm('保存した編集内容をリセットしますか？')) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+</script>
 </body>
 </html>
