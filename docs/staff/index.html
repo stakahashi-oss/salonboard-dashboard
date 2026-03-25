@@ -113,8 +113,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
   <select class="login-select" id="loginStore">
     <option value="">-- 先にブランドを選択 --</option>
   </select>
-  <input class="login-input" id="loginPass" type="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:4px">
-  <button class="login-btn" onclick="doLogin()">ログイン</button>
+  <button class="login-btn" onclick="doLogin()">入る</button>
   <div class="login-error" id="loginError"></div>
 </div>
 
@@ -203,11 +202,9 @@ function updateStoreList() {
 function doLogin() {
   const brand = document.getElementById("loginBrand").value;
   const store = document.getElementById("loginStore").value;
-  const pass = document.getElementById("loginPass").value;
   const errEl = document.getElementById("loginError");
   if (!brand) { errEl.textContent = "ブランドを選択してください"; return; }
   if (!store) { errEl.textContent = "店舗を選択してください"; return; }
-  if (pass !== STAFF_PASS) { errEl.textContent = "パスワードが違います"; return; }
   selectedStore = store;
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("app").style.display = "flex";
