@@ -133,6 +133,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 .img-radio-card:hover { border-color:var(--primary-border); box-shadow:var(--shadow); transform:translateY(-1px); }
 .img-radio-card.selected { border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.12); }
 .img-radio-card img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:#f1f5f9; }
+#e_design .img-radio-card img { aspect-ratio:1/1; object-fit:contain; padding:8px; background:#f8fafc; }
 .img-radio-label { padding:8px 10px; font-size:13px; font-weight:500; text-align:center; color:var(--text); border-top:1px solid var(--border); }
 .img-radio-card.selected .img-radio-label { color:var(--primary); font-weight:700; background:var(--primary-light); }
 .img-radio-text { display:flex; align-items:center; gap:12px; padding:10px 10px; cursor:pointer; border-radius:8px; transition:background .12s; margin:6px -10px 0; }
@@ -313,7 +314,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
           <div class="gf-chip" onclick="toggleChip(this)">眉毛Wax</div>
           <div class="gf-chip" onclick="toggleChip(this)">眉毛パーマ</div>
           <div class="gf-chip" onclick="toggleChip(this)">まつ毛パーマ</div>
-          <div class="gf-chip" onclick="toggleChip(this)">まつ毛エクステ</div>
+          <div class="gf-chip" onclick="toggleChip(this)">LEDエクステ</div>
           <div class="gf-chip" onclick="toggleChip(this)">フェイシャルワックス</div>
         </div>
       </div>
@@ -337,9 +338,9 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         <div class="gf-radio-group" id="f_menu">
           <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛</div></div>
           <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">まつ毛パーマ</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">まつ毛エクステ</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">LEDエクステ</div></div>
           <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛 ＋ まつ毛パーマ</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛 ＋ まつ毛エクステ</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛 ＋ LEDエクステ</div></div>
         </div>
       </div>
 
@@ -591,10 +592,10 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         </div>
       </div>
 
-      <!-- ══ まつ毛エクステセクション ══ -->
+      <!-- ══ LEDエクステセクション ══ -->
       <div id="section-ext" style="display:none">
         <div class="section-card">
-          <div class="section-title">💫 まつ毛エクステカウンセリング</div>
+          <div class="section-title">💫 LEDエクステカウンセリング</div>
 
           <div class="q-label">グルーや化粧品などで目元がかぶれた経験</div>
           <div class="gf-radio-group" id="e_glue">
@@ -679,7 +680,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 
           <div class="q-label-sm">注意事項の確認<span class="q-required">*</span></div>
           <div class="notice-box">
-            <strong>【まつ毛エクステについて】</strong><br>
+            <strong>【LEDエクステについて】</strong><br>
             ・使用するグルーはホルムアルデヒドフリーの低刺激タイプです。<br>
             ・持続性は個人差がありますが、3〜4週間程度です。<br>
             ・施術後24時間は水・蒸気・汗を避けてください。<br>
@@ -805,9 +806,9 @@ function toggleTransferDetail() {
 // ── 施術メニュー切替 ─────────────────────────────────────
 function updateMenuSections() {
   const val = getSelected("f_menu");
-  const showBrow = val === "眉毛" || val === "眉毛 ＋ まつ毛パーマ" || val === "眉毛 ＋ まつ毛エクステ";
+  const showBrow = val === "眉毛" || val === "眉毛 ＋ まつ毛パーマ" || val === "眉毛 ＋ LEDエクステ";
   const showLash = val === "まつ毛パーマ" || val === "眉毛 ＋ まつ毛パーマ";
-  const showExt  = val === "まつ毛エクステ" || val === "眉毛 ＋ まつ毛エクステ";
+  const showExt  = val === "LEDエクステ" || val === "眉毛 ＋ LEDエクステ";
   document.getElementById("section-brow").style.display = showBrow ? "" : "none";
   document.getElementById("section-lash").style.display = showLash ? "" : "none";
   document.getElementById("section-ext").style.display  = showExt  ? "" : "none";
@@ -951,9 +952,9 @@ async function submitForm() {
     firstEls.push(document.getElementById("f_menu"));
   } else {
     document.getElementById("menuSelectPrompt").style.display = "none";
-    const showBrow = menuVal === "眉毛" || menuVal === "眉毛 ＋ まつ毛パーマ" || menuVal === "眉毛 ＋ まつ毛エクステ";
+    const showBrow = menuVal === "眉毛" || menuVal === "眉毛 ＋ まつ毛パーマ" || menuVal === "眉毛 ＋ LEDエクステ";
     const showLash = menuVal === "まつ毛パーマ" || menuVal === "眉毛 ＋ まつ毛パーマ";
-    const showExt  = menuVal === "まつ毛エクステ" || menuVal === "眉毛 ＋ まつ毛エクステ";
+    const showExt  = menuVal === "LEDエクステ" || menuVal === "眉毛 ＋ LEDエクステ";
     if (showBrow && !getChecks("b_agree")) {
       missing.push("眉毛カウンセリングの注意事項確認");
       firstEls.push(document.getElementById("b_agree"));
@@ -963,7 +964,7 @@ async function submitForm() {
       firstEls.push(document.getElementById("l_agree"));
     }
     if (showExt && !getChecks("e_agree")) {
-      missing.push("まつ毛エクステカウンセリングの注意事項確認");
+      missing.push("LEDエクステカウンセリングの注意事項確認");
       firstEls.push(document.getElementById("e_agree"));
     }
   }
@@ -1017,7 +1018,7 @@ async function submitForm() {
     l_design:       getImgSelected("l_design"),
     l_homecare:     document.getElementById("l_homecare").value.trim(),
     l_sns:          getSelected("l_sns"),
-    // まつ毛エクステ
+    // LEDエクステ
     e_glue:         getSelected("e_glue"),
     e_trouble:      getSelected("e_trouble"),
     e_condition:    getSelected("e_condition"),
