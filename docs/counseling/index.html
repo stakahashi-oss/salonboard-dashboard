@@ -321,10 +321,11 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
       <!-- 初回限定ホームケア商品 -->
       <div class="q-card">
         <div class="q-label">初回限定ホームケア商品<span class="q-required">*</span><br><span style="font-size:12px;color:#64748b;font-weight:400">ご興味のある商品をお選びください（複数選択可）</span></div>
-        <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/homecare-products.jpg" alt="ご新規様限定価格" style="width:100%;border-radius:8px;margin-bottom:14px;display:block;">
+        <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/homecare-products2.jpg" alt="ご新規様限定価格" style="width:100%;border-radius:8px;margin-bottom:14px;display:block;">
         <div class="gf-check-group" id="f_homecare_product">
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">ヴァージンラッシュセラム ¥2,000</div></div>
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">フェニックス カールアップコーティング ¥3,300</div></div>
+          <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">フェニックスアイ カールアップコーティングザ ブラック ¥3,300</div></div>
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">ラッシュアディクト ¥10,000</div></div>
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">今回は購入しない</div></div>
         </div>
@@ -335,8 +336,10 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         <div class="q-label">本日の施術内容<span class="q-required">*</span></div>
         <div class="gf-radio-group" id="f_menu">
           <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">まつ毛</div></div>
-          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">両方（眉毛 ＋ まつ毛）</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">まつ毛パーマ</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">まつ毛エクステ</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛 ＋ まつ毛パーマ</div></div>
+          <div class="gf-radio-item" onclick="selectRadio(this,'f_menu');updateMenuSections()"><div class="gf-radio-circle"></div><div class="gf-radio-label">眉毛 ＋ まつ毛エクステ</div></div>
         </div>
       </div>
 
@@ -588,6 +591,111 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         </div>
       </div>
 
+      <!-- ══ まつ毛エクステセクション ══ -->
+      <div id="section-ext" style="display:none">
+        <div class="section-card">
+          <div class="section-title">💫 まつ毛エクステカウンセリング</div>
+
+          <div class="q-label">グルーや化粧品などで目元がかぶれた経験</div>
+          <div class="gf-radio-group" id="e_glue">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_glue')"><div class="gf-radio-circle"></div><div class="gf-radio-label">なし</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_glue')"><div class="gf-radio-circle"></div><div class="gf-radio-label">あり</div></div>
+          </div>
+
+          <div class="q-label-sm">目元周辺のトラブル（かゆみ・赤み・炎症など）</div>
+          <div class="gf-radio-group" id="e_trouble">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_trouble')"><div class="gf-radio-circle"></div><div class="gf-radio-label">なし</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_trouble')"><div class="gf-radio-circle"></div><div class="gf-radio-label">あり</div></div>
+          </div>
+
+          <div class="q-label-sm">体調不良・生理中・妊娠中・授乳中</div>
+          <div class="gf-radio-group" id="e_condition">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_condition')"><div class="gf-radio-circle"></div><div class="gf-radio-label">該当なし</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_condition')"><div class="gf-radio-circle"></div><div class="gf-radio-label">該当あり</div></div>
+          </div>
+
+          <div class="q-label-sm">3ヶ月以内の目元整形・レーシック手術経験</div>
+          <div class="gf-radio-group" id="e_surgery">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_surgery')"><div class="gf-radio-circle"></div><div class="gf-radio-label">なし</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_surgery')"><div class="gf-radio-circle"></div><div class="gf-radio-label">あり</div></div>
+          </div>
+
+          <div class="q-label-sm">アレルギーの有無（複数選択可）</div>
+          <div class="gf-check-group" id="e_allergy">
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">特になし</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">シリコン</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">グルー</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">花粉症・鼻炎</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">金属</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">アルコール</div></div>
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">化粧品</div></div>
+          </div>
+
+          <div class="q-label-sm">目の見え方のご希望</div>
+          <div class="gf-radio-group" id="e_eye_look">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_eye_look')"><div class="gf-radio-circle"></div><div class="gf-radio-label">縦幅を大きく見せたい</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_eye_look')"><div class="gf-radio-circle"></div><div class="gf-radio-label">横幅を大きく見せたい</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_eye_look')"><div class="gf-radio-circle"></div><div class="gf-radio-label">わからない</div></div>
+          </div>
+
+          <div class="q-label-sm">ご希望のデザインイメージ</div>
+          <div id="e_design">
+            <div class="img-radio-grid">
+              <div class="img-radio-card" onclick="selectImgRadio(this,'e_design')">
+                <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/ext-natural.jpg" alt="ナチュラル" loading="lazy">
+                <div class="img-radio-label">ナチュラル</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'e_design')">
+                <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/ext-cute.jpg" alt="キュート" loading="lazy">
+                <div class="img-radio-label">キュート</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'e_design')">
+                <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/ext-sexy.jpg" alt="セクシー" loading="lazy">
+                <div class="img-radio-label">セクシー</div>
+              </div>
+              <div class="img-radio-card" onclick="selectImgRadio(this,'e_design')">
+                <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/ext-gorgeous.jpg" alt="ゴージャス" loading="lazy">
+                <div class="img-radio-label">ゴージャス</div>
+              </div>
+            </div>
+            <div class="img-radio-text" onclick="selectImgRadio(this,'e_design')">
+              <div class="gf-radio-circle"></div>
+              <div class="gf-radio-label">わからない</div>
+            </div>
+          </div>
+
+          <div class="q-label-sm">カールの種類</div>
+          <div class="gf-radio-group" id="e_curl">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Jカール（ナチュラル）</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Cカール（スタンダード）</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Dカール（しっかりカール）</div></div>
+          </div>
+
+          <div class="q-label-sm">SNS・ブログへの写真掲載</div>
+          <div class="gf-radio-group" id="e_sns">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_sns')"><div class="gf-radio-circle"></div><div class="gf-radio-label">はい（掲載可）</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_sns')"><div class="gf-radio-circle"></div><div class="gf-radio-label">いいえ（掲載不可）</div></div>
+          </div>
+
+          <div class="q-label-sm">注意事項の確認<span class="q-required">*</span></div>
+          <div class="notice-box">
+            <strong>【まつ毛エクステについて】</strong><br>
+            ・使用するグルーはホルムアルデヒドフリーの低刺激タイプです。<br>
+            ・持続性は個人差がありますが、3〜4週間程度です。<br>
+            ・施術後24時間は水・蒸気・汗を避けてください。<br>
+            ・オイル系クレンジングはグルーを溶かすため使用しないでください。<br><br>
+            <strong>【施術をお断りする場合】</strong><br>
+            ・目元の皮膚疾患・かぶれ・痒みがある方<br>
+            ・3ヶ月以内に目元の美容整形・レーシック手術を受けた方、または予定がある方<br>
+            ・妊娠初期の方<br><br>
+            上記内容をご確認・ご理解いただいた上でチェックをお願いいたします。
+          </div>
+          <div class="gf-check-group" id="e_agree">
+            <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">上記の注意事項を確認しました</div></div>
+          </div>
+        </div>
+      </div>
+
       <div id="menuSelectPrompt" style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:16px;text-align:center;font-size:14px;color:#6366f1;margin-bottom:12px;display:none">
         ↑ 本日の施術内容を選択してください
       </div>
@@ -697,10 +805,12 @@ function toggleTransferDetail() {
 // ── 施術メニュー切替 ─────────────────────────────────────
 function updateMenuSections() {
   const val = getSelected("f_menu");
-  const showBrow = val === "眉毛" || val === "両方（眉毛 ＋ まつ毛）";
-  const showLash = val === "まつ毛" || val === "両方（眉毛 ＋ まつ毛）";
+  const showBrow = val === "眉毛" || val === "眉毛 ＋ まつ毛パーマ" || val === "眉毛 ＋ まつ毛エクステ";
+  const showLash = val === "まつ毛パーマ" || val === "眉毛 ＋ まつ毛パーマ";
+  const showExt  = val === "まつ毛エクステ" || val === "眉毛 ＋ まつ毛エクステ";
   document.getElementById("section-brow").style.display = showBrow ? "" : "none";
   document.getElementById("section-lash").style.display = showLash ? "" : "none";
+  document.getElementById("section-ext").style.display  = showExt  ? "" : "none";
   document.getElementById("menuSelectPrompt").style.display = "none";
 }
 
@@ -841,15 +951,20 @@ async function submitForm() {
     firstEls.push(document.getElementById("f_menu"));
   } else {
     document.getElementById("menuSelectPrompt").style.display = "none";
-    const showBrow = menuVal === "眉毛" || menuVal === "両方（眉毛 ＋ まつ毛）";
-    const showLash = menuVal === "まつ毛" || menuVal === "両方（眉毛 ＋ まつ毛）";
+    const showBrow = menuVal === "眉毛" || menuVal === "眉毛 ＋ まつ毛パーマ" || menuVal === "眉毛 ＋ まつ毛エクステ";
+    const showLash = menuVal === "まつ毛パーマ" || menuVal === "眉毛 ＋ まつ毛パーマ";
+    const showExt  = menuVal === "まつ毛エクステ" || menuVal === "眉毛 ＋ まつ毛エクステ";
     if (showBrow && !getChecks("b_agree")) {
       missing.push("眉毛カウンセリングの注意事項確認");
       firstEls.push(document.getElementById("b_agree"));
     }
     if (showLash && !getChecks("l_agree")) {
-      missing.push("まつ毛カウンセリングの注意事項確認");
+      missing.push("まつ毛パーマカウンセリングの注意事項確認");
       firstEls.push(document.getElementById("l_agree"));
+    }
+    if (showExt && !getChecks("e_agree")) {
+      missing.push("まつ毛エクステカウンセリングの注意事項確認");
+      firstEls.push(document.getElementById("e_agree"));
     }
   }
 
@@ -902,6 +1017,16 @@ async function submitForm() {
     l_design:       getImgSelected("l_design"),
     l_homecare:     document.getElementById("l_homecare").value.trim(),
     l_sns:          getSelected("l_sns"),
+    // まつ毛エクステ
+    e_glue:         getSelected("e_glue"),
+    e_trouble:      getSelected("e_trouble"),
+    e_condition:    getSelected("e_condition"),
+    e_surgery:      getSelected("e_surgery"),
+    e_allergy:      getChecks("e_allergy"),
+    e_eye_look:     getSelected("e_eye_look"),
+    e_design:       getImgSelected("e_design"),
+    e_curl:         getSelected("e_curl"),
+    e_sns:          getSelected("e_sns"),
   };
 
   const btn = document.getElementById("submitBtn");
@@ -954,13 +1079,15 @@ function resetForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   ["f_source","f_transfer","f_freq","f_menu",
    "b_timing","b_self_care","b_surgery","b_color","b_design","b_impression",
-   "l_timing","l_glue","l_surgery","l_eye_look","l_design","l_sns","b_sns"]
+   "l_timing","l_glue","l_surgery","l_eye_look","l_design","l_sns","b_sns",
+   "e_glue","e_trouble","e_condition","e_surgery","e_eye_look","e_design","e_curl","e_sns"]
     .forEach(g => document.querySelectorAll("#"+g+" .gf-radio-item").forEach(b => b.classList.remove("selected")));
   document.querySelectorAll(".gf-chip.selected, .gf-check-item.selected, #f_homecare_product .gf-check-item.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("transferDetailField").style.display = "none";
   document.querySelectorAll(".img-radio-card.selected, .img-radio-text.selected").forEach(el => el.classList.remove("selected"));
   document.getElementById("section-brow").style.display = "none";
   document.getElementById("section-lash").style.display = "none";
+  document.getElementById("section-ext").style.display  = "none";
   document.getElementById("menuSelectPrompt").style.display = "none";
   screenHistory = ["screen-start"];
 }
