@@ -684,11 +684,12 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
             </div>
           </div>
 
-          <div style="font-size:13px;color:#64748b;font-weight:600;margin-top:16px;margin-bottom:8px">カールの種類</div>
-          <div class="gf-chip-group" id="e_curl">
-            <div class="gf-chip" onclick="toggleChip(this)">Jカール（ナチュラル）</div>
-            <div class="gf-chip" onclick="toggleChip(this)">Cカール（スタンダード）</div>
-            <div class="gf-chip" onclick="toggleChip(this)">Dカール（しっかりカール）</div>
+          <div class="q-label-sm">ご希望のカールを選択してください。</div>
+          <div class="gf-radio-group" id="e_curl">
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Jカール</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">JCカール</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Cカール</div></div>
+            <div class="gf-radio-item" onclick="selectRadio(this,'e_curl')"><div class="gf-radio-circle"></div><div class="gf-radio-label">Dカール</div></div>
           </div>
 
           <div class="q-label-sm">SNS・ブログへの写真掲載</div>
@@ -699,31 +700,38 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 
           <div class="q-label-sm">注意事項の確認<span class="q-required">*</span></div>
           <div class="notice-box">
-            <strong>【LEDエクステ施術について】</strong><br>
-            ・まつ毛エクステは自まつ毛に人工毛を専用グルーで装着する施術であり、まつ毛や目元への負担がある場合があることをご理解ください。<br>
-            ・使用するグルーはホルムアルデヒドフリーの低刺激タイプです。<br>
-            ・持続性は個人差がありますが、3〜4週間程度です。まつ毛は約3〜4ヶ月の周期で生え変わります。<br><br>
-            <strong>【施術リスクについて】</strong><br>
-            ・使用するグルーにより、まれにかゆみ・赤み・腫れ・アレルギー反応などが生じる場合があります。<br>
-            ・体質や体調によっては施術後に違和感や不快感を感じる可能性があります。<br>
-            ・自まつ毛の状態によってはまつ毛が抜けやすくなる、または持続期間が短くなることがあります。<br><br>
-            <strong>【施術をお断りする場合】</strong><br>
-            ・目元の皮膚疾患・かぶれ・痒みがある方<br>
-            ・まつ毛が極端に短い・薄い・ダメージが強い方<br>
-            ・3ヶ月以内に目元の美容整形・レーシック手術を受けた方、または予定がある方<br>
-            ・体調不良・妊娠初期の方<br><br>
-            <strong>【施術中のお願い】</strong><br>
-            ・施術には鋭利な医療用ピンセットを使用します。危険防止のため、施術中は絶対に目を開けないでください。<br>
-            ・施術中に痛みや違和感を感じた場合は、直ちにスタッフにお申し出ください。<br><br>
-            <strong>【施術後の注意】</strong><br>
-            ・施術後24時間は洗顔・入浴・プール・サウナなどを避けてください。<br>
-            ・オイルクレンジングやマスカラの使用はエクステの持ちに影響するためお控えください。<br>
-            ・ご自身でエクステを引き抜いたり過度に触る行為はお控えください。<br>
-            ・施術後のアレルギー・肌トラブル・まつ毛の損傷等について、当サロンでは責任を負いかねますことをご了承ください。<br><br>
+            <div style="font-size:14px;font-weight:700;margin-bottom:10px">【まつ毛エクステ施術同意書】</div>
+            このたびは当サロンをご利用いただき、誠にありがとうございます。まつ毛エクステ施術に関する注意事項をご確認いただき、下記の内容に同意の上、施術をお受けいただきますようお願いいたします。<br><br>
+            <strong>1. 施術内容について</strong><br>
+            私は、まつ毛エクステは自まつ毛に人工毛を専用グルーで装着する施術であり、まつ毛や目元への負担がある場合があることを理解しています。<br><br>
+            <strong>2. 施術リスクについて</strong><br>
+            使用する接着剤（グルー）により、まれにかゆみ・赤み・腫れ・アレルギー反応などが生じる場合があることを理解しています。<br>
+            体質や体調によっては施術後に違和感や不快感を感じる可能性があることを理解しています。<br>
+            自まつ毛の状態によってはまつ毛が抜けやすくなる、または持続期間が短くなることがあると理解しています。<br><br>
+            <strong>3. 衛生と安全について</strong><br>
+            サロンでは衛生管理を徹底しておりますが、体調不良・目の病気・皮膚疾患等がある場合、施術をお断りまたは中止する場合があります。以下の症状がある場合は事前に必ず申告してください。<br>
+            結膜炎、ものもらい、花粉症、アレルギー体質など<br><br>
+            <strong>4. 施術後のケア・注意点</strong><br>
+            施術後24時間は洗顔・入浴・プール・サウナなどを避けてください。<br>
+            オイルクレンジングやマスカラの使用はエクステの持ちに影響するためお控えください。<br>
+            また、ご自身でエクステを引き抜いたり過度に触る行為はお控えください。（まつ毛が抜けたり、痛む原因となります）<br><br>
+            <strong>5. 免責事項</strong><br>
+            施術中または施術後に起こったアレルギー・肌トラブル・まつ毛の損傷等について、当サロンでは責任を負いかねますことをご了承ください。気になる症状が出た場合は速やかに施術者または医師にご相談ください。<br><br>
+            <strong>6. 施術前の注意事項（以下に該当する方は施術をお断りする場合があります）</strong><br>
+            → 現在目元の皮膚や眼球、その他目に関する疾患、かぶれ、かゆみ等がある方<br>
+            → まつげが極端に薄い、抜けている、切れている、ダメージが強い方<br>
+            → 3ヶ月以内に目元の美容整形やレーシック手術をされた方<br>
+            → 目元の皮膚が弱い、または敏感な方、テープや絆創膏・アイプチ等の粘着物質でかぶれる方<br>
+            → 妊娠初期の方<br>
+            → 風邪などで体調不良の方<br><br>
+            <strong>【まつ毛の周期】</strong><br>
+            まつげエクステンションの持続期間は個人差がございます。まつげは髪の毛と同様に生え変わる時期（毛周期）がございますので、その時期は地まつげもエクステンションと一緒に抜け落ちます。個人差はありますが、およそ3〜4ヶ月の周期でまつげが抜けて生え変わっています。理想的なまつげエクステンションのリペアのタイミングは2〜3週間です。<br><br>
             <strong>【お直しについて】</strong><br>
-            ・お直しは施術日から7日以内のみ対応いたします。<br>
-            ・施術後のデザイン変更・他店でのリペア後・ご遅刻の方・目を擦る癖がある方はお直し対象外となります。<br><br>
-            上記内容をご確認・ご理解いただいた上でチェックをお願いいたします。
+            以下に該当される方はお直しできかねますのでご了承ください。<br>
+            ・施術後のデザイン変更　・他店リペア　・遅刻された方<br>
+            ・抜けた毛に自まつ毛がついている　・目元を擦ってしまっている<br>
+            ・3ヶ月以内にまつげパーマをかけられている方　・Jr.クーポン利用の方<br><br>
+            上記の内容にご理解いただいた上で、施術承諾のご証明をお願いいたします。
           </div>
           <div class="gf-check-group" id="e_agree">
             <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">上記の注意事項を確認しました</div></div>
@@ -1060,7 +1068,7 @@ async function submitForm() {
     e_allergy:      getChecks("e_allergy"),
     e_eye_look:     getSelected("e_eye_look"),
     e_design:       getImgSelected("e_design"),
-    e_curl:         getChips("e_curl"),
+    e_curl:         getSelected("e_curl"),
     e_sns:          getSelected("e_sns"),
   };
 
