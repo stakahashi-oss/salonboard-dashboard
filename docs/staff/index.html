@@ -266,10 +266,11 @@ async function loadCounseling() {
     const data = await gasGet("get_all");
     if (data.error) throw new Error(data.error);
     const all = data.records || [];
-    // テスト店舗は完全一致のみ。実店舗は店舗名一致＋店舗名未設定の古いデータも表示
+    // テスト店舗: 店舗名一致 + 店舗名未設定の古いデータも表示
+    // 実店舗: 店舗名完全一致のみ（テストデータ混入防止）
     const isTest = selectedStore && selectedStore.startsWith("テスト");
     allCounseling = selectedStore
-      ? all.filter(c => (c["店舗名"] || "") === selectedStore || (!isTest && (c["店舗名"] || "") === ""))
+      ? all.filter(c => (c["店舗名"] || "") === selectedStore || (isTest && (c["店舗名"] || "") === ""))
       : all;
     renderCounseling(allCounseling);
   } catch(e) {
