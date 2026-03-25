@@ -255,10 +255,10 @@ async function loadCounseling() {
     const data = await gasGet("get_all");
     if (data.error) throw new Error(data.error);
     const all = data.records || [];
-    // 店舗名でフィルタ（店舗名列がない古いデータはスキップしない）
-    // 店舗名が一致するもの＋店舗名未設定のもの（URL経由なしで入力されたデータ）を両方表示
+    // テスト店舗は完全一致のみ。実店舗は店舗名一致＋店舗名未設定の古いデータも表示
+    const isTest = selectedStore && selectedStore.startsWith("テスト");
     allCounseling = selectedStore
-      ? all.filter(c => (c["店舗名"] || "") === selectedStore || (c["店舗名"] || "") === "")
+      ? all.filter(c => (c["店舗名"] || "") === selectedStore || (!isTest && (c["店舗名"] || "") === ""))
       : all;
     renderCounseling(allCounseling);
   } catch(e) {
