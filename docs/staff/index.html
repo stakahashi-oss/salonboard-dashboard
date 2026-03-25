@@ -254,14 +254,10 @@ async function loadCounseling() {
     if (data.error) throw new Error(data.error);
     const all = data.records || [];
     // 店舗名でフィルタ（店舗名列がない古いデータはスキップしない）
+    // 店舗名が一致するもの＋店舗名未設定のもの（URL経由なしで入力されたデータ）を両方表示
     allCounseling = selectedStore
       ? all.filter(c => (c["店舗名"] || "") === selectedStore || (c["店舗名"] || "") === "")
       : all;
-    // 店舗名がある場合は確実に店舗でフィルタ
-    if (selectedStore) {
-      const withStore = all.filter(c => (c["店舗名"] || "") === selectedStore);
-      allCounseling = withStore.length > 0 ? withStore : all.filter(c => !(c["店舗名"]));
-    }
     renderCounseling(allCounseling);
   } catch(e) {
     document.getElementById("counselingListEl").innerHTML = '<div class="error-msg">⚠️ データ取得に失敗しました<br><small>' + e.message + '</small><br><br>GASの再デプロイが必要な場合があります</div>';
