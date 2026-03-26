@@ -104,6 +104,7 @@ function doGet(e) {
   if (act === "get_talks")            return resp(getTalks(e.parameter.line_uid));
   if (act === "get_customer_profile") return resp(getCustomerProfile(e.parameter.line_uid));
   if (act === "get_customer_profile_ext") return resp(getCustomerProfileExt(e.parameter.line_uid));
+  if (act === "get_visits_by_phone")  return resp(getVisitsByPhone(e.parameter.phone));
   if (act === "get_tags")             return resp(getTags());
   if (act === "get_conversions")      return resp(getConversions(e.parameter.broadcast_id));
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
@@ -1519,6 +1520,50 @@ function sendBroadcastAll(data) {
 // ══════════════════════════════════════════════════════════
 //  顧客プロフィール（LINE_UID → 予約履歴・カウンセリング統合）
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  電話番号で来店回数・メニュー履歴を取得（カウンセリング詳細用）
+// ══════════════════════════════════════════════════════════
+function getVisitsByPhone(phone) {
+  if (!phone) return {error: "phone required"};
+  var norm = normalizePhone(String(phone));
+  var reservations = [];
+  try {
+    var rdata = getReservationData();
+    for (var i = 1; i < rdata.length; i++) {
+      var row = rdata[i];
+      if (normalizePhone(String(row[14] || "")) !== norm) continue;
+      var vd = String(row[6] || "");
+      reservations.push({
+        visit_date:  vd.length === 8 ? vd.slice(0,4)+"/"+vd.slice(4,6)+"/"+vd.slice(6,8) : vd,
+        store:       String(row[2]  || ""),
+        staff:       String(row[4]  || ""),
+        menu:        String(row[11] || ""),
+        status:      String(row[1]  || ""),
+        amount:      String(row[19] || "")
+      });
+    }
+  } catch(e) {
+    return {error: String(e)};
+  }
+  reservations.sort(function(a, b) { return b.visit_date.localeCompare(a.visit_date); });
+  var completedVisits = reservations.filter(function(r) {
+    return r.status !== "キャンセル（顧客）" && r.status !== "キャンセル（サロン）" && r.status !== "無断キャンセル";
+  });
+  var menuCount = {};
+  completedVisits.forEach(function(r) {
+    if (r.menu) menuCount[r.menu] = (menuCount[r.menu] || 0) + 1;
+  });
+  var favoriteMenu = "";
+  var maxCnt = 0;
+  for (var mk in menuCount) { if (menuCount[mk] > maxCnt) { maxCnt = menuCount[mk]; favoriteMenu = mk; } }
+  return {
+    visit_count:    completedVisits.length,
+    last_visit:     completedVisits.length ? completedVisits[0].visit_date : "",
+    favorite_menu:  favoriteMenu,
+    reservations:   reservations.slice(0, 10)
+  };
+}
+
 function getCustomerProfile(lineUid) {
   if (!lineUid) return {error: "line_uid required"};
   lineUid = String(lineUid).trim().replace(/^'+|'+$/g, "");

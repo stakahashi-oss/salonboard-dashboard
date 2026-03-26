@@ -1134,7 +1134,7 @@ function renderCounseling(records) {
   `;
 }
 
-function showCounselingDetail(r) {
+async function showCounselingDetail(r) {
   const hasMemo = !!r.treatment_memo;
   const html = `
     <div id="counselingModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px" onclick="this.remove()">
@@ -1142,6 +1142,11 @@ function showCounselingDetail(r) {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div style="font-size:16px;font-weight:700">📋 ${r.name||'詳細'}</div>
           <button onclick="document.getElementById('counselingModal').remove()" style="background:#eee;border:none;border-radius:8px;padding:4px 10px;cursor:pointer">✕</button>
+        </div>
+
+        <!-- 来店回数・メニュー（非同期読み込み） -->
+        <div id="visitSummary" style="background:#ede9fe;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;display:flex;gap:16px;align-items:center">
+          <span style="color:#6366f1">⏳ 来店データ取得中...</span>
         </div>
 
         <!-- お客様情報 -->
@@ -1206,6 +1211,47 @@ function showCounselingDetail(r) {
       </div>
     </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
+
+  // 来店回数・メニュー履歴を非同期取得
+  if (r.phone) {
+    try {
+      const q = new URLSearchParams({key: 'ssin2026', action: 'get_visits_by_phone', phone: r.phone});
+      const vd = await fetch(`${DASH_GAS_URL}?${q}`).then(res => res.json());
+      const el = document.getElementById('visitSummary');
+      if (el) {
+        if (vd.error) {
+          el.innerHTML = `<span style="color:#888">来店データなし</span>`;
+        } else {
+          const recentMenus = (vd.reservations || []).slice(0,5).filter(v => v.menu).map(v =>
+            `<div style="display:flex;gap:8px;font-size:12px;padding:3px 0;border-bottom:1px solid #e9d5ff">
+              <span style="color:#888;min-width:80px">${v.visit_date?.slice(0,10)||''}</span>
+              <span style="color:#444">${v.store}</span>
+              <span style="font-weight:500;color:#333">${v.menu}</span>
+            </div>`).join('');
+          el.innerHTML = `
+            <div style="width:100%">
+              <div style="display:flex;gap:24px;margin-bottom:10px">
+                <div style="text-align:center">
+                  <div style="font-size:24px;font-weight:700;color:#6366f1">${vd.visit_count}<span style="font-size:13px;font-weight:400"> 回</span></div>
+                  <div style="font-size:11px;color:#888">来店回数</div>
+                </div>
+                <div>
+                  <div style="font-size:12px;color:#888">最終来店：${vd.last_visit||'-'}</div>
+                  <div style="font-size:12px;color:#888;margin-top:4px">よく使うメニュー：<strong style="color:#6366f1">${vd.favorite_menu||'-'}</strong></div>
+                </div>
+              </div>
+              ${recentMenus ? `<div style="font-size:12px;color:#666;margin-bottom:4px;font-weight:600">📅 直近の来店履歴</div>${recentMenus}` : ''}
+            </div>`;
+        }
+      }
+    } catch(e) {
+      const el = document.getElementById('visitSummary');
+      if (el) el.innerHTML = `<span style="color:#888">来店データ取得失敗</span>`;
+    }
+  } else {
+    const el = document.getElementById('visitSummary');
+    if (el) el.innerHTML = `<span style="color:#888">電話番号なし（来店データ取得不可）</span>`;
+  }
 }
 
 async function saveCounselingStaff(recordId) {
