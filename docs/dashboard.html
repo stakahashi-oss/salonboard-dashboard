@@ -873,32 +873,9 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
       ⚙️ <strong>Lステップ風シナリオ</strong> — 来店後に自動送信するメッセージの内容・タイミングを設定できます。<br>
       プレースホルダー: <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{name}</code> お名前 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{store}</code> 店舗名 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_menu}</code> 次回メニュー &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_timing}</code> 次回時期
     </div>
-    <!-- 送信時間設定 -->
-    <div style="background:#fff;border:1.5px solid #e0e0e0;border-radius:12px;padding:18px 20px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:14px;">
-      <span style="font-size:15px;font-weight:700">🕐 毎日の送信時間</span>
-      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px">
-        <select id="sendHourSelect" style="border:1.5px solid #ccc;border-radius:8px;padding:6px 10px;font-size:14px;background:#f8f8f8">
-          <option value="6">06:00</option>
-          <option value="7">07:00</option>
-          <option value="8">08:00</option>
-          <option value="9" selected>09:00</option>
-          <option value="10">10:00</option>
-          <option value="11">11:00</option>
-          <option value="12">12:00</option>
-          <option value="13">13:00</option>
-          <option value="14">14:00</option>
-          <option value="15">15:00</option>
-          <option value="16">16:00</option>
-          <option value="17">17:00</option>
-          <option value="18">18:00</option>
-          <option value="19">19:00</option>
-          <option value="20">20:00</option>
-          <option value="21">21:00</option>
-        </select>
-        <span style="font-size:12px;color:#888">に自動配信</span>
-      </div>
-      <button class="btn btn-green btn-sm" onclick="saveSendHour()">💾 時間を保存して反映</button>
-      <span id="sendHourStatus" style="font-size:12px;color:#888"></span>
+    <!-- 送信時間設定の説明 -->
+    <div style="background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#3730a3">
+      🕐 <strong>送信時間は各ステップで個別に設定できます。</strong>「保存」ボタンを押すと自動でGASトリガーに反映されます。
     </div>
     <div id="scenarioSteps"><div class="loading"><span class="spinner"></span>設定を読込中...</div></div>
   </div>
@@ -2335,6 +2312,8 @@ const SCENARIO_STEPS = [
     timingKey: 'リマインド_来店前日数',
     timingUnit: '日前',
     timingNote: '来店の何日前に送るか',
+    timeKey: '送信時間_リマインド',
+    defaultHour: 10,
     msgKey: 'メッセージ_来店前リマインド',
     defaultTiming: 2,
     defaultMsg: '{store}です🌸\n\n{name}様、来店のご予約ありがとうございます✨\n\n📅 来店日時: {visit_date}\n⏰ 開始時間: {start_time}\n💆 メニュー: {menu}\n\nご来店をお待ちしております😊\n変更・キャンセルはこちらのLINEへ📱',
@@ -2347,6 +2326,8 @@ const SCENARIO_STEPS = [
     enableKey: '有効_会計後お礼',
     timingKey: null,
     timingUnit: null,
+    timeKey: '送信時間_お礼',
+    defaultHour: 18,
     msgKey: 'メッセージ_お礼',
     defaultTiming: null,
     defaultMsg: '本日はご来店いただきありがとうございました🙏\n{store}スタッフ一同より\n\n{name}様にご満足いただけましたでしょうか？✨\n\n➡️ 次回のおすすめ\n「{next_menu}」\n目安は{next_timing}ごろです📅\n\nまたのご来店をお待ちしております🌸\nご予約・ご相談はこちらのLINEへ📱',
@@ -2359,6 +2340,8 @@ const SCENARIO_STEPS = [
     enableKey: '有効_キャンセル再予約',
     timingKey: null,
     timingUnit: null,
+    timeKey: '送信時間_キャンセル',
+    defaultHour: 10,
     msgKey: 'メッセージ_キャンセル再予約',
     defaultTiming: null,
     defaultMsg: '{store}です💝\n\n{name}様、このたびはご予約をキャンセルされたとのこと承知いたしました🙏\n\nまたご都合がよろしい時にぜひご来店ください✨\n\nご予約・ご相談はいつでもこちらのLINEへ🌸',
@@ -2371,6 +2354,8 @@ const SCENARIO_STEPS = [
     enableKey: '有効_ステップ14日',
     timingKey: 'タイミング_フォロー2',
     timingUnit: '日後',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
     msgKey: 'メッセージ_14日後',
     defaultTiming: 14,
     defaultMsg: '{store}です💬\n\nご来店から2週間が経ちました✨\nまつげの状態はいかがでしょうか？\n\nそろそろメンテナンスの時期が近づいています😊\nお気軽にご予約ください📅',
@@ -2383,6 +2368,8 @@ const SCENARIO_STEPS = [
     enableKey: '有効_ステップ30日',
     timingKey: 'タイミング_フォロー3',
     timingUnit: '日後',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
     msgKey: 'メッセージ_30日後',
     defaultTiming: 30,
     defaultMsg: '{store}です🌸\n\nご来店から1ヶ月が経ちました✨\nそろそろ整える時期です😊\n\n今月もご来店いただけると嬉しいです！\nご予約はこちらのLINEへ📱',
@@ -2395,6 +2382,8 @@ const SCENARIO_STEPS = [
     enableKey: '有効_ステップ60日',
     timingKey: 'タイミング_フォロー4',
     timingUnit: '日後',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
     msgKey: 'メッセージ_60日後',
     defaultTiming: 60,
     defaultMsg: '{store}です💝\n\nご来店から2ヶ月が経ちました！\n{name}様にまた会いたいなとご連絡しました😊\n\nぜひまたご来店ください✨\nご予約・ご相談はこちらのLINEへ🌸',
@@ -2444,14 +2433,25 @@ function renderScenarioSteps() {
     const placeholders = (step.placeholder || '{name} {store}').split(' ').map(p => `<code>${p}</code>`).join(' ');
     const tagFilter = scenarioSettings[`シナリオタグ_${step.id}`] || '';
 
+    const hour = scenarioSettings[step.timeKey] || step.defaultHour;
+    const hourOptions = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].map(h =>
+      `<option value="${h}" ${Number(hour) === h ? 'selected' : ''}>${String(h).padStart(2,'0')}:00</option>`
+    ).join('');
+    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3') ? '（ステップ1〜3 共通）' : '';
+
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
           <span class="scenario-timing-label">⏱ ${step.timingNote || 'タイミング'}:</span>
           <input class="scenario-timing-input" type="number" id="timing-${step.id}" value="${timing}" min="1" max="365">
           <span style="font-size:13px;color:#555">${step.timingUnit}</span>
+          <span style="font-size:12px;color:#aaa;margin-left:8px">送信時間:</span>
+          <select id="hour-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:4px 8px;font-size:13px">${hourOptions}</select>
+          <span style="font-size:11px;color:#aaa">${timeNote}</span>
         </div>` : `
-        <div style="font-size:12px;color:#888;margin-bottom:10px">
-          ⚡ 自動検知トリガー（タイミング設定なし）
+        <div class="scenario-timing-row">
+          <span class="scenario-timing-label">🕐 送信時間:</span>
+          <select id="hour-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:4px 8px;font-size:13px">${hourOptions}</select>
+          <span style="font-size:12px;color:#aaa">に自動配信 ${timeNote}</span>
         </div>`;
 
     const tagOptions = ['<option value="">👥 全員（絞り込みなし）</option>',
@@ -2521,6 +2521,7 @@ async function saveScenarioStep(id, idx) {
 
   try {
     const tagFilterVal = (document.getElementById(`tag-${id}`) || {}).value || '';
+    const hourVal = (document.getElementById(`hour-${id}`) || {}).value || step.defaultHour;
     const posts = [gasPost({action: 'update_setting', key_name: step.msgKey, value: msg})];
     if (step.timingKey) {
       const timing = document.getElementById(`timing-${id}`).value.trim();
@@ -2528,12 +2529,16 @@ async function saveScenarioStep(id, idx) {
       scenarioSettings[step.timingKey] = timing;
     }
     posts.push(gasPost({action: 'update_setting', key_name: `シナリオタグ_${id}`, value: tagFilterVal}));
+    posts.push(gasPost({action: 'update_setting', key_name: step.timeKey, value: String(hourVal)}));
     const results = await Promise.all(posts);
     const err = results.find(r => r.error);
     if (err) throw new Error(err.error);
     scenarioSettings[step.msgKey] = msg;
+    scenarioSettings[step.timeKey] = String(hourVal);
     scenarioSettings[`シナリオタグ_${id}`] = tagFilterVal;
-    statusEl.textContent = '✅ 保存済み';
+    // トリガーをリセット（時間変更を反映）
+    await gasPost({action: 'reset_trigger'});
+    statusEl.textContent = `✅ 保存済み（${hourVal}:00 に設定）`;
     setTimeout(() => { statusEl.textContent = ''; }, 3000);
   } catch(e) {
     statusEl.textContent = `❌ エラー: ${e.message}`;

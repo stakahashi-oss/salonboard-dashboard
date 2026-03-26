@@ -774,11 +774,30 @@ function getTokenByStoreName(storeName) {
     var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
     if (!raw) return LINE_TOKEN;
     var map = JSON.parse(raw);
+    var normalize = function(s) { return (s || "").replace(/店$/, "").trim(); };
+    var normalizedTarget = normalize(storeName);
+    // 完全一致優先
     for (var dest in map) {
       if (map[dest].store === storeName) return map[dest].token;
     }
+    // 正規化一致（店あり/なし吸収）
+    for (var dest in map) {
+      if (normalize(map[dest].store) === normalizedTarget) return map[dest].token;
+    }
   } catch(e) {}
   return LINE_TOKEN;
+}
+
+// 古い誤ったPropertiesServiceエントリーを削除（一度だけ実行）
+function cleanupOldStoreEntries() {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty("STORE_LINE_TOKENS");
+  if (!raw) return;
+  var map = JSON.parse(raw);
+  // 旧藤沢店の間違いエントリー（所沢店のBot userId）を削除
+  delete map["U99dad428965ccff38f5352c90c47e183"];
+  props.setProperty("STORE_LINE_TOKENS", JSON.stringify(map));
+  Logger.log("クリーンアップ完了: " + JSON.stringify(Object.keys(map)));
 }
 
 function pushToLineWithToken(lineUid, text, token) {
@@ -851,29 +870,66 @@ function updateSetting(key, value) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  トリガー設定
+//  トリガー設定（ステップごとに個別時間）
 // ══════════════════════════════════════════════════════════
-function setupDailyTrigger() {
-  var hour = parseInt(getSetting("送信時間") || "9");
-  if (isNaN(hour) || hour < 0 || hour > 23) hour = 9;
-  var triggers = ScriptApp.getProjectTriggers();
-  for (var i = 0; i < triggers.length; i++) {
-    if (triggers[i].getHandlerFunction() === "dailyFollowUp") {
-      ScriptApp.deleteTrigger(triggers[i]);
-    }
-  }
-  ScriptApp.newTrigger("dailyFollowUp")
-    .timeBased()
-    .everyDays(1)
-    .atHour(hour)
-    .create();
-  Logger.log("トリガー設定完了（毎日 " + hour + "時）");
+function getH(key, def) {
+  var v = parseInt(getSetting(key) || String(def));
+  return (isNaN(v) || v < 0 || v > 23) ? def : v;
 }
 
 function resetTrigger() {
-  setupDailyTrigger();
-  var hour = getSetting("送信時間") || "9";
-  return {status: "ok", message: "トリガーを再設定しました（毎日 " + hour + "時）"};
+  // 既存の自動トリガーを全削除
+  var targets = ["dailyFollowUp", "runReminder", "runThanks", "runCancel", "runSteps"];
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    if (targets.indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t);
+  });
+
+  var log = [];
+
+  // リマインド
+  if (getSetting("有効_来店前リマインド") !== "OFF") {
+    var h = getH("送信時間_リマインド", 10);
+    ScriptApp.newTrigger("runReminder").timeBased().everyDays(1).atHour(h).create();
+    log.push("リマインド:" + h + "時");
+  }
+  // お礼
+  if (getSetting("有効_会計後お礼") !== "OFF") {
+    var h = getH("送信時間_お礼", 18);
+    ScriptApp.newTrigger("runThanks").timeBased().everyDays(1).atHour(h).create();
+    log.push("お礼:" + h + "時");
+  }
+  // キャンセル
+  if (getSetting("有効_キャンセル再予約") !== "OFF") {
+    var h = getH("送信時間_キャンセル", 10);
+    ScriptApp.newTrigger("runCancel").timeBased().everyDays(1).atHour(h).create();
+    log.push("キャンセル:" + h + "時");
+  }
+  // ステップ配信（14/30/60日 まとめて1トリガー）
+  var stepEnabled = getSetting("有効_ステップ14日") !== "OFF"
+    || getSetting("有効_ステップ30日") !== "OFF"
+    || getSetting("有効_ステップ60日") !== "OFF";
+  if (stepEnabled) {
+    var h = getH("送信時間_ステップ", 11);
+    ScriptApp.newTrigger("runSteps").timeBased().everyDays(1).atHour(h).create();
+    log.push("ステップ:" + h + "時");
+  }
+
+  Logger.log("トリガー再設定: " + log.join(", "));
+  return {status: "ok", message: "トリガー設定完了: " + log.join(", ")};
+}
+
+// 各ステップのトリガーラッパー関数
+function runReminder() { checkPreVisitReminders(); }
+function runThanks()   { checkPostCheckoutMessages(); }
+function runCancel()   { checkCancellationFollowup(); }
+function runSteps()    { checkStepMessages(); }
+
+// 後方互換（旧トリガー名）
+function dailyFollowUp() {
+  checkPreVisitReminders();
+  checkPostCheckoutMessages();
+  checkCancellationFollowup();
+  checkStepMessages();
 }
 
 // ══════════════════════════════════════════════════════════
