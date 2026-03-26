@@ -225,7 +225,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         <input class="gf-input" type="text" id="f_name" placeholder="例：山田 花子" autocomplete="name">
         <div class="q-label-sm">住所<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_address" placeholder="例：東京都新宿区...">
-        <div class="q-label-sm">電話番号（携帯）</div>
+        <div class="q-label-sm">電話番号（携帯）<span class="q-required">*</span></div>
         <input class="gf-input" type="tel" id="f_phone" placeholder="09012345678" inputmode="numeric" maxlength="11">
         <div class="q-label-sm">生年月日（西暦）<span class="q-required">*</span></div>
         <input class="gf-input" type="date" id="f_birthdate">
@@ -954,6 +954,11 @@ async function submitForm() {
   // お名前
   const nameEl = document.getElementById("f_name");
   if (!nameEl.value.trim()) { missing.push("お名前（フルネーム）"); firstEls.push(nameEl); }
+
+  // 電話番号
+  const phoneEl = document.getElementById("f_phone");
+  const phoneVal = phoneEl.value.replace(/-/g,"").trim();
+  if (!phoneVal || phoneVal.length < 10) { missing.push("電話番号（携帯）"); firstEls.push(phoneEl); }
 
   // 住所
   const addrEl = document.getElementById("f_address");

@@ -133,10 +133,34 @@ function handleLineWebhook(body) {
       registerFriend({line_uid: userId, phone: "", name: "", store: storeName});
     } else if (event.type === "message" && event.message.type === "text") {
       var uid = event.source.userId;
-      saveTalk({line_uid: uid, direction: "受信", content: event.message.text});
+      var text = event.message.text;
+      saveTalk({line_uid: uid, direction: "受信", content: text});
+      // 名前＋電話番号の自動検出・登録
+      var contact = parseContact(text);
+      if (contact) {
+        registerFriend({line_uid: uid, phone: contact.phone, name: contact.name});
+        var reply = contact.name + "\u69D8\u3001\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059\uD83D\uDE4F\n\u304A\u540D\u524D\u3068\u96FB\u8A71\u756A\u53F7\u3092\u767B\u9332\u3057\u307E\u3057\u305F\u2728\n\u3054\u6765\u5E97\u3092\u304A\u5F85\u3061\u3057\u3066\u304A\u308A\u307E\u3059\uD83C\uDF38";
+        pushToLineWithToken(uid, reply, token);
+      }
+    } else if (event.type === "unfollow") {
+      var unfollowUid = event.source.userId;
+      logLine({line_uid: unfollowUid, phone: "", name: "", type: "\u30D6\u30ED\u30C3\u30AF/\u524A\u9664", content: "", status: "\u81EA\u52D5\u8A18\u9332", error: ""});
     }
   }
   return resp({status: "ok"});
+}
+
+function parseContact(text) {
+  if (!text) return null;
+  var phonePattern = /0\d{1,4}[-\s]?\d{1,4}[-\s]?\d{4}/;
+  var phoneMatch = text.match(phonePattern);
+  if (!phoneMatch) return null;
+  var phone = phoneMatch[0].replace(/[-\s]/g, "");
+  var nameCandidate = text.replace(phoneMatch[0], "").replace(/[0-9\-\s\u3000]/g, " ").trim();
+  var lines = nameCandidate.split(/[\n\r]+/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 2; });
+  if (!lines.length) return null;
+  var name = lines.reduce(function(a, b){ return a.length >= b.length ? a : b; });
+  return name ? {phone: phone, name: name} : null;
 }
 
 function sendCounselingLink(userId, token, storeName) {
@@ -170,7 +194,7 @@ function fixAllHeaders() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","初回物販商品","眉_施術歴","眉_セルフケア","眉_手術歴","眉_アレルギー","眉_肌状態","眉_カラー","眉_デザイン","眉_印象","眉_メイク","眉_SNS同意","まつ_施術歴","まつ_グルーアレルギー","まつ_手術歴","まつ_アレルギー","まつ_肌状態","まつ_目の見え方","まつ_デザイン","まつ_ホームケア","まつ_SNS同意","エクステ_グルーアレルギー","エクステ_目元トラブル","エクステ_体調","エクステ_手術歴","エクステ_アレルギー","エクステ_目の見え方","エクステ_デザイン","エクステ_カール","エクステ_SNS同意"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗"],
     "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"]
   };
   var results = [];
@@ -202,7 +226,7 @@ function setupSheet(sheet, name) {
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","初回物販商品","眉_施術歴","眉_セルフケア","眉_手術歴","眉_アレルギー","眉_肌状態","眉_カラー","眉_デザイン","眉_印象","眉_メイク","眉_SNS同意","まつ_施術歴","まつ_グルーアレルギー","まつ_手術歴","まつ_アレルギー","まつ_肌状態","まつ_目の見え方","まつ_デザイン","まつ_ホームケア","まつ_SNS同意","エクステ_グルーアレルギー","エクステ_目元トラブル","エクステ_体調","エクステ_手術歴","エクステ_アレルギー","エクステ_目の見え方","エクステ_デザイン","エクステ_カール","エクステ_SNS同意"],
     "LINE配信ログ": ["ログID","送信日時","電話番号","お名前","LINE_UID","種別","内容","ステータス","エラー"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗"],
     "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"],
     "設定": ["キー","値"],
     "配信スケジュール": ["配信ID","作成日時","配信予定日時","種別","タグ","メッセージ","FlexJSON","ステータス","配信数","クリック数","画像URL"],
@@ -283,7 +307,7 @@ function saveCounseling(data) {
       nextTiming: data.next_timing || ""
     });
     if (msg) {
-      var ok = pushToLine(lineUid, msg);
+      var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(data.store || ""));
       lineSent = ok ? "送信済み" : "送信失敗";
       if (ok) {
         logLine({phone: data.phone || "", name: data.name || "", line_uid: lineUid,
@@ -494,7 +518,7 @@ function checkPreVisitReminders() {
         startTime: formatStartTime(startTime),
         menu: menu
       });
-      var ok = pushToLine(lineUid, msg);
+      var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(store));
       logLine({phone: phone, name: name, line_uid: lineUid,
                type: typeKey, content: msg.substring(0, 80),
                status: ok ? "成功" : "失敗", error: ""});
@@ -537,7 +561,7 @@ function checkPostCheckoutMessages() {
       var msg = buildFollowMessage("お礼", {name: name, store: store, nextMenu: nextMenu, nextTiming: nextTiming});
       if (!msg) continue;
 
-      var ok = pushToLine(lineUid, msg);
+      var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(store));
       logLine({phone: phone, name: name, line_uid: lineUid,
                type: "お礼", content: msg.substring(0, 80),
                status: ok ? "成功" : "失敗", error: ""});
@@ -585,7 +609,7 @@ function checkCancellationFollowup() {
       if (isAlreadySent(phone, typeKey)) continue;
 
       var msg = buildCancellationMessage({name: name, store: store});
-      var ok = pushToLine(lineUid, msg);
+      var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(store));
       logLine({phone: phone, name: name, line_uid: lineUid,
                type: typeKey, content: msg.substring(0, 80),
                status: ok ? "成功" : "失敗", error: ""});
@@ -636,7 +660,7 @@ function checkStepMessages() {
     var msg = buildFollowMessage(msgType, {name: name, store: store, nextMenu: nextMenu, nextTiming: nextTiming});
     if (!msg) continue;
 
-    var ok = pushToLine(lineUid, msg);
+    var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(store));
     logLine({phone: phone, name: name, line_uid: lineUid,
              type: msgType, content: msg.substring(0, 80),
              status: ok ? "成功" : "失敗", error: ""});
@@ -741,6 +765,20 @@ function isAlreadySent(phone, type) {
 
 function pushToLine(lineUid, text) {
   return pushToLineWithToken(lineUid, text, LINE_TOKEN);
+}
+
+// 店舗名からLINEトークンを取得
+function getTokenByStoreName(storeName) {
+  try {
+    if (!storeName) return LINE_TOKEN;
+    var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
+    if (!raw) return LINE_TOKEN;
+    var map = JSON.parse(raw);
+    for (var dest in map) {
+      if (map[dest].store === storeName) return map[dest].token;
+    }
+  } catch(e) {}
+  return LINE_TOKEN;
 }
 
 function pushToLineWithToken(lineUid, text, token) {
@@ -925,15 +963,46 @@ function getLineFriends() {
 function registerFriend(data) {
   var sheet = getSheet("LINE友だち");
   var all = sheet.getDataRange().getValues();
+  var headers = all[0];
+  var storeIdx = headers.indexOf("登録店舗");
   for (var i = 1; i < all.length; i++) {
     if (all[i][0] === data.line_uid) {
       sheet.getRange(i + 1, 2, 1, 3).setValues([[data.phone || all[i][1], data.name || all[i][2], data.display_name || all[i][3]]]);
+      // 店舗名が渡されていて未設定の場合のみ更新
+      if (data.store && storeIdx >= 0 && !all[i][storeIdx]) {
+        sheet.getRange(i + 1, storeIdx + 1).setValue(data.store);
+      }
       return {status: "updated"};
     }
   }
   var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
-  sheet.appendRow([data.line_uid, data.phone || "", data.name || "", data.display_name || "", data.tag || "", data.memo || "", now, ""]);
+  sheet.appendRow([data.line_uid, data.phone || "", data.name || "", data.display_name || "", data.tag || "", data.memo || "", now, "", data.store || ""]);
   return {status: "registered"};
+}
+
+// LINE_UIDから登録店舗のLINEトークンを取得
+function getTokenForLineUid(lineUid) {
+  try {
+    var sheet = getSheet("LINE友だち");
+    var all = sheet.getDataRange().getValues();
+    var headers = all[0];
+    var uidIdx = headers.indexOf("LINE_UID");
+    var storeIdx = headers.indexOf("登録店舗");
+    if (uidIdx < 0 || storeIdx < 0) return LINE_TOKEN;
+    for (var i = 1; i < all.length; i++) {
+      if (all[i][uidIdx] === lineUid) {
+        var storeName = all[i][storeIdx];
+        if (!storeName) return LINE_TOKEN;
+        var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
+        if (!raw) return LINE_TOKEN;
+        var map = JSON.parse(raw);
+        for (var dest in map) {
+          if (map[dest].store === storeName) return map[dest].token;
+        }
+      }
+    }
+  } catch(e) { return LINE_TOKEN; }
+  return LINE_TOKEN;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -942,7 +1011,8 @@ function registerFriend(data) {
 function sendPush(lineUid, message) {
   if (!lineUid || !message) return {error: "line_uid and message required"};
   lineUid = String(lineUid).trim().replace(/^'+|'+$/g, "");
-  var ok = pushToLine(lineUid, message);
+  var token = getTokenForLineUid(lineUid);
+  var ok = pushToLineWithToken(lineUid, message, token);
   if (ok) {
     logLine({phone: "", name: "", line_uid: lineUid,
              type: "個別送信", content: message.substring(0, 80), status: "成功", error: ""});
@@ -1026,10 +1096,11 @@ function checkScheduledBroadcasts() {
 
     for (var k = 0; k < targets.length; k++) {
       try {
+        var storeToken = getTokenForLineUid(targets[k]);
         if (type === "coupon" && flexJson) {
           sendFlex(targets[k], flexJson);
         } else {
-          pushToLine(targets[k], message);
+          pushToLineWithToken(targets[k], message, storeToken);
         }
       } catch(e) { Logger.log(e); }
     }

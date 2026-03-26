@@ -667,6 +667,9 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
       </div>
       <div class="friends-search-row">
         <input class="friends-search-input" id="friendsMgmtSearch" type="text" placeholder="名前・電話番号・タグで絞り込み" oninput="filterFriendsMgmt()">
+        <select id="friendsStoreFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="filterFriendsMgmt()">
+          <option value="">🏪 全店舗</option>
+        </select>
         <select id="friendsTagFilter" style="border:1.5px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;background:#f8f8f8" onchange="filterFriendsMgmt()">
           <option value="">🏷️ タグ絞り込み</option>
         </select>
@@ -1960,11 +1963,16 @@ async function loadLineFriendsMgmt() {
     document.getElementById('kpi-friends-month').textContent  = monthCount;
     document.getElementById('kpi-friends-linked').textContent = linkedCount;
 
-    // タグ一覧を作成してフィルターに反映
+    // 店舗・タグ一覧を作成してフィルターに反映
+    const storeSet = new Set();
     const tagSet = new Set();
     allFriends.forEach(f => {
+      if (f['登録店舗']) storeSet.add(f['登録店舗'].trim());
       if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
     });
+    const storeOptions = ['<option value="">🏪 全店舗</option>',
+      ...[...storeSet].sort().map(s => `<option value="${s}">🏪 ${s}</option>`)].join('');
+    document.getElementById('friendsStoreFilter').innerHTML = storeOptions;
     const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
       ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
     document.getElementById('friendsTagFilter').innerHTML  = tagOptions;
@@ -1982,15 +1990,17 @@ async function loadLineFriendsMgmt() {
 }
 
 function filterFriendsMgmt() {
-  const q   = document.getElementById('friendsMgmtSearch').value.trim().toLowerCase();
-  const tag = document.getElementById('friendsTagFilter').value;
-  let list  = allFriends;
-  if (q)   list = list.filter(f =>
+  const q     = document.getElementById('friendsMgmtSearch').value.trim().toLowerCase();
+  const store = document.getElementById('friendsStoreFilter').value;
+  const tag   = document.getElementById('friendsTagFilter').value;
+  let list    = allFriends;
+  if (q)     list = list.filter(f =>
     (f['お名前']||'').toLowerCase().includes(q) ||
     (f['LINE表示名']||'').toLowerCase().includes(q) ||
     (f['電話番号']||'').includes(q) ||
     (f['タグ']||'').toLowerCase().includes(q));
-  if (tag) list = list.filter(f =>
+  if (store) list = list.filter(f => (f['登録店舗']||'').trim() === store);
+  if (tag)   list = list.filter(f =>
     (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag));
   renderFriendsMgmt(list);
 }
@@ -2005,7 +2015,7 @@ function renderFriendsMgmt(friends) {
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>登録日</th><th>名前</th><th>電話番号</th><th>最終来店</th><th>タグ</th><th>操作</th>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>登録店舗</th><th>最終来店</th><th>タグ</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
@@ -2016,10 +2026,12 @@ function renderFriendsMgmt(friends) {
             const tags      = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#eef2ff;color:#6366f1;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
             const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const storeName = f['登録店舗'] || '―';
             return `<tr>
               <td style="white-space:nowrap">${regDate}</td>
               <td><strong>${name}</strong></td>
               <td>${phone}</td>
+              <td style="white-space:nowrap;font-size:12px">${storeName}</td>
               <td style="white-space:nowrap">${lastVisit}</td>
               <td>${tags || '―'}</td>
               <td style="white-space:nowrap;display:flex;gap:4px">
