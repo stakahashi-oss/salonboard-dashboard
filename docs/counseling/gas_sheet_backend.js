@@ -1,10 +1,53 @@
 var SECRET_KEY = "ssin2026";
 var SALES_SS_ID = "1B2eQ8K4oN7DgvTU3-mWF8ZShfDDVPXM8aU6GuxlWwMI";
 var SALES_SHEET_GID = 50056376;
-var LINE_TOKEN ="E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
+var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
 var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
 
-var COUNSELING_FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseling/";
+var COUNSELING_FORM_URL = "https://salonboard-dashboard.vercel.app/counseling/";
+
+// ══════════════════════════════════════════════════════════
+//  マルチ店舗 LINE トークン管理
+//  PropertiesService に JSON で保存:
+//  キー "STORE_LINE_TOKENS" → {"destination_userId": {"token":"...", "secret":"...", "store":"..."}}
+// ══════════════════════════════════════════════════════════
+function getStoreLineToken(destination) {
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
+    if (!raw) return LINE_TOKEN;
+    var map = JSON.parse(raw);
+    return (map[destination] && map[destination].token) ? map[destination].token : LINE_TOKEN;
+  } catch(e) { return LINE_TOKEN; }
+}
+
+function getStoreNameByDestination(destination) {
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
+    if (!raw) return "";
+    var map = JSON.parse(raw);
+    return (map[destination] && map[destination].store) ? map[destination].store : "";
+  } catch(e) { return ""; }
+}
+
+function saveStoreLineToken(destination, token, secret, storeName) {
+  var props = PropertiesService.getScriptProperties();
+  var raw = props.getProperty("STORE_LINE_TOKENS");
+  var map = raw ? JSON.parse(raw) : {};
+  map[destination] = {token: token, secret: secret, store: storeName};
+  props.setProperty("STORE_LINE_TOKENS", JSON.stringify(map));
+  return {status: "ok", store: storeName};
+}
+
+function getStoreLineTokens() {
+  var raw = PropertiesService.getScriptProperties().getProperty("STORE_LINE_TOKENS");
+  var map = raw ? JSON.parse(raw) : {};
+  // tokenは返さずstore名とdestinationのみ返す（セキュリティ）
+  var result = {};
+  for (var dest in map) {
+    result[dest] = {store: map[dest].store, has_token: !!map[dest].token, has_secret: !!map[dest].secret};
+  }
+  return {stores: result};
+}
 
 // ══════════════════════════════════════════════════════════
 //  エントリポイント
@@ -40,6 +83,7 @@ function doPost(e) {
     if (action === "import_followers")   return resp(importFollowers());
     if (action === "fix_headers")        return resp(fixAllHeaders());
     if (action === "save_auto_tag_rules") return resp(saveAutoTagRules(body.rules));
+    if (action === "save_store_line_token") return resp(saveStoreLineToken(body.destination, body.token, body.secret, body.store_name));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -65,6 +109,7 @@ function doGet(e) {
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
   if (act === "get_step_stats")       return resp(getStepStats());
   if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
+  if (act === "get_store_line_tokens") return resp(getStoreLineTokens());
   if (act === "get_sales")            return resp(getSalesData());
   return resp({error: "unknown action"});
 }
@@ -73,27 +118,34 @@ function doGet(e) {
 //  LINE Webhook（友だち追加）
 // ══════════════════════════════════════════════════════════
 function handleLineWebhook(body) {
+  var destination = body.destination || ""; // LINE Bot の userId（チャネルごとに固有）
+  var token = getStoreLineToken(destination);
+  var storeName = getStoreNameByDestination(destination);
   var events = body.events || [];
   for (var i = 0; i < events.length; i++) {
     var event = events[i];
     if (event.type === "follow") {
       var userId = event.source.userId;
-      sendCounselingLink(userId);
-      registerFriend({line_uid: userId, phone: "", name: ""});
+      sendCounselingLink(userId, token, storeName);
+      registerFriend({line_uid: userId, phone: "", name: "", store: storeName});
+    } else if (event.type === "message" && event.message.type === "text") {
+      var uid = event.source.userId;
+      saveTalk({line_uid: uid, direction: "受信", content: event.message.text});
     }
   }
   return resp({status: "ok"});
 }
 
-function sendCounselingLink(userId) {
+function sendCounselingLink(userId, token, storeName) {
   var formUrl = COUNSELING_FORM_URL + "?uid=" + userId;
+  var storeLabel = storeName || "SSIN STUDIO / most eyes / LUMISS";
   var message = "友だち追加ありがとうございます！\uD83D\uDE0A\n"
-    + "SSIN STUDIO / most eyes / LUMISS です\u2728\n\n"
+    + storeLabel + " です\u2728\n\n"
     + "ご来店前に下記のカウンセリングシートにご記入いただけると\n"
     + "スムーズにご案内できます\uD83D\uDCCB\n\n"
     + "\u25BC カウンセリングシート\n" + formUrl + "\n\n"
     + "ご不明点はこちらのLINE\u3078\u304A\u6C17\u8EFD\u306B\uD83C\uDF38";
-  pushToLine(userId, message);
+  pushToLineWithToken(userId, message, token);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -684,10 +736,14 @@ function isAlreadySent(phone, type) {
 }
 
 function pushToLine(lineUid, text) {
+  return pushToLineWithToken(lineUid, text, LINE_TOKEN);
+}
+
+function pushToLineWithToken(lineUid, text, token) {
   var options = {
     method: "post",
     contentType: "application/json",
-    headers: {Authorization: "Bearer " + LINE_TOKEN},
+    headers: {Authorization: "Bearer " + (token || LINE_TOKEN)},
     payload: JSON.stringify({to: lineUid, messages: [{type: "text", text: text}]}),
     muteHttpExceptions: true
   };
