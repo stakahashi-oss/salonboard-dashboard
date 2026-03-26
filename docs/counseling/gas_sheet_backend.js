@@ -1948,9 +1948,9 @@ function _setupStore(token, secret, storeName) {
 
 function setupFujisawaStore() {
   _setupStore(
-    "SHUyh8f/FE7ZvSfepetFB5RKL9t4QppjCt1ytb0e1qwW/5aU/gbjui6PPtk9NIJ/5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb1AW1sNl/Zv5a5htmHGeEzp+K6cfDADOHNrkNSgzGJkM49PbdgDzCFqoOLOYbqAITQ=",
+    "nnZPLMB+/uCYYXgb53+eWZIRdpLQ+2raDYVB9sRgeYyp4eOjRemM4pMvIbZrMuutUQWPwb6/9HlrZkhoB9/VTGgv3B6BvOmr9WAm/rijNxckFfybOnK2UycxSsF3+FPVItv8S1hFe6YtTRx2w0DhQI9PbdgDzCFqoOLOYbqAITQ=",
     "55d615e016f364f2a4c557bbb1c41ec6",
-    "SSIN STUDIO 藤沢店"
+    "SSIN STUDIO 藤沢"
   );
 }
 

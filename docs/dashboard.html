@@ -1451,7 +1451,7 @@ function filteredRecords() {
   const status = document.getElementById('filterStatus').value;
   const dt     = document.getElementById('filterDate').value;
   return resData.filter(r =>
-    (!store  || r['店舗名']   === store)  &&
+    (!store  || (r['店舗名']||'').replace(/店$/,'').trim() === store.replace(/店$/,'').trim())  &&
     (!status || r['ステータス'] === status) &&
     (!dt     || r['来店日']   === dt)
   );
