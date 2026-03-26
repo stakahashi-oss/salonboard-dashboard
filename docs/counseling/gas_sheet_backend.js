@@ -299,22 +299,11 @@ function saveCounseling(data) {
   var lineUid = data.line_uid || findLineUidByPhone(data.phone || "");
   var lineSent = "未送信";
 
-  if (lineUid) {
-    var msg = buildFollowMessage("お礼", {
-      name: data.name || "お客様",
-      store: data.store || "当店",
-      nextMenu: data.next_menu || "",
-      nextTiming: data.next_timing || ""
-    });
-    if (msg) {
-      var ok = pushToLineWithToken(lineUid, msg, getTokenByStoreName(data.store || ""));
-      lineSent = ok ? "送信済み" : "送信失敗";
-      if (ok) {
-        logLine({phone: data.phone || "", name: data.name || "", line_uid: lineUid,
-                 type: "お礼", content: "カウンセリング保存時自動送信", status: "成功", error: ""});
-      }
-    }
-  }
+  // カウンセリング保存時のLINEお礼自動送信は無効化（手動送信に変更）
+  // if (lineUid) {
+  //   var msg = buildFollowMessage("お礼", { ... });
+  //   if (msg) { pushToLineWithToken(...); }
+  // }
 
   // LINE友だちシートに電話番号・名前を逆引きで更新
   if (lineUid && data.phone) {

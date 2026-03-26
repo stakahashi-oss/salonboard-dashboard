@@ -67,7 +67,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 
 /* ── チップ ── */
 .gf-chip-group { display:flex; flex-wrap:wrap; gap:7px; margin-top:4px; }
-.gf-chip { padding:7px 15px; border:1.5px solid var(--border); border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; background:var(--surface); color:var(--text-sub); user-select:none; }
+.gf-chip { padding:7px 15px; border:1.5px solid var(--border); border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; background:var(--surface); color:var(--text-sub); user-select:none; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
 .gf-chip:hover { border-color:var(--primary-border); color:var(--primary); background:var(--primary-light); }
 .gf-chip.selected { background:var(--primary-light); border-color:var(--primary); color:var(--primary); font-weight:600; }
 
@@ -142,6 +142,11 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 .img-radio-text.selected .gf-radio-circle { border-color:var(--primary); background:var(--primary); }
 .img-radio-text.selected .gf-radio-circle::after { content:''; width:6px; height:6px; background:#fff; border-radius:50%; }
 .img-radio-text.selected .gf-radio-label { color:var(--primary); font-weight:500; }
+/* ── 画像拡大モーダル ── */
+#img-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:9999; align-items:center; justify-content:center; padding:16px; }
+#img-modal.open { display:flex; }
+#img-modal img { max-width:100%; max-height:90vh; border-radius:12px; object-fit:contain; }
+#img-modal-close { position:absolute; top:16px; right:16px; width:36px; height:36px; background:rgba(255,255,255,.2); border:none; border-radius:50%; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 </style>
 </head>
 <body>
@@ -323,7 +328,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
       <!-- 初回限定ホームケア商品 -->
       <div class="q-card">
         <div class="q-label">初回限定ホームケア商品<span class="q-required">*</span><br><span style="font-size:12px;color:#64748b;font-weight:400">ご興味のある商品をお選びください（複数選択可）</span></div>
-        <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/homecare-products2.jpg" alt="ご新規様限定価格" style="width:100%;border-radius:8px;margin-bottom:14px;display:block;">
+        <img src="https://cdn.jsdelivr.net/gh/stakahashi-oss/salonboard-dashboard@main/docs/counseling/images/homecare-products2.jpg" alt="ご新規様限定価格" style="width:100%;border-radius:8px;margin-bottom:14px;display:block;cursor:zoom-in;" onclick="openImgModal(this.src)" title="タップで拡大">
         <div class="gf-check-group" id="f_homecare_product">
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">ヴァージンラッシュセラム ¥2,000</div></div>
           <div class="gf-check-item" onclick="toggleCheck(this)"><div class="gf-check-box"></div><div class="gf-check-label">フェニックス カールアップコーティング ¥3,300</div></div>
@@ -1207,6 +1212,22 @@ showScreen = function(id) {
   }
   showScreen("screen-form");
 }
+
+function openImgModal(src) {
+  var modal = document.getElementById("img-modal");
+  document.getElementById("img-modal-img").src = src;
+  modal.classList.add("open");
+}
+function closeImgModal() {
+  document.getElementById("img-modal").classList.remove("open");
+}
 </script>
+
+<!-- 画像拡大モーダル -->
+<div id="img-modal" onclick="closeImgModal()">
+  <button id="img-modal-close" onclick="closeImgModal()">✕</button>
+  <img id="img-modal-img" src="" alt="拡大画像">
+</div>
+
 </body>
 </html>
