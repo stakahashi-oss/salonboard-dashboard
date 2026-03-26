@@ -1958,7 +1958,7 @@ function setupTakadanobabaStore() {
   _setupStore(
     "MVLap76hu9mrQTHbhuLKT+w9jCU25lZRbzFaBbtAklDn3/vSsnh+xsRChpzAvfMgYKd4aJTRSLkCIImQqTQnBr0XjQenq2IKF8iRkDpucUrK69ri1JGn7H2W7dIZYmAg4GG10QDvB+7/GydZUL3WoY9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "SSIN/LUMISS 高田馬場"
+    "SSIN STUDIO 高田馬場"
   );
 }
 
@@ -1966,7 +1966,7 @@ function setupShimokitazawaStore() {
   _setupStore(
     "EyMClB8B2rbJhVYmUfDfmjd6o6ZsaddT+nP7fRSEqMmiCZHjuQ7s/Lst7jKdw/1U3z7ylGceebuY0ktgdXp+bM47d4adWcf0udPjj+0HhqTK69ri1JGn7H2W7dIZYmAgO7CYgljgXs02i21FKEF/ZY9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "眉毛/まつげパーマ専門 下北沢店"
+    "most eyes 下北沢"
   );
 }
 
@@ -1982,7 +1982,7 @@ function setupKawasakiStore() {
   _setupStore(
     "+i9FbFho9ZnFDEpgy3Fl6ZDyfPt7PsSyEXbJp684F9YPO88he07vsRrEOFc2PN0tJGnY2/g9YosT3tauPcH7uxjexpjA0rC2kysC8Z/XPgPK69ri1JGn7H2W7dIZYmAgsIYP/T9uM4oGwJJWcE4zbI9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "眉毛&まつげパーマ専門 川崎店"
+    "most eyes 川崎"
   );
 }
 
@@ -1998,7 +1998,7 @@ function setupFutakotamagawaStore() {
   _setupStore(
     "Pu2laIsMfibU1Fum9uSlXHmJKV6i1bMOfu3yz9AkA10rStT/FZwhqaOlqkgGpZi/FPhd3QpWjlMLNfTz/8zjLhV1Xuv1i+/OSQgdemOCAxGEAP/dD+UTFGMXOarFKI/ML0NQGaoeqBazf/D1kGpKIo9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "SSIN/LUMISS 二子玉川"
+    "SSIN STUDIO 二子玉川"
   );
 }
 
@@ -2006,7 +2006,7 @@ function setupSapporoStore() {
   _setupStore(
     "cHykOcsjDB8Lyen6Gzm6vPosiC3LbIW6Pibzl7EnqY+UxCdmzF6QMRBemYQuDZCIXxIlLpv9vv/U8rhnOTmtVqj8wet92Mzdj0ZxtLrL8+iEAP/dD+UTFGMXOarFKI/MDVLUWomzkFQ+f4uvHZIa5Y9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "SSIN/LUMISS 札幌"
+    "SSIN STUDIO 札幌"
   );
 }
 
@@ -2038,7 +2038,7 @@ function setupSsinTachikawa() {
   _setupStore(
     "MHXppEe/uAEq9NUfQhn0+CEsa7MVP4/yCfFKtICtj1vNx78waFUIWNcReGeVfyq0n9uFHpg2fhy6W78rAVIakabDVBIsY8TykQysHNtH/MWEAP/dD+UTFGMXOarFKI/MKsZRp3bcxqCr6ReFxLvvqI9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "SSIN STUDIO 立川店"
+    "SSIN STUDIO 立川"
   );
 }
 
@@ -2046,7 +2046,7 @@ function setupTokorozawaStore() {
   _setupStore(
     "nwpQPE6lcKEOBaI8DIgBfVAs7Yi6ydpYSxdVM5eiRmHMoV/ZRMgNCjUVJElZwtHP5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb0Axkin0Zrbxa0Kw0NBUw+diTRrrlxq89x6fQyh99UWhI9PbdgDzCFqoOLOYbqAITQ=",
     "",
-    "所沢店"
+    "most eyes 所沢"
   );
 }
 
