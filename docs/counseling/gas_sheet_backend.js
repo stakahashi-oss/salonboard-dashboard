@@ -1928,10 +1928,10 @@ function getSalesData() {
 // ══════════════════════════════════════════════════════════
 //  店舗別LINE初期セットアップ（GASエディタから手動実行）
 // ══════════════════════════════════════════════════════════
-function setupFujisawaStore() {
-  var token = "SHUyh8f/FE7ZvSfepetFB5RKL9t4QppjCt1ytb0e1qwW/5aU/gbjui6PPtk9NIJ/5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb1AW1sNl/Zv5a5htmHGeEzp+K6cfDADOHNrkNSgzGJkM49PbdgDzCFqoOLOYbqAITQ=";
-  var secret = "55d615e016f364f2a4c557bbb1c41ec6";
-  var storeName = "SSIN STUDIO 藤沢店";
+// ══════════════════════════════════════════════════════════
+//  店舗別LINEセットアップ関数（各店舗を連携するときに1回だけ実行）
+// ══════════════════════════════════════════════════════════
+function _setupStore(token, secret, storeName) {
   var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/info", {
     headers: {Authorization: "Bearer " + token},
     muteHttpExceptions: true
@@ -1940,10 +1940,114 @@ function setupFujisawaStore() {
   Logger.log("Bot userId: " + info.userId);
   if (info.userId) {
     saveStoreLineToken(info.userId, token, secret, storeName);
-    Logger.log("✅ 藤沢店の登録完了: " + info.userId);
+    Logger.log("✅ " + storeName + "の登録完了: " + info.userId);
   } else {
     Logger.log("❌ エラー: " + res.getContentText());
   }
+}
+
+function setupFujisawaStore() {
+  _setupStore(
+    "SHUyh8f/FE7ZvSfepetFB5RKL9t4QppjCt1ytb0e1qwW/5aU/gbjui6PPtk9NIJ/5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb1AW1sNl/Zv5a5htmHGeEzp+K6cfDADOHNrkNSgzGJkM49PbdgDzCFqoOLOYbqAITQ=",
+    "55d615e016f364f2a4c557bbb1c41ec6",
+    "SSIN STUDIO 藤沢店"
+  );
+}
+
+function setupTakadanobabaStore() {
+  _setupStore(
+    "MVLap76hu9mrQTHbhuLKT+w9jCU25lZRbzFaBbtAklDn3/vSsnh+xsRChpzAvfMgYKd4aJTRSLkCIImQqTQnBr0XjQenq2IKF8iRkDpucUrK69ri1JGn7H2W7dIZYmAg4GG10QDvB+7/GydZUL3WoY9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN/LUMISS 高田馬場"
+  );
+}
+
+function setupShimokitazawaStore() {
+  _setupStore(
+    "EyMClB8B2rbJhVYmUfDfmjd6o6ZsaddT+nP7fRSEqMmiCZHjuQ7s/Lst7jKdw/1U3z7ylGceebuY0ktgdXp+bM47d4adWcf0udPjj+0HhqTK69ri1JGn7H2W7dIZYmAgO7CYgljgXs02i21FKEF/ZY9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "眉毛/まつげパーマ専門 下北沢店"
+  );
+}
+
+function setupMosteyesTachikawa() {
+  _setupStore(
+    "NO6q3e8uT8kFQzGm8FCvi/8KwAIJPiD7wB8HmV8nVLWOs3TFpT4odyHgbOt2STsGlWjK4cWYELbKNHVSSDS7LaUwH6eLUfxlUe8RQt9szDrK69ri1JGn7H2W7dIZYmAgRrD/+AvtWp/DQsLI3VUrwI9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "most eyes 立川"
+  );
+}
+
+function setupKawasakiStore() {
+  _setupStore(
+    "+i9FbFho9ZnFDEpgy3Fl6ZDyfPt7PsSyEXbJp684F9YPO88he07vsRrEOFc2PN0tJGnY2/g9YosT3tauPcH7uxjexpjA0rC2kysC8Z/XPgPK69ri1JGn7H2W7dIZYmAgsIYP/T9uM4oGwJJWcE4zbI9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "眉毛&まつげパーマ専門 川崎店"
+  );
+}
+
+function setupMosteyesYokohama() {
+  _setupStore(
+    "Q6s8woXd8WYjbqsrpi/rPP4Zng3llVvkB57sjXCdmXPsdDiE0nQdKbP3wik8+zd7nwErxeDTNktVCruMoI+nimmVNtMwYL5KyTAkov/3nlXK69ri1JGn7H2W7dIZYmAgd4UvWP6BLkFACTavDHrut49PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "most eyes 横浜"
+  );
+}
+
+function setupFutakotamagawaStore() {
+  _setupStore(
+    "Pu2laIsMfibU1Fum9uSlXHmJKV6i1bMOfu3yz9AkA10rStT/FZwhqaOlqkgGpZi/FPhd3QpWjlMLNfTz/8zjLhV1Xuv1i+/OSQgdemOCAxGEAP/dD+UTFGMXOarFKI/ML0NQGaoeqBazf/D1kGpKIo9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN/LUMISS 二子玉川"
+  );
+}
+
+function setupSapporoStore() {
+  _setupStore(
+    "cHykOcsjDB8Lyen6Gzm6vPosiC3LbIW6Pibzl7EnqY+UxCdmzF6QMRBemYQuDZCIXxIlLpv9vv/U8rhnOTmtVqj8wet92Mzdj0ZxtLrL8+iEAP/dD+UTFGMXOarFKI/MDVLUWomzkFQ+f4uvHZIa5Y9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN/LUMISS 札幌"
+  );
+}
+
+function setupGifuStore() {
+  _setupStore(
+    "M8rBbZFe63ynjAWpc3Oe3i9gN8v7RLckxNylLyIHkcm+ts1dAs9inyMryUlgOu+7xISCUNY1HLbGU5gCeKAN1LZzLRhjDvUN3GjWON3PnbqEAP/dD+UTFGMXOarFKI/MpgLn20lMnXA+zeIfforD4o9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN STUDIO 岐阜"
+  );
+}
+
+function setupNakanoStore() {
+  _setupStore(
+    "GLqMAba/U/eeyNXbLApYq9BmcvYoaY3GB9piGUJnmk+dctwQIk73mzhjxPp6ITTq6WAtHOr1/mKALZKQSrIeh9ToirQxqvwc0PKKB+188xqEAP/dD+UTFGMXOarFKI/MJZ/fwx+pLkolS23GGklOyo9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN STUDIO 中野"
+  );
+}
+
+function setupKumamotoStore() {
+  _setupStore(
+    "U5TUANiCZucFTPOYAXLj12u485+dtdhzin7aDz7pPjL+mHWoc7sPdDlC3CbONUS/tBgBHi3orWJLAZUCez+7/9M6VaqOd8QXQu0Y51Hdv7aEAP/dD+UTFGMXOarFKI/MoWYmfuvw8Co71CtMJHU+oI9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN STUDIO 熊本"
+  );
+}
+
+function setupSsinTachikawa() {
+  _setupStore(
+    "MHXppEe/uAEq9NUfQhn0+CEsa7MVP4/yCfFKtICtj1vNx78waFUIWNcReGeVfyq0n9uFHpg2fhy6W78rAVIakabDVBIsY8TykQysHNtH/MWEAP/dD+UTFGMXOarFKI/MKsZRp3bcxqCr6ReFxLvvqI9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "SSIN STUDIO 立川店"
+  );
+}
+
+function setupTokorozawaStore() {
+  _setupStore(
+    "nwpQPE6lcKEOBaI8DIgBfVAs7Yi6ydpYSxdVM5eiRmHMoV/ZRMgNCjUVJElZwtHP5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb0Axkin0Zrbxa0Kw0NBUw+diTRrrlxq89x6fQyh99UWhI9PbdgDzCFqoOLOYbqAITQ=",
+    "",
+    "所沢店"
+  );
 }
 
 function resp(data) {
