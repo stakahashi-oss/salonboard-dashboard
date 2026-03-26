@@ -1,8 +1,11 @@
 var SECRET_KEY = "ssin2026";
 var SALES_SS_ID = "1B2eQ8K4oN7DgvTU3-mWF8ZShfDDVPXM8aU6GuxlWwMI";
 var SALES_SHEET_GID = 50056376;
-var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
+var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1o/w1cDnyilFU=";
 var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
+// 新規追加シート（売上情報 gid=670101152）
+var NEW_SALES_SS_ID  = "18M2qZjIUUNWG7NWdnJX5VcguggmNFox8espJSuG6Qv0";
+var NEW_SALES_GID    = 670101152;
 
 var COUNSELING_FORM_URL = "https://salonboard-dashboard.vercel.app/counseling/";
 
@@ -105,6 +108,7 @@ function doGet(e) {
   if (act === "get_customer_profile") return resp(getCustomerProfile(e.parameter.line_uid));
   if (act === "get_customer_profile_ext") return resp(getCustomerProfileExt(e.parameter.line_uid));
   if (act === "get_visits_by_phone")  return resp(getVisitsByPhone(e.parameter.phone));
+  if (act === "get_sales_by_customer") return resp(getSalesByCustomer(e.parameter.name, e.parameter.store));
   if (act === "get_tags")             return resp(getTags());
   if (act === "get_conversions")      return resp(getConversions(e.parameter.broadcast_id));
   if (act === "get_broadcast_stats")  return resp(getBroadcastStats());
@@ -2144,4 +2148,179 @@ function resp(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ══════════════════════════════════════════════════════════
+//  売上データ照合（店舗名＋顧客名で一致）
+//  ※売上CSVに電話番号なし → 店舗名＋氏名漢字でマッチング
+// ══════════════════════════════════════════════════════════
+function getSalesByCustomer(customerName, storeName) {
+  if (!customerName) return {error: "name required"};
+  try {
+    var ss = SpreadsheetApp.openById(NEW_SALES_SS_ID);
+    var sheets = ss.getSheets();
+    var sheet = null;
+    for (var i = 0; i < sheets.length; i++) {
+      if (sheets[i].getSheetId() === NEW_SALES_GID) { sheet = sheets[i]; break; }
+    }
+    if (!sheet) sheet = sheets[0];
+    var data = sheet.getDataRange().getValues();
+
+    var normName  = String(customerName).replace(/\s/g, "");
+    var normStore = storeName ? String(storeName).replace(/\s/g, "") : "";
+
+    var records = [];
+    for (var r = 0; r < data.length; r++) {
+      var row = data[r];
+      var rowName  = String(row[16] || "").replace(/\s/g, "");
+      var rowStore = String(row[1]  || "").replace(/\s/g, "");
+      if (rowName !== normName) continue;
+      if (normStore && rowStore.indexOf(normStore) === -1 && normStore.indexOf(rowStore) === -1) continue;
+      var dateStr = String(row[2] || "");
+      records.push({
+        date:   dateStr.length === 8 ? dateStr.slice(0,4)+"/"+dateStr.slice(4,6)+"/"+dateStr.slice(6,8) : dateStr,
+        store:  String(row[1] || ""),
+        menu:   String(row[9] || ""),
+        amount: Number(row[13]) || 0,
+        staff:  String(row[14] || ""),
+        new_return: String(row[21] || "")
+      });
+    }
+    records.sort(function(a, b) { return b.date.localeCompare(a.date); });
+
+    var menuCount = {};
+    records.forEach(function(rec) {
+      if (rec.menu) menuCount[rec.menu] = (menuCount[rec.menu] || 0) + 1;
+    });
+    var favoriteMenu = "";
+    var maxCnt = 0;
+    for (var mk in menuCount) { if (menuCount[mk] > maxCnt) { maxCnt = menuCount[mk]; favoriteMenu = mk; } }
+
+    var totalAmount = records.reduce(function(s, rec) { return s + rec.amount; }, 0);
+
+    return {
+      visit_count:   records.length,
+      last_visit:    records.length ? records[0].date : "",
+      favorite_menu: favoriteMenu,
+      total_amount:  totalAmount,
+      records:       records.slice(0, 20)
+    };
+  } catch(e) {
+    return {error: String(e)};
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  毎日自動タグ付け（GASトリガーで22:30実行）
+//  全LINE友だちの予約・売上データを集計してタグを自動更新
+// ══════════════════════════════════════════════════════════
+function runDailyAutoTag() {
+  var friendSheet = getSheet("LINE友だち");
+  var friends = friendSheet.getDataRange().getValues();
+  var fHeaders = friends[0];
+  var colPhone   = fHeaders.indexOf("電話番号");   if (colPhone   < 0) colPhone   = 1;
+  var colName    = fHeaders.indexOf("お名前");     if (colName    < 0) colName    = 2;
+  var colTag     = fHeaders.indexOf("タグ");       if (colTag     < 0) colTag     = 4;
+  var colStore   = fHeaders.indexOf("登録店舗");   if (colStore   < 0) colStore   = 8;
+
+  var counselSheet = getSheet("カウンセリング記録");
+  var counselData  = counselSheet.getDataRange().getValues();
+  var cHeaders     = counselData[0];
+  var cColPhone    = cHeaders.indexOf("電話番号");
+  var cColHomecare = cHeaders.indexOf("初回物販商品");
+  var cColInterest = cHeaders.indexOf("興味メニュー");
+
+  // 電話番号→カウンセリングデータのマップ
+  var counselMap = {};
+  for (var ci = 1; ci < counselData.length; ci++) {
+    var cp = normalizePhone(String(counselData[ci][cColPhone] || ""));
+    if (!cp) continue;
+    if (!counselMap[cp]) counselMap[cp] = {homecare: "", interest: ""};
+    if (!counselMap[cp].homecare && cColHomecare >= 0) counselMap[cp].homecare = String(counselData[ci][cColHomecare] || "");
+    if (!counselMap[cp].interest && cColInterest >= 0) counselMap[cp].interest = String(counselData[ci][cColInterest] || "");
+  }
+
+  var rdata = getReservationData();
+  var now   = new Date();
+
+  for (var fi = 1; fi < friends.length; fi++) {
+    var phone = normalizePhone(String(friends[fi][colPhone] || ""));
+    if (!phone) continue;
+
+    // 予約データから来店履歴を集計
+    var visits = [];
+    for (var ri = 1; ri < rdata.length; ri++) {
+      var rPhone = normalizePhone(String(rdata[ri][14] || ""));
+      if (rPhone !== phone) continue;
+      var status = String(rdata[ri][1] || "");
+      if (status === "キャンセル（顧客）" || status === "キャンセル（サロン）" || status === "無断キャンセル") continue;
+      visits.push({date: String(rdata[ri][6] || ""), menu: String(rdata[ri][11] || "")});
+    }
+    visits.sort(function(a, b) { return b.date.localeCompare(a.date); });
+
+    var visitCount = visits.length;
+    var lastVisitDate = visits.length ? visits[0].date : "";
+    var daysSinceLast = 999;
+    if (lastVisitDate && lastVisitDate.length >= 8) {
+      var lv = new Date(
+        parseInt(lastVisitDate.slice(0,4)),
+        parseInt(lastVisitDate.slice(4,6)) - 1,
+        parseInt(lastVisitDate.slice(6,8))
+      );
+      daysSinceLast = Math.floor((now - lv) / 86400000);
+    }
+
+    // メニュー分類
+    var eyebrowCount = 0, lashCount = 0;
+    visits.forEach(function(v) {
+      var m = v.menu || "";
+      if (m.indexOf("眉") !== -1 || m.indexOf("アイブロウ") !== -1 || m.indexOf("Wax") !== -1 || m.indexOf("WAX") !== -1) eyebrowCount++;
+      if (m.indexOf("まつ") !== -1 || m.indexOf("パリジェンヌ") !== -1 || m.indexOf("エクステ") !== -1 || m.indexOf("ラッシュ") !== -1) lashCount++;
+    });
+
+    // カウンセリングデータ
+    var counsel = counselMap[phone] || {};
+
+    // タグ判定
+    var tags = [];
+    if (visitCount === 0) {
+      // 予約あるがまだ未来店の場合は何もしない
+    } else if (visitCount === 1) {
+      tags.push("新規");
+    } else if (visitCount <= 5) {
+      tags.push("リピーター");
+    } else {
+      tags.push("VIP");
+    }
+
+    if (daysSinceLast >= 90) tags.push("休眠");
+    else if (daysSinceLast >= 60) tags.push("失客リスク");
+
+    if (visitCount > 0) {
+      var eyebrowRatio = eyebrowCount / visitCount;
+      var lashRatio    = lashCount    / visitCount;
+      if (eyebrowRatio >= 0.7) tags.push("眉毛メイン");
+      if (lashRatio    >= 0.7) tags.push("まつ毛メイン");
+    }
+
+    if (counsel.interest && counsel.interest.indexOf("、") !== -1) tags.push("セット狙い");
+    if (counsel.homecare && counsel.homecare !== "今回は購入しない" && counsel.homecare !== "") tags.push("物販購入済み");
+    else if (visitCount >= 1 && (!counsel.homecare || counsel.homecare === "今回は購入しない")) tags.push("未物販");
+
+    if (tags.length === 0) continue;
+
+    // 既存タグに追記（重複除去）
+    var existing = String(friends[fi][colTag] || "");
+    var existingArr = existing ? existing.split(",").map(function(t){ return t.trim(); }).filter(function(t){ return t; }) : [];
+    // 来店ステータス系タグは上書き
+    var statusTags = ["新規","リピーター","VIP"];
+    existingArr = existingArr.filter(function(t){ return statusTags.indexOf(t) === -1; });
+    tags.forEach(function(t) {
+      if (existingArr.indexOf(t) === -1) existingArr.push(t);
+    });
+    friendSheet.getRange(fi + 1, colTag + 1).setValue(existingArr.join(", "));
+  }
+
+  Logger.log("runDailyAutoTag 完了: " + (friends.length - 1) + "件処理");
+  return {status: "ok", processed: friends.length - 1};
 }
