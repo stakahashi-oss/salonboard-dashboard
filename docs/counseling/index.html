@@ -210,6 +210,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
       <div class="form-header-banner"></div>
       <div class="form-header-body">
         <div class="form-title" id="formHeaderTitle">カウンセリングシート</div>
+        <div id="formHeaderStore" style="font-size:13px;font-weight:600;color:var(--primary);margin-bottom:4px;display:none"></div>
         <div class="form-required-note">* 必須項目</div>
       </div>
     </div>
@@ -1193,6 +1194,11 @@ showScreen = function(id) {
     currentCustomer = { line_uid: LINE_UID_FROM_URL, visit_date: today, store: STORE_FROM_URL };
   } else {
     currentCustomer = { visit_date: today, store: STORE_FROM_URL };
+  }
+  if (STORE_FROM_URL) {
+    var storeEl = document.getElementById("formHeaderStore");
+    if (storeEl) { storeEl.textContent = "🏪 " + STORE_FROM_URL; storeEl.style.display = "block"; }
+    document.title = STORE_FROM_URL + " カウンセリングシート";
   }
   showScreen("screen-form");
 }

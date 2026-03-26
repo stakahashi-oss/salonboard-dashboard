@@ -118,14 +118,17 @@ function doGet(e) {
 //  LINE Webhook（友だち追加）
 // ══════════════════════════════════════════════════════════
 function handleLineWebhook(body) {
-  var destination = body.destination || ""; // LINE Bot の userId（チャネルごとに固有）
+  var destination = body.destination || "";
   var token = getStoreLineToken(destination);
   var storeName = getStoreNameByDestination(destination);
+  Logger.log("[Webhook] destination=" + destination + " store=" + storeName + " tokenFound=" + (token !== LINE_TOKEN));
   var events = body.events || [];
   for (var i = 0; i < events.length; i++) {
     var event = events[i];
+    Logger.log("[Webhook] eventType=" + event.type);
     if (event.type === "follow") {
       var userId = event.source.userId;
+      Logger.log("[Webhook] follow userId=" + userId);
       sendCounselingLink(userId, token, storeName);
       registerFriend({line_uid: userId, phone: "", name: "", store: storeName});
     } else if (event.type === "message" && event.message.type === "text") {
@@ -137,7 +140,8 @@ function handleLineWebhook(body) {
 }
 
 function sendCounselingLink(userId, token, storeName) {
-  var formUrl = COUNSELING_FORM_URL + "?uid=" + userId;
+  var storeParam = storeName ? "&store=" + encodeURIComponent(storeName) : "";
+  var formUrl = COUNSELING_FORM_URL + "?uid=" + userId + storeParam;
   var storeLabel = storeName || "SSIN STUDIO / most eyes / LUMISS";
   var message = "友だち追加ありがとうございます！\uD83D\uDE0A\n"
     + storeLabel + " です\u2728\n\n"
@@ -740,22 +744,22 @@ function pushToLine(lineUid, text) {
 }
 
 function pushToLineWithToken(lineUid, text, token) {
+  var useToken = token || LINE_TOKEN;
+  Logger.log("[pushToLine] to=" + lineUid + " tokenPrefix=" + useToken.substring(0, 10));
   var options = {
     method: "post",
     contentType: "application/json",
-    headers: {Authorization: "Bearer " + (token || LINE_TOKEN)},
+    headers: {Authorization: "Bearer " + useToken},
     payload: JSON.stringify({to: lineUid, messages: [{type: "text", text: text}]}),
     muteHttpExceptions: true
   };
   try {
     var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
     var code = res.getResponseCode();
-    if (code !== 200) {
-      Logger.log("LINE API error: " + code + " " + res.getContentText());
-    }
+    Logger.log("[pushToLine] responseCode=" + code + " body=" + res.getContentText().substring(0, 200));
     return code === 200;
   } catch(e) {
-    Logger.log("pushToLine exception: " + e);
+    Logger.log("[pushToLine] exception: " + e);
     return false;
   }
 }
@@ -1847,6 +1851,27 @@ function getSalesData() {
     };
   } catch(e) {
     return {error: e.toString(), stores: {}, meta: {}};
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  店舗別LINE初期セットアップ（GASエディタから手動実行）
+// ══════════════════════════════════════════════════════════
+function setupFujisawaStore() {
+  var token = "SHUyh8f/FE7ZvSfepetFB5RKL9t4QppjCt1ytb0e1qwW/5aU/gbjui6PPtk9NIJ/5ogy8aYXCxwx1b7M76nEA+ifPR4UyGPXAi9JMyVaWb1AW1sNl/Zv5a5htmHGeEzp+K6cfDADOHNrkNSgzGJkM49PbdgDzCFqoOLOYbqAITQ=";
+  var secret = "55d615e016f364f2a4c557bbb1c41ec6";
+  var storeName = "SSIN STUDIO 藤沢店";
+  var res = UrlFetchApp.fetch("https://api.line.me/v2/bot/info", {
+    headers: {Authorization: "Bearer " + token},
+    muteHttpExceptions: true
+  });
+  var info = JSON.parse(res.getContentText());
+  Logger.log("Bot userId: " + info.userId);
+  if (info.userId) {
+    saveStoreLineToken(info.userId, token, secret, storeName);
+    Logger.log("✅ 藤沢店の登録完了: " + info.userId);
+  } else {
+    Logger.log("❌ エラー: " + res.getContentText());
   }
 }
 
