@@ -87,6 +87,9 @@ function doPost(e) {
     if (action === "fix_headers")        return resp(fixAllHeaders());
     if (action === "save_auto_tag_rules") return resp(saveAutoTagRules(body.rules));
     if (action === "save_store_line_token") return resp(saveStoreLineToken(body.destination, body.token, body.secret, body.store_name));
+    if (action === "run_auto_tag")          return resp(runAutoTag());
+    if (action === "update_friend_memo")    return resp(updateFriendMemo(body.line_uid, body.memo));
+    if (action === "save_customer_form")    return resp(saveCustomerForm(body.data));
     return resp({error: "unknown action"});
   } catch(err) {
     return resp({error: err.toString()});
@@ -2142,6 +2145,133 @@ function setupTokorozawaStore() {
     "",
     "most eyes 所沢"
   );
+}
+
+function saveCustomerForm(data) {
+  var sheet = getSheet("顧客アンケート");
+  var now = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
+  var id = "Q" + new Date().getTime();
+
+  var lineUid = "";
+  if (data.phone) {
+    lineUid = findLineUidByPhone(data.phone) || "";
+  }
+
+  var hpbLinked = "未確認";
+  if (data.phone) {
+    try {
+      var resData = getReservationData();
+      var phoneNorm = (data.phone || "").replace(/[-\s]/g, "");
+      for (var i = 1; i < resData.length; i++) {
+        var rowPhone = (resData[i][5] || "").toString().replace(/[-\s]/g, "");
+        if (rowPhone === phoneNorm) { hpbLinked = "連携済み"; break; }
+      }
+      if (hpbLinked === "未確認") hpbLinked = "未連携";
+    } catch(e) { hpbLinked = "確認失敗"; }
+  }
+
+  sheet.appendRow([
+    id, now,
+    data.name || "", data.phone || "", data.store || "",
+    data.birth_month || "", data.menu || "", data.next_menu || "",
+    data.ext_type || "", data.cycle || "", data.current_state || "",
+    data.job || "", data.priority || "", data.home_care || "",
+    data.purchase || "", data.line_pref || "", data.line_freq || "",
+    lineUid, hpbLinked, now
+  ]);
+
+  if (lineUid && (data.name || data.phone)) {
+    var friendSheet = getSheet("LINE友だち");
+    var friendData = friendSheet.getDataRange().getValues();
+    var fHeaders = friendData[0];
+    var colPhone = fHeaders.indexOf("電話番号"); if (colPhone < 0) colPhone = 1;
+    var colName  = fHeaders.indexOf("お名前");   if (colName  < 0) colName  = 2;
+    for (var fi = 1; fi < friendData.length; fi++) {
+      if (friendData[fi][0] === lineUid) {
+        if (data.phone && !friendData[fi][colPhone])
+          friendSheet.getRange(fi + 1, colPhone + 1).setValue(data.phone);
+        if (data.name && !friendData[fi][colName])
+          friendSheet.getRange(fi + 1, colName + 1).setValue(data.name);
+        break;
+      }
+    }
+  }
+
+  return {status: "ok", id: id, line_uid: lineUid, hpb_linked: hpbLinked};
+}
+
+function updateFriendMemo(lineUid, memo) {
+  if (!lineUid) return {error: "line_uid required"};
+  var sheet = getSheet("LINE友だち");
+  var data  = sheet.getDataRange().getValues();
+  var fH    = data[0];
+  var memoIdx = fH.indexOf("メモ"); if (memoIdx < 0) memoIdx = 5;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === lineUid) {
+      sheet.getRange(i + 1, memoIdx + 1).setValue(memo || "");
+      return {status: "ok"};
+    }
+  }
+  return {error: "friend not found"};
+}
+
+function runAutoTag() {
+  var friendSheet = getSheet("LINE友だち");
+  var friends = friendSheet.getDataRange().getValues();
+  if (friends.length <= 1) return {status: "ok", updated: 0};
+
+  var fH        = friends[0];
+  var phoneIdx  = fH.indexOf("電話番号");   if (phoneIdx  < 0) phoneIdx  = 1;
+  var tagIdx    = fH.indexOf("タグ");       if (tagIdx    < 0) tagIdx    = 4;
+  var regAtIdx  = fH.indexOf("登録日時");   if (regAtIdx  < 0) regAtIdx  = 6;
+  var lastVIdx  = fH.indexOf("最終来店日"); if (lastVIdx  < 0) lastVIdx  = 7;
+
+  var visitMap = {};
+  var todayStr = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyyMMdd");
+  try {
+    var rdata = getReservationData();
+    for (var r = 1; r < rdata.length; r++) {
+      var row    = rdata[r];
+      var ph     = normalizePhone(String(row[14]));
+      var st     = String(row[1]);
+      var vd     = String(row[6]);
+      if (!ph) continue;
+      if (!visitMap[ph]) visitMap[ph] = {completed: 0, lastVisit: "", upcoming: 0};
+      if (st === "会計済み") {
+        visitMap[ph].completed++;
+        var vdFmt = vd.length === 8 ? vd.substring(0,4)+"-"+vd.substring(4,6)+"-"+vd.substring(6,8) : "";
+        if (vdFmt && vdFmt > visitMap[ph].lastVisit) visitMap[ph].lastVisit = vdFmt;
+      }
+      if (vd >= todayStr && st.indexOf("キャンセル") === -1) visitMap[ph].upcoming++;
+    }
+  } catch(e) {
+    Logger.log("runAutoTag error: " + e);
+  }
+
+  var now     = new Date();
+  var updated = 0;
+  for (var i = 1; i < friends.length; i++) {
+    var phone = normalizePhone(String(friends[i][phoneIdx] || ""));
+    var vi    = phone ? (visitMap[phone] || {completed:0, lastVisit:"", upcoming:0}) : {completed:0, lastVisit:"", upcoming:0};
+    var tags  = [];
+    if (vi.completed === 0 && vi.upcoming > 0) tags.push("未来店");
+    if (vi.completed >= 1 && vi.completed < 3) tags.push("リピーター予備軍");
+    if (vi.completed >= 3) tags.push("常連");
+    if (vi.lastVisit) {
+      var lastDate = new Date(vi.lastVisit);
+      var diffDays = Math.floor((now - lastDate) / 86400000);
+      if (diffDays > 60)  tags.push("休眠60日");
+      if (diffDays > 90)  tags.push("休眠90日");
+      if (diffDays > 180) tags.push("休眠180日");
+    }
+    if (vi.upcoming > 0) tags.push("予約済み");
+    var newTagStr = tags.join(",");
+    if (newTagStr !== String(friends[i][tagIdx] || "")) {
+      friendSheet.getRange(i + 1, tagIdx + 1).setValue(newTagStr);
+      updated++;
+    }
+  }
+  return {status: "ok", updated: updated};
 }
 
 function resp(data) {
