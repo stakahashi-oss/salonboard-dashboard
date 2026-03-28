@@ -454,7 +454,9 @@ function getCounselingLatestByPhone(phone) {
 }
 
 function normalizePhone(phone) {
-  return String(phone).replace(/-/g, "");
+  // ハイフン・スペース除去 → 先頭の0も除去して末尾10桁で統一比較
+  var s = String(phone).replace(/[-\s]/g, "").replace(/^0+/, "");
+  return s;
 }
 
 function formatVisitDate(yyyymmdd) {
