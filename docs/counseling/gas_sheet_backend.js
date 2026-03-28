@@ -2370,28 +2370,52 @@ function getSalesByCustomer(customerName, storeName) {
     var normName  = String(customerName).replace(/\s/g, "");
     var normStore = storeName ? String(storeName).replace(/\s/g, "") : "";
 
-    var records = [];
+    // 予約番号(col4)でグループ化して1来店=1件にまとめる
+    var visitMap = {};
     for (var r = 0; r < data.length; r++) {
       var row = data[r];
       var rowName  = String(row[16] || "").replace(/\s/g, "");
       var rowStore = String(row[1]  || "").replace(/\s/g, "");
       if (rowName !== normName) continue;
       if (normStore && rowStore.indexOf(normStore) === -1 && normStore.indexOf(rowStore) === -1) continue;
+      var rbKey   = String(row[4] || "") || String(row[2] || "") + "_" + String(row[3] || "");
       var dateStr = String(row[2] || "");
+      var dateFormatted = dateStr.length === 8 ? dateStr.slice(0,4)+"/"+dateStr.slice(4,6)+"/"+dateStr.slice(6,8) : dateStr;
+      if (!visitMap[rbKey]) {
+        visitMap[rbKey] = {
+          date:       dateFormatted,
+          store:      String(row[1] || ""),
+          menus:      [],
+          amount:     0,
+          staff:      String(row[14] || ""),
+          new_return: String(row[21] || "")
+        };
+      }
+      var menu = String(row[9] || "");
+      if (menu && visitMap[rbKey].menus.indexOf(menu) === -1) visitMap[rbKey].menus.push(menu);
+      visitMap[rbKey].amount += Number(row[13]) || 0;
+    }
+
+    var records = [];
+    for (var key in visitMap) {
+      var v = visitMap[key];
       records.push({
-        date:   dateStr.length === 8 ? dateStr.slice(0,4)+"/"+dateStr.slice(4,6)+"/"+dateStr.slice(6,8) : dateStr,
-        store:  String(row[1] || ""),
-        menu:   String(row[9] || ""),
-        amount: Number(row[13]) || 0,
-        staff:  String(row[14] || ""),
-        new_return: String(row[21] || "")
+        date:       v.date,
+        store:      v.store,
+        menu:       v.menus.join(" / "),
+        amount:     v.amount,
+        staff:      v.staff,
+        new_return: v.new_return
       });
     }
     records.sort(function(a, b) { return b.date.localeCompare(a.date); });
 
     var menuCount = {};
     records.forEach(function(rec) {
-      if (rec.menu) menuCount[rec.menu] = (menuCount[rec.menu] || 0) + 1;
+      (rec.menu || "").split(" / ").forEach(function(m) {
+        m = m.trim();
+        if (m) menuCount[m] = (menuCount[m] || 0) + 1;
+      });
     });
     var favoriteMenu = "";
     var maxCnt = 0;
