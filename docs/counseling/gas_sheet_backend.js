@@ -881,7 +881,7 @@ function getH(key, def) {
 
 function resetTrigger() {
   // 既存の自動トリガーを全削除
-  var targets = ["dailyFollowUp", "runReminder", "runThanks", "runCancel", "runSteps"];
+  var targets = ["dailyFollowUp", "runReminder", "runThanks", "runCancel", "runSteps", "runDailyAutoTag"];
   ScriptApp.getProjectTriggers().forEach(function(t) {
     if (targets.indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t);
   });
@@ -915,6 +915,10 @@ function resetTrigger() {
     ScriptApp.newTrigger("runSteps").timeBased().everyDays(1).atHour(h).create();
     log.push("ステップ:" + h + "時");
   }
+
+  // HPB自動連携（毎日23時：22時のCSV取得後に実行）
+  ScriptApp.newTrigger("runDailyAutoTag").timeBased().everyDays(1).atHour(23).create();
+  log.push("HPB自動連携:23時");
 
   Logger.log("トリガー再設定: " + log.join(", "));
   return {status: "ok", message: "トリガー設定完了: " + log.join(", ")};
@@ -2419,6 +2423,7 @@ function runDailyAutoTag() {
   var colName    = fHeaders.indexOf("お名前");     if (colName    < 0) colName    = 2;
   var colTag     = fHeaders.indexOf("タグ");       if (colTag     < 0) colTag     = 4;
   var colStore   = fHeaders.indexOf("登録店舗");   if (colStore   < 0) colStore   = 8;
+  var colLastVis = fHeaders.indexOf("最終来店日"); // -1なら書き戻しスキップ
 
   var counselSheet = getSheet("カウンセリング記録");
   var counselData  = counselSheet.getDataRange().getValues();
@@ -2503,6 +2508,14 @@ function runDailyAutoTag() {
     if (counsel.interest && counsel.interest.indexOf("、") !== -1) tags.push("セット狙い");
     if (counsel.homecare && counsel.homecare !== "今回は購入しない" && counsel.homecare !== "") tags.push("物販購入済み");
     else if (visitCount >= 1 && (!counsel.homecare || counsel.homecare === "今回は購入しない")) tags.push("未物販");
+
+    // 最終来店日をシートに書き戻し
+    if (colLastVis >= 0 && lastVisitDate) {
+      var formattedLast = lastVisitDate.length === 8
+        ? lastVisitDate.slice(0,4)+"/"+lastVisitDate.slice(4,6)+"/"+lastVisitDate.slice(6,8)
+        : lastVisitDate;
+      friendSheet.getRange(fi + 1, colLastVis + 1).setValue(formattedLast);
+    }
 
     if (tags.length === 0) continue;
 
