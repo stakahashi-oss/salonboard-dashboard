@@ -2,6 +2,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyL
 const COUNSELING_URL = "https://salonboard-dashboard.vercel.app/counseling/";
 
 // 店舗別トークン（destination = BotのuserId）
+// ※テスト中：藤沢店のみ有効
 const STORE_TOKENS = {
   "Uee68876a1fd6e81c310e42eb7391fc25": {
     token: "nnZPLMB+/uCYYXgb53+eWZIRdpLQ+2raDYVB9sRgeYyp4eOjRemM4pMvIbZrMuutUQWPwb6/9HlrZkhoB9/VTGgv3B6BvOmr9WAm/rijNxckFfybOnK2UycxSsF3+FPVItv8S1hFe6YtTRx2w0DhQI9PbdgDzCFqoOLOYbqAITQ=",
@@ -63,11 +64,18 @@ async function handleLineEvents(body) {
         + "▼ カウンセリングシート\n" + formUrl + "\n\n"
         + "ご不明点はこちらのLINEへお気軽に🌸";
       await pushToLine(userId, message, storeInfo.token);
-    }
 
-    // GASにも転送（トーク保存・友だち登録など）
-    await forwardToGAS(body);
+      // GAS GETでUID登録（POST失敗時のフォールバック）
+      var registerUrl = GAS_URL
+        + "?key=ssin2026&action=register_friend"
+        + "&line_uid=" + encodeURIComponent(userId)
+        + "&store=" + encodeURIComponent(storeInfo.store);
+      await fetch(registerUrl).catch(function(e) { console.error("register_friend GET error:", e); });
+    }
   }
+
+  // GASにも全イベントを転送（トーク保存など）
+  await forwardToGAS(body);
 }
 
 async function pushToLine(userId, message, token) {

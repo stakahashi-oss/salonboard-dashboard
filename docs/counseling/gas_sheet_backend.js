@@ -119,6 +119,7 @@ function doGet(e) {
   if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
   if (act === "get_store_line_tokens") return resp(getStoreLineTokens());
   if (act === "get_sales")            return resp(getSalesData());
+  if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || ""}));
   return resp({error: "unknown action"});
 }
 
