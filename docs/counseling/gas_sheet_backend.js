@@ -121,6 +121,7 @@ function doGet(e) {
   if (act === "get_sales")            return resp(getSalesData());
   if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || "", name: e.parameter.name || "", phone: e.parameter.phone || ""}));
   if (act === "link_uid_to_phone")    return resp(linkUidToPhone(e.parameter.line_uid, e.parameter.phone));
+  if (act === "delete_friend")        return resp(deleteFriend(e.parameter.line_uid));
   return resp({error: "unknown action"});
 }
 
@@ -2277,6 +2278,22 @@ function runAutoTag() {
 }
 
 // 電話番号でLINE_UIDを紐付け（既存行のUID空セルを更新）
+function deleteFriend(lineUid) {
+  if (!lineUid) return {error: "line_uid required"};
+  var sheet = getSheet("LINE友だち");
+  var all = sheet.getDataRange().getValues();
+  var headers = all[0];
+  var uidIdx = headers.indexOf("LINE_UID");
+  if (uidIdx < 0) return {error: "header not found"};
+  for (var i = 1; i < all.length; i++) {
+    if (String(all[i][uidIdx]) === lineUid) {
+      sheet.deleteRow(i + 1);
+      return {status: "deleted", row: i + 1};
+    }
+  }
+  return {error: "uid not found: " + lineUid};
+}
+
 function linkUidToPhone(lineUid, phone) {
   if (!lineUid || !phone) return {error: "line_uid and phone required"};
   var sheet = getSheet("LINE友だち");
