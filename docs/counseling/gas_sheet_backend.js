@@ -2370,7 +2370,7 @@ function getSalesByCustomer(customerName, storeName) {
     var normName  = String(customerName).replace(/\s/g, "");
     var normStore = storeName ? String(storeName).replace(/\s/g, "") : "";
 
-    // 予約番号(col4)でグループ化して1来店=1件にまとめる
+    // 来店日(col2)でグループ化して1日=1来店にまとめる
     var visitMap = {};
     for (var r = 0; r < data.length; r++) {
       var row = data[r];
@@ -2378,7 +2378,7 @@ function getSalesByCustomer(customerName, storeName) {
       var rowStore = String(row[1]  || "").replace(/\s/g, "");
       if (rowName !== normName) continue;
       if (normStore && rowStore.indexOf(normStore) === -1 && normStore.indexOf(rowStore) === -1) continue;
-      var rbKey   = String(row[4] || "") || String(row[2] || "") + "_" + String(row[3] || "");
+      var rbKey   = String(row[2] || "");
       var dateStr = String(row[2] || "");
       var dateFormatted = dateStr.length === 8 ? dateStr.slice(0,4)+"/"+dateStr.slice(4,6)+"/"+dateStr.slice(6,8) : dateStr;
       if (!visitMap[rbKey]) {
