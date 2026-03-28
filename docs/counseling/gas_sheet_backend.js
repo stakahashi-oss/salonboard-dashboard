@@ -119,7 +119,8 @@ function doGet(e) {
   if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
   if (act === "get_store_line_tokens") return resp(getStoreLineTokens());
   if (act === "get_sales")            return resp(getSalesData());
-  if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || ""}));
+  if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || "", name: e.parameter.name || "", phone: e.parameter.phone || ""}));
+  if (act === "link_uid_to_phone")    return resp(linkUidToPhone(e.parameter.line_uid, e.parameter.phone));
   return resp({error: "unknown action"});
 }
 
@@ -2273,6 +2274,26 @@ function runAutoTag() {
     }
   }
   return {status: "ok", updated: updated};
+}
+
+// 電話番号でLINE_UIDを紐付け（既存行のUID空セルを更新）
+function linkUidToPhone(lineUid, phone) {
+  if (!lineUid || !phone) return {error: "line_uid and phone required"};
+  var sheet = getSheet("LINE友だち");
+  var all = sheet.getDataRange().getValues();
+  var headers = all[0];
+  var uidIdx = headers.indexOf("LINE_UID");
+  var phoneIdx = headers.indexOf("電話番号");
+  if (uidIdx < 0 || phoneIdx < 0) return {error: "header not found"};
+  var phoneStr = String(phone).replace(/\D/g, "");
+  for (var i = 1; i < all.length; i++) {
+    var rowPhone = String(all[i][phoneIdx] || "").replace(/\D/g, "");
+    if (rowPhone === phoneStr) {
+      sheet.getRange(i + 1, uidIdx + 1).setValue(lineUid);
+      return {status: "linked", row: i + 1, name: all[i][headers.indexOf("お名前")]};
+    }
+  }
+  return {error: "phone not found: " + phone};
 }
 
 function resp(data) {
