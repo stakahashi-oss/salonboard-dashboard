@@ -3194,21 +3194,26 @@ function renderCustomerProfile(data) {
       </div>`
     : '';
 
+  const latestMenu = data.favorite_menu || (cs.length ? cs[0]['メニュー'] : '') || '―';
   document.getElementById('customerProfileBody').innerHTML = `
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
-      <div style="flex:1;min-width:200px;background:#eef2ff;border-radius:10px;padding:14px">
+      <div style="flex:1;min-width:160px;background:#eef2ff;border-radius:10px;padding:14px">
         <div style="font-size:11px;color:#888;margin-bottom:4px">来店回数</div>
         <div style="font-size:28px;font-weight:700;color:#6366f1">${data.visit_count}<span style="font-size:14px;font-weight:400"> 回</span></div>
       </div>
-      <div style="flex:1;min-width:200px;background:#f0f4ff;border-radius:10px;padding:14px">
+      <div style="flex:1;min-width:160px;background:#f0f4ff;border-radius:10px;padding:14px">
         <div style="font-size:11px;color:#888;margin-bottom:4px">最終来店日</div>
         <div style="font-size:18px;font-weight:700;color:#1a73e8">${data.last_visit || '―'}</div>
       </div>
-      <div style="flex:1;min-width:200px;background:#fff8f0;border-radius:10px;padding:14px">
+      <div style="flex:1;min-width:160px;background:#f0fdf4;border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">直近メニュー</div>
+        <div style="font-size:14px;font-weight:600;color:#16a34a">${latestMenu}</div>
+      </div>
+      <div style="flex:1;min-width:160px;background:#fff8f0;border-radius:10px;padding:14px">
         <div style="font-size:11px;color:#888;margin-bottom:4px">電話番号</div>
         <div style="font-size:16px;font-weight:600">${f.phone || '未登録'}</div>
       </div>
-      <div style="flex:1;min-width:200px;background:#f5f5f5;border-radius:10px;padding:14px">
+      <div style="flex:1;min-width:160px;background:#f5f5f5;border-radius:10px;padding:14px">
         <div style="font-size:11px;color:#888;margin-bottom:4px">友だち登録日</div>
         <div style="font-size:14px">${String(f.registered_at||'').substring(0,10) || '―'}</div>
         <div style="font-size:11px;color:#888;margin-top:4px">タグ: ${f.tags || 'なし'}</div>

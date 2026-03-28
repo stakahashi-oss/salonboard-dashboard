@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>お客様情報ご登録</title>
+<style>
+:root{
+  --brand:#4f46e5;--brand2:#7c3aed;--brand-light:#ede9fe;
+  --bg:#f8f7ff;--card:#fff;--border:#e5e7eb;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --green:#059669;--green-bg:#ecfdf5;
+  --r:14px;--r-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Hiragino Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;padding-bottom:40px}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--brand),var(--brand2));padding:28px 20px 24px;text-align:center;color:#fff}
+.header-logo{font-size:12px;font-weight:600;letter-spacing:2px;opacity:.8;margin-bottom:8px;text-transform:uppercase}
+.header h1{font-size:20px;font-weight:700;line-height:1.3}
+.header p{font-size:13px;opacity:.8;margin-top:6px}
+.header-time{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;margin-top:10px}
+
+/* Text input */
+.text-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;background:#fafafa;font-size:15px;color:var(--text);font-family:inherit;transition:border-color .15s;-webkit-appearance:none}
+.text-input:focus{outline:none;border-color:var(--brand);background:#fff}
+.text-input::placeholder{color:var(--text3)}
+.input-group{display:flex;flex-direction:column;gap:6px}
+.input-label{font-size:13px;font-weight:600;color:var(--text2)}
+.input-note{font-size:11px;color:var(--text3)}
+.input-required{display:inline-block;background:#fee2e2;color:#b91c1c;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:4px}
+
+/* Progress */
+.progress-wrap{background:#fff;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px}
+.progress-bar{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:2px;transition:width .4s ease;width:0%}
+
+/* Sections */
+.section{margin:16px 16px 0}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.section-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
+.section-title{font-size:14px;font-weight:700;color:var(--text)}
+.section-sub{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* Card */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:4px}
+.question{padding:16px 16px 12px}
+.q-label{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.4}
+.q-note{font-size:11px;color:var(--text3);margin-bottom:12px;margin-top:3px}
+
+/* Radio / Checkbox */
+.options{display:flex;flex-direction:column;gap:2px}
+.option-label{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;border:1.5px solid var(--border);background:#fafafa;cursor:pointer;transition:all .15s;-webkit-user-select:none}
+.option-label:active{background:#f0eeff;border-color:var(--brand)}
+.option-label input{display:none}
+.option-label input:checked ~ .opt-check{background:var(--brand);border-color:var(--brand)}
+.option-label input:checked ~ .opt-check::after{opacity:1}
+.opt-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:#fff;flex-shrink:0;position:relative;transition:all .15s}
+.opt-check::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;opacity:0;transition:opacity .15s}
+.option-label.selected{background:var(--brand-light);border-color:var(--brand)}
+.option-label.selected .opt-check{background:var(--brand);border-color:var(--brand)}
+.option-label.selected .opt-check::after{opacity:1}
+.opt-text{font-size:14px;color:var(--text);flex:1}
+.opt-sub{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* Checkbox variant */
+.opt-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:#fff;flex-shrink:0;position:relative;transition:all .15s}
+.opt-box::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:700;color:#fff;opacity:0;transition:opacity .15s}
+.option-label input:checked ~ .opt-box{background:var(--brand);border-color:var(--brand)}
+.option-label input:checked ~ .opt-box::after{opacity:1}
+.option-label.cb-selected{background:var(--brand-light);border-color:var(--brand)}
+.option-label.cb-selected .opt-box{background:var(--brand);border-color:var(--brand)}
+.option-label.cb-selected .opt-box::after{opacity:1}
+
+/* Grid options */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+
+/* Select */
+.select-wrap{position:relative}
+.select-wrap select{width:100%;padding:13px 40px 13px 14px;border:1.5px solid var(--border);border-radius:10px;background:#fafafa;font-size:14px;color:var(--text);appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit}
+.select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:14px}
+
+/* Conditional */
+.conditional{display:none;margin-top:4px;padding:12px;background:#fafafa;border-radius:10px;border:1.5px solid var(--border)}
+.conditional.show{display:block}
+
+/* Limit badge */
+.limit-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--brand-light);color:var(--brand);margin-bottom:10px}
+.limit-warn{font-size:11px;color:var(--brand);font-weight:600;margin-top:6px;display:none}
+.limit-warn.show{display:block}
+
+/* Submit */
+.submit-wrap{padding:20px 16px 0}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:16px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 20px rgba(79,70,229,.35);transition:all .2s;font-family:inherit}
+.btn-submit:active{transform:scale(.98);box-shadow:0 2px 10px rgba(79,70,229,.3)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.submit-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px}
+
+/* Success */
+.success-screen{display:none;padding:40px 20px;text-align:center}
+.success-icon{width:70px;height:70px;background:var(--green-bg);border-radius:50%;display:grid;place-items:center;font-size:32px;margin:0 auto 20px}
+.success-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px}
+.success-body{font-size:14px;color:var(--text2);line-height:1.7}
+.coupon-box{background:linear-gradient(135deg,var(--brand),var(--brand2));border-radius:var(--r);padding:20px;margin:20px 0;color:#fff}
+.coupon-label{font-size:11px;font-weight:600;opacity:.8;letter-spacing:1px;text-transform:uppercase}
+.coupon-code{font-size:28px;font-weight:800;letter-spacing:3px;margin:6px 0}
+.coupon-desc{font-size:12px;opacity:.8}
+
+.divider{height:1px;background:var(--border);margin:20px 0 0}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">SSIN STUDIO / most eyes / LUMISS</div>
+  <h1>お客様情報のご登録</h1>
+  <p>より良いご提案のため、簡単なアンケートにご協力ください</p>
+  <div class="header-time">⏱ 約90秒で完了</div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span id="progress-text">回答中...</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<form id="customer-form">
+
+<!-- ========== Section 0: お名前・電話番号 ========== -->
+<div class="section" style="margin-top:16px">
+  <div class="card">
+    <div class="question">
+      <div class="q-label">お名前<span class="input-required">必須</span></div>
+      <div class="q-note">ホットペッパーの予約名と同じお名前でご入力ください</div>
+      <div class="input-group">
+        <input class="text-input" type="text" name="name" placeholder="例：田中 花子" required autocomplete="name" onchange="updateProgress()">
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">電話番号<span class="input-required">必須</span></div>
+      <div class="q-note">ハイフンなし・ご予約に使用している番号</div>
+      <div class="input-group">
+        <input class="text-input" type="tel" name="phone" placeholder="例：09012345678" required autocomplete="tel" pattern="[0-9]{10,11}" onchange="updateProgress()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 1: 基本確認 ========== -->
+<div class="section">
+  <div class="section-head">
+    <div class="section-num">1</div>
+    <div><div class="section-title">ご利用店舗・生まれ月</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">ご利用の店舗を選んでください</div>
+      <div class="q-note">現在メインでご利用の店舗</div>
+      <div class="select-wrap">
+        <select name="store" required onchange="updateProgress()">
+          <option value="">選択してください</option>
+          <optgroup label="━ SSIN STUDIO ━">
+            <option value="S札幌">S札幌（LUMISS札幌）</option>
+            <option value="S藤沢">S藤沢</option>
+            <option value="S熊本">S熊本</option>
+            <option value="S二子玉川">S二子玉川</option>
+            <option value="S立川">S立川</option>
+            <option value="S上野">S上野</option>
+            <option value="S下北沢">S下北沢</option>
+            <option value="S中野">S中野</option>
+            <option value="S新宿南">S新宿南</option>
+            <option value="S原宿">S原宿</option>
+            <option value="S吉祥寺">S吉祥寺</option>
+            <option value="S渋谷">S渋谷</option>
+            <option value="S池袋">S池袋</option>
+            <option value="S高田馬場">S高田馬場</option>
+            <option value="S北千住">S北千住</option>
+            <option value="S亀戸">S亀戸</option>
+            <option value="S葛西">S葛西</option>
+            <option value="S千葉">S千葉</option>
+            <option value="S松戸">S松戸</option>
+            <option value="S船橋">S船橋</option>
+            <option value="S津田沼">S津田沼</option>
+            <option value="S市川">S市川</option>
+            <option value="S柏">S柏</option>
+            <option value="S横浜">S横浜</option>
+            <option value="S川崎">S川崎</option>
+            <option value="S溝の口">S溝の口</option>
+            <option value="Sセンター南">Sセンター南</option>
+            <option value="S岐阜">S岐阜</option>
+            <option value="S名駅">S名駅</option>
+            <option value="S梅田">S梅田</option>
+            <option value="S心斎橋">S心斎橋</option>
+            <option value="S三宮">S三宮</option>
+            <option value="S塚口">S塚口</option>
+            <option value="S天神大名">S天神大名</option>
+            <option value="S小倉">S小倉</option>
+            <option value="S熊本">S熊本</option>
+            <option value="S天文館">S天文館</option>
+            <option value="S那覇">S那覇</option>
+          </optgroup>
+          <optgroup label="━ most eyes ━">
+            <option value="m所沢">m所沢</option>
+            <option value="m吉祥寺">m吉祥寺</option>
+            <option value="m下北沢">m下北沢</option>
+            <option value="m新宿">m新宿</option>
+            <option value="m渋谷">m渋谷</option>
+            <option value="m五反田">m五反田</option>
+            <option value="m目黒">m目黒</option>
+            <option value="m東銀座">m東銀座</option>
+            <option value="m京橋">m京橋</option>
+            <option value="m北千住">m北千住</option>
+            <option value="m横浜">m横浜</option>
+            <option value="m武蔵小杉">m武蔵小杉</option>
+            <option value="m川崎">m川崎</option>
+            <option value="m海老名">m海老名</option>
+            <option value="m町田">m町田</option>
+            <option value="m立川">m立川</option>
+            <option value="m調布">m調布</option>
+            <option value="m大曽根">m大曽根</option>
+            <option value="m刈谷">m刈谷</option>
+            <option value="m郡山">m郡山</option>
+          </optgroup>
+          <optgroup label="━ LUMISS ━">
+            <option value="L土浦">LUMISS土浦</option>
+          </optgroup>
+          <optgroup label="━ Felice ━">
+            <option value="F大宮西口">F大宮西口</option>
+            <option value="F浦和東口">F浦和東口</option>
+            <option value="f三郷">f三郷</option>
+            <option value="f北千住">f北千住</option>
+            <option value="f南流山">f南流山</option>
+            <option value="f春日部">f春日部</option>
+            <option value="f東川口">f東川口</option>
+            <option value="f越谷">f越谷</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">お誕生月を教えてください</div>
+      <div class="q-note">お誕生日月に特典をお届けします 🎂</div>
+      <div class="select-wrap">
+        <select name="birth_month" required onchange="updateProgress()">
+          <option value="">選択してください</option>
+          <option value="1">1月</option><option value="2">2月</option>
+          <option value="3">3月</option><option value="4">4月</option>
+          <option value="5">5月</option><option value="6">6月</option>
+          <option value="7">7月</option><option value="8">8月</option>
+          <option value="9">9月</option><option value="10">10月</option>
+          <option value="11">11月</option><option value="12">12月</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 2: ご利用メニュー ========== -->
+<div class="section" style="margin-top:20px">
+  <div class="section-head">
+    <div class="section-num">2</div>
+    <div><div class="section-title">ご利用メニュー</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">現在、定期的にご利用のメニューは？</div>
+      <div class="q-note">複数選択OK</div>
+      <div class="options" id="menu-options">
+        <label class="option-label" onclick="toggleCb(this,'menu'); checkExt()">
+          <input type="checkbox" name="menu" value="まつ毛パーマ">
+          <span class="opt-box"></span>
+          <span class="opt-text">まつ毛パーマ / パリジェンヌ</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'menu'); checkExt()">
+          <input type="checkbox" name="menu" value="まつ毛エクステ">
+          <span class="opt-box"></span>
+          <span class="opt-text">まつ毛エクステ（マツエク）</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'menu'); checkExt()">
+          <input type="checkbox" name="menu" value="眉毛スタイリング">
+          <span class="opt-box"></span>
+          <span class="opt-text">眉毛スタイリング（ワックス）</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'menu'); checkExt()">
+          <input type="checkbox" name="menu" value="眉毛パーマ">
+          <span class="opt-box"></span>
+          <span class="opt-text">眉毛パーマ / 眉毛アートメイク</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'menu'); checkExt()">
+          <input type="checkbox" name="menu" value="セット（まつ毛+眉毛）">
+          <span class="opt-box"></span>
+          <span class="opt-text">まつ毛 ＋ 眉毛 セット</span>
+        </label>
+      </div>
+
+      <!-- Ext conditional -->
+      <div class="conditional" id="ext-cond">
+        <div class="q-label" style="font-size:13px;margin-bottom:8px">マツエクのデザインは？</div>
+        <div class="options" id="ext-options">
+          <label class="option-label" onclick="toggleRb(this,'ext_type')">
+            <input type="radio" name="ext_type" value="ナチュラル系"><span class="opt-check"></span>
+            <span class="opt-text">ナチュラル系</span>
+          </label>
+          <label class="option-label" onclick="toggleRb(this,'ext_type')">
+            <input type="radio" name="ext_type" value="ボリューム系"><span class="opt-check"></span>
+            <span class="opt-text">ボリューム系（ふさふさ）</span>
+          </label>
+          <label class="option-label" onclick="toggleRb(this,'ext_type')">
+            <input type="radio" name="ext_type" value="カラー・デザイン系"><span class="opt-check"></span>
+            <span class="opt-text">カラー・デザイン系</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">次回、試してみたいメニューはありますか？</div>
+      <div class="q-note">複数選択OK・現在利用中でもOK</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleCb(this,'next_menu')">
+          <input type="checkbox" name="next_menu" value="ノーグルパーマ">
+          <span class="opt-box"></span><span class="opt-text">ノーグル / ダメージレスパーマ</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'next_menu')">
+          <input type="checkbox" name="next_menu" value="パリジェンヌ">
+          <span class="opt-box"></span><span class="opt-text">パリジェンヌラッシュリフト</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'next_menu')">
+          <input type="checkbox" name="next_menu" value="眉毛スタイリング">
+          <span class="opt-box"></span><span class="opt-text">眉毛スタイリング（未経験）</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'next_menu')">
+          <input type="checkbox" name="next_menu" value="マツエク">
+          <span class="opt-box"></span><span class="opt-text">マツエク（未経験）</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'next_menu')">
+          <input type="checkbox" name="next_menu" value="特になし">
+          <span class="opt-box"></span><span class="opt-text">特になし / 今のままでOK</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 3: 来店サイクル ========== -->
+<div class="section" style="margin-top:20px">
+  <div class="section-head">
+    <div class="section-num">3</div>
+    <div><div class="section-title">来店サイクル</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">通常、どのくらいの頻度でご来店されますか？</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleRb(this,'cycle')">
+          <input type="radio" name="cycle" value="2〜3週間に1回"><span class="opt-check"></span>
+          <span class="opt-text">2〜3週間に1回</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'cycle')">
+          <input type="radio" name="cycle" value="月に1回"><span class="opt-check"></span>
+          <span class="opt-text">月に1回</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'cycle')">
+          <input type="radio" name="cycle" value="1〜2ヶ月に1回"><span class="opt-check"></span>
+          <span class="opt-text">1〜2ヶ月に1回</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'cycle')">
+          <input type="radio" name="cycle" value="3ヶ月以上"><span class="opt-check"></span>
+          <span class="opt-text">3ヶ月以上あく</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'cycle')">
+          <input type="radio" name="cycle" value="不定期"><span class="opt-check"></span>
+          <span class="opt-text">不定期</span>
+        </label>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">いま、目元の状態はどうですか？</div>
+      <div class="q-note">正直に選んでください 😊</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleRb(this,'current_state')">
+          <input type="radio" name="current_state" value="ちょうど良い"><span class="opt-check"></span>
+          <span class="opt-text">ちょうど良い状態</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'current_state')">
+          <input type="radio" name="current_state" value="そろそろ気になる"><span class="opt-check"></span>
+          <span class="opt-text">そろそろ気になってきた</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'current_state')">
+          <input type="radio" name="current_state" value="かなり落ちてきた"><span class="opt-check"></span>
+          <span class="opt-text">かなり伸びてきた / 落ちてきた</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'current_state')">
+          <input type="radio" name="current_state" value="最近来店した"><span class="opt-check"></span>
+          <span class="opt-text">最近来店したばかり</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 4: ライフスタイル ========== -->
+<div class="section" style="margin-top:20px">
+  <div class="section-head">
+    <div class="section-num">4</div>
+    <div><div class="section-title">ライフスタイル</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">ご職業に近いものを選んでください</div>
+      <div class="options options-grid">
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="会社員・OL"><span class="opt-check"></span>
+          <span class="opt-text">会社員・OL</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="自営業・フリー"><span class="opt-check"></span>
+          <span class="opt-text">自営業・フリー</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="主婦・主夫"><span class="opt-check"></span>
+          <span class="opt-text">主婦・主夫</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="学生"><span class="opt-check"></span>
+          <span class="opt-text">学生</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="接客・サービス業"><span class="opt-check"></span>
+          <span class="opt-text">接客・サービス業</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'job')">
+          <input type="radio" name="job" value="その他"><span class="opt-check"></span>
+          <span class="opt-text">その他</span>
+        </label>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">目元ケアで一番重視することは？</div>
+      <div class="limit-badge">⚡ 2つまで選択</div>
+      <div class="options" id="priority-options">
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="時短・手間を省く">
+          <span class="opt-box"></span><span class="opt-text">時短・手間を省きたい</span>
+        </label>
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="自然な仕上がり">
+          <span class="opt-box"></span><span class="opt-text">自然で上品な仕上がり</span>
+        </label>
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="華やかさ・印象アップ">
+          <span class="opt-box"></span><span class="opt-text">華やかさ・印象アップ</span>
+        </label>
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="長持ち">
+          <span class="opt-box"></span><span class="opt-text">長持ちするもの</span>
+        </label>
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="コスパ">
+          <span class="opt-box"></span><span class="opt-text">コスパの良さ</span>
+        </label>
+        <label class="option-label" onclick="toggleCbMax(this,'priority',2)">
+          <input type="checkbox" name="priority" value="まつ毛・眉毛を育てる">
+          <span class="opt-box"></span><span class="opt-text">まつ毛・眉毛を育てたい</span>
+        </label>
+      </div>
+      <div class="limit-warn" id="priority-warn">2つまで選べます</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 5: ホームケア・物販 ========== -->
+<div class="section" style="margin-top:20px">
+  <div class="section-head">
+    <div class="section-num">5</div>
+    <div><div class="section-title">ホームケア・商品</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">自宅でまつ毛・眉毛のケアはしていますか？</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleRb(this,'home_care')">
+          <input type="radio" name="home_care" value="美容液など定期使用"><span class="opt-check"></span>
+          <span class="opt-text">美容液・オイルを定期的に使っている</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'home_care')">
+          <input type="radio" name="home_care" value="たまに使う"><span class="opt-check"></span>
+          <span class="opt-text">たまに使う程度</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'home_care')">
+          <input type="radio" name="home_care" value="していない（興味あり）"><span class="opt-check"></span>
+          <span class="opt-text">していない（けど興味はある）</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'home_care')">
+          <input type="radio" name="home_care" value="していない"><span class="opt-check"></span>
+          <span class="opt-text">特にしていない</span>
+        </label>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">サロンで商品（ケアアイテム等）を購入したことは？</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleRb(this,'purchase')">
+          <input type="radio" name="purchase" value="定期的に購入"><span class="opt-check"></span>
+          <span class="opt-text">定期的に購入している</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'purchase')">
+          <input type="radio" name="purchase" value="1〜2回ある"><span class="opt-check"></span>
+          <span class="opt-text">1〜2回購入したことがある</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'purchase')">
+          <input type="radio" name="purchase" value="ない（興味あり）"><span class="opt-check"></span>
+          <span class="opt-text">購入したことはないが興味がある</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'purchase')">
+          <input type="radio" name="purchase" value="ない"><span class="opt-check"></span>
+          <span class="opt-text">ない・特に必要ない</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Section 6: LINEコミュニケーション ========== -->
+<div class="section" style="margin-top:20px">
+  <div class="section-head">
+    <div class="section-num">6</div>
+    <div><div class="section-title">LINE配信の設定</div></div>
+  </div>
+
+  <div class="card">
+    <div class="question">
+      <div class="q-label">どんなLINE情報を受け取りたいですか？</div>
+      <div class="q-note">複数選択OK</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleCb(this,'line_pref')">
+          <input type="checkbox" name="line_pref" value="キャンペーン・割引">
+          <span class="opt-box"></span><span class="opt-text">キャンペーン・割引情報 🎫</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'line_pref')">
+          <input type="checkbox" name="line_pref" value="新メニュー・季節のおすすめ">
+          <span class="opt-box"></span><span class="opt-text">新メニュー・季節のおすすめ 🌸</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'line_pref')">
+          <input type="checkbox" name="line_pref" value="美容ケアのコツ">
+          <span class="opt-box"></span><span class="opt-text">美容ケアのコツ・豆知識 💡</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'line_pref')">
+          <input type="checkbox" name="line_pref" value="来店リマインダー">
+          <span class="opt-box"></span><span class="opt-text">来店リマインダー（そろそろ頃に通知）📅</span>
+        </label>
+        <label class="option-label" onclick="toggleCb(this,'line_pref')">
+          <input type="checkbox" name="line_pref" value="誕生日特典">
+          <span class="opt-box"></span><span class="opt-text">誕生日特典 🎂</span>
+        </label>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="question">
+      <div class="q-label">LINEメッセージの頻度はどのくらいがご希望ですか？</div>
+      <div class="options">
+        <label class="option-label" onclick="toggleRb(this,'line_freq')">
+          <input type="radio" name="line_freq" value="週1程度"><span class="opt-check"></span>
+          <span class="opt-text">週に1回程度</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'line_freq')">
+          <input type="radio" name="line_freq" value="月2〜3回"><span class="opt-check"></span>
+          <span class="opt-text">月2〜3回</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'line_freq')">
+          <input type="radio" name="line_freq" value="月1回"><span class="opt-check"></span>
+          <span class="opt-text">月1回程度</span>
+        </label>
+        <label class="option-label" onclick="toggleRb(this,'line_freq')">
+          <input type="radio" name="line_freq" value="必要な時だけ"><span class="opt-check"></span>
+          <span class="opt-text">必要な時だけ（最小限で）</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Submit -->
+<div class="submit-wrap">
+  <button type="submit" class="btn-submit" id="submit-btn">
+    登録する ✓
+  </button>
+  <p class="submit-note">ご回答いただいた情報はサービス向上のみに利用します</p>
+</div>
+
+</form>
+
+<!-- Success Screen -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">ご登録ありがとうございました！</div>
+  <div class="success-body">情報を受け取りました。<br>より良い提案・配信ができるよう活用させていただきます。</div>
+  <div class="coupon-box">
+    <div class="coupon-label">登録完了特典</div>
+    <div class="coupon-code">MEMBER10</div>
+    <div class="coupon-desc">次回ご来店時、担当スタッフにお伝えください<br>オプション1つプレゼント 🎁</div>
+  </div>
+  <div style="font-size:13px;color:var(--text2);line-height:1.8">
+    設定はいつでも変更できます。<br>ご来店をお待ちしております。
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec';
+const SECRET_KEY = 'ssin2026';
+const TOTAL_REQUIRED = 10; // name, phone, store, birth_month, cycle, current_state, job, home_care, purchase, line_freq
+
+// Radio toggle
+function toggleRb(label, name) {
+  document.querySelectorAll(`[name="${name}"]`).forEach(inp => {
+    inp.closest('.option-label').classList.remove('selected');
+  });
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+  updateProgress();
+}
+
+// Checkbox toggle
+function toggleCb(label) {
+  label.classList.toggle('cb-selected');
+  label.querySelector('input').checked = label.classList.contains('cb-selected');
+  updateProgress();
+}
+
+// Checkbox with max limit
+function toggleCbMax(label, name, max) {
+  const checked = document.querySelectorAll(`[name="${name}"]:checked`);
+  if (!label.classList.contains('cb-selected') && checked.length >= max) {
+    const warn = document.getElementById(`${name}-warn`);
+    if (warn) { warn.classList.add('show'); setTimeout(() => warn.classList.remove('show'), 2000); }
+    return;
+  }
+  toggleCb(label);
+}
+
+// Show/hide eyelash extension conditional
+function checkExt() {
+  const extChecked = [...document.querySelectorAll('[name="menu"]:checked')].some(i => i.value === 'まつ毛エクステ');
+  document.getElementById('ext-cond').classList.toggle('show', extChecked);
+}
+
+// Progress bar
+function updateProgress() {
+  const answered = new Set();
+  // text inputs (name, phone)
+  ['name','phone'].forEach(n => {
+    const el = document.querySelector(`[name="${n}"]`);
+    if (el && el.value.trim()) answered.add(n);
+  });
+  // required radios / selects
+  ['store','birth_month','cycle','current_state','job','home_care','purchase','line_freq'].forEach(n => {
+    const el = document.querySelector(`[name="${n}"]`);
+    if (!el) return;
+    if (el.tagName === 'SELECT' && el.value) answered.add(n);
+    else if (document.querySelector(`[name="${n}"]:checked`)) answered.add(n);
+  });
+  // optional but tracked
+  if (document.querySelector('[name="menu"]:checked')) answered.add('menu');
+  if (document.querySelector('[name="priority"]:checked')) answered.add('priority');
+
+  const pct = Math.round(answered.size / TOTAL_REQUIRED * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = pct === 100 ? '全項目入力済み ✓' : `回答中... (${answered.size}/${TOTAL_REQUIRED})`;
+}
+
+// Form submit
+document.getElementById('customer-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
+  // Collect data
+  const fd = new FormData(e.target);
+  const formData = {};
+
+  // Single values
+  ['name','phone','store','birth_month','cycle','current_state','job','home_care','purchase','line_freq','ext_type'].forEach(n => {
+    const v = fd.get(n);
+    if (v) formData[n] = v;
+  });
+
+  // Multi-select
+  ['menu','next_menu','priority','line_pref'].forEach(n => {
+    const vals = fd.getAll(n);
+    if (vals.length) formData[n] = vals.join('、');
+  });
+
+  const payload = {
+    key: SECRET_KEY,
+    action: 'save_customer_form',
+    data: formData
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(err) { /* no-cors always throws, ignore */ }
+
+  // Show success
+  document.getElementById('customer-form').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Init
+updateProgress();
+</script>
+</body>
+</html>
