@@ -2519,8 +2519,7 @@ function runDailyAutoTag() {
       tags.push("VIP");
     }
 
-    if (daysSinceLast >= 90) tags.push("休眠");
-    else if (daysSinceLast >= 60) tags.push("失客リスク");
+    if (daysSinceLast >= 60) tags.push("失客リスク");
 
     if (visitCount > 0) {
       var eyebrowRatio = eyebrowCount / visitCount;
