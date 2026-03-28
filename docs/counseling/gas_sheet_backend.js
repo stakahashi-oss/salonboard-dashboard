@@ -1725,8 +1725,28 @@ function getCustomerProfile(lineUid) {
   }
   var avgAmount = amountCount > 0 ? Math.round(totalAmount / amountCount) : 0;
 
-  // HPBデータがない場合はカウンセリング記録をフォールバックに使う
-  if (visitCount === 0 && counseling.length > 0) {
+  // 売上CSV照合（名前マッチング）
+  var salesRecords = [];
+  var salesVisitCount = 0;
+  var salesLastVisit = "";
+  var salesTotalAmount = 0;
+  if (name) {
+    var sd = getSalesByCustomer(name, friend.store || "");
+    if (!sd.error && sd.records) {
+      salesRecords = sd.records;
+      salesVisitCount = sd.visit_count || 0;
+      salesLastVisit = sd.last_visit || "";
+      salesTotalAmount = sd.total_amount || 0;
+      if (!favoriteMenu && sd.favorite_menu) favoriteMenu = sd.favorite_menu;
+    }
+  }
+
+  // HPBデータ優先、なければ売上CSV、それもなければカウンセリング記録でフォールバック
+  if (visitCount === 0 && salesVisitCount > 0) {
+    visitCount = salesVisitCount;
+    if (!lastVisit) lastVisit = salesLastVisit;
+    if (avgAmount === 0 && salesTotalAmount > 0) avgAmount = Math.round(salesTotalAmount / salesVisitCount);
+  } else if (visitCount === 0 && counseling.length > 0) {
     visitCount = counseling.length;
     for (var ci = 0; ci < counseling.length; ci++) {
       var cDate = String(counseling[ci]["来店日"] || "").substring(0, 10);
@@ -1736,15 +1756,15 @@ function getCustomerProfile(lineUid) {
   }
 
   return {
-    friend:        friend,
-    reservations:  reservations,
-    counseling:    counseling,
-    visit_count:   visitCount,
-    last_visit:    lastVisit,
-    avg_cycle:     avgCycle,
-    favorite_menu: favoriteMenu,
+    friend:         friend,
+    reservations:   reservations.length ? reservations : salesRecords,
+    counseling:     counseling,
+    visit_count:    visitCount,
+    last_visit:     lastVisit,
+    avg_cycle:      avgCycle,
+    favorite_menu:  favoriteMenu,
     favorite_staff: favoriteStaff,
-    avg_amount:    avgAmount
+    avg_amount:     avgAmount
   };
 }
 
@@ -2336,13 +2356,9 @@ function resp(data) {
 function getSalesByCustomer(customerName, storeName) {
   if (!customerName) return {error: "name required"};
   try {
-    var ss = SpreadsheetApp.openById(NEW_SALES_SS_ID);
-    var sheets = ss.getSheets();
-    var sheet = null;
-    for (var i = 0; i < sheets.length; i++) {
-      if (sheets[i].getSheetId() === NEW_SALES_GID) { sheet = sheets[i]; break; }
-    }
-    if (!sheet) sheet = sheets[0];
+    var ss = SpreadsheetApp.openById(SALES_SS_ID);
+    var sheet = ss.getSheetByName("売上情報csv(毎日更新)");
+    if (!sheet) sheet = ss.getSheets()[0];
     var data = sheet.getDataRange().getValues();
 
     var normName  = String(customerName).replace(/\s/g, "");
