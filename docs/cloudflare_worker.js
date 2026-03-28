@@ -72,6 +72,15 @@ async function handleLineEvents(body) {
         + "&store=" + encodeURIComponent(storeInfo.store);
       await fetch(registerUrl).catch(function(e) { console.error("register_friend GET error:", e); });
     }
+
+    // メッセージ受信 → UIDとストアのみ登録（メッセージ本文は保存しない）
+    if (event.type === "message" && event.message && event.message.type === "text" && userId && storeInfo) {
+      var msgRegisterUrl = GAS_URL
+        + "?key=ssin2026&action=register_friend"
+        + "&line_uid=" + encodeURIComponent(userId)
+        + "&store=" + encodeURIComponent(storeInfo.store);
+      await fetch(msgRegisterUrl).catch(function(e) { console.error("message register GET error:", e); });
+    }
   }
 
   // GASにも全イベントを転送（トーク保存など）
