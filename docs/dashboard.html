@@ -3191,7 +3191,7 @@ function renderCustomerProfile(data) {
       <td>${r.status}</td>
       <td style="text-align:right">${r.amount ? Number(r.amount).toLocaleString()+'円' : '―'}</td>
     </tr>`).join('') :
-    '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">予約データなし（電話番号を登録してください）</td></tr>';
+    '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">HPB予約データなし</td></tr>';
 
   const counselRows = cs.length ? cs.map(c => `
     <tr>

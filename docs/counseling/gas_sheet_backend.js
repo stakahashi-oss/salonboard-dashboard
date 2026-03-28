@@ -1725,6 +1725,16 @@ function getCustomerProfile(lineUid) {
   }
   var avgAmount = amountCount > 0 ? Math.round(totalAmount / amountCount) : 0;
 
+  // HPBデータがない場合はカウンセリング記録をフォールバックに使う
+  if (visitCount === 0 && counseling.length > 0) {
+    visitCount = counseling.length;
+    for (var ci = 0; ci < counseling.length; ci++) {
+      var cDate = String(counseling[ci]["来店日"] || "").substring(0, 10);
+      if (cDate && (!lastVisit || cDate > lastVisit)) lastVisit = cDate;
+    }
+    if (!favoriteMenu && counseling[0]) favoriteMenu = String(counseling[0]["メニュー"] || "");
+  }
+
   return {
     friend:        friend,
     reservations:  reservations,
