@@ -139,7 +139,7 @@ function handleLineWebhook(body) {
     if (event.type === "follow") {
       var userId = event.source.userId;
       Logger.log("[Webhook] follow userId=" + userId);
-      sendCounselingLink(userId, token, storeName);
+      // 挨拶はCloudflare Workerが送信済みのためGAS側では送らない
       registerFriend({line_uid: userId, phone: "", name: "", store: storeName});
     } else if (event.type === "message" && event.message.type === "text") {
       var uid = event.source.userId;
