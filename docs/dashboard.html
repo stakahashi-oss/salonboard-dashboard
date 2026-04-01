@@ -261,6 +261,7 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
   <div style="padding:8px 0">
     <div class="nav-section">メイン</div>
     <div class="nav-item active" onclick="showTab('dashboard',this)">🏠 ホーム</div>
+    <div class="nav-item" onclick="showTab('kpi-march',this)">📊 3月KPI分析</div>
     <div class="nav-section">カウンセリング</div>
     <div class="nav-item" onclick="showTab('counseling',this);if(!isLoaded('counseling'))loadCounseling()">📋 カウンセリング記録</div>
     <div class="nav-item" onclick="showTab('analysis',this);if(!isLoaded('analysis'))loadAnalysis()">📈 顧客分析</div>
@@ -287,6 +288,252 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-green" onclick="refreshAll()">🔄 更新</button>
+    </div>
+  </div>
+
+  <!-- ═══════ 3月KPI分析 ═══════ -->
+  <div class="section" id="tab-kpi-march">
+    <div style="max-width:1100px;margin:0 auto;padding:24px 16px">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#1e293b">📊 3月 KPI 確報レポート</div>
+          <div style="font-size:13px;color:#64748b;margin-top:2px">2026年3月 確報値（4/1時点） ／ 事業部合計 達成率95.5%</div>
+        </div>
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:10px 18px;text-align:center">
+          <div style="font-size:11px;color:#16a34a;font-weight:600">事業部合計（直営6店舗）</div>
+          <div style="font-size:22px;font-weight:700;color:#15803d">¥8,951,455</div>
+          <div style="font-size:12px;color:#16a34a">目標比 95.5% ／ 前月比 +¥891,422</div>
+        </div>
+      </div>
+
+      <!-- ── 直営6店舗 ── -->
+      <div style="font-size:15px;font-weight:700;color:#334155;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #e2e8f0">🏢 直営6店舗</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:28px">
+
+        <!-- S札幌 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #86efac;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">✅ S札幌 <span style="font-size:11px;color:#64748b;font-weight:400">SV:梅田</span></div>
+            <div style="background:#dcfce7;color:#16a34a;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">119.8%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥2,199,306</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,836,000 ／ 前月比 <span style="color:#16a34a;font-weight:600">+¥328,593(+17.6%)</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px">332件</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#6366f1">43%</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px">¥5,783</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: Mizuki 104件 / Suzuka 102件 / Haseyama 47件</div>
+          <div style="font-size:11px;color:#64748b;margin-top:3px">人気: 間引き93 / アイシャンプー35 / ケラチン26</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#1e293b">¥2,016,000</span></div>
+        </div>
+
+        <!-- S藤沢 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #86efac;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">✅ S藤沢 <span style="font-size:11px;color:#64748b;font-weight:400">SV:内山</span></div>
+            <div style="background:#dcfce7;color:#16a34a;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">102.7%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥1,131,600</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,101,600 ／ 前月比 <span style="color:#16a34a;font-weight:600">+¥92,870(+8.9%)</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px">190件</div></div>
+            <div style="background:#fef9c3;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#d97706">48%</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px">¥5,321</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: O.sena 88件(新規46) / K.rina 78件(新規36)</div>
+          <div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠️ 新規率高め・リピーター育成が課題</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#1e293b">¥1,155,000</span></div>
+        </div>
+
+        <!-- S二子玉川 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #fca5a5;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">🔴 S二子玉川 <span style="font-size:11px;color:#64748b;font-weight:400">SV:内山</span></div>
+            <div style="background:#fee2e2;color:#dc2626;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">86.8%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥1,550,709</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,787,500 ／ 差分 <span style="color:#dc2626;font-weight:600">-¥236,791</span> ／ 前月比+¥322,109</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px">270件</div></div>
+            <div style="background:#fef9c3;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#d97706">49%</div></div>
+            <div style="background:#fee2e2;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px;color:#dc2626">¥5,190</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: Tomoyo 78件 / f.Neneha 55件 / K.Suzu 53件</div>
+          <div style="font-size:11px;color:#dc2626;margin-top:3px">🔴 客単価が目標¥6,500に対し-¥1,310が最大課題</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#1e293b">¥1,701,000</span> ／ 要：入口クーポン価格改定</div>
+        </div>
+
+        <!-- S熊本 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #fca5a5;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">🔴 S熊本 <span style="font-size:11px;color:#64748b;font-weight:400">SV:梅田</span></div>
+            <div style="background:#fee2e2;color:#dc2626;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">89.8%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥1,432,860</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,596,000 ／ 差分 <span style="color:#dc2626;font-weight:600">-¥163,140</span> ／ 前月比+¥41,480</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px">240件</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#6366f1">38%</div></div>
+            <div style="background:#fee2e2;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px;color:#dc2626">¥5,261</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: T.Ran 105件(新規47) / Y.mio 104件(新規33)</div>
+          <div style="font-size:11px;color:#dc2626;margin-top:3px">🔴 指名客23件へのOP提案ができていない</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#1e293b">¥1,404,000</span> ／ 要：指名客OP提案強化</div>
+        </div>
+
+        <!-- m所沢 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #fde68a;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">⚠️ m所沢 <span style="font-size:11px;color:#64748b;font-weight:400">SV:土田</span></div>
+            <div style="background:#fef9c3;color:#d97706;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">92.8%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥1,484,280</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,600,000 ／ 差分 <span style="color:#d97706;font-weight:600">-¥115,720</span> ／ 前月比+¥29,370</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px">176件</div></div>
+            <div style="background:#fef9c3;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#d97706">38%</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px;color:#16a34a">¥7,300</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: Emiri 22件(新規14) / Rena 19件(新規14)</div>
+          <div style="font-size:11px;color:#d97706;margin-top:3px">⚠️ 客単価高いが件数が少ない・再来基盤薄い</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#1e293b">¥1,498,500</span></div>
+        </div>
+
+        <!-- S立川 -->
+        <div style="background:#fff;border-radius:12px;border:2px solid #fca5a5;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700;font-size:15px">🔴 S立川 <span style="font-size:11px;color:#64748b;font-weight:400">SV:土田</span></div>
+            <div style="background:#fee2e2;color:#dc2626;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">79.3%</div>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:#1e293b;margin-bottom:4px">¥1,152,700</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px">目標¥1,453,500 ／ 差分 <span style="color:#dc2626;font-weight:600">-¥300,800</span> ／ 前月比+¥77,000</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:#fee2e2;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客数</div><div style="font-weight:700;font-size:15px;color:#dc2626">185件</div></div>
+            <div style="background:#fef9c3;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">新規率</div><div style="font-weight:700;font-size:15px;color:#d97706">46%</div></div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:#94a3b8">客単価</div><div style="font-weight:700;font-size:15px">¥5,548</div></div>
+          </div>
+          <div style="font-size:11px;color:#64748b">スタッフ: O.momoka 84件(新規40) / N.yuria 63件 / K.asumi 16件</div>
+          <div style="font-size:11px;color:#dc2626;margin-top:3px">🔴 最優先：件数-70件不足・K.asumi稼働率低い・momoka依存</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;font-size:11px">4月目標: <span style="font-weight:600;color:#dc2626">¥1,410,000</span>（+¥257K必要・最難関）</div>
+        </div>
+
+      </div>
+
+      <!-- ── 加盟店 ── -->
+      <div style="font-size:15px;font-weight:700;color:#334155;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #e2e8f0">🏪 加盟店（3月着地見込・3/28時点）</div>
+
+      <div style="margin-bottom:12px;font-size:13px;color:#64748b">加盟全体: 店舗売上¥72,277,916 / 達成率100.4% ／ SV売上達成率93.8%（-¥762,579）</div>
+
+      <!-- ワーストアラート -->
+      <div style="background:#fff5f5;border:1.5px solid #fca5a5;border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="font-weight:700;color:#dc2626;margin-bottom:10px;font-size:13px">🚨 緊急対応店舗（達成率80%未満）</div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:#fee2e2">
+              <th style="padding:7px 10px;text-align:left;font-weight:600;color:#991b1b">店舗</th>
+              <th style="padding:7px 10px;text-align:left;font-weight:600;color:#991b1b">SV</th>
+              <th style="padding:7px 10px;text-align:right;font-weight:600;color:#991b1b">月目標</th>
+              <th style="padding:7px 10px;text-align:right;font-weight:600;color:#991b1b">着地見込</th>
+              <th style="padding:7px 10px;text-align:right;font-weight:600;color:#991b1b">達成率</th>
+              <th style="padding:7px 10px;text-align:right;font-weight:600;color:#991b1b">差分</th>
+              <th style="padding:7px 10px;text-align:left;font-weight:600;color:#991b1b">原因・対策</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #fee2e2"><td style="padding:7px 10px;font-weight:600">m岡崎</td><td style="padding:7px 10px;color:#64748b">山田</td><td style="padding:7px 10px;text-align:right">¥600,000</td><td style="padding:7px 10px;text-align:right;color:#dc2626;font-weight:700">¥0</td><td style="padding:7px 10px;text-align:right;font-weight:700;color:#dc2626">0.0%</td><td style="padding:7px 10px;text-align:right;color:#dc2626">-¥600,000</td><td style="padding:7px 10px;color:#dc2626">営業停止の可能性→山田SV確認</td></tr>
+              <tr style="border-bottom:1px solid #fee2e2"><td style="padding:7px 10px;font-weight:600">S金山</td><td style="padding:7px 10px;color:#64748b">髙橋</td><td style="padding:7px 10px;text-align:right">¥750,000</td><td style="padding:7px 10px;text-align:right;color:#dc2626;font-weight:700">¥363,389</td><td style="padding:7px 10px;text-align:right;font-weight:700;color:#dc2626">48.5%</td><td style="padding:7px 10px;text-align:right;color:#dc2626">-¥386,611</td><td style="padding:7px 10px;color:#dc2626">集客クーポン不足・HPB確認要（3/31期限）</td></tr>
+              <tr style="border-bottom:1px solid #fee2e2"><td style="padding:7px 10px;font-weight:600">S天文館</td><td style="padding:7px 10px;color:#64748b">髙橋</td><td style="padding:7px 10px;text-align:right">¥1,500,000</td><td style="padding:7px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,092,463</td><td style="padding:7px 10px;text-align:right;font-weight:700;color:#dc2626">72.8%</td><td style="padding:7px 10px;text-align:right;color:#dc2626">-¥407,537</td><td style="padding:7px 10px;color:#dc2626">件数205件あり単価崩壊→入口価格+¥500</td></tr>
+              <tr style="border-bottom:1px solid #fee2e2"><td style="padding:7px 10px;font-weight:600">m五反田</td><td style="padding:7px 10px;color:#64748b">山田</td><td style="padding:7px 10px;text-align:right">¥1,600,000</td><td style="padding:7px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,186,255</td><td style="padding:7px 10px;text-align:right;font-weight:700;color:#dc2626">74.1%</td><td style="padding:7px 10px;text-align:right;color:#dc2626">-¥413,745</td><td style="padding:7px 10px;color:#dc2626">パリジェンヌSETクーポン追加（4/2期限）</td></tr>
+              <tr><td style="padding:7px 10px;font-weight:600">S横浜</td><td style="padding:7px 10px;color:#64748b">向井</td><td style="padding:7px 10px;text-align:right">¥1,650,000</td><td style="padding:7px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,255,890</td><td style="padding:7px 10px;text-align:right;font-weight:700;color:#dc2626">76.1%</td><td style="padding:7px 10px;text-align:right;color:#dc2626">-¥394,110</td><td style="padding:7px 10px;color:#dc2626">件数不足→平日限定・学割クーポン追加</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 加盟店全体テーブル -->
+      <div style="overflow-x:auto;margin-bottom:28px">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr style="background:#f1f5f9;border-bottom:2px solid #e2e8f0">
+            <th style="padding:8px 10px;text-align:left;font-weight:600;color:#475569">店舗</th>
+            <th style="padding:8px 10px;text-align:left;font-weight:600;color:#475569">SV</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:600;color:#475569">月目標</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:600;color:#475569">着地見込</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:600;color:#475569">達成率</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:600;color:#475569">前月比</th>
+          </tr></thead>
+          <tbody id="franchiseTableBody">
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m下北沢</td><td style="padding:6px 10px;color:#64748b">土田</td><td style="padding:6px 10px;text-align:right">¥2,250,000</td><td style="padding:6px 10px;text-align:right">¥2,111,054</td><td style="padding:6px 10px;text-align:right"><span style="background:#fef9c3;color:#d97706;padding:2px 7px;border-radius:10px;font-weight:600">93.8%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥323,186</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m川崎</td><td style="padding:6px 10px;color:#64748b">澤</td><td style="padding:6px 10px;text-align:right">¥1,982,900</td><td style="padding:6px 10px;text-align:right">¥1,860,304</td><td style="padding:6px 10px;text-align:right"><span style="background:#fef9c3;color:#d97706;padding:2px 7px;border-radius:10px;font-weight:600">93.8%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥45,566</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m所沢</td><td style="padding:6px 10px;color:#64748b">土田</td><td style="padding:6px 10px;text-align:right">¥1,600,000</td><td style="padding:6px 10px;text-align:right">¥1,475,118</td><td style="padding:6px 10px;text-align:right"><span style="background:#fef9c3;color:#d97706;padding:2px 7px;border-radius:10px;font-weight:600">92.2%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥20,208</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m横浜</td><td style="padding:6px 10px;color:#64748b">澤</td><td style="padding:6px 10px;text-align:right">¥3,960,000</td><td style="padding:6px 10px;text-align:right">¥4,255,967</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">107.5%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥409,972</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m立川</td><td style="padding:6px 10px;color:#64748b">土田</td><td style="padding:6px 10px;text-align:right">¥1,600,000</td><td style="padding:6px 10px;text-align:right">¥1,769,974</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">110.6%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥67,466</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m五反田</td><td style="padding:6px 10px;color:#64748b">山田</td><td style="padding:6px 10px;text-align:right">¥1,600,000</td><td style="padding:6px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,186,255</td><td style="padding:6px 10px;text-align:right"><span style="background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:10px;font-weight:600">74.1%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥545,050</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m吉祥寺</td><td style="padding:6px 10px;color:#64748b">山田</td><td style="padding:6px 10px;text-align:right">¥1,500,000</td><td style="padding:6px 10px;text-align:right">¥1,731,051</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">115.4%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥1,731,051</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m東銀座</td><td style="padding:6px 10px;color:#64748b">髙橋</td><td style="padding:6px 10px;text-align:right">¥1,300,000</td><td style="padding:6px 10px;text-align:right">¥1,766,541</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">135.9%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥667,591</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">m郡山</td><td style="padding:6px 10px;color:#64748b">髙橋</td><td style="padding:6px 10px;text-align:right">¥1,200,000</td><td style="padding:6px 10px;text-align:right">¥1,501,606</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">125.1%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥474,906</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S札幌（加盟）</td><td style="padding:6px 10px;color:#64748b">梅田</td><td style="padding:6px 10px;text-align:right">¥1,836,000</td><td style="padding:6px 10px;text-align:right">¥2,204,431</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">120.1%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥333,718</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S天文館</td><td style="padding:6px 10px;color:#64748b">髙橋</td><td style="padding:6px 10px;text-align:right">¥1,500,000</td><td style="padding:6px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,092,463</td><td style="padding:6px 10px;text-align:right"><span style="background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:10px;font-weight:600">72.8%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥50,063</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S金山</td><td style="padding:6px 10px;color:#64748b">髙橋</td><td style="padding:6px 10px;text-align:right">¥750,000</td><td style="padding:6px 10px;text-align:right;color:#dc2626;font-weight:700">¥363,389</td><td style="padding:6px 10px;text-align:right"><span style="background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:10px;font-weight:600">48.5%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥67,389</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S横浜</td><td style="padding:6px 10px;color:#64748b">向井</td><td style="padding:6px 10px;text-align:right">¥1,650,000</td><td style="padding:6px 10px;text-align:right;color:#dc2626;font-weight:700">¥1,255,890</td><td style="padding:6px 10px;text-align:right"><span style="background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:10px;font-weight:600">76.1%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥27,185</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S原宿</td><td style="padding:6px 10px;color:#64748b">山田</td><td style="padding:6px 10px;text-align:right">¥900,000</td><td style="padding:6px 10px;text-align:right;color:#d97706;font-weight:700">¥710,589</td><td style="padding:6px 10px;text-align:right"><span style="background:#fef9c3;color:#d97706;padding:2px 7px;border-radius:10px;font-weight:600">79.0%</span></td><td style="padding:6px 10px;text-align:right;color:#dc2626">-¥53,211</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S下北沢</td><td style="padding:6px 10px;color:#64748b">宮脇</td><td style="padding:6px 10px;text-align:right">¥1,848,000</td><td style="padding:6px 10px;text-align:right">¥1,883,560</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">101.9%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥109,000</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S高田馬場</td><td style="padding:6px 10px;color:#64748b">林</td><td style="padding:6px 10px;text-align:right">¥1,505,000</td><td style="padding:6px 10px;text-align:right">¥1,689,615</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">112.3%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥293,865</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S川崎</td><td style="padding:6px 10px;color:#64748b">土田</td><td style="padding:6px 10px;text-align:right">¥3,622,500</td><td style="padding:6px 10px;text-align:right">¥4,026,142</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">111.1%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥562,237</td></tr>
+            <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px 10px;font-weight:500">S志木</td><td style="padding:6px 10px;color:#64748b">山田</td><td style="padding:6px 10px;text-align:right">¥1,300,000</td><td style="padding:6px 10px;text-align:right">¥1,474,969</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">113.5%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥95,469</td></tr>
+            <tr><td style="padding:6px 10px;font-weight:500">S柏</td><td style="padding:6px 10px;color:#64748b">山田</td><td style="padding:6px 10px;text-align:right">¥1,200,000</td><td style="padding:6px 10px;text-align:right">¥1,511,950</td><td style="padding:6px 10px;text-align:right"><span style="background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">126.0%</span></td><td style="padding:6px 10px;text-align:right;color:#16a34a">+¥265,290</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── 4月アクション ── -->
+      <div style="font-size:15px;font-weight:700;color:#334155;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #e2e8f0">🎯 4月 タカショーアクション一覧</div>
+      <div style="display:grid;gap:10px;margin-bottom:24px">
+        <div style="background:#fff;border-left:4px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#dc2626">🔴 #1 S立川 ─ 件数底上げ</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 4/3</span>
+          </div>
+          <div style="font-size:13px;color:#475569">K.asumiの稼働日数確認→ 空枠クーポン（平日限定等）追加。4月目標+¥257K達成には件数+50件必要。</div>
+        </div>
+        <div style="background:#fff;border-left:4px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#dc2626">🔴 #2 S二子玉川 ─ 客単価改善</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 4/5</span>
+          </div>
+          <div style="font-size:13px;color:#475569">入口クーポン価格帯を確認→¥6,000台のSETクーポンを主力に変更。-¥1,310/件の単価差を埋める。</div>
+        </div>
+        <div style="background:#fff;border-left:4px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#dc2626">🔴 #3 S熊本 ─ OP提案強化</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 4/5</span>
+          </div>
+          <div style="font-size:13px;color:#475569">指名客23件へのOP提案クーポン（アイシャンプー付き等）をHPBに追加。梅田SVへOP指導依頼。</div>
+        </div>
+        <div style="background:#fff;border-left:4px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#dc2626">🔴 #4 S金山 ─ HPB緊急確認</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 3/31</span>
+          </div>
+          <div style="font-size:13px;color:#475569">HPBで口コミ数・最終更新・クーポン内容を確認→ 初回¥4,500以下の集客クーポン1本追加。髙橋SVに状況確認。</div>
+        </div>
+        <div style="background:#fff;border-left:4px solid #dc2626;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#dc2626">🔴 #5 S天文館 ─ 価格改定</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 3/31</span>
+          </div>
+          <div style="font-size:13px;color:#475569">入口クーポン価格+¥500〜¥1,000引き上げ + まつ毛パーマSETクーポン追加。件数205件あり単価改善で即改善可。</div>
+        </div>
+        <div style="background:#fff;border-left:4px solid #f59e0b;border-radius:0 10px 10px 0;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:#d97706">⚠️ #6 全店 ─ 休眠客LINE配信</span>
+            <span style="font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 8px;border-radius:10px">期限 4/7</span>
+          </div>
+          <div style="font-size:13px;color:#475569">LINEダッシュボードで30日タグ・60日タグ確認→ 休眠客に4月限定オファー配信。S立川・S二子玉川を最優先。</div>
+        </div>
+      </div>
+
     </div>
   </div>
 
