@@ -2010,13 +2010,13 @@ async function loadLineFriendsMgmt() {
     refreshHomeTestSelect();
     markLoaded('friends');
 
-    // カウンセリングデータが未ロードなら並行取得して来店回数を表示
-    if (!counselingAll.length) {
-      gasGet('get_all').then(res => {
-        counselingAll = (res.records || []).map(mapGasRecord);
-        renderFriendsMgmt(allFriends);
-      }).catch(() => {});
-    }
+    // 売上データと並行取得して来店回数・最終来店・累計金額を照合
+    gasGet('get_sales_customers').then(res => {
+      window._salesByPhone = res.by_phone || {};
+      window._salesByName  = res.by_name  || {};
+      renderFriendsMgmt(allFriends);
+    }).catch(() => {});
+
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
@@ -2038,45 +2038,73 @@ function filterFriendsMgmt() {
   renderFriendsMgmt(list);
 }
 
+function normPhone(p) { return String(p||'').replace(/-/g,'').replace(/\s/g,''); }
+
+function getSalesMatch(f) {
+  const byPhone = window._salesByPhone || {};
+  const byName  = window._salesByName  || {};
+  // 1. 電話番号で照合
+  const ph = normPhone(f['電話番号'] || '');
+  if (ph && byPhone[ph]) return byPhone[ph];
+  // 2. 名前で照合（スペース除去して部分一致）
+  const nm = (f['お名前'] || f['LINE表示名'] || '').replace(/\s/g,'');
+  if (nm) {
+    const key = Object.keys(byName).find(k => k && (k.includes(nm) || nm.includes(k)));
+    if (key) return byName[key];
+  }
+  return null;
+}
+
 function renderFriendsMgmt(friends) {
   const el = document.getElementById('friendsMgmtResult');
   if (!friends.length) {
     el.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa">友だちがいません</div>';
     return;
   }
-  // 電話番号→来店回数マップをcounselingAllから構築
-  const visitCountByPhone = {};
-  counselingAll.forEach(r => {
-    if (r.phone) visitCountByPhone[String(r.phone)] = (visitCountByPhone[String(r.phone)] || 0) + 1;
-  });
+  const salesLoaded = Object.keys(window._salesByPhone || {}).length > 0;
   el.innerHTML = `
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>登録日</th><th>名前</th><th>電話番号</th><th>登録店舗</th><th>来店回数</th><th>最終来店</th><th>タグ</th><th>操作</th>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>登録店舗</th><th>来店回数</th><th>最終来店</th><th>累計金額</th><th>タグ</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
-            const name       = f['お名前'] || f['LINE表示名'] || '未設定';
-            const phone      = f['電話番号'] || '―';
-            const lastVisit  = (f['最終来店日']||'').substring(0,10) || '―';
-            const regDate    = (f['登録日時']||'').substring(0,10) || '―';
-            const tags       = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#eef2ff;color:#6366f1;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
-            const uid        = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-            const safeName   = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-            const storeName  = f['登録店舗'] || '―';
-            const phoneKey   = String(f['電話番号'] || '');
-            const visitCount = phoneKey && visitCountByPhone[phoneKey] ? visitCountByPhone[phoneKey] : '―';
-            const visitBadge = visitCount !== '―'
-              ? `<span style="font-weight:700;color:#6366f1">${visitCount}</span><span style="font-size:11px;color:#888">回</span>`
-              : `<span style="color:#ccc">―</span>`;
+            const name      = f['お名前'] || f['LINE表示名'] || '未設定';
+            const phone     = f['電話番号'] || '―';
+            const regDate   = (f['登録日時']||'').substring(0,10) || '―';
+            const storeName = f['登録店舗'] || '―';
+            const tags      = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:var(--primary-light);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
+            const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+
+            // 売上データ照合
+            const sales = getSalesMatch(f);
+            const visitCount  = sales ? sales.visit_count : null;
+            const lastVisit   = sales ? (sales.last_visit||'').substring(0,10) : (f['最終来店日']||'').substring(0,10) || null;
+            const totalAmount = sales ? sales.total_amount : null;
+
+            const matchDot = sales
+              ? `<span title="売上データと照合済み" style="display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-left:5px;vertical-align:middle"></span>`
+              : `<span title="未照合" style="display:inline-block;width:7px;height:7px;background:#ddd;border-radius:50%;margin-left:5px;vertical-align:middle"></span>`;
+
+            const visitBadge = visitCount != null
+              ? `<span style="font-weight:700;color:var(--primary)">${visitCount}</span><span style="font-size:11px;color:#888">回</span>`
+              : salesLoaded ? `<span style="color:#ccc">―</span>` : `<span style="color:#ccc">…</span>`;
+
+            const lastStr = lastVisit || '―';
+            const amountStr = totalAmount != null
+              ? `<span style="font-weight:600;color:var(--text)">¥${totalAmount.toLocaleString()}</span>`
+              : '―';
+
             return `<tr>
-              <td style="white-space:nowrap">${regDate}</td>
-              <td><strong>${name}</strong></td>
-              <td>${phone}</td>
+              <td style="white-space:nowrap;font-size:12px">${regDate}</td>
+              <td><strong>${name}</strong>${matchDot}</td>
+              <td style="font-size:12px">${phone}</td>
               <td style="white-space:nowrap;font-size:12px">${storeName}</td>
               <td style="text-align:center">${visitBadge}</td>
-              <td style="white-space:nowrap">${lastVisit}</td>
+              <td style="white-space:nowrap;font-size:12px">${lastStr}</td>
+              <td style="white-space:nowrap">${amountStr}</td>
               <td>${tags || '―'}</td>
               <td style="white-space:nowrap;display:flex;gap:4px">
                 <button class="btn btn-blue btn-sm" onclick="openCustomerProfile('${uid}')">👤 詳細</button>
