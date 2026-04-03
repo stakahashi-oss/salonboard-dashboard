@@ -9,32 +9,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
 
 :root {
-  --primary: #c2527a;
-  --primary-dark: #a83f64;
-  --primary-light: #fce8ef;
-  --sidebar-bg: #1f0e1a;
-  --sidebar-text: #c9a8b8;
-  --bg: #fff8f9;
+  --primary: #d4849e;
+  --primary-dark: #c2527a;
+  --primary-light: #fef2f6;
+  --sidebar-bg: #2e1a24;
+  --sidebar-text: #d4b8c4;
+  --bg: #fffbfc;
   --surface: #ffffff;
-  --border: #f0dde4;
-  --text: #2d1a24;
-  --text-muted: #8a6070;
-  --text-light: #b89aaa;
-  --green: #10b981;
-  --green-light: #ecfdf5;
-  --orange: #e8875a;
-  --orange-light: #fff3ee;
-  --red: #e05c7a;
-  --red-light: #fef0f3;
-  --blue: #7b9fd4;
-  --blue-light: #eef3fb;
-  --purple: #a87bc4;
-  --purple-light: #f5eefb;
-  --line: #06c755;
-  --line-light: #f0fdf4;
-  --shadow-sm: 0 2px 8px rgba(194,82,122,.06),0 1px 3px rgba(194,82,122,.04);
-  --shadow: 0 4px 16px rgba(194,82,122,.08),0 2px 6px rgba(194,82,122,.04);
-  --shadow-md: 0 12px 28px rgba(194,82,122,.12),0 4px 10px rgba(194,82,122,.06);
+  --border: #f5e8ed;
+  --text: #3d2530;
+  --text-muted: #9a7080;
+  --text-light: #c4a8b4;
+  --green: #5cb88a;
+  --green-light: #f0faf5;
+  --orange: #e8a87a;
+  --orange-light: #fff8f2;
+  --red: #e0849a;
+  --red-light: #fef5f7;
+  --blue: #90b4d8;
+  --blue-light: #f2f7fc;
+  --purple: #b898cc;
+  --purple-light: #f8f2fc;
+  --line: #3dc47a;
+  --line-light: #f2fbf6;
+  --shadow-sm: 0 2px 10px rgba(180,120,140,.07),0 1px 3px rgba(180,120,140,.04);
+  --shadow: 0 4px 18px rgba(180,120,140,.09),0 2px 6px rgba(180,120,140,.05);
+  --shadow-md: 0 12px 32px rgba(180,120,140,.11),0 4px 10px rgba(180,120,140,.06);
   --radius: 14px;
   --radius-sm: 10px;
   --radius-lg: 20px;
@@ -44,9 +44,9 @@
 body { font-family:'Zen Kaku Gothic New','Inter','Hiragino Sans','Meiryo',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; font-size:14px; -webkit-font-smoothing:antialiased; }
 
 /* ── Sidebar ── */
-.sidebar { width:240px; background:var(--sidebar-bg); color:#fff; display:flex; flex-direction:column; position:fixed; height:100vh; overflow-y:auto; z-index:100; transition:transform .3s; background-image:linear-gradient(180deg,#2a0e20 0%,#1f0e1a 60%,#180b15 100%); }
+.sidebar { width:240px; background:var(--sidebar-bg); color:#fff; display:flex; flex-direction:column; position:fixed; height:100vh; overflow-y:auto; z-index:100; transition:transform .3s; background-image:linear-gradient(180deg,#3a2030 0%,#2e1a24 60%,#251520 100%); }
 .sidebar-logo { padding:22px 20px 18px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,.06); }
-.sidebar-logo-icon { width:38px; height:38px; background:linear-gradient(135deg,var(--primary),#e879a0); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; box-shadow:0 4px 12px rgba(194,82,122,.4); }
+.sidebar-logo-icon { width:38px; height:38px; background:linear-gradient(135deg,var(--primary),#e8a8bc); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; box-shadow:0 4px 12px rgba(180,120,140,.35); }
 .sidebar-logo-text { font-size:15px; font-weight:700; color:#fff; letter-spacing:.3px; }
 .sidebar-logo-sub { font-size:10px; color:#8a5a6e; margin-top:2px; letter-spacing:.5px; }
 .sidebar-plan { padding:8px 20px; font-size:11px; color:#6b3a50; background:rgba(255,255,255,.02); border-bottom:1px solid rgba(255,255,255,.04); }
@@ -57,7 +57,7 @@ body { font-family:'Zen Kaku Gothic New','Inter','Hiragino Sans','Meiryo',sans-s
 .nav-section { padding:20px 20px 6px; font-size:10px; font-weight:600; color:#6b3a50; letter-spacing:1.4px; text-transform:uppercase; }
 .nav-item { display:flex; align-items:center; margin:2px 10px; padding:9px 13px; font-size:13px; font-weight:500; color:#c9a8b8; cursor:pointer; gap:10px; transition:all .18s; border-radius:10px; }
 .nav-item:hover { background:rgba(255,255,255,.07); color:#f0dde4; }
-.nav-item.active { background:linear-gradient(135deg,var(--primary),#d4668e); color:#fff; font-weight:600; box-shadow:0 3px 10px rgba(194,82,122,.4); }
+.nav-item.active { background:linear-gradient(135deg,rgba(212,132,158,.7),rgba(220,150,172,.5)); color:#fff; font-weight:600; box-shadow:0 3px 10px rgba(180,120,140,.25); }
 .nav-item .badge { background:#e05c7a; color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; margin-left:auto; }
 
 /* ── Main ── */
@@ -130,7 +130,7 @@ body { font-family:'Zen Kaku Gothic New','Inter','Hiragino Sans','Meiryo',sans-s
 /* ── Rate bar ── */
 .rate-bar { display:flex; align-items:center; gap:10px; }
 .rate-bg { flex:1; background:#e2e8f0; border-radius:6px; height:8px; overflow:hidden; min-width:60px; }
-.rate-fill { background:linear-gradient(90deg,var(--primary),#e879a0); height:100%; border-radius:6px; }
+.rate-fill { background:linear-gradient(90deg,var(--primary),#e8b0c4); height:100%; border-radius:6px; }
 .rate-val { font-size:12px; color:var(--text-muted); min-width:52px; font-weight:600; }
 
 /* ── Schedule ── */
@@ -225,16 +225,16 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
 .modal-close:hover { background:#e2e8f0; }
 
 /* ── Login ── */
-#loginOverlay { position:fixed; inset:0; background:linear-gradient(135deg,#1f0e1a 0%,#3d1630 40%,#1f0e1a 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
-#loginOverlay::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 30% 40%,rgba(194,82,122,.18) 0%,transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(232,121,160,.12) 0%,transparent 55%); pointer-events:none; }
-.login-box { background:rgba(255,248,249,.98); border-radius:24px; padding:48px 38px; width:100%; max-width:380px; box-shadow:0 30px 60px rgba(0,0,0,.35),0 0 0 1px rgba(194,82,122,.12); text-align:center; }
-.login-box-logo { background:linear-gradient(135deg,var(--primary),#e879a0); width:64px; height:64px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 22px; box-shadow:0 10px 28px rgba(194,82,122,.4); }
+#loginOverlay { position:fixed; inset:0; background:linear-gradient(145deg,#f5e8ed 0%,#eedde5 40%,#f8edf1 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
+#loginOverlay::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 25% 35%,rgba(212,132,158,.22) 0%,transparent 55%),radial-gradient(ellipse at 75% 70%,rgba(180,140,200,.14) 0%,transparent 50%); pointer-events:none; }
+.login-box { background:rgba(255,255,255,.96); border-radius:24px; padding:48px 38px; width:100%; max-width:380px; box-shadow:0 20px 50px rgba(180,120,140,.18),0 0 0 1px rgba(212,132,158,.15); text-align:center; }
+.login-box-logo { background:linear-gradient(135deg,var(--primary),#e8b0c4); width:64px; height:64px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 22px; box-shadow:0 8px 24px rgba(180,120,140,.3); }
 .login-box-title { font-size:22px; font-weight:700; margin-bottom:4px; color:var(--text); letter-spacing:.2px; }
 .login-box-sub { font-size:13px; color:var(--text-muted); margin-bottom:32px; }
 .login-box-input { width:100%; padding:14px 16px; border:1.5px solid var(--border); border-radius:var(--radius); font-size:15px; outline:none; margin-bottom:12px; transition:all .2s; background:#fff8f9; font-family:inherit; }
 .login-box-input:focus { border-color:var(--primary); background:#fff; box-shadow:0 0 0 3px rgba(194,82,122,.12); }
-.login-box-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--primary),#d4668e); color:#fff; border:none; border-radius:var(--radius); font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; letter-spacing:.3px; }
-.login-box-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(194,82,122,.45); filter:brightness(1.05); }
+.login-box-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--primary),#e0a0b8); color:#fff; border:none; border-radius:var(--radius); font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; letter-spacing:.3px; }
+.login-box-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(180,120,140,.35); filter:brightness(1.05); }
 .login-box-error { color:var(--red); font-size:13px; margin-top:10px; min-height:18px; font-weight:500; }
 </style>
 </head>
