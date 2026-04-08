@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LUMISS二子玉川 競合調査 2026年4月</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fb;--surface:#fff;--border:#e4e9f2;
+  --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
+  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;font-size:13px;line-height:1.55;-webkit-font-smoothing:antialiased;padding:32px}
+
+.page-header{margin-bottom:28px}
+.page-header h1{font-size:22px;font-weight:800;color:var(--text)}
+.page-header p{color:var(--text2);margin-top:4px;font-size:13px}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi-card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--border)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-val{font-size:28px;font-weight:800;color:var(--text)}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.badge-violet{background:var(--violet-bg);color:var(--violet);border:1px solid var(--violet-border)}
+
+.section{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:24px}
+.section-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:20px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+
+/* Table */
+table{width:100%;border-collapse:collapse}
+thead th{background:#f8faff;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;border-bottom:2px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafbff}
+tbody td{padding:12px 12px;font-size:13px;color:var(--text)}
+.lumiss-row{background:linear-gradient(90deg,#f5f3ff,#eff6ff) !important;font-weight:600}
+.lumiss-row td{color:#4f46e5 !important}
+
+.rank-num{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.rank-1{background:linear-gradient(135deg,#f59e0b,#f97316)}
+.rank-2{background:linear-gradient(135deg,#94a3b8,#64748b)}
+.rank-3{background:linear-gradient(135deg,#b45309,#92400e)}
+.rank-other{background:#e2e8f0;color:var(--text2) !important}
+.rank-lumiss{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+
+/* Price bar */
+.price-bar-wrap{display:flex;align-items:center;gap:8px}
+.price-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.price-bar.cheap{background:linear-gradient(90deg,#10b981,#059669)}
+.price-bar.mid{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.price-bar.high{background:linear-gradient(90deg,#f43f5e,#dc2626)}
+
+/* Insight box */
+.insight{border-radius:var(--r-sm);padding:14px 16px;margin-top:16px;border-left:4px solid}
+.insight-red{background:var(--red-bg);border-color:var(--red)}
+.insight-amber{background:var(--amber-bg);border-color:var(--amber)}
+.insight-green{background:var(--green-bg);border-color:var(--green)}
+.insight-blue{background:var(--blue-bg);border-color:var(--blue)}
+.insight-title{font-weight:700;margin-bottom:4px;font-size:13px}
+.insight p{font-size:12px;color:var(--text2);line-height:1.6}
+
+.action-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.action-item{display:flex;align-items:flex-start;gap:12px;background:#f8faff;border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border)}
+.action-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-body{flex:1}
+.action-title{font-weight:600;font-size:13px;color:var(--text)}
+.action-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.action-tag{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--violet-bg);color:var(--violet);border:1px solid var(--violet-border);margin-left:6px}
+
+.chart-wrap{height:260px;position:relative}
+
+.availability{display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.dot-on{width:7px;height:7px;border-radius:50%;background:#10b981}
+.dot-off{width:7px;height:7px;border-radius:50%;background:#94a3b8}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🔬 LUMISS 二子玉川 競合調査レポート</h1>
+  <p>HPBエリア検索「二子玉川×マツエク専門店」全店舗調査 ／ 店舗名変更推奨案含む ／ 2026年4月8日時点</p>
+</div>
+
+<!-- KPI -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">エリア競合数</div>
+    <div class="kpi-val">18<span style="font-size:15px;color:var(--text2)">店</span></div>
+    <div class="kpi-sub">パリジェンヌ掲載あり</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">LUMISS 口コミ順位</div>
+    <div class="kpi-val" style="color:var(--red)">16<span style="font-size:15px">位</span></div>
+    <div class="kpi-sub">12件 / 1位Richelleは1,187件</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">LUMISS パリジェンヌ価格</div>
+    <div class="kpi-val">¥4,500</div>
+    <div class="kpi-sub"><span class="badge badge-green">エリア最安水準</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">4月予約（4/1〜4/8）</div>
+    <div class="kpi-val" style="color:var(--red)">3<span style="font-size:15px">件</span></div>
+    <div class="kpi-sub">全件まつエク新規・パリジェンヌ0件</div>
+  </div>
+</div>
+
+<div class="grid2">
+  <!-- 競合ランキング -->
+  <div class="section">
+    <div class="section-title">口コミ数ランキング（マツエクあり店舗のみ）</div>
+    <div class="section-sub">HPB掲載順位の主要因。パリジェンヌ・まつパのみの店舗は除外</div>
+    <table>
+      <thead>
+        <tr><th>順位</th><th>店舗名</th><th>口コミ</th><th>マツエク最安値</th><th>徒歩</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank-num rank-1">1</span></td>
+          <td>Richelle eyelash&nail</td>
+          <td><strong>1,187件</strong></td>
+          <td>¥3,700（セーブル60本）</td>
+          <td>4分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-2">2</span></td>
+          <td>Ohana eyelash salon</td>
+          <td><strong>667件</strong></td>
+          <td>¥4,300（フラット80本）</td>
+          <td>7分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-3">3</span></td>
+          <td>Beauce eyelash</td>
+          <td><strong>385件</strong></td>
+          <td>¥4,800（コーティング付120本）</td>
+          <td>3分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">4</span></td>
+          <td>NEPTUNE 二子玉川店</td>
+          <td>364件</td>
+          <td>¥4,980</td>
+          <td>2分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">5</span></td>
+          <td>DL・BEAUTY</td>
+          <td>277件</td>
+          <td>¥5,500</td>
+          <td>3分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">6</span></td>
+          <td>BEAUTY GENE professional</td>
+          <td>201件</td>
+          <td>¥7,600（LEDマツエク100本）</td>
+          <td>5分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">7</span></td>
+          <td>THE SALON -esme-</td>
+          <td>191件</td>
+          <td>¥6,600</td>
+          <td>5分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">8</span></td>
+          <td>eight eyelash</td>
+          <td>177件</td>
+          <td>¥4,200</td>
+          <td>5分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">9</span></td>
+          <td>SOSO. eyelash&eyebrows</td>
+          <td>96件</td>
+          <td>¥5,290</td>
+          <td>5分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">10</span></td>
+          <td>Noel totto</td>
+          <td>92件</td>
+          <td>¥7,000</td>
+          <td>7分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">11</span></td>
+          <td>eyelash salon 1739</td>
+          <td>75件</td>
+          <td>¥5,880</td>
+          <td>4分</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num rank-other">12</span></td>
+          <td>LYS 二子玉川</td>
+          <td>26件</td>
+          <td>¥5,500</td>
+          <td>3分</td>
+        </tr>
+        <tr class="lumiss-row">
+          <td><span class="rank-num rank-lumiss">13</span></td>
+          <td>★ LUMISS 二子玉川店</td>
+          <td><strong>12件</strong></td>
+          <td><span class="badge badge-red">クーポンなし</span></td>
+          <td>5分</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 右カラム -->
+  <div style="display:flex;flex-direction:column;gap:24px">
+
+    <!-- 価格ポジション -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title">パリジェンヌ価格ポジション</div>
+      <div class="section-sub">LUMISS¥4,500はエリア最安水準。価格は武器になっている</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Beauce eyelash</span><span style="font-weight:600;color:var(--red)">¥11,400</span></div>
+          <div class="price-bar high" style="width:100%"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>coto 二子玉川店</span><span style="font-weight:600;color:var(--amber)">¥7,300</span></div>
+          <div class="price-bar mid" style="width:64%"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>BEAUTY GENE professional</span><span style="font-weight:600;color:var(--amber)">¥6,800</span></div>
+          <div class="price-bar mid" style="width:59%"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Ohana eyelash</span><span style="font-weight:600;">¥5,700</span></div>
+          <div class="price-bar mid" style="width:50%"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>NEPTUNE 二子玉川</span><span style="font-weight:600;">¥4,980</span></div>
+          <div class="price-bar cheap" style="width:43%"></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:#4f46e5">★ LUMISS 二子玉川</span><span style="font-weight:700;color:#059669">¥4,500</span></div>
+          <div class="price-bar cheap" style="width:39%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 予約空き状況 -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title">予約空き状況（4/8時点・HPB表示）</div>
+      <div class="section-sub">口コミ上位ほど先まで埋まっている</div>
+      <table>
+        <thead><tr><th>店舗</th><th>口コミ</th><th>空き状況</th><th>込み具合</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Richelle（1位）</td><td>1,187件</td>
+            <td><div class="availability"><div class="dot-on"></div>4/9のみ空き</div></td>
+            <td><span class="badge badge-red">ほぼ満席</span></td>
+          </tr>
+          <tr>
+            <td>Ohana（2位）</td><td>667件</td>
+            <td><div class="availability"><div class="dot-on"></div>4/24 12:30のみ</div></td>
+            <td><span class="badge badge-red">超満席</span></td>
+          </tr>
+          <tr>
+            <td>Beauce（3位）</td><td>385件</td>
+            <td><div class="availability"><div class="dot-on"></div>本日14:30〜のみ</div></td>
+            <td><span class="badge badge-red">ほぼ満席</span></td>
+          </tr>
+          <tr>
+            <td>Noel totto</td><td>92件</td>
+            <td><div class="availability"><div class="dot-on"></div>4/11(土)19時のみ</div></td>
+            <td><span class="badge badge-amber">かなり埋まり</span></td>
+          </tr>
+          <tr>
+            <td>eight eyelash</td><td>177件</td>
+            <td><div class="availability"><div class="dot-on"></div>本日◎</div></td>
+            <td><span class="badge badge-green">空きあり</span></td>
+          </tr>
+          <tr>
+            <td>eyelash salon 1739</td><td>75件</td>
+            <td><div class="availability"><div class="dot-on"></div>本日空き◎</div></td>
+            <td><span class="badge badge-green">空きあり</span></td>
+          </tr>
+          <tr>
+            <td>LYS 二子玉川</td><td>26件</td>
+            <td><div class="availability"><div class="dot-on"></div>当日9日空き◎</div></td>
+            <td><span class="badge badge-green">空きあり</span></td>
+          </tr>
+          <tr class="lumiss-row">
+            <td>★ LUMISS二子玉川</td><td>12件</td>
+            <td><div class="availability"><div class="dot-on"></div>4/8空有◎</div></td>
+            <td><span class="badge badge-blue">ガラ空き</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="insight insight-green" style="margin-top:16px">
+        <div class="insight-title">✅ 市場の需要は確実に存在する</div>
+        <p>Ohanaは<strong>4/24まで2週間以上先まで満席</strong>。Richelleも明日しか空いていない。二子玉川エリアのマツエク需要は旺盛。LUMISSがガラ空きなのは「需要がない」のではなく<strong>「見つけてもらえていない」</strong>だけ。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 口コミ数グラフ -->
+<div class="section">
+  <div class="section-title">口コミ数 比較チャート（上位店舗 vs LUMISS）</div>
+  <div class="section-sub">LUMISSはオープン間もないため口コミが圧倒的に少ない。HPB掲載順位に直結する</div>
+  <div class="chart-wrap">
+    <canvas id="reviewChart"></canvas>
+  </div>
+</div>
+
+<!-- マツエク競合クーポン比較 -->
+<div class="section">
+  <div class="section-title">💈 マツエク クーポン競合比較</div>
+  <div class="section-sub">各店のHPB掲載クーポンを直接調査（4/8時点）</div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+
+    <!-- Richelle -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#f59e0b,#f97316);padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">🥇 Richelle eyelash&nail</div>
+        <div style="color:rgba(255,255,255,.8);font-size:11px">口コミ1,187件 ／ 徒歩4分</div>
+      </div>
+      <table style="margin:0">
+        <thead><tr><th>メニュー</th><th>価格</th><th>対象</th></tr></thead>
+        <tbody>
+          <tr><td>セーブル60本</td><td><strong>¥3,700</strong></td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>フラット60本</td><td><strong>¥5,100</strong></td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>フラット80本</td><td><strong>¥5,600</strong></td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>ダブルフラット30束</td><td><strong>¥6,100</strong></td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>ダブルフラット40束</td><td><strong>¥6,600</strong></td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>カラーエクステ60本</td><td>¥6,200</td><td><span class="badge badge-blue">全員</span></td></tr>
+          <tr><td>カラーエクステ80本</td><td>¥6,700</td><td><span class="badge badge-blue">全員</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Ohana -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#94a3b8,#64748b);padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">🥈 Ohana eyelash salon</div>
+        <div style="color:rgba(255,255,255,.8);font-size:11px">口コミ667件 ／ 徒歩7分</div>
+      </div>
+      <table style="margin:0">
+        <thead><tr><th>メニュー</th><th>価格</th><th>対象</th></tr></thead>
+        <tbody>
+          <tr><td>フラットラッシュ80本</td><td><strong>¥4,300</strong></td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>フラットラッシュ100本</td><td><strong>¥4,800</strong></td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>フラットラッシュ120本</td><td><strong>¥5,300</strong></td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>ブラウンフラット80本</td><td>¥4,500</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>ダブルフラット〜80束</td><td>¥6,000</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>ダブルフラット90〜120束</td><td>¥7,000</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>ダブルフラット130〜160束</td><td>¥8,000</td><td><span class="badge badge-green">新規</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Beauce -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#b45309,#92400e);padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">🥉 Beauce eyelash</div>
+        <div style="color:rgba(255,255,255,.8);font-size:11px">口コミ385件 ／ 徒歩3分</div>
+      </div>
+      <table style="margin:0">
+        <thead><tr><th>メニュー</th><th>価格</th><th>対象</th></tr></thead>
+        <tbody>
+          <tr><td>フラット/セーブル80本</td><td><strong>¥5,100</strong></td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>コーティング付き120本</td><td><strong style="color:var(--green)">¥4,800</strong></td><td><span class="badge badge-green">新規(期間限定)</span></td></tr>
+          <tr><td>フラット/セーブル120本</td><td><strong>¥5,500</strong></td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>フラット/セーブル160本</td><td>¥6,500</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>カラーマツエク80本</td><td>¥6,100</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>カラーマツエク120本</td><td>¥6,500</td><td><span class="badge badge-green">新規</span></td></tr>
+          <tr><td>120本(リピーター)</td><td>¥7,500</td><td><span class="badge badge-amber">再来</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LUMISS現状＋方針 -->
+  <div style="border:2px solid #6366f1;border-radius:var(--r-sm);overflow:hidden;margin-bottom:16px">
+    <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed);padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:13px">★ LUMISS 二子玉川（現状 → 方針）</div>
+        <div style="color:rgba(255,255,255,.8);font-size:11px">口コミ12件 ／ 徒歩5分</div>
+      </div>
+      <span class="badge badge-red">マツエククーポン 現在0件</span>
+    </div>
+    <div style="padding:14px 16px;background:#fafbff;font-size:12px;color:var(--text2);line-height:1.8">
+      現在のクーポンは<strong>パリジェンヌ系のみ6件</strong>。マツエク系クーポンが一切ない状態。<br>
+      メイン訴求は <strong>「LEDフラットラッシュ」</strong> に決定。競合と差別化できる打ち出しワード。<br>
+      Richelleはすでに「LEDエクステ/セーブル100本 ¥7,300」として掲載。LUMISSはより低価格帯で設定し入口を広げる。
+    </div>
+  </div>
+
+  <!-- 価格帯比較 LEDフラットラッシュ -->
+  <div style="background:#f8faff;border-radius:var(--r-sm);padding:16px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">LEDフラットラッシュ 競合価格帯（100〜120本 目安）</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px">※LED対応の競合は少なく、差別化ワードとして有効</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:160px;font-size:12px">Richelle（1位）LED対応</span>
+        <div style="flex:1;height:22px;background:linear-gradient(90deg,#f59e0b,#d97706);border-radius:4px;display:flex;align-items:center;padding:0 10px"><span style="color:#fff;font-size:11px;font-weight:600">¥7,300（LED/セーブル100本・全員）</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:160px;font-size:12px">BEAUTY GENE LED対応</span>
+        <div style="flex:1;height:22px;background:linear-gradient(90deg,#f59e0b,#d97706);border-radius:4px;display:flex;align-items:center;padding:0 10px"><span style="color:#fff;font-size:11px;font-weight:600">¥7,600（LEDマツエク100本・新規）</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:160px;font-size:12px">Ohana / Beauce（非LED）</span>
+        <div style="flex:1;height:22px;background:linear-gradient(90deg,#94a3b8,#64748b);border-radius:4px;display:flex;align-items:center;padding:0 10px"><span style="color:#fff;font-size:11px;font-weight:600">¥4,800〜¥5,500（通常フラット）</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:160px;font-size:12px;font-weight:700;color:#4f46e5">★ LUMISS 推奨設定</span>
+        <div style="flex:1;height:22px;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:4px;display:flex;align-items:center;padding:0 10px"><span style="color:#fff;font-size:11px;font-weight:600">LEDフラットラッシュ 100本 ¥5,500〜¥6,000（新規）が競争力あり</span></div>
+      </div>
+    </div>
+    <div class="insight insight-green" style="margin-top:14px">
+      <div class="insight-title">✅ LEDフラットラッシュは差別化ワードになる</div>
+      <p>エリア内でLED対応を打ち出しているのはRichelle・BEAUTY GENEのみ。LUMISSがLEDフラットラッシュを入口に設定すれば、検索上のキーワード差別化と高単価訴求が同時に実現できる。Richelleより¥1,000〜¥2,000安く設定すれば価格競争力も確保できる。</p>
+    </div>
+  </div>
+</div>
+
+<!-- 店舗名にキーワードを入れているか -->
+<div class="section">
+  <div class="section-title">🏷️ 競合の「店舗名へのキーワード埋め込み」分析</div>
+  <div class="section-sub">HPBに表示される店舗名（フリーワード含む完全表記）を全件調査。何を名前に入れているかが集客戦略を表す</div>
+  <table>
+    <thead>
+      <tr><th>HPB掲載の完全店舗名</th><th>マツエク</th><th>パリジェンヌ/まつパ</th><th>眉毛</th><th>ネイル</th><th>専門店</th></tr>
+    </thead>
+    <tbody>
+      <tr class="lumiss-row">
+        <td>★ パリジェンヌ/マツエク専門店 LUMISS二子玉川店［LEDフラットラッシュ］</td>
+        <td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td>
+      </tr>
+      <tr>
+        <td>eyelash salon 1739 二子玉川【まつげパーマ/マツエク/パリジェンヌ/LED/眉毛】</td>
+        <td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>eyelash salon LYS マツエク・パリジェンヌ・まつげパーマ専門店 二子玉川</td>
+        <td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td>
+      </tr>
+      <tr>
+        <td>DL・BEAUTY 二子玉川店【まつげパーマ・パリジェンヌ・マツエク・眉毛・ネイル】</td>
+        <td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>【眉毛&まつげ専門サロン】BEAUTY GENE professional 二子玉川店</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td>
+      </tr>
+      <tr>
+        <td>眉毛とまつげパーマの専門店 ロレインブロウ 二子玉川店</td>
+        <td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td>
+      </tr>
+      <tr>
+        <td>～眉毛・まつげパーマ専門店～ doo 二子玉川店</td>
+        <td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td>
+      </tr>
+      <tr>
+        <td>THE SALON -esme- (二子玉川) アイラッシュ・ブロウ・フェイシャル</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>Richelle eyelash&nail二子玉川店【リシェルアイラッシュ&ネイル】</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>Ohana eyelash salon 二子玉川店</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>Beauce eyelash 二子玉川店【ビューチェ】</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>NEPTUNE パラジェルネイル&アイラッシュ 二子玉川店</td>
+        <td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px">
+    <div class="insight insight-blue" style="margin-top:0">
+      <div class="insight-title">💡 重要な発見：上位3店はキーワードを店名に入れていない</div>
+      <p>口コミ1位Richelle（1,187件）・2位Ohana（667件）・3位Beauce（385件）は店名にマツエクもパリジェンヌも入れていない。<strong>口コミ数が多ければキーワードなしでも上位表示される</strong>ことを証明している。</p>
+    </div>
+    <div class="insight insight-amber" style="margin-top:0">
+      <div class="insight-title">⚠️ キーワード詰め込みは「口コミ少ない店の補完戦略」</div>
+      <p>店名にキーワードを詰め込んでいる店（1739・LYS・DL・BEAUTY等）は口コミ100件以下が多い。LUMISSも同じ状況。<strong>今は名前よりも口コミを増やすことが最優先。</strong>店名変更はその後でいい。</p>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;background:linear-gradient(90deg,#f5f3ff,#eff6ff);border-radius:var(--r-sm);padding:14px 16px;border:1px solid #ddd6fe">
+    <div style="font-size:13px;font-weight:700;color:#4f46e5;margin-bottom:6px">🎯 LUMISS二子玉川 店名変更の推奨方向</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7">
+      マツエク特化に振り切るなら、現在の「パリジェンヌ/マツエク専門店 LUMISS二子玉川店」から
+      <strong>「マツエク専門店 LUMISS 二子玉川」</strong>へ変更が最適。<br>
+      ただし口コミが30件を超えたタイミングで変更しないと、変更による順位リセットのリスクがある。
+      <strong>まず口コミ→その後に店名変更</strong>が安全な順序。
+    </div>
+  </div>
+</div>
+
+<!-- パリジェンヌ打ち出し判断 -->
+<div class="section">
+  <div class="section-title">🔍 パリジェンヌを前面に出すべきか — 競合データによる結論</div>
+  <div class="section-sub">「マツエクに振り切る」方針のもと、パリジェンヌの打ち出し有無を競合データで検証</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">競合の主軸訴求 × 口コミ数</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px">マツエクメニューあり店舗のみ</div>
+      <table>
+        <thead><tr><th>順</th><th>店舗</th><th>主軸訴求</th><th>口コミ</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rank-num rank-1">1</span></td><td>Richelle</td><td><span class="badge badge-blue">マツエク前面</span></td><td><strong>1,187件</strong></td></tr>
+          <tr><td><span class="rank-num rank-2">2</span></td><td>Ohana</td><td><span class="badge badge-blue">マツエク前面</span></td><td>667件</td></tr>
+          <tr><td><span class="rank-num rank-3">3</span></td><td>Beauce</td><td><span class="badge badge-blue">マツエク前面</span></td><td>385件</td></tr>
+          <tr><td><span class="rank-num rank-other">4</span></td><td>NEPTUNE</td><td><span class="badge badge-amber">マツエク+パリ</span></td><td>364件</td></tr>
+          <tr><td><span class="rank-num rank-other">5</span></td><td>DL・BEAUTY</td><td><span class="badge badge-amber">マツエク+パリ</span></td><td>277件</td></tr>
+          <tr><td><span class="rank-num rank-other">6</span></td><td>BEAUTY GENE</td><td><span class="badge badge-blue">LEDマツエク</span></td><td>201件</td></tr>
+          <tr><td><span class="rank-num rank-other">7</span></td><td>eight eyelash</td><td><span class="badge badge-blue">マツエク前面</span></td><td>177件</td></tr>
+          <tr><td><span class="rank-num rank-other">8</span></td><td>SOSO.</td><td><span class="badge badge-blue">マツエク前面</span></td><td>96件</td></tr>
+          <tr><td><span class="rank-num rank-other">9</span></td><td>1739</td><td><span class="badge badge-amber">マツエク+パリ</span></td><td>75件</td></tr>
+          <tr><td><span class="rank-num rank-other">10</span></td><td>LYS</td><td><span class="badge badge-amber">マツエク+パリ</span></td><td>26件</td></tr>
+          <tr class="lumiss-row"><td><span class="rank-num rank-lumiss">11</span></td><td>★ LUMISS</td><td><span class="badge badge-red">マツエクなし（現状）</span></td><td>12件</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="insight insight-green" style="margin-top:0">
+        <div class="insight-title">✅ 結論：パリジェンヌは「打ち出さない・でも残す」</div>
+        <p>エリア上位3店は全員マツエク前面。パリジェンヌ前面のNEPTUNEは4位止まり。データが「マツエク特化」の正しさを証明している。パリジェンヌはメニューに残して来店後のアップセルに活用する。</p>
+      </div>
+      <div style="background:#f8faff;border-radius:var(--r-sm);padding:14px;border:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">打ち出し方針（確定）</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span><span style="font-size:12px"><strong>HPBクーポン1番目</strong>：LEDフラットラッシュ</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span><span style="font-size:12px"><strong>店名・看板</strong>：LEDフラットラッシュ / マツエク専門を前面に</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block"></span><span style="font-size:12px"><strong>パリジェンヌ</strong>：メニューには残す・クーポン後半に配置</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block"></span><span style="font-size:12px"><strong>パリジェンヌ活用</strong>：スタッフからのアップセル提案に活用</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- マツエクのみ全店舗 競合調査 -->
+<div class="section">
+  <div class="section-title">🔎 マツエク専門店 全店舗 完全競合データ（二子玉川エリア）</div>
+  <div class="section-sub">「マツエクのみ」または「マツエク主軸」の全店舗を対象。パリジェンヌ・まつパのみの店舗は除外。4/8時点HPB直接調査</div>
+
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <!-- Richelle -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#f59e0b,#f97316);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">🥇 Richelle eyelash&nail 二子玉川店</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ1,187件 ／ 徒歩4分 ／「エリア圧倒的1位」</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:#fff;font-size:11px">主訴求</div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:2px">セーブル・フラット・カラー全方位</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">HPB店舗名（フリーワード）</div>
+          <div style="font-size:12px;color:var(--text2)">Richelle eyelash&nail二子玉川店【リシェルアイラッシュ&ネイル】</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">キャッチコピー</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">—（ブランド名のみで勝負）</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">主要クーポン価格</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>セーブル60本</span><span style="font-weight:700;color:var(--green)">¥3,700</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラット60本</span><span style="font-weight:600">¥5,100</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラット80本</span><span style="font-weight:600">¥5,600</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ダブルフラット30束</span><span style="font-weight:600">¥6,100</span></div>
+            <div style="display:flex;justify-content:space-between"><span>LEDエクステ/セーブル100本</span><span style="font-weight:600;color:var(--amber)">¥7,300</span></div>
+            <div style="display:flex;justify-content:space-between"><span>カラーエクステ60本</span><span style="font-weight:600">¥6,200</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fffbeb;padding:8px 16px;font-size:11px;color:#92400e;border-top:1px solid #fde68a">
+        ⚡ 対象：全員（新規/再来問わず）。入口単価¥3,700の超低価格でまず呼び込み、アップセルで高単価化。口コミ数が多いため名前にキーワード一切なし。
+      </div>
+    </div>
+
+    <!-- Ohana -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#94a3b8,#64748b);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">🥈 Ohana eyelash salon 二子玉川店</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ667件 ／ 徒歩7分 ／「4/24まで超満席」</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:#fff;font-size:11px">主訴求</div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:2px">フラットラッシュ・ダブルフラット</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">HPB店舗名</div>
+          <div style="font-size:12px;color:var(--text2)">Ohana eyelash salon 二子玉川店</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">キャッチコピー</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">「高技術・接客力♪信頼感抜群の高リピート率サロン」</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">主要クーポン価格（全員新規）</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>フラットラッシュ80本</span><span style="font-weight:700;color:var(--green)">¥4,300</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラットラッシュ100本</span><span style="font-weight:600">¥4,800</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラットラッシュ120本</span><span style="font-weight:600">¥5,300</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ダブルフラット〜80束</span><span style="font-weight:600">¥6,000</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ダブルフラット90〜120束</span><span style="font-weight:600">¥7,000</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ダブルフラット130〜160束</span><span style="font-weight:600">¥8,000</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#ecfdf5;padding:8px 16px;font-size:11px;color:#065f46;border-top:1px solid #a7f3d0">
+        ✅ 新規のみ対象。ブランド名に「eyelash」入りで専門性を表現。パリジェンヌ・眉毛は一切やらず。2週間先まで満席のエリア最強リピート率。
+      </div>
+    </div>
+
+    <!-- Beauce -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#b45309,#92400e);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">🥉 Beauce eyelash 二子玉川店</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ385件 ／ 徒歩3分 ／「パリジェンヌ認定サロン」</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:#fff;font-size:11px">主訴求</div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:2px">フラット/セーブル・コーティング付き</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">HPB店舗名</div>
+          <div style="font-size:12px;color:var(--text2)">Beauce eyelash 二子玉川店【ビューチェ】</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">キャッチコピー</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">「高リピート率の人気店【パリジェンヌ認定サロン】」</div>
+          <div style="margin-top:6px"><span class="badge badge-amber">パリジェンヌ認定あり・でも主軸はマツエク</span></div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">主要クーポン価格（新規）</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>コーティング付120本（期間限定）</span><span style="font-weight:700;color:var(--green)">¥4,800</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラット/セーブル80本</span><span style="font-weight:600">¥5,100</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラット/セーブル120本</span><span style="font-weight:600">¥5,500</span></div>
+            <div style="display:flex;justify-content:space-between"><span>カラーマツエク80本</span><span style="font-weight:600">¥6,100</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラット/セーブル160本</span><span style="font-weight:600">¥6,500</span></div>
+            <div style="display:flex;justify-content:space-between"><span>120本（リピーター）</span><span style="font-weight:600;color:var(--amber)">¥7,500</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fffbeb;padding:8px 16px;font-size:11px;color:#92400e;border-top:1px solid #fde68a">
+        ⚠️ パリジェンヌ認定サロンだがクーポンはマツエク主軸。期間限定コーティング付¥4,800が集客フック。名前はシンプルなブランド名のみ（キーワード詰め込みなし）。
+      </div>
+    </div>
+
+    <!-- eight eyelash -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#0ea5e9,#0284c7);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">eight eyelash 二子玉川店【エイト アイラッシュ】</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ177件 ／ 徒歩5分 ／「当日空きあり」</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:#fff;font-size:11px">主訴求</div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:2px">フラットラッシュ・ダブルフラット</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">HPB店舗名</div>
+          <div style="font-size:12px;color:var(--text2)">eight eyelash 二子玉川店【エイト アイラッシュ】</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">キャッチコピー</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">「毎月更新される"カワイイ"を」</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">主要クーポン価格（新規・平日）</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>フラットラッシュ100本</span><span style="font-weight:700;color:var(--green)">¥4,800</span></div>
+            <div style="display:flex;justify-content:space-between"><span>フラットラッシュ120本</span><span style="font-weight:600">¥5,100〜</span></div>
+            <div style="display:flex;justify-content:space-between"><span>ダブルフラット80束</span><span style="font-weight:600">¥7,900</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#eff6ff;padding:8px 16px;font-size:11px;color:#1e40af;border-top:1px solid #bfdbfe">
+        💡 フランチャイズ系（eight eyelash）。ブランド名に「eyelash」入りで専門性を表現。当日空きが多くまだ伸びしろあり。
+      </div>
+    </div>
+
+    <!-- THE SALON esme -->
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#6366f1,#8b5cf6);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">THE SALON -esme- （二子玉川）</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ191件 ／ 徒歩5分 ／「LED対応・大人向け」</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:#fff;font-size:11px">主訴求</div>
+          <div style="background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:2px">LEDマツエク・眉毛・フェイシャル</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">HPB店舗名（完全）</div>
+          <div style="font-size:12px;color:var(--text2)">THE SALON -esme- アイラッシュ・ブロウ・フェイシャル</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">キャッチコピー</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">「二子玉川の目元専門サロン◆LEDマツエク/眉毛で"大人美人"をデザイン」</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">主要クーポン価格（新規）</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>LEDエクステ80本</span><span style="font-weight:700;color:var(--amber)">¥8,250</span></div>
+            <div style="display:flex;justify-content:space-between"><span>期間限定120本</span><span style="font-weight:600">¥8,500</span></div>
+            <div style="display:flex;justify-content:space-between"><span>LEDエクステ120本</span><span style="font-weight:600">¥9,350</span></div>
+            <div style="display:flex;justify-content:space-between"><span>LEDエクステ160本</span><span style="font-weight:600">¥10,450</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#f5f3ff;padding:8px 16px;font-size:11px;color:#5b21b6;border-top:1px solid #ddd6fe">
+        💡 LED特化で高単価路線（¥8,000〜¥10,000台）。「大人向け」訴求でターゲットを絞り差別化。眉毛・フェイシャルも提供するコンポジット型サロン。
+      </div>
+    </div>
+
+    <!-- LUMISS（自店） -->
+    <div style="border:2px dashed #6366f1;border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed);padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:14px">★ LUMISS 二子玉川（自店・現状）</div>
+          <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">口コミ12件 ／ 徒歩5分 ／「マツエククーポン0件」</div>
+        </div>
+        <span class="badge badge-red">要改善</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 16px;border-right:1px solid var(--border);background:#fafbff">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">現在のHPB店舗名</div>
+          <div style="font-size:12px;color:var(--text2)">パリジェンヌ/マツエク専門店 LUMISS二子玉川店［LEDフラットラッシュ］</div>
+          <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--text3)">現在のクーポン構成</div>
+          <div style="font-size:12px;color:var(--red);margin-top:2px;font-weight:600">パリジェンヌ系6件のみ。マツエク系0件。</div>
+        </div>
+        <div style="padding:12px 16px;background:#fafbff">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px">競合比較（差</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>口コミ数</span><span style="font-weight:700;color:var(--red)">12件（業界最低水準）</span></div>
+            <div style="display:flex;justify-content:space-between"><span>マツエククーポン</span><span style="font-weight:700;color:var(--red)">0件（他店5〜10件）</span></div>
+            <div style="display:flex;justify-content:space-between"><span>予約埋まり度</span><span style="font-weight:700;color:var(--red)">ガラ空き（競合は満席）</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 店舗名変更 推奨案 -->
+<div class="section">
+  <div class="section-title">🏷️ マツエク特化時の「店舗名変更」推奨案</div>
+  <div class="section-sub">競合5店のネーミングパターンを分析し、LUMISS二子玉川に最適な店舗名を3案提示</div>
+
+  <!-- 競合ネーミングパターン分析 -->
+  <div style="background:#f8faff;border-radius:var(--r-sm);padding:16px;border:1px solid var(--border);margin-bottom:20px">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">競合5店のネーミングパターン</div>
+    <table style="margin:0">
+      <thead><tr><th>店舗名パターン</th><th>代表例</th><th>口コミ</th><th>特徴</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-amber">ブランド名 + eyelash</span></td>
+          <td>Richelle eyelash&nail / Ohana eyelash salon / Beauce eyelash / eight eyelash</td>
+          <td><strong>177〜1,187件</strong></td>
+          <td>上位4店全員このパターン。シンプル・ブランドが主役</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">THE SALON + サービス列挙</span></td>
+          <td>THE SALON -esme- アイラッシュ・ブロウ・フェイシャル</td>
+          <td>191件</td>
+          <td>複合型サロンに有効。「専門店」感は薄い</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-violet">キーワード詰め込み型</span></td>
+          <td>パリジェンヌ/マツエク専門店 LUMISS二子玉川（現在）</td>
+          <td>12〜75件</td>
+          <td>口コミ少ない段階の補完策。上位店は使っていない</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight insight-amber" style="margin-top:14px">
+      <div class="insight-title">⚠️ 結論：上位店は全員「キーワード詰め込みをしていない」</div>
+      <p>Richelle・Ohana・Beauce・eight eyelashは、店名にマツエク・パリジェンヌ・専門店などのキーワードを入れていない。<strong>「ブランド名 + eyelash」の2ワード構成が上位パターン</strong>。口コミ数がHPB掲載順位を決める段階では、キーワードより口コミが優先される。</p>
+    </div>
+  </div>
+
+  <!-- 3案 -->
+  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">LUMISS二子玉川 店舗名変更 3案</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+
+    <!-- 案A -->
+    <div style="border:2px solid #10b981;border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:#059669;padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">✅ 案A（推奨）</div>
+        <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">競合上位と同じパターン</div>
+      </div>
+      <div style="padding:14px">
+        <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4">LUMISS eyelash<br>二子玉川</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">
+          <strong>根拠：</strong>上位4店（Richelle/Ohana/Beauce/eight）が全員「ブランド名＋eyelash」パターン。最も実績があるネーミング法。<br><br>
+          <strong>長所：</strong>ブランド「LUMISS」が主役になる。将来的な多店舗展開・他エリアでも統一感が出る。キーワードに左右されない強いブランドを育てられる。<br><br>
+          <strong>短所：</strong>現在の「パリジェンヌ/マツエク専門店」という訴求ワードが消える。
+        </div>
+      </div>
+    </div>
+
+    <!-- 案B -->
+    <div style="border:2px solid #f59e0b;border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:#d97706;padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">⚡ 案B（差別化型）</div>
+        <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">LEDで先行者優位を狙う</div>
+      </div>
+      <div style="padding:14px">
+        <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4">LUMISS<br>LEDフラットラッシュ<br>二子玉川</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">
+          <strong>根拠：</strong>LED対応はRichelle（¥7,300）とBEAUTY GENE（¥7,600）のみ。「LEDフラットラッシュ」は検索差別化ワード。<br><br>
+          <strong>長所：</strong>LED訴求でRichelleと同じ土俵に立てる。高単価ポジショニングに直結。HPBフリーワード検索で「LEDフラットラッシュ 二子玉川」に引っかかる。<br><br>
+          <strong>短所：</strong>店舗名が長い。LED以外のメニュー展開が難しくなる。
+        </div>
+      </div>
+    </div>
+
+    <!-- 案C -->
+    <div style="border:2px solid #6366f1;border-radius:var(--r-sm);overflow:hidden">
+      <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed);padding:10px 14px">
+        <div style="color:#fff;font-weight:700;font-size:13px">🔵 案C（現状維持型）</div>
+        <div style="color:rgba(255,255,255,.85);font-size:11px;margin-top:2px">マツエク特化を明記</div>
+      </div>
+      <div style="padding:14px">
+        <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4">マツエク専門店<br>LUMISS 二子玉川</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">
+          <strong>根拠：</strong>現在の「パリジェンヌ/マツエク専門店」から「パリジェンヌ」を外しマツエク特化を明記。最小限の変更。<br><br>
+          <strong>長所：</strong>「専門店」という言葉で信頼感。「マツエク専門店」でフリーワード検索に引っかかりやすい。変更コストが低い。<br><br>
+          <strong>短所：</strong>競合上位店との差別化にならない。「専門店」はキーワード詰め込み型のため上位店とパターンが異なる。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最終推奨 -->
+  <div style="background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:2px solid #10b981;border-radius:var(--r-sm);padding:18px">
+    <div style="font-size:14px;font-weight:800;color:#065f46;margin-bottom:10px">🎯 最終推奨：「LUMISS eyelash 二子玉川」（案A）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">
+          競合上位4店（Richelle・Ohana・Beauce・eight eyelash）が全員「ブランド名＋eyelash」パターン。<br>
+          最も実績のある戦略に乗ることがリスク最小でリターン最大。<br><br>
+          <strong>重要：看板もHPB店名も「LUMISS eyelash」に統一することで、ブランドとして育てる。</strong>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">変更のタイミング推奨</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">1</span>
+            <span><strong>今すぐ</strong>：マツエク系クーポンを5件以上HPBに追加（最優先）</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="background:#10b981;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">2</span>
+            <span><strong>口コミ30件超えたら</strong>：HPB店舗名を「LUMISS eyelash 二子玉川」に変更</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="background:#f59e0b;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">3</span>
+            <span><strong>看板は並行して</strong>：口コミ増加と並走でOK。「LUMISS eyelash」で統一</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- インサイト＋アクション -->
+<div class="grid2">
+  <div class="section">
+    <div class="section-title">📊 競合分析インサイト</div>
+    <div class="section-sub">データから読み取れる構造的な課題</div>
+
+    <div class="insight insight-red">
+      <div class="insight-title">🚨 フリーワードより口コミ数が本質的問題</div>
+      <p>HPB上の店名はすでに「パリジェンヌ/マツエク専門店 LUMISS二子玉川店」と設定済み。フリーワードの問題ではなく、口コミ12件 vs 競合平均200〜300件という差がHPB検索順位を下げている根本原因。</p>
+    </div>
+
+    <div class="insight insight-amber">
+      <div class="insight-title">⚠️ 価格は最安なのに予約が入らない矛盾</div>
+      <p>マツエク・パリジェンヌともにエリア最安水準。価格競争力はある。それでも予約が入らないのは口コミ不足による掲載順位低下が原因。まず口コミを増やすことが最優先。</p>
+    </div>
+
+    <div class="insight insight-blue">
+      <div class="insight-title">💡 マツエクに振り切ることで差別化が明確になる</div>
+      <p>「パリジェンヌ/マツエク」の中途半端な訴求をやめ、マツエク特化に絞ることで検索ターゲットが明確になり、クーポン設計・写真・店名が一気通貫になる。</p>
+    </div>
+
+    <div class="insight insight-amber">
+      <div class="insight-title">⚠️ マツエクは再来率がパリジェンヌより高い</div>
+      <p>まつエクは4〜6週でリペアが必要→回数券との相性が最高。パリジェンヌは2〜3ヶ月に1回→LTV設計が難しい。マツエク特化の方が長期的な売上基盤になる。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 競合HPBページリンク</div>
+    <div class="section-sub">各店舗のHPBページへ直接アクセス</div>
+    <table>
+      <thead><tr><th>店舗名</th><th>口コミ</th><th>HPBリンク</th></tr></thead>
+      <tbody>
+        <tr><td>Richelle eyelash&nail</td><td>1,187件</td><td><a href="https://beauty.hotpepper.jp/kr/slnH000418478/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>Ohana eyelash salon</td><td>667件</td><td><a href="https://beauty.hotpepper.jp/g-eyelash/stc1130075/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>Beauce eyelash</td><td>385件</td><td><a href="https://beauty.hotpepper.jp/genre/kgkw038/stc1130075/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>NEPTUNE 二子玉川</td><td>364件</td><td><a href="https://beauty.hotpepper.jp/kr/slnH000459073/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>eyelash salon 1739</td><td>75件</td><td><a href="https://beauty.hotpepper.jp/genre/kgkw155/stc1130075/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>LYS 二子玉川</td><td>26件</td><td><a href="https://beauty.hotpepper.jp/kr/slnH000683212/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr><td>BEAUTY GENE professional</td><td>201件</td><td><a href="https://beauty.hotpepper.jp/kr/slnH000459073/" target="_blank" style="color:var(--blue)">HPBページを開く →</a></td></tr>
+        <tr class="lumiss-row"><td>★ LUMISS 二子玉川（自店）</td><td>12件</td><td><a href="https://beauty.hotpepper.jp/kr/slnH000805912/?cstt=20" target="_blank" style="color:#4f46e5;font-weight:700">HPBページを開く →</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const ctx = document.getElementById('reviewChart').getContext('2d');
+const labels = ['Richelle','Ohana','Beauce','NEPTUNE','DL・BEAUTY','BEAUTY GENE','THE SALON','eight eyelash','ロレインブロウ','SOSO.','Noel totto','LYS','LUMISS\n二子玉川'];
+const values = [1187,667,385,364,277,201,191,177,146,96,92,26,12];
+const colors = labels.map((l,i) => i === labels.length-1 ? 'rgba(99,102,241,0.9)' : 'rgba(148,163,184,0.6)');
+const borderColors = labels.map((l,i) => i === labels.length-1 ? '#4f46e5' : '#94a3b8');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: '口コミ件数',
+      data: values,
+      backgroundColor: colors,
+      borderColor: borderColors,
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `口コミ: ${ctx.parsed.y}件`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: {
+        grid: { color: '#f0f2f8' },
+        ticks: { font: { size: 11 } },
+        title: { display: true, text: '口コミ件数', font: { size: 11 }, color: '#8b97b1' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
