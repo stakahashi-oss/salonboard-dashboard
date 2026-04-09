@@ -3,463 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MTG録音・文字起こし</title>
+<title>MTG録音</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
+:root{
   --bg:#f4f6fb;--surface:#fff;--border:#e4e9f2;
   --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
   --red:#ef4444;--green:#059669;--violet:#7c3aed;
-  --r:14px;--sh:0 2px 8px rgba(0,0,0,.07),0 8px 24px rgba(0,0,0,.05);
+  --r:16px;--sh:0 2px 8px rgba(0,0,0,.07),0 8px 24px rgba(0,0,0,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;font-size:14px;line-height:1.6;padding:24px 16px;min-height:100vh;-webkit-font-smoothing:antialiased}
-.wrap{max-width:700px;margin:0 auto}
-h1{font-size:21px;font-weight:800;text-align:center;margin-bottom:4px}
-.sub{color:var(--text2);font-size:13px;text-align:center;margin-bottom:24px}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;font-size:14px;line-height:1.6;padding:32px 16px;min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto}
 
-/* title */
+h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
+.sub{color:var(--text2);font-size:13px;text-align:center;margin-bottom:28px}
+
 .title-row{background:var(--surface);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .title-row label{font-size:12px;font-weight:600;color:var(--text3);white-space:nowrap}
 .title-row input{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;color:var(--text);outline:none}
 .title-row input:focus{border-color:var(--violet)}
 
-/* card */
-.card{background:var(--surface);border-radius:var(--r);padding:28px 20px 24px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:16px}
+.card{background:var(--surface);border-radius:var(--r);padding:32px 24px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:16px;text-align:center}
 
-/* state indicator */
-.state-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:99px;font-size:12px;font-weight:700;margin-bottom:20px}
-.state-badge.idle{background:#f1f5f9;color:var(--text3)}
-.state-badge.recording{background:#fef2f2;color:var(--red)}
-.state-badge.paused{background:#fffbeb;color:#b45309}
-.state-badge.done{background:#ecfdf5;color:var(--green)}
-.pulse{width:9px;height:9px;border-radius:50%;background:currentColor}
-.pulse.blink{animation:blink .9s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+/* badge */
+.badge{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border-radius:99px;font-size:12px;font-weight:700;margin-bottom:24px}
+.badge.idle{background:#f1f5f9;color:var(--text3)}
+.badge.rec{background:#fef2f2;color:var(--red)}
+.badge.paused{background:#fffbeb;color:#b45309}
+.badge.done{background:#ecfdf5;color:var(--green)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+.dot.blink{animation:blink .9s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
 /* timer */
-.timer{font-size:56px;font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:24px;transition:color .2s}
+.timer{font-size:64px;font-weight:800;letter-spacing:3px;font-variant-numeric:tabular-nums;margin-bottom:28px;color:var(--text);transition:color .2s}
 .timer.rec{color:var(--red)}
 
+/* sr count */
+.sr-count{font-size:12px;color:var(--text3);margin-bottom:24px;min-height:18px}
+.sr-count.ok{color:var(--green)}
+
 /* buttons */
-.btn-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:14px 30px;border-radius:99px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:all .15s}
-.btn:disabled{opacity:.35;cursor:not-allowed;transform:none !important}
-.btn-main{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,.3)}
-.btn-main:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.4)}
-.btn-main.stop{background:linear-gradient(135deg,#1f2937,#374151);box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.btn-main.stop:hover:not(:disabled){box-shadow:0 6px 20px rgba(0,0,0,.3)}
-.btn-sub{background:#f1f5f9;color:var(--text);border:1.5px solid var(--border);font-size:14px;padding:12px 22px}
+.btn-row{display:flex;justify-content:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:15px 32px;border-radius:99px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-rec{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,.3)}
+.btn-rec:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(239,68,68,.4)}
+.btn-rec.stop{background:linear-gradient(135deg,#1f2937,#374151);box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.btn-sub{background:#f1f5f9;color:var(--text);border:1.5px solid var(--border);font-size:14px;padding:13px 22px}
 .btn-sub:hover:not(:disabled){background:#e2e8f0}
 
-/* sr status */
-.sr-status{margin-top:14px;font-size:12px;color:var(--text3);min-height:18px;text-align:center}
-.sr-status.ok{color:var(--green)}
-.sr-status.err{color:var(--red)}
-
-/* transcript */
-.tx-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border);background:#fafbff;border-radius:var(--r) var(--r) 0 0}
-.tx-header span{font-size:13px;font-weight:700}
-.tx-count{font-size:11px;color:var(--text3)}
-.tx-body{min-height:220px;max-height:340px;overflow-y:auto;padding:16px 18px;scroll-behavior:smooth}
-.tx-body:empty::before{content:'録音を開始するとここに文字起こしが表示されます';color:var(--text3);font-size:13px;display:flex;align-items:center;justify-content:center;height:180px}
-.seg{display:flex;gap:10px;margin-bottom:10px}
-.seg-t{font-size:10px;color:var(--text3);white-space:nowrap;padding-top:3px;min-width:42px}
-.seg-body{font-size:14px;color:var(--text);flex:1;line-height:1.65}
-.seg-body.interim{color:var(--text3);font-style:italic}
-
 /* downloads */
-.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.dl-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;border:1.5px solid var(--border);background:#fafbff;cursor:pointer;font-family:inherit;transition:all .15s;width:100%}
+.dl-card{background:var(--surface);border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--border);display:none}
+.dl-card.show{display:block}
+.dl-title{font-size:13px;font-weight:700;margin-bottom:14px}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dl-btn{display:flex;align-items:center;gap:10px;padding:14px;border-radius:10px;border:1.5px solid var(--border);background:#fafbff;cursor:pointer;font-family:inherit;transition:all .15s;width:100%;text-align:left}
 .dl-btn:hover{border-color:var(--violet);background:#f5f3ff}
-.dl-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.dl-icon.audio{background:linear-gradient(135deg,#f59e0b,#d97706)}
-.dl-icon.txt{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.dl-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dl-icon.a{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.dl-icon.t{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
 .dl-label{font-size:13px;font-weight:700;color:var(--text)}
 .dl-sub{font-size:11px;color:var(--text3);margin-top:1px}
-
-.hidden{display:none}
-.notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:12px;color:#1e40af;margin-bottom:16px;line-height:1.6}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <h1>🎙️ MTG録音・文字起こし</h1>
-  <p class="sub">スタッフ面談・社内MTG・突発的な会話を即録音。文字起こしはリアルタイム表示。</p>
-
-  <div class="notice">⚠️ <strong>Chrome推奨</strong>（Safariは文字起こし非対応）。マイク許可が必要です。録音データは外部送信されません。</div>
+  <h1>🎙️ MTG録音</h1>
+  <p class="sub">録音停止後に音声・文字起こしをダウンロードできます</p>
 
   <div class="title-row">
     <label>MTG名</label>
-    <input id="mtgTitle" type="text" placeholder="例：kasumi面談 / 4月定例MTG">
+    <input id="title" type="text" placeholder="例：kasumi面談 / 4月定例MTG">
   </div>
 
-  <!-- 録音カード -->
-  <div class="card" style="text-align:center">
-    <div style="display:flex;justify-content:center;margin-bottom:0">
-      <span class="state-badge idle" id="badge">
-        <span class="pulse" id="pulseEl"></span>
-        <span id="badgeText">待機中</span>
+  <div class="card">
+    <div style="display:flex;justify-content:center">
+      <span class="badge idle" id="badge">
+        <span class="dot" id="dot"></span>
+        <span id="badgeTxt">待機中</span>
       </span>
     </div>
 
     <div class="timer" id="timer">00:00</div>
 
+    <div class="sr-count" id="srCount"></div>
+
     <div class="btn-row">
-      <button class="btn btn-main" id="btnRec" onclick="onRecClick()">● 録音開始</button>
-      <button class="btn btn-sub" id="btnPause" onclick="onPauseClick()" disabled>⏸ 一時停止</button>
+      <button class="btn btn-rec" id="btnRec" onclick="onRec()">● 録音開始</button>
+      <button class="btn btn-sub" id="btnPause" onclick="onPause()" disabled>⏸ 一時停止</button>
     </div>
-
-    <div class="sr-status" id="srStatus"></div>
   </div>
 
-  <!-- 文字起こし -->
-  <div class="card" style="padding:0;overflow:hidden">
-    <div class="tx-header">
-      <span>📝 文字起こし（リアルタイム）</span>
-      <span class="tx-count" id="txCount">0 文字</span>
-    </div>
-    <div class="tx-body" id="txBody"></div>
-  </div>
-
-  <!-- ダウンロード -->
-  <div class="card hidden" id="dlCard">
-    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">💾 ダウンロード</div>
+  <div class="dl-card" id="dlCard">
+    <div class="dl-title">💾 ダウンロード</div>
     <div class="dl-grid">
       <button class="dl-btn" onclick="dlAudio()">
-        <div class="dl-icon audio">🎵</div>
-        <div>
-          <div class="dl-label">音声ファイル</div>
-          <div class="dl-sub" id="dlAudioName">.webm</div>
-        </div>
+        <div class="dl-icon a">🎵</div>
+        <div><div class="dl-label">音声</div><div class="dl-sub" id="dlAName">.webm</div></div>
       </button>
       <button class="dl-btn" onclick="dlText()">
-        <div class="dl-icon txt">📄</div>
-        <div>
-          <div class="dl-label">文字起こし</div>
-          <div class="dl-sub" id="dlTextName">.txt</div>
-        </div>
+        <div class="dl-icon t">📄</div>
+        <div><div class="dl-label">文字起こし</div><div class="dl-sub" id="dlTName">.txt</div></div>
       </button>
     </div>
   </div>
-
 </div>
 
 <script>
-// ---- 状態変数 ----
-const S = { IDLE: 0, RECORDING: 1, PAUSED: 2, DONE: 3 };
-let state = S.IDLE;
+const S={IDLE:0,REC:1,PAUSED:2,DONE:3};
+let state=S.IDLE;
+let mr=null, strm=null, chunks=[], blob=null;
+let rec=null, srOn=false, srTimer=null;
+let tiv=null, sec=0;
+let segs=[];
 
-let mediaRecorder = null;
-let audioChunks   = [];
-let audioBlob     = null;
-let stream        = null;
+const pad=n=>String(n).padStart(2,'0');
+const fmt=s=>`${pad(Math.floor(s/60))}:${pad(s%60)}`;
+const $=id=>document.getElementById(id);
 
-let recognition   = null;
-let srRunning     = false;
-let srRestart     = null;
-
-let timerIv       = null;
-let elapsed       = 0;
-
-let segments      = [];   // {time, text}
-let interimEl     = null;
-
-// ---- タイマー ----
-const pad = n => String(n).padStart(2,'0');
-const fmt = s => `${pad(Math.floor(s/60))}:${pad(s%60)}`;
-
-function tickStart() {
-  timerIv = setInterval(() => { elapsed++; el('timer').textContent = fmt(elapsed); }, 1000);
-}
-function tickStop() { clearInterval(timerIv); timerIv = null; }
-
-// ---- UI helpers ----
-const el = id => document.getElementById(id);
-
-function setUI(s) {
-  state = s;
-  const badge = el('badge'), dot = el('pulseEl'), txt = el('badgeText');
-  const btnRec = el('btnRec'), btnPause = el('btnPause'), timer = el('timer');
-
-  badge.className = 'state-badge';
-  dot.className   = 'pulse';
-
-  if (s === S.IDLE) {
-    badge.classList.add('idle');
-    txt.textContent     = '待機中';
-    btnRec.textContent  = '● 録音開始';
-    btnRec.className    = 'btn btn-main';
-    btnPause.disabled   = true;
-    btnPause.textContent = '⏸ 一時停止';
-    timer.classList.remove('rec');
-  } else if (s === S.RECORDING) {
-    badge.classList.add('recording');
-    dot.classList.add('blink');
-    txt.textContent     = '録音中…';
-    btnRec.textContent  = '■ 録音停止';
-    btnRec.className    = 'btn btn-main stop';
-    btnPause.disabled   = false;
-    btnPause.textContent = '⏸ 一時停止';
-    timer.classList.add('rec');
-  } else if (s === S.PAUSED) {
-    badge.classList.add('paused');
-    txt.textContent     = '一時停止中';
-    btnRec.textContent  = '■ 録音停止';
-    btnRec.className    = 'btn btn-main stop';
-    btnPause.disabled   = false;
-    btnPause.textContent = '▶ 再開';
-    timer.classList.remove('rec');
-  } else if (s === S.DONE) {
-    badge.classList.add('done');
-    txt.textContent     = '録音完了';
-    btnRec.textContent  = '● 新しい録音を開始';
-    btnRec.className    = 'btn btn-main';
-    btnPause.disabled   = true;
-    timer.classList.remove('rec');
+// ----- UI -----
+function setUI(s){
+  state=s;
+  const badge=$('badge'),dot=$('dot'),btxt=$('badgeTxt');
+  const br=$('btnRec'),bp=$('btnPause'),t=$('timer');
+  badge.className='badge';dot.className='dot';
+  if(s===S.IDLE){
+    badge.classList.add('idle');btxt.textContent='待機中';
+    br.textContent='● 録音開始';br.className='btn btn-rec';
+    bp.disabled=true;bp.textContent='⏸ 一時停止';
+    t.classList.remove('rec');
+  }else if(s===S.REC){
+    badge.classList.add('rec');dot.classList.add('blink');btxt.textContent='録音中…';
+    br.textContent='■ 録音停止';br.className='btn btn-rec stop';
+    bp.disabled=false;bp.textContent='⏸ 一時停止';
+    t.classList.add('rec');
+  }else if(s===S.PAUSED){
+    badge.classList.add('paused');btxt.textContent='一時停止中';
+    br.textContent='■ 録音停止';br.className='btn btn-rec stop';
+    bp.disabled=false;bp.textContent='▶ 再開';
+    t.classList.remove('rec');
+  }else if(s===S.DONE){
+    badge.classList.add('done');btxt.textContent='録音完了';
+    br.textContent='● 新しい録音';br.className='btn btn-rec';
+    bp.disabled=true;
+    t.classList.remove('rec');
   }
 }
 
-// ---- ボタンハンドラ ----
-async function onRecClick() {
-  if (state === S.IDLE || state === S.DONE) {
-    await startRecording();
-  } else if (state === S.RECORDING || state === S.PAUSED) {
-    stopRecording();
-  }
+// ----- タイマー -----
+function tickStart(){tiv=setInterval(()=>{sec++;$('timer').textContent=fmt(sec);},1000);}
+function tickStop(){clearInterval(tiv);tiv=null;}
+
+// ----- ハンドラ -----
+async function onRec(){
+  if(state===S.IDLE||state===S.DONE) await start();
+  else stop();
+}
+function onPause(){
+  if(state===S.REC) pause();
+  else if(state===S.PAUSED) resume();
 }
 
-function onPauseClick() {
-  if (state === S.RECORDING) pauseRecording();
-  else if (state === S.PAUSED) resumeRecording();
-}
+// ----- 録音 -----
+async function start(){
+  chunks=[];blob=null;segs=[];sec=0;
+  $('timer').textContent='00:00';
+  $('srCount').textContent='';$('srCount').className='sr-count';
+  $('dlCard').classList.remove('show');
 
-// ---- 録音 ----
-async function startRecording() {
-  // リセット
-  audioChunks = [];
-  audioBlob   = null;
-  segments    = [];
-  elapsed     = 0;
-  el('timer').textContent = '00:00';
-  el('txBody').innerHTML  = '';
-  el('txCount').textContent = '0 文字';
-  el('dlCard').classList.add('hidden');
-  el('srStatus').textContent = '';
-  el('srStatus').className   = 'sr-status';
-  interimEl = null;
+  try{ strm=await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ alert('マイクの許可が必要です。アドレスバーのマイクアイコンから許可してください。'); return; }
 
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch(e) {
-    alert('マイクの許可が必要です。ブラウザのアドレスバー横のマイクアイコンから許可してください。');
-    return;
-  }
-
-  mediaRecorder = new MediaRecorder(stream, { mimeType: getSupportedMime() });
-  mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) audioChunks.push(e.data); };
-  mediaRecorder.onstop = () => {
-    audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
-    stream.getTracks().forEach(t => t.stop());
-    showDownload();
+  const mime=(['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4']
+    .find(t=>MediaRecorder.isTypeSupported(t)))||'';
+  mr=new MediaRecorder(strm,mime?{mimeType:mime}:{});
+  mr.ondataavailable=e=>{if(e.data&&e.data.size>0)chunks.push(e.data);};
+  mr.onstop=()=>{
+    blob=new Blob(chunks,{type:mr.mimeType});
+    strm.getTracks().forEach(t=>t.stop());
+    showDl();
   };
-  mediaRecorder.start(300);
-
-  setUI(S.RECORDING);
+  mr.start(300);
+  setUI(S.REC);
   tickStart();
   srStart();
 }
 
-function stopRecording() {
-  tickStop();
-  srStop();
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+function stop(){
+  tickStop();srStop();
+  if(mr&&mr.state!=='inactive')mr.stop();
   setUI(S.DONE);
 }
 
-function pauseRecording() {
-  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.pause();
-  tickStop();
-  srStop();
+function pause(){
+  if(mr&&mr.state==='recording')mr.pause();
+  tickStop();srStop();
   setUI(S.PAUSED);
 }
 
-function resumeRecording() {
-  if (mediaRecorder && mediaRecorder.state === 'paused') mediaRecorder.resume();
-  tickStart();
-  srStart();
-  setUI(S.RECORDING);
+function resume(){
+  if(mr&&mr.state==='paused')mr.resume();
+  tickStart();srStart();
+  setUI(S.REC);
 }
 
-function getSupportedMime() {
-  const types = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
-  for (const t of types) if (MediaRecorder.isTypeSupported(t)) return t;
-  return '';
-}
+// ----- 音声認識（バックグラウンド） -----
+function srStart(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)) return;
+  srStop();
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  rec=new SR();
+  rec.lang='ja-JP';
+  rec.continuous=true;
+  rec.interimResults=false; // 確定テキストのみ収集（軽量化）
+  rec.maxAlternatives=1;
 
-// ---- 音声認識 ----
-function srStart() {
-  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    el('srStatus').textContent = '⚠️ このブラウザは文字起こし非対応です（Chrome推奨）';
-    el('srStatus').className   = 'sr-status err';
-    return;
-  }
-  srStop(); // 二重起動防止
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'ja-JP';
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 1;
-
-  recognition.onstart = () => {
-    srRunning = true;
-    el('srStatus').textContent = '🎤 文字起こし中…';
-    el('srStatus').className   = 'sr-status ok';
+  rec.onstart=()=>{
+    srOn=true;
+    $('srCount').textContent='🎤 文字起こし収集中';
+    $('srCount').className='sr-count ok';
   };
-
-  recognition.onresult = e => {
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) {
-        const text = e.results[i][0].transcript.trim();
-        if (text) {
-          segments.push({ time: fmt(elapsed), text });
-          addSeg(fmt(elapsed), text, false);
-          updateCount();
-        }
-        interim = '';
-      } else {
-        interim += e.results[i][0].transcript;
+  rec.onresult=e=>{
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal){
+        const t=e.results[i][0].transcript.trim();
+        if(t) segs.push({time:fmt(sec),text:t});
+        updateCount();
       }
     }
-    updateInterim(interim);
   };
-
-  recognition.onerror = e => {
-    srRunning = false;
-    if (e.error === 'no-speech') {
-      // 無音は正常。自動再起動
-      scheduleRestart();
-      return;
-    }
-    if (e.error === 'aborted') return;
-    el('srStatus').textContent = `⚠️ 認識エラー：${e.error}`;
-    el('srStatus').className   = 'sr-status err';
-    scheduleRestart();
+  rec.onerror=e=>{
+    srOn=false;
+    if(e.error==='no-speech'||e.error==='aborted') { schedSR(); return; }
+    schedSR();
   };
+  rec.onend=()=>{ srOn=false; schedSR(); };
 
-  recognition.onend = () => {
-    srRunning = false;
-    scheduleRestart();
-  };
+  try{ rec.start(); }catch(e){ schedSR(); }
+}
 
-  try {
-    recognition.start();
-  } catch(e) {
-    scheduleRestart();
+function schedSR(){
+  clearTimeout(srTimer);
+  if(state!==S.REC||srOn) return;
+  srTimer=setTimeout(()=>{ if(state===S.REC&&!srOn) srStart(); },500);
+}
+
+function srStop(){
+  clearTimeout(srTimer);
+  srOn=false;
+  if(rec){
+    rec.onend=null;rec.onresult=null;rec.onerror=null;rec.onstart=null;
+    try{ rec.abort(); }catch(e){}
+    rec=null;
   }
+  $('srCount').textContent='';$('srCount').className='sr-count';
 }
 
-function scheduleRestart() {
-  clearTimeout(srRestart);
-  if (state !== S.RECORDING) return;
-  srRestart = setTimeout(() => {
-    if (state === S.RECORDING && !srRunning) srStart();
-  }, 400);
+function updateCount(){
+  const n=segs.length;
+  const c=segs.reduce((s,t)=>s+t.text.length,0);
+  $('srCount').textContent=`🎤 ${n}発言 / ${c}文字 収集済み`;
+  $('srCount').className='sr-count ok';
 }
 
-function srStop() {
-  clearTimeout(srRestart);
-  srRunning = false;
-  if (recognition) {
-    recognition.onend  = null;
-    recognition.onresult = null;
-    recognition.onerror  = null;
-    try { recognition.abort(); } catch(e) {}
-    recognition = null;
+// ----- ダウンロード -----
+function base(){
+  const t=$('title').value.trim()||'MTG録音';
+  const d=new Date();
+  return `${t}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+}
+function showDl(){
+  const n=base();
+  const ext=blob?(blob.type.includes('mp4')?'mp4':'webm'):'webm';
+  $('dlAName').textContent=n+'.'+ext;
+  $('dlTName').textContent=n+'.txt';
+  $('dlCard').classList.add('show');
+}
+function dlAudio(){
+  if(!blob)return;
+  const ext=blob.type.includes('mp4')?'mp4':'webm';
+  dl(URL.createObjectURL(blob),base()+'.'+ext);
+}
+function dlText(){
+  const title=$('title').value.trim()||'MTG録音';
+  const now=new Date().toLocaleString('ja-JP');
+  let txt=`【${title}】\n日時：${now}\n時間：${fmt(sec)}\n${'─'.repeat(32)}\n\n`;
+  if(segs.length===0){
+    txt+='（文字起こしデータなし — Chromeでの録音を推奨）\n';
+  }else{
+    segs.forEach(s=>{ txt+=`[${s.time}] ${s.text}\n`; });
   }
-  clearInterim();
-  el('srStatus').textContent = '';
-  el('srStatus').className   = 'sr-status';
+  const b=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  dl(URL.createObjectURL(b),base()+'.txt');
 }
-
-// ---- 文字起こし表示 ----
-function addSeg(time, text, isInterim) {
-  const body = el('txBody');
-  if (!isInterim) {
-    clearInterim();
-    const d = document.createElement('div');
-    d.className = 'seg';
-    d.innerHTML = `<span class="seg-t">${time}</span><span class="seg-body">${esc(text)}</span>`;
-    body.appendChild(d);
-  } else {
-    if (!interimEl) {
-      interimEl = document.createElement('div');
-      interimEl.className = 'seg';
-      interimEl.innerHTML = `<span class="seg-t">${time}</span><span class="seg-body interim"></span>`;
-      body.appendChild(interimEl);
-    }
-    interimEl.querySelector('.seg-body').textContent = text;
-  }
-  body.scrollTop = body.scrollHeight;
-}
-
-function updateInterim(text) {
-  if (!text.trim()) { clearInterim(); return; }
-  addSeg(fmt(elapsed), text, true);
-}
-
-function clearInterim() {
-  if (interimEl) { interimEl.remove(); interimEl = null; }
-}
-
-function updateCount() {
-  el('txCount').textContent = segments.reduce((s,t) => s + t.text.length, 0) + ' 文字';
-}
-
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ---- ダウンロード ----
-function baseName() {
-  const title = el('mtgTitle').value.trim() || 'MTG録音';
-  const d = new Date();
-  const dt = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
-  return `${title}_${dt}`;
-}
-
-function showDownload() {
-  const name = baseName();
-  const ext  = audioBlob ? (audioBlob.type.includes('mp4') ? 'mp4' : 'webm') : 'webm';
-  el('dlAudioName').textContent = name + '.' + ext;
-  el('dlTextName').textContent  = name + '.txt';
-  el('dlCard').classList.remove('hidden');
-}
-
-function dlAudio() {
-  if (!audioBlob) return;
-  const ext = audioBlob.type.includes('mp4') ? 'mp4' : 'webm';
-  trigger(URL.createObjectURL(audioBlob), baseName() + '.' + ext);
-}
-
-function dlText() {
-  if (!segments.length) { alert('文字起こしテキストがありません。'); return; }
-  const title = el('mtgTitle').value.trim() || 'MTG録音';
-  const now   = new Date().toLocaleString('ja-JP');
-  let txt = `【${title}】\n録音日時：${now}\n録音時間：${fmt(elapsed)}\n${'─'.repeat(36)}\n\n`;
-  segments.forEach(s => { txt += `[${s.time}] ${s.text}\n`; });
-  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-  trigger(URL.createObjectURL(blob), baseName() + '.txt');
-}
-
-function trigger(url, name) {
-  const a = document.createElement('a');
-  a.href = url; a.download = name; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+function dl(url,name){
+  const a=document.createElement('a');
+  a.href=url;a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 </script>
 </body>
