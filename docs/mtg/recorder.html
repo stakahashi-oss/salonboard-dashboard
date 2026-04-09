@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MTG録音・文字起こし</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f6fb;
+  --surface: #fff;
+  --border: #e4e9f2;
+  --text: #1a1f36;
+  --text2: #4e5a78;
+  --text3: #8b97b1;
+  --red: #ef4444;
+  --red-bg: #fff1f2;
+  --green: #059669;
+  --green-bg: #ecfdf5;
+  --blue: #2563eb;
+  --blue-bg: #eff6ff;
+  --violet: #7c3aed;
+  --r: 14px;
+  --sh: 0 2px 8px rgba(0,0,0,.07), 0 8px 24px rgba(0,0,0,.05);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 24px 16px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 720px; margin: 0 auto; }
+
+.header { text-align: center; margin-bottom: 28px; }
+.header h1 { font-size: 22px; font-weight: 800; color: var(--text); }
+.header p { color: var(--text2); font-size: 13px; margin-top: 4px; }
+
+/* Title input */
+.title-wrap {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  box-shadow: var(--sh);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.title-wrap label { font-size: 12px; font-weight: 600; color: var(--text3); white-space: nowrap; }
+.title-wrap input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+.title-wrap input:focus { border-color: var(--violet); }
+
+/* Record control */
+.record-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  box-shadow: var(--sh);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.timer {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 20px;
+  font-family: 'Inter', monospace;
+}
+.timer.recording { color: var(--red); }
+
+.btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.btn-record {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  font-size: 16px;
+  padding: 16px 36px;
+  box-shadow: 0 4px 16px rgba(239,68,68,.35);
+}
+.btn-record:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(239,68,68,.4); }
+.btn-record.recording {
+  background: linear-gradient(135deg, #374151, #1f2937);
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  animation: pulse-dark .8s ease-in-out infinite alternate;
+}
+
+.btn-pause {
+  background: #f3f4f6;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-pause:hover:not(:disabled) { background: #e5e7eb; }
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text3);
+  min-height: 20px;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #94a3b8;
+}
+.dot.on { background: var(--red); animation: blink 1s ease-in-out infinite; }
+.dot.paused { background: var(--text3); }
+
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes pulse-dark { from { box-shadow: 0 4px 16px rgba(0,0,0,.2); } to { box-shadow: 0 4px 24px rgba(0,0,0,.35); } }
+
+/* Transcript */
+.transcript-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.transcript-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: #fafbff;
+}
+.transcript-header span { font-size: 13px; font-weight: 700; color: var(--text); }
+.word-count { font-size: 11px; color: var(--text3); }
+
+.transcript-body {
+  height: 300px;
+  overflow-y: auto;
+  padding: 16px 20px;
+  scroll-behavior: smooth;
+}
+.transcript-body:empty::before {
+  content: '録音を開始すると、ここにリアルタイムで文字起こしが表示されます…';
+  color: var(--text3);
+  font-size: 13px;
+  display: block;
+  margin-top: 80px;
+  text-align: center;
+}
+
+.transcript-segment {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+.seg-time {
+  font-size: 10px;
+  color: var(--text3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-top: 2px;
+  min-width: 44px;
+}
+.seg-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.65;
+  flex: 1;
+}
+.seg-text.interim {
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* Download */
+.download-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  box-shadow: var(--sh);
+  border: 1px solid var(--border);
+  display: none;
+}
+.download-card.visible { display: block; }
+.download-card h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+.download-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-dl {
+  flex: 1;
+  min-width: 200px;
+  background: #f8faff;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+}
+.btn-dl:hover { border-color: var(--violet); background: var(--blue-bg); }
+.btn-dl-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.btn-dl-icon.audio { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.btn-dl-icon.text { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.btn-dl-body { text-align: left; }
+.btn-dl-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.btn-dl-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* Notice */
+.notice {
+  background: var(--blue-bg);
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #1e40af;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🎙️ MTG録音・文字起こし</h1>
+    <p>スタッフ面談・社内MTG・突発的な会話を即録音。文字起こしはリアルタイムで表示。</p>
+  </div>
+
+  <div class="notice">
+    ⚠️ <strong>Chrome推奨</strong>（Safari/Firefoxは文字起こし非対応）。初回はマイクの使用許可が必要です。録音データは外部サーバーに送信されません。
+  </div>
+
+  <div class="title-wrap">
+    <label>MTG名</label>
+    <input type="text" id="mtgTitle" placeholder="例：kasumi面談 / 4月定例MTG" />
+  </div>
+
+  <div class="record-card">
+    <div class="timer" id="timer">00:00</div>
+    <div class="btn-row">
+      <button class="btn btn-record" id="btnRecord" onclick="toggleRecord()">● 録音開始</button>
+      <button class="btn btn-pause" id="btnPause" onclick="togglePause()" disabled>⏸ 一時停止</button>
+    </div>
+    <div class="status-bar">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">待機中</span>
+    </div>
+  </div>
+
+  <div class="transcript-card">
+    <div class="transcript-header">
+      <span>📝 文字起こし（リアルタイム）</span>
+      <span class="word-count" id="wordCount">0 文字</span>
+    </div>
+    <div class="transcript-body" id="transcriptBody"></div>
+  </div>
+
+  <div class="download-card" id="downloadCard">
+    <h3>💾 ダウンロード</h3>
+    <div class="download-btns">
+      <button class="btn-dl" onclick="downloadAudio()">
+        <div class="btn-dl-icon audio">🎵</div>
+        <div class="btn-dl-body">
+          <div class="btn-dl-title">音声ファイル</div>
+          <div class="btn-dl-sub" id="audioDlSub">.webm 形式</div>
+        </div>
+      </button>
+      <button class="btn-dl" onclick="downloadText()">
+        <div class="btn-dl-icon text">📄</div>
+        <div class="btn-dl-body">
+          <div class="btn-dl-title">文字起こしテキスト</div>
+          <div class="btn-dl-sub" id="textDlSub">.txt 形式</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let mediaRecorder = null;
+let audioChunks = [];
+let audioBlob = null;
+let recognition = null;
+let isRecording = false;
+let isPaused = false;
+let timerInterval = null;
+let elapsedSeconds = 0;
+let transcript = [];   // {time, text} の配列
+let interimEl = null;  // 認識中テキストの要素
+
+// ---- タイマー ----
+function formatTime(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = (s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+function startTimer() {
+  timerInterval = setInterval(() => {
+    if (!isPaused) {
+      elapsedSeconds++;
+      document.getElementById('timer').textContent = formatTime(elapsedSeconds);
+    }
+  }, 1000);
+}
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+// ---- 録音 ----
+async function toggleRecord() {
+  if (!isRecording) {
+    await startRecording();
+  } else {
+    stopRecording();
+  }
+}
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioChunks = [];
+    audioBlob = null;
+
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      stream.getTracks().forEach(t => t.stop());
+      showDownload();
+    };
+    mediaRecorder.start(500);
+
+    isRecording = true;
+    isPaused = false;
+    elapsedSeconds = 0;
+    document.getElementById('timer').textContent = '00:00';
+    document.getElementById('timer').classList.add('recording');
+    document.getElementById('btnRecord').textContent = '■ 録音停止';
+    document.getElementById('btnRecord').classList.add('recording');
+    document.getElementById('btnPause').disabled = false;
+    document.getElementById('statusDot').className = 'dot on';
+    document.getElementById('statusText').textContent = '録音中…';
+    document.getElementById('downloadCard').classList.remove('visible');
+    document.getElementById('transcriptBody').innerHTML = '';
+    transcript = [];
+    updateWordCount();
+
+    startTimer();
+    startSpeechRecognition();
+
+  } catch (err) {
+    alert('マイクへのアクセスが拒否されました。ブラウザの設定でマイクを許可してください。');
+    console.error(err);
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  stopSpeechRecognition();
+  stopTimer();
+
+  isRecording = false;
+  isPaused = false;
+  document.getElementById('timer').classList.remove('recording');
+  document.getElementById('btnRecord').textContent = '● 録音開始';
+  document.getElementById('btnRecord').classList.remove('recording');
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnPause').textContent = '⏸ 一時停止';
+  document.getElementById('statusDot').className = 'dot';
+  document.getElementById('statusText').textContent = '録音完了 — ダウンロードできます';
+}
+
+// ---- 一時停止 ----
+function togglePause() {
+  if (!isRecording) return;
+  isPaused = !isPaused;
+
+  if (isPaused) {
+    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.pause();
+    stopSpeechRecognition();
+    document.getElementById('btnPause').textContent = '▶ 再開';
+    document.getElementById('statusDot').className = 'dot paused';
+    document.getElementById('statusText').textContent = '一時停止中';
+  } else {
+    if (mediaRecorder && mediaRecorder.state === 'paused') mediaRecorder.resume();
+    startSpeechRecognition();
+    document.getElementById('btnPause').textContent = '⏸ 一時停止';
+    document.getElementById('statusDot').className = 'dot on';
+    document.getElementById('statusText').textContent = '録音中…';
+  }
+}
+
+// ---- 音声認識 ----
+function startSpeechRecognition() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    addSegment(formatTime(elapsedSeconds), '⚠️ このブラウザは文字起こし非対応です（Chrome推奨）', false);
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'ja-JP';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const r = event.results[i];
+      if (r.isFinal) {
+        const text = r[0].transcript.trim();
+        if (text) {
+          transcript.push({ time: formatTime(elapsedSeconds), text });
+          addSegment(formatTime(elapsedSeconds), text, false);
+          updateWordCount();
+        }
+        interim = '';
+      } else {
+        interim += r[0].transcript;
+      }
+    }
+    updateInterim(interim);
+  };
+
+  recognition.onend = () => {
+    // 録音中かつ停止していなければ再起動
+    if (isRecording && !isPaused) {
+      try { recognition.start(); } catch(e) {}
+    }
+  };
+
+  recognition.onerror = (e) => {
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    console.warn('SpeechRecognition error:', e.error);
+  };
+
+  try { recognition.start(); } catch(e) {}
+}
+
+function stopSpeechRecognition() {
+  if (recognition) {
+    try { recognition.stop(); } catch(e) {}
+    recognition = null;
+  }
+  clearInterim();
+}
+
+function addSegment(time, text, isInterim) {
+  const body = document.getElementById('transcriptBody');
+
+  if (isInterim) {
+    if (!interimEl) {
+      interimEl = document.createElement('div');
+      interimEl.className = 'transcript-segment';
+      interimEl.innerHTML = `<span class="seg-time">${time}</span><span class="seg-text interim"></span>`;
+      body.appendChild(interimEl);
+    }
+    interimEl.querySelector('.seg-text').textContent = text;
+  } else {
+    clearInterim();
+    const seg = document.createElement('div');
+    seg.className = 'transcript-segment';
+    seg.innerHTML = `<span class="seg-time">${time}</span><span class="seg-text">${escapeHtml(text)}</span>`;
+    body.appendChild(seg);
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+function updateInterim(text) {
+  if (!text.trim()) { clearInterim(); return; }
+  addSegment(formatTime(elapsedSeconds), text, true);
+}
+
+function clearInterim() {
+  if (interimEl) {
+    interimEl.remove();
+    interimEl = null;
+  }
+}
+
+function updateWordCount() {
+  const total = transcript.reduce((s, t) => s + t.text.length, 0);
+  document.getElementById('wordCount').textContent = total + ' 文字';
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ---- ダウンロード ----
+function getFileName() {
+  const title = document.getElementById('mtgTitle').value.trim() || 'MTG録音';
+  const now = new Date();
+  const date = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}`;
+  return `${title}_${date}`;
+}
+
+function showDownload() {
+  const card = document.getElementById('downloadCard');
+  card.classList.add('visible');
+  const name = getFileName();
+  document.getElementById('audioDlSub').textContent = name + '.webm';
+  document.getElementById('textDlSub').textContent = name + '.txt';
+}
+
+function downloadAudio() {
+  if (!audioBlob) return;
+  const url = URL.createObjectURL(audioBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = getFileName() + '.webm';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadText() {
+  if (!transcript.length) { alert('文字起こしテキストがありません。'); return; }
+  const title = document.getElementById('mtgTitle').value.trim() || 'MTG録音';
+  const now = new Date().toLocaleString('ja-JP');
+  let content = `【${title}】\n録音日時：${now}\n録音時間：${formatTime(elapsedSeconds)}\n`;
+  content += '─'.repeat(40) + '\n\n';
+  transcript.forEach(t => {
+    content += `[${t.time}] ${t.text}\n`;
+  });
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = getFileName() + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
