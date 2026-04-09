@@ -1915,8 +1915,9 @@ async function loadHomeScheduledList() {
 function refreshHomeTestSelect() {
   const sel = document.getElementById('homeTestTargetUid');
   if (!sel || !allFriends.length) return;
+  const testTargets = allFriends.filter(f => f['LINE_UID'] && (f['お名前'] || f['LINE表示名'] || '').includes('髙橋将太'));
   sel.innerHTML = '<option value="">送信先を選択...</option>' +
-    allFriends.filter(f => f['LINE_UID']).map(f => {
+    testTargets.map(f => {
       const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
       return `<option value="${f['LINE_UID']}">${name}</option>`;
     }).join('');
@@ -2302,8 +2303,9 @@ function loadBroadcastTab() {
   // 友だちリストをテスト配信プルダウンに反映
   const sel = document.getElementById('testTargetUid');
   if (sel && allFriends.length) {
+    const testTargets = allFriends.filter(f => f['LINE_UID'] && (f['お名前'] || f['LINE表示名'] || '').includes('髙橋将太'));
     sel.innerHTML = '<option value="">送信先を選択...</option>' +
-      allFriends.filter(f => f['LINE_UID']).map(f => {
+      testTargets.map(f => {
         const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
         return `<option value="${f['LINE_UID']}">${name}</option>`;
       }).join('');
@@ -3212,16 +3214,68 @@ function renderCustomerProfile(data) {
   const cs = data.counseling || [];
   const name = f.name || f.display_name || '未設定';
 
-  const reservRows = rs.length ? rs.map(r => `
+  // 来店履歴：billing_visits優先、なければ予約データから
+  const billingVisits = data.billing_visits || [];
+  const billingMenus = data.billing_menus || {};
+
+  // 次回予約（受付待ち）
+  const upcoming = rs.filter(r => r.status === '受付待ち');
+
+  // 全メニューテキストから店販・回数券を検出して自動タグ付け
+  const allMenuText = billingVisits.flatMap(v => v.menus || []).join(' ')
+    + ' ' + rs.map(r => r.menu || '').join(' ');
+  const newAutoTags = [];
+  if (allMenuText.includes('店販'))  newAutoTags.push('店販');
+  if (allMenuText.includes('回数券')) newAutoTags.push('回数券');
+  if (newAutoTags.length > 0 && f.line_uid) {
+    const currentTags = (f.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    const merged = [...new Set([...currentTags, ...newAutoTags])];
+    if (merged.length > currentTags.length) {
+      gasPost({ action: 'tag_friend', line_uid: f.line_uid, tags: merged.join(',') })
+        .then(() => { f.tags = merged.join(','); })
+        .catch(() => {});
+    }
+  }
+
+  const autoTagBanner = newAutoTags.length ? `
+    <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#854d0e;display:flex;align-items:center;gap:6px">
+      🏷️ メニューから自動タグを付与しました：${newAutoTags.map(t=>`<strong>${t}</strong>`).join('・')}
+    </div>` : '';
+
+  // 来店履歴行（billing_visitsから生成）
+  const visitRows = billingVisits.length ? billingVisits.map(v => {
+    const menuCell = v.items.map(b => {
+      const tags = [];
+      if ((b.menu||'').includes('店販'))  tags.push('店販');
+      if ((b.menu||'').includes('回数券')) tags.push('回数券');
+      const badge = tags.map(t =>
+        `<span style="background:${t==='店販'?'#fef3c7':'#ede9fe'};color:${t==='店販'?'#92400e':'#6d28d9'};font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:3px">${t}</span>`
+      ).join('');
+      const amtStr = b.amount > 0 ? `<span style="color:#888;font-size:11px;margin-left:6px">¥${Number(b.amount).toLocaleString()}</span>` : '';
+      return `<div style="font-size:13px;line-height:1.8">${b.menu}${badge}${amtStr}</div>`;
+    }).join('');
+    return `
     <tr>
-      <td style="white-space:nowrap">${r.visit_date}</td>
-      <td>${r.store}</td>
-      <td>${r.menu}</td>
-      <td>${r.staff || '―'}</td>
-      <td>${r.status}</td>
-      <td style="text-align:right">${r.amount ? Number(r.amount).toLocaleString()+'円' : '―'}</td>
-    </tr>`).join('') :
-    '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">HPB予約データなし</td></tr>';
+      <td style="white-space:nowrap;font-weight:600">${v.visit_date}</td>
+      <td style="font-size:12px">${v.store||'―'}</td>
+      <td>${menuCell}</td>
+      <td colspan="2"><span style="padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#dcfce7;color:#16a34a">来店済み</span></td>
+      <td style="text-align:right;font-weight:700;color:#1a73e8">${v.total_amount > 0 ? '¥'+Number(v.total_amount).toLocaleString() : '―'}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">来店履歴なし</td></tr>';
+
+  // 次回予約行
+  const upcomingRows = upcoming.length ? upcoming.map(r => `
+    <tr style="background:#fefce8">
+      <td style="white-space:nowrap;font-weight:600">${r.visit_date} ${r.start_time||''}</td>
+      <td style="font-size:12px">${r.store}</td>
+      <td>${r.menu||'―'}</td>
+      <td style="font-size:12px">${r.staff||'―'}</td>
+      <td><span style="padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#fef9c3;color:#854d0e">予約済み</span></td>
+      <td style="text-align:right;color:#9ca3af">${r.amount ? '¥'+Number(r.amount).toLocaleString() : '―'}</td>
+    </tr>`).join('') : '';
+
+  const reservRows = upcomingRows + visitRows;
 
   const counselRows = cs.length ? cs.map(c => `
     <tr>
@@ -3270,8 +3324,9 @@ function renderCustomerProfile(data) {
     </div>
 
     ${cycleHtml}
+    ${autoTagBanner}
 
-    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📅 予約履歴（${rs.length}件）</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#333">📅 来店履歴${upcoming.length?`・次回予約${upcoming.length}件`:''}（${billingVisits.length}回）</div>
     <div class="tbl-scroll" style="margin-bottom:20px">
       <table class="tbl">
         <thead><tr><th>来店日</th><th>店舗</th><th>メニュー</th><th>担当</th><th>ステータス</th><th>金額</th></tr></thead>
