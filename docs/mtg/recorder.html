@@ -57,6 +57,10 @@ h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
 /* downloads */
 .dl-card{background:var(--surface);border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--border);display:none}
 .dl-card.show{display:block}
+.prompt-box{background:#f8faff;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:11px;color:var(--text2);line-height:1.7;max-height:160px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.copy-btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:99px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.copy-btn:hover{opacity:.85}
+.copy-btn.copied{background:linear-gradient(135deg,#059669,#047857)}
 .dl-title{font-size:13px;font-weight:700;margin-bottom:14px}
 .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dl-btn{display:flex;align-items:center;gap:10px;padding:14px;border-radius:10px;border:1.5px solid var(--border);background:#fafbff;cursor:pointer;font-family:inherit;transition:all .15s;width:100%;text-align:left}
@@ -107,6 +111,18 @@ h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
         <div class="dl-icon t">📄</div>
         <div><div class="dl-label">文字起こし</div><div class="dl-sub" id="dlTName">.txt</div></div>
       </button>
+    </div>
+
+    <!-- Claude用プロンプト -->
+    <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700">🤖 Claude議事録プロンプト</div>
+        <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">コピー</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">
+        このプロンプトをコピー → <a href="https://claude.ai" target="_blank" style="color:var(--violet)">claude.ai</a> に貼り付けるだけで議事録が完成します
+      </div>
+      <div class="prompt-box" id="promptBox"></div>
     </div>
   </div>
 </div>
@@ -274,13 +290,6 @@ function base(){
   const d=new Date();
   return `${t}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
 }
-function showDl(){
-  const n=base();
-  const ext=blob?(blob.type.includes('mp4')?'mp4':'webm'):'webm';
-  $('dlAName').textContent=n+'.'+ext;
-  $('dlTName').textContent=n+'.txt';
-  $('dlCard').classList.add('show');
-}
 function dlAudio(){
   if(!blob)return;
   const ext=blob.type.includes('mp4')?'mp4':'webm';
@@ -302,6 +311,75 @@ function dl(url,name){
   const a=document.createElement('a');
   a.href=url;a.download=name;a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+// ----- Claude議事録プロンプト生成 -----
+function buildPrompt(){
+  const title=$('title').value.trim()||'MTG録音';
+  const now=new Date().toLocaleString('ja-JP');
+  const duration=fmt(sec);
+  const txLines=segs.length
+    ? segs.map(s=>`[${s.time}] ${s.text}`).join('\n')
+    : '（文字起こしデータなし）';
+
+  return `以下はサロン事業のMTG・スタッフ面談の文字起こしです。議事録として整理してください。
+
+【MTG名】${title}
+【日時】${now}
+【時間】${duration}
+
+---文字起こし（ここから）---
+${txLines}
+---文字起こし（ここまで）---
+
+【背景情報】
+- SSIN STUDIO / LUMISS / most eyes のサロン事業
+- 担当領域：クーポン設計・HPB集客・LINE配信・スタッフ育成・売上KPI管理
+- 登場人物はスタッフ・SV・タカショー（エンジニア兼集客責任者）
+
+【出力フォーマット】
+## 📋 ${title} 議事録
+
+### 決定事項
+（箇条書きで簡潔に）
+
+### アクションアイテム
+| 担当 | 内容 | 期限 |
+|---|---|---|
+
+### 課題・懸念点
+（次回MTGまでに検討すべき事項）
+
+### メモ・補足
+（数値・固有名詞など重要情報）
+
+※文字起こしが不完全な場合は「要確認」と記載してください。`;
+}
+
+function showDl(){
+  const n=base();
+  const ext=blob?(blob.type.includes('mp4')?'mp4':'webm'):'webm';
+  $('dlAName').textContent=n+'.'+ext;
+  $('dlTName').textContent=n+'.txt';
+  $('promptBox').textContent=buildPrompt();
+  $('dlCard').classList.add('show');
+}
+
+function copyPrompt(){
+  const txt=buildPrompt();
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=$('copyBtn');
+    btn.textContent='✓ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='コピー'; btn.classList.remove('copied'); },2000);
+  }).catch(()=>{
+    // fallback
+    const ta=document.createElement('textarea');
+    ta.value=txt;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    $('copyBtn').textContent='✓ コピーしました';
+    setTimeout(()=>{ $('copyBtn').textContent='コピー'; },2000);
+  });
 }
 </script>
 </body>
