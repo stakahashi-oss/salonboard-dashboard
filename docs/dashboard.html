@@ -998,7 +998,7 @@ async function loadDashboard() {
   document.getElementById('kpi-counseling').innerHTML = skelHtml;
   document.getElementById('kpi-linelog').innerHTML    = skelHtml;
   try {
-    const data = await gasGet('get_stats');
+    const data = await gasGet('get_stats', {}, 5);
     document.getElementById('kpi-friends').textContent   = data.line_friends     ?? '-';
     document.getElementById('kpi-counseling').textContent = data.counseling_count ?? '-';
     document.getElementById('kpi-linelog').textContent   = data.line_log_count   ?? '-';
@@ -1072,7 +1072,7 @@ let counselingAll = [];
 async function loadCounseling() {
   document.getElementById('counselingTable').innerHTML = '<div style="text-align:center;padding:30px;color:#999">読込中...</div>';
   try {
-    const res = await gasGet('get_all');
+    const res = await gasGet('get_all', {}, 5);
     counselingAll = (res.records || []).map(mapGasRecord);
     markLoaded('counseling');
     // KPI
@@ -1927,6 +1927,8 @@ function confirmBroadcast() { confirmHomeBroadcast(); }
 
 // ── Refresh ─────────────────────────────────────────
 async function refreshAll() {
+  // キャッシュをクリアして強制再取得
+  Object.keys(localStorage).filter(k => k.startsWith('sgc_')).forEach(k => localStorage.removeItem(k));
   document.getElementById('updatedAt').textContent = '更新中...';
   await loadAll();
 }
@@ -1937,10 +1939,24 @@ async function refreshAll() {
 const DASH_GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
 const DASH_SECRET  = "ssin2026";
 
-async function gasGet(action, extra = {}) {
+async function gasGet(action, extra = {}, ttlMin = 0) {
+  const cacheKey = 'sgc_' + action + '_' + JSON.stringify(extra);
+  if (ttlMin > 0) {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const { ts, data } = JSON.parse(cached);
+        if (Date.now() - ts < ttlMin * 60 * 1000) return data;
+      }
+    } catch(e) {}
+  }
   const params = new URLSearchParams({key: DASH_SECRET, action, ...extra});
   const res = await fetch(`${DASH_GAS_URL}?${params}`);
-  return res.json();
+  const data = await res.json();
+  if (ttlMin > 0) {
+    try { localStorage.setItem(cacheKey, JSON.stringify({ts: Date.now(), data})); } catch(e) {}
+  }
+  return data;
 }
 
 async function gasPost(body) {
@@ -1977,7 +1993,7 @@ async function importFollowers() {
 async function loadLineFriendsMgmt() {
   document.getElementById('friendsMgmtResult').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
-    const data = await gasGet('get_line_friends');
+    const data = await gasGet('get_line_friends', {}, 5);
     allFriends = data.friends || [];
 
     // KPI
@@ -2493,7 +2509,7 @@ let scenarioSettings = {};
 async function loadScenarioSettings() {
   document.getElementById('scenarioSteps').innerHTML = '<div class="loading"><span class="spinner"></span>設定を読込中...</div>';
   try {
-    const data = await gasGet('get_settings');
+    const data = await gasGet('get_settings', {}, 10);
     scenarioSettings = data.settings || {};
     // 送信時間セレクトに反映
     const hour = scenarioSettings['送信時間'] || '9';
@@ -2679,8 +2695,8 @@ async function loadTags() {
   document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
     const [friendsData, tagsData] = await Promise.all([
-      gasGet('get_line_friends'),
-      gasGet('get_tags')
+      gasGet('get_line_friends', {}, 5),
+      gasGet('get_tags', {}, 5)
     ]);
     tagsAll = friendsData.friends || [];
     tagMaster = tagsData.tags || [];
@@ -2695,7 +2711,7 @@ async function loadTags() {
 async function loadTagFriends() {
   document.getElementById('tagsList').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
-    const data = await gasGet('get_line_friends');
+    const data = await gasGet('get_line_friends', {}, 5);
     tagsAll = data.friends || [];
     renderTagFriends(tagsAll);
   } catch(e) {
