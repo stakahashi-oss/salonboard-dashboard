@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>直営MTG 2026/04/21 ダッシュボード</title>
+<style>
+:root{
+  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e4e9f2;
+  --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
+  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;padding:24px;min-height:100vh}
+.container{max-width:1440px;margin:0 auto}
+
+.header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:22px;font-weight:700;color:var(--text)}
+.header .sub{color:var(--text2);font-size:12px}
+
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--card);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.kpi-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text)}
+.kpi-sub{color:var(--text2);font-size:11px;margin-top:4px}
+.kpi-good{border-left:3px solid var(--green)}
+.kpi-bad{border-left:3px solid var(--red)}
+.kpi-warn{border-left:3px solid var(--amber)}
+
+.grid{display:grid;gap:16px;margin-bottom:24px}
+.grid-2{grid-template-columns:1fr 1fr}
+
+.card{background:var(--card);padding:20px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.card h2{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card h2::before{content:"";width:4px;height:16px;background:var(--blue);border-radius:2px}
+.card.red h2::before{background:var(--red)}
+.card.amber h2::before{background:var(--amber)}
+.card.green h2::before{background:var(--green)}
+.card.violet h2::before{background:var(--violet)}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:left;padding:8px 6px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#f8faff}
+tbody td{padding:8px 6px;border-bottom:1px solid var(--border);color:var(--text)}
+tbody tr:hover{background:#fafbff}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+
+.bar{display:inline-block;height:6px;border-radius:3px;background:#e4e9f2;width:60px;position:relative;vertical-align:middle;margin-right:6px}
+.bar-fill{position:absolute;height:100%;border-radius:3px;left:0;top:0}
+.bar-green{background:var(--green)}
+.bar-amber{background:var(--amber)}
+.bar-red{background:var(--red)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
+.badge-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:3px 10px;background:#f8faff;border-radius:99px;font-size:11px;color:var(--text2);border:1px solid var(--border)}
+
+.store-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.store-item:last-child{border-bottom:none}
+.store-name{font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px;display:flex;justify-content:space-between}
+.store-factors{color:var(--text2);font-size:11px;padding:8px 12px;background:var(--red-bg);border-left:3px solid var(--red);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-top:6px;line-height:1.7}
+.store-action{color:var(--green);font-size:11px;padding:8px 12px;background:var(--green-bg);border-left:3px solid var(--green);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-top:6px;line-height:1.7;font-weight:500}
+
+.next-step{padding:10px 12px;background:#f8faff;border-radius:var(--r-sm);margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border)}
+.next-step-num{width:24px;height:24px;background:var(--violet);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.next-step-body{flex:1}
+.next-step-title{font-weight:600;font-size:12px;color:var(--text)}
+.next-step-who{color:var(--text2);font-size:10px;margin-top:2px}
+
+.alert{padding:12px 16px;border-radius:var(--r-sm);margin-top:12px;font-size:12px;border-left:3px solid}
+.alert-red{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.alert-amber{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+.alert-blue{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+
+.pl-box{display:flex;justify-content:space-around;padding:16px;background:var(--violet-bg);border-radius:var(--r-sm);margin-top:12px;border:1px solid var(--violet-border)}
+.pl-item{text-align:center}
+.pl-item .val{font-size:18px;font-weight:700;color:var(--violet)}
+.pl-item .lbl{font-size:10px;color:var(--text3);margin-top:4px}
+
+.bullet{list-style:none}
+.bullet li{padding:6px 0;padding-left:20px;position:relative;font-size:12px;color:var(--text)}
+.bullet li::before{content:"▸";position:absolute;left:4px;color:var(--blue)}
+.bullet li strong{color:var(--amber);font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div>
+    <h1>直営MTG ダッシュボード</h1>
+    <div class="sub">2026年4月21日 / 参加: 土田・梅田・内山・宮脇・髙橋・澤 / 進行: 土田 / 議事録: 髙橋</div>
+  </div>
+  <div class="sub">出典: Geminiメモ + アジェンダ議事録</div>
+</div>
+
+<!-- KPI Summary -->
+<div class="kpi-row">
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">直営合計 4/19実績</div>
+    <div class="kpi-val">¥16,007,914</div>
+    <div class="kpi-sub">先予約込 ¥21,075,654 / 1,199件</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">月目標合計</div>
+    <div class="kpi-val">¥25,152,165</div>
+    <div class="kpi-sub">15店舗(S+m+L)</div>
+  </div>
+  <div class="kpi kpi-bad">
+    <div class="kpi-label">着地差分</div>
+    <div class="kpi-val" style="color:var(--red)">-¥4,076,511</div>
+    <div class="kpi-sub">達成率 83.8%</div>
+  </div>
+  <div class="kpi kpi-bad">
+    <div class="kpi-label">キャンセル合計</div>
+    <div class="kpi-val">228件</div>
+    <div class="kpi-sub">SC除外 405件</div>
+  </div>
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">PL目標(1店舗)</div>
+    <div class="kpi-val">¥500,000〜</div>
+    <div class="kpi-sub">利益見通しライン</div>
+  </div>
+</div>
+
+<!-- Store progress table -->
+<div class="card" style="margin-bottom:16px">
+  <h2>店舗別進捗(4/19時点)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>店舗</th>
+        <th class="num">月目標</th>
+        <th class="num">実績</th>
+        <th class="num">先予約</th>
+        <th class="num">見積着地</th>
+        <th class="num">差分</th>
+        <th class="num">達成率</th>
+        <th>進捗</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>S札幌（+L札幌）</td><td class="num">¥2,016,000</td><td class="num">¥1,440,370</td><td class="num">¥564,800</td><td class="num">¥2,005,170</td><td class="num">-¥10,830</td><td class="num"><span class="badge badge-green">99.5%</span></td><td><span class="bar"><span class="bar-fill bar-green" style="width:99%"></span></span></td></tr>
+      <tr><td>S高田馬場（+L）</td><td class="num">¥1,420,000</td><td class="num">¥1,015,700</td><td class="num">¥370,200</td><td class="num">¥1,385,900</td><td class="num">-¥34,100</td><td class="num"><span class="badge badge-green">97.6%</span></td><td><span class="bar"><span class="bar-fill bar-green" style="width:97%"></span></span></td></tr>
+      <tr><td>m川崎</td><td class="num">¥1,600,000</td><td class="num">¥1,123,580</td><td class="num">¥387,000</td><td class="num">¥1,510,580</td><td class="num">-¥89,420</td><td class="num"><span class="badge badge-green">94.4%</span></td><td><span class="bar"><span class="bar-fill bar-green" style="width:94%"></span></span></td></tr>
+      <tr><td>S川崎（+L川崎）</td><td class="num">¥3,712,000</td><td class="num">¥2,924,550</td><td class="num">¥531,700</td><td class="num">¥3,456,250</td><td class="num">-¥255,750</td><td class="num"><span class="badge badge-amber">93.1%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:93%"></span></span></td></tr>
+      <tr><td>S藤沢（+L藤沢）</td><td class="num">¥1,199,940</td><td class="num">¥808,840</td><td class="num">¥265,540</td><td class="num">¥1,074,380</td><td class="num">-¥125,560</td><td class="num"><span class="badge badge-amber">89.5%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:89%"></span></span></td></tr>
+      <tr><td>S熊本</td><td class="num">¥1,404,000</td><td class="num">¥872,100</td><td class="num">¥371,300</td><td class="num">¥1,243,400</td><td class="num">-¥160,600</td><td class="num"><span class="badge badge-amber">88.6%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:88%"></span></span></td></tr>
+      <tr><td>m横浜</td><td class="num">¥3,697,500</td><td class="num">¥2,304,354</td><td class="num">¥928,600</td><td class="num">¥3,232,954</td><td class="num">-¥464,546</td><td class="num"><span class="badge badge-amber">87.4%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:87%"></span></span></td></tr>
+      <tr><td>S二子玉川（+L）</td><td class="num">¥1,701,000</td><td class="num">¥1,014,990</td><td class="num">¥378,400</td><td class="num">¥1,393,390</td><td class="num">-¥307,610</td><td class="num"><span class="badge badge-amber">81.9%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:81%"></span></span></td></tr>
+      <tr><td>S立川</td><td class="num">¥1,410,000</td><td class="num">¥813,600</td><td class="num">¥297,500</td><td class="num">¥1,111,100</td><td class="num">-¥298,900</td><td class="num"><span class="badge badge-amber">78.8%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:78%"></span></span></td></tr>
+      <tr><td>m立川</td><td class="num">¥1,539,000</td><td class="num">¥835,530</td><td class="num">¥353,100</td><td class="num">¥1,188,630</td><td class="num">-¥350,370</td><td class="num"><span class="badge badge-amber">77.2%</span></td><td><span class="bar"><span class="bar-fill bar-amber" style="width:77%"></span></span></td></tr>
+      <tr><td>m所沢（+Patra）</td><td class="num">¥1,570,000</td><td class="num">¥925,890</td><td class="num">¥210,600</td><td class="num">¥1,136,490</td><td class="num">-¥433,510</td><td class="num"><span class="badge badge-red">72.4%</span></td><td><span class="bar"><span class="bar-fill bar-red" style="width:72%"></span></span></td></tr>
+      <tr><td>S岐阜</td><td class="num">¥696,000</td><td class="num">¥342,550</td><td class="num">¥147,000</td><td class="num">¥489,550</td><td class="num">-¥206,450</td><td class="num"><span class="badge badge-red">70.3%</span></td><td><span class="bar"><span class="bar-fill bar-red" style="width:70%"></span></span></td></tr>
+      <tr><td>m下北沢（+Patra）</td><td class="num">¥2,086,700</td><td class="num">¥1,231,000</td><td class="num">¥195,600</td><td class="num">¥1,426,600</td><td class="num">-¥660,100</td><td class="num"><span class="badge badge-red">68.4%</span></td><td><span class="bar"><span class="bar-fill bar-red" style="width:68%"></span></span></td></tr>
+      <tr><td>S中野</td><td class="num">¥500,025</td><td class="num">¥188,500</td><td class="num">¥63,100</td><td class="num">¥251,600</td><td class="num">-¥248,425</td><td class="num"><span class="badge badge-red">50.3%</span></td><td><span class="bar"><span class="bar-fill bar-red" style="width:50%"></span></span></td></tr>
+      <tr><td>L池袋（単独）</td><td class="num">¥600,000</td><td class="num">¥166,360</td><td class="num">¥3,300</td><td class="num">¥169,660</td><td class="num">-¥430,340</td><td class="num"><span class="badge badge-red">28.3%</span></td><td><span class="bar"><span class="bar-fill bar-red" style="width:28%"></span></span></td></tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff"><td>直営合計</td><td class="num">¥25,152,165</td><td class="num">¥16,007,914</td><td class="num">¥5,067,740</td><td class="num">¥21,075,654</td><td class="num" style="color:var(--red)">-¥4,076,511</td><td class="num"><span class="badge badge-amber">83.8%</span></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Factors & Actions -->
+<div class="grid grid-2">
+  <div class="card red">
+    <h2>遅れ店舗の要因と改善策</h2>
+
+    <div class="store-item">
+      <div class="store-name">L池袋 <span class="badge badge-red">28.3%</span></div>
+      <div class="store-factors">要因: 導線(動線・集客構造)</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S中野 <span class="badge badge-red">50.3%</span></div>
+      <div class="store-factors">要因: (議事録未記載)</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">m下北沢 <span class="badge badge-red">68.4%</span></div>
+      <div class="store-factors">
+        • 店販とオプションが弱い<br>
+        • もあさんが先月より大きく下がっている
+      </div>
+      <div class="store-action">
+        改善: もあさんと面談 / 退職者への対応
+      </div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S岐阜 <span class="badge badge-red">70.3%</span></div>
+      <div class="store-factors">
+        • 単価が他SSINより高いが伸びない<br>
+        • アップセルも伸びない<br>
+        • 施術時間をSSIN規模まで縮められない(1-2ヶ月でSSIN化)<br>
+        • 質問: キャパ+20-30人あれば価格下げて客を入れる?
+      </div>
+      <div class="store-action">
+        改善: 次回予約/アップセルのヒアリング、促しPOP作成
+      </div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">m所沢 <span class="badge badge-red">72.4%</span></div>
+      <div class="store-factors">
+        • OPが出ていない(回数券にフォーカス)<br>
+        • 再来向けアップセルできていない
+      </div>
+      <div class="store-action">改善: 再来向けアクションを行う</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">m立川 <span class="badge badge-amber">77.2%</span></div>
+      <div class="store-factors">(議事録未記載)</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S立川 <span class="badge badge-amber">78.8%</span></div>
+      <div class="store-factors">
+        • フル出勤スタッフ不在で客数影響<br>
+        • 再来も小俣さんしか付いていない
+      </div>
+      <div class="store-action">改善: 呼び込める再来少ない→新規クーポン改善必要</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S二子玉川 <span class="badge badge-amber">81.9%</span></div>
+      <div class="store-factors">
+        • LUMISSの再来10名のみ<br>
+        • SSINも先月より客数少<br>
+        • ワックス再来が45分になっている<br>
+        • 土日SSIN予約が早く埋まりLUMISSが入らない<br>
+        • 物販回数券が他店より少ない
+      </div>
+      <div class="store-action">改善: ランキングを見せる</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">m横浜 <span class="badge badge-amber">87.4%</span></div>
+      <div class="store-factors">
+        • 前半1人2件で空き多い<br>
+        • 回数券販売6件(数ヶ月で最少、先月継続分消化)<br>
+        • 再来減(メンテナンス期間で入りにくい)<br>
+        • 40日クーポン:3件
+      </div>
+      <div class="store-action">改善: 期間限定クーポンを出す</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S熊本 <span class="badge badge-amber">88.6%</span></div>
+      <div class="store-factors">
+        • 単価が低い<br>
+        • 回数券0円消化15人<br>
+        • 先月よりアップセル弱い
+      </div>
+      <div class="store-action">改善: POP(自分で作成) / GW前駆け込み施策</div>
+    </div>
+
+    <div class="store-item">
+      <div class="store-name">S川崎 <span class="badge badge-amber">93.1%</span></div>
+      <div class="store-factors">
+        • 新規の客単価高、再来の客単価下(回数券消化)
+      </div>
+      <div class="store-action">改善: 再来への配信 / 平日客数を埋めていく</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>共通課題と打ち手</h2>
+    <ul class="bullet">
+      <li><strong>単価の低さ</strong>が全体最大の課題(Gemini要約)</li>
+      <li><strong>空き枠管理</strong>: 週次で確認</li>
+      <li><strong>LUMISS誘導</strong>: マツエク可能スタッフをSSIN振り分け2に下げてLUMISS予約が入るようにする</li>
+      <li><strong>回数券消化が土日集中</strong>: 調整する</li>
+      <li><strong>ミニ予約枠(45分/30分)</strong>が埋まらない = 収益機会損失、予約時誘導の改善</li>
+      <li><strong>土日15分枠の2人対応</strong>: デチューンでレート調整が今後の課題</li>
+    </ul>
+
+    <h2 style="margin-top:24px">週次チェック事項</h2>
+    <ul class="bullet">
+      <li>次回予約</li>
+      <li>回数券: 初回販売率10%以上 / 継続販売率100%(m下北は次回予約、m立川はステイで例外)</li>
+      <li>ブログ投稿</li>
+      <li>口コミ返信(フォーマット禁止、丁寧に自分の言葉で)</li>
+    </ul>
+
+    <h2 style="margin-top:24px">3ヶ月アクションの枠組み</h2>
+    <div class="alert alert-blue">
+      <strong>「何を・誰が・いつまでに」の3項目を明確化</strong> - エリアマネージャーが深い分析(なぜを繰り返す)でアクションを具体化し、横展開・成功事例共有まで一貫して行う
+    </div>
+  </div>
+</div>
+
+<!-- Area manager & NA -->
+<div class="grid grid-2">
+  <div class="card violet">
+    <h2>エリアマネージャーの役割強化</h2>
+    <ul class="bullet">
+      <li>売上だけでなく<strong>利益率(PL)</strong>に責任</li>
+      <li>中長期戦略立案(次回予約率・回数券販売目標・半年単位)</li>
+      <li>チーム全体の成長を考え、<strong>1歩引いた視点で原因分析・改善提案</strong></li>
+      <li>店長は日々の運営、エリアマネージャーは中長期戦略</li>
+      <li>成功事例の横展開と<strong>言語化</strong>でスキルアップ</li>
+      <li>コスト意識(無駄な仕入れ・過剰残業・在庫管理)</li>
+    </ul>
+
+    <div class="pl-box">
+      <div class="pl-item">
+        <div class="val">¥60万</div>
+        <div class="lbl">1店舗(PC込)利益ベース</div>
+      </div>
+      <div class="pl-item">
+        <div class="val">¥70〜75万</div>
+        <div class="lbl">シミュレーション利益ライン</div>
+      </div>
+      <div class="pl-item">
+        <div class="val">¥50万</div>
+        <div class="lbl">当面の現実的目標</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card amber">
+    <h2>本日(4/21)のNA</h2>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:8px 0">髙橋</h3>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">岐阜の導線共有</div>
+        <div class="next-step-who">〆4/21</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">直営MTGのアジェンダNA共有(期日は決めてもらう)</div>
+        <div class="next-step-who">〆4/21</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px">土田(m所沢/m立川/S中野/S川崎/S立川/L池袋/L川崎)</h3>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">m所沢: 再来向けアクション実施(OP販売弱い)</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S中野: 要因特定と改善計画確認(50.3%)</div>
+        <div class="next-step-who">木曜面談で髙橋と確認 / 〆月曜日</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S川崎: 再来配信/平日客数を埋めていく</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S立川: 新規クーポン改善(呼び込める再来少ない)</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">L池袋: 導線改善(28.3%最大未達)</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px">澤(m川崎/m横浜)</h3>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">m横浜: 期間限定クーポン発行(季節系・回数券訴求)</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px">林(S高田馬場/L高田馬場)</h3>
+    <div class="next-step">
+      <div class="next-step-num">—</div>
+      <div class="next-step-body">
+        <div class="next-step-title">担当店舗は達成圏(S高田97.6%)・未達改善タスクなし</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px">内山(S二子玉川/S藤沢/L二子玉川/L藤沢)</h3>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S二子玉川: 物販回数券ランキングをスタッフに見せる(少ない自覚促し)</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px">梅田(m下北沢/S札幌/S熊本/S岐阜/L札幌)</h3>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">m下北沢: もあさんと面談(先月より大きく低下)/退職者対応</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S熊本: スタッフがPOP作成→促し / GW前駆け込み施策</div>
+      </div>
+    </div>
+    <div class="next-step">
+      <div class="next-step-num">●</div>
+      <div class="next-step-body">
+        <div class="next-step-title">S岐阜: 次回予約/アップセルヒアリング / 促しPOP作成</div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:20px">前回(4/7)からの持越NA</h2>
+    <div class="next-step" style="background:var(--green-bg);border-color:var(--green-border)">
+      <div class="next-step-num" style="background:var(--green)">✓</div>
+      <div class="next-step-body">
+        <div class="next-step-title">新規ゲリラクーポンに対する再来特典検討</div>
+        <div class="next-step-who">梅田・内山 / スタッフ落とし込みタイミングも共有</div>
+      </div>
+    </div>
+    <div class="next-step" style="background:var(--green-bg);border-color:var(--green-border)">
+      <div class="next-step-num" style="background:var(--green)">✓</div>
+      <div class="next-step-body">
+        <div class="next-step-title">次回予約の動線をブランドごとに決める</div>
+        <div class="next-step-who">SSIN:梅田 / most:澤 / LUMISS:内山</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Meta notes -->
+<div class="card">
+  <h2>注記・検証ポイント</h2>
+  <ul class="bullet">
+    <li>4/20会計: 全直営合計 ¥525,600 / 92件(先予約額に含まれる)</li>
+    <li>SCデータID除外 405件(L川崎78, L札幌56, S川崎45, L二子玉川46, L藤沢39, Patra下北沢33等)</li>
+    <li>キャンセル除外 228件</li>
+    <li>m所沢 SS¥925,890 = most所沢¥247,300 + Patra所沢¥678,590(¥単位一致)</li>
+    <li>m下北沢 SS¥1,231,000 ≈ most下北沢¥1,168,300 + Patra下北沢¥120,100(差¥57kタイミング)</li>
+  </ul>
+</div>
+
+<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:11px">
+  データ出典: 直営MTG議事録(Gemini)・アジェンダ / 生成 2026-04-21
+</div>
+
+</div>
+</body>
+</html>
