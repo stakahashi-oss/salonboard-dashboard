@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Next Action一覧 熊本/岐阜/二子玉川 (2026-04-22)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #fafbfc; color: #1a1a1a; line-height: 1.5; padding: 32px 20px; }
+.wrap { max-width: 1200px; margin: 0 auto; }
+.title { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+
+.toolbar { background: white; border: 1px solid #e8ecef; border-radius: 10px; padding: 12px 16px; margin-bottom: 24px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.toolbar button { padding: 6px 14px; border: 1px solid #1976d2; background: white; color: #1976d2; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+.toolbar button:hover { background: #e3f2fd; }
+.toolbar button.danger { border-color: #d32f2f; color: #d32f2f; }
+.toolbar button.danger:hover { background: #ffebee; }
+.toolbar .updated { margin-left: auto; font-size: 12px; color: #666; }
+.toolbar .hint { font-size: 12px; color: #555; padding: 4px 10px; background: #fff8e1; border-radius: 4px; border: 1px solid #ffe0b2; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+.summary-card { background: white; padding: 16px; border-radius: 10px; border: 1px solid #e8ecef; text-align: center; }
+.summary-card .lab { font-size: 11px; color: #666; margin-bottom: 4px; }
+.summary-card .val { font-size: 26px; font-weight: 700; color: #1976d2; }
+.summary-card.urgent .val { color: #d32f2f; }
+
+.shop-section { background: white; border-radius: 12px; border: 1px solid #e8ecef; margin-bottom: 20px; overflow: hidden; }
+.shop-header { padding: 16px 24px; border-bottom: 2px solid; display: flex; justify-content: space-between; align-items: center; }
+.shop-header.kumamoto { background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%); border-bottom-color: #f57c00; }
+.shop-header.gifu { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-bottom-color: #388e3c; }
+.shop-header.futako { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); border-bottom-color: #1976d2; }
+.shop-header h2 { font-size: 20px; font-weight: 700; }
+.shop-header .count { font-size: 13px; color: #555; }
+.shop-header .meta { font-size: 12px; color: #555; margin-top: 4px; }
+
+table.actions { width: 100%; border-collapse: collapse; }
+table.actions th, table.actions td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: top; }
+table.actions th { background: #f8fafc; font-weight: 600; color: #555; font-size: 11px; }
+table.actions tr:hover { background: #fafbfc; }
+
+.num { text-align: center; font-weight: 700; color: #1976d2; width: 70px; white-space: nowrap; }
+.num input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; vertical-align: middle; margin-right: 6px; accent-color: #2e7d32; }
+.num .num-label { vertical-align: middle; font-size: 16px; }
+tr.done { background: #f5f5f5 !important; opacity: 0.55; }
+tr.done .title-cell, tr.done .detail-cell { text-decoration: line-through; color: #888 !important; }
+tr.done .deadline { opacity: 0.6; }
+.title-cell { font-weight: 600; min-width: 220px; }
+.detail-cell { color: #555; font-size: 12px; }
+
+[contenteditable="true"] { outline: none; cursor: text; transition: background 0.15s; min-width: 50px; }
+[contenteditable="true"]:hover { background: #e3f2fd; border-radius: 4px; }
+[contenteditable="true"]:focus { background: #fff9c4; padding: 2px 6px !important; border-radius: 4px; box-shadow: 0 0 0 2px #f9a825; }
+
+.deadline { font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; white-space: nowrap; min-width: 60px; text-align: center; }
+.deadline.urgent { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+.deadline.soon { background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; }
+.deadline.normal { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.deadline.expired { background: #efebe9; color: #4e342e; border: 1px solid #bcaaa4; text-decoration: line-through; }
+.deadline.tba { background: #f5f5f5; color: #777; border: 1px solid #ddd; }
+
+.cat { font-size: 10px; padding: 2px 8px; border-radius: 4px; display: inline-block; font-weight: 700; letter-spacing: 0.5px; }
+.cat.line { background: #00b900; color: white; }
+.cat.hpb { background: #ff6b35; color: white; }
+.cat.ope { background: #6a1b9a; color: white; }
+.cat.crm { background: #1976d2; color: white; }
+.cat.brand { background: #c2185b; color: white; }
+
+.toast { position: fixed; bottom: 24px; right: 24px; background: #2e7d32; color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 100; }
+.toast.show { opacity: 1; }
+
+footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="title">Next Action一覧 熊本/岐阜/二子玉川</div>
+<div class="sub">2026/04/22作成 | 担当: タカショー | 全14アクション(編集可能・自動保存)</div>
+
+<!-- ツールバー -->
+<div class="toolbar">
+  <span class="hint">📝 詳細セル/期限セルをクリックで編集 → タブやEnterで保存(自動)</span>
+  <button onclick="exportJSON()">💾 エクスポート(JSON)</button>
+  <button onclick="document.getElementById('importInput').click()">📂 インポート(JSON)</button>
+  <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(event)">
+  <button class="danger" onclick="resetAll()">↺ 初期値に戻す</button>
+  <span class="updated" id="updatedTime">未編集</span>
+</div>
+
+<!-- サマリー -->
+<div class="summary-grid" id="summaryGrid">
+  <div class="summary-card urgent">
+    <div class="lab">期限切迫(2日以内)</div>
+    <div class="val" id="cntUrgent">-</div>
+  </div>
+  <div class="summary-card">
+    <div class="lab">近日(7日以内)</div>
+    <div class="val" id="cntSoon">-</div>
+  </div>
+  <div class="summary-card">
+    <div class="lab">通常/期限未設定</div>
+    <div class="val" id="cntNormal">-</div>
+  </div>
+  <div class="summary-card" style="background:#f1f8f4; border-color:#a5d6a7;">
+    <div class="lab">✅ 完了済み</div>
+    <div class="val" id="cntDone" style="color:#2e7d32;">-</div>
+  </div>
+  <div class="summary-card">
+    <div class="lab">全アクション</div>
+    <div class="val">14件</div>
+  </div>
+</div>
+
+<!-- 熊本 -->
+<div class="shop-section">
+  <div class="shop-header kumamoto">
+    <div>
+      <h2>🟠 熊本(S熊本)</h2>
+      <div class="meta">SV梅田 | T.Ran/Y.mio 2名体制 | 回数券0円消化64%が最大課題</div>
+    </div>
+    <div class="count">3アクション</div>
+  </div>
+  <table class="actions">
+    <thead>
+      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="kumamoto-1">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
+        <td><span class="cat line">LINE</span></td>
+        <td class="title-cell">回数券特典に関してLINE配信</td>
+        <td class="detail-cell" contenteditable="true">特典がまとまった画像を24日に配信する + クーポンを作成して反応率を上げる</td>
+        <td><span class="deadline" contenteditable="true">4/24</span></td>
+      </tr>
+      <tr data-id="kumamoto-2">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
+        <td><span class="cat line">LINE</span></td>
+        <td class="title-cell">回数券特典をLINEリッチメニューに設置</td>
+        <td class="detail-cell" contenteditable="true">回数券画像も岩山さんが作成した画像と特典内容の設置</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="kumamoto-3">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
+        <td><span class="cat hpb">HPB</span></td>
+        <td class="title-cell">0円消化に対しての対策</td>
+        <td class="detail-cell" contenteditable="true">サロンボードの付け替えOFFに、500円OPセットで800円などの設置</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 岐阜 -->
+<div class="shop-section">
+  <div class="shop-header gifu">
+    <div>
+      <h2>🟢 岐阜(S岐阜)</h2>
+      <div class="meta">SV梅田 | Yuki 1人体制 | 平日稼働率46%・新規前月比-24%</div>
+    </div>
+    <div class="count">5アクション</div>
+  </div>
+  <table class="actions">
+    <thead>
+      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="gifu-1">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
+        <td><span class="cat brand">PR</span></td>
+        <td class="title-cell">GW直前打ち出し</td>
+        <td class="detail-cell" contenteditable="true">GW直前のキャンペーン/告知打ち出し</td>
+        <td><span class="deadline" contenteditable="true">GW前</span></td>
+      </tr>
+      <tr data-id="gifu-2">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
+        <td><span class="cat hpb">HPB</span></td>
+        <td class="title-cell">セットメニューの上位表示</td>
+        <td class="detail-cell" contenteditable="true">SET¥6,600主力化(KPI③単価対策と整合)</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="gifu-3">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
+        <td><span class="cat crm">CRM</span></td>
+        <td class="title-cell">公式LINE 7日以内次回予約導線設定</td>
+        <td class="detail-cell" contenteditable="true">来店後7日以内の次回予約LINE自動配信</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="gifu-4">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">④</span></td>
+        <td><span class="cat line">LINE</span></td>
+        <td class="title-cell">回数券設定</td>
+        <td class="detail-cell" contenteditable="true">公式LINEのリッチメニューに回数券画像を応答に設置 + 特典</td>
+        <td><span class="deadline" contenteditable="true">4/23</span></td>
+      </tr>
+      <tr data-id="gifu-5">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑤</span></td>
+        <td><span class="cat hpb">HPB</span></td>
+        <td class="title-cell">平日限定クーポン3種設定</td>
+        <td class="detail-cell" contenteditable="true">・セットメニュー OP2つ無料 ・まつげ OP2つ無料 ・眉毛 OP3つ無料</td>
+        <td><span class="deadline" contenteditable="true">4/23</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 二子玉川 -->
+<div class="shop-section">
+  <div class="shop-header futako">
+    <div>
+      <h2>🔵 二子玉川(S二子玉川)</h2>
+      <div class="meta">SV内山 | 一元管理S+L | Tomoyo退職離脱97%・着地79.9%</div>
+    </div>
+    <div class="count">6アクション</div>
+  </div>
+  <table class="actions">
+    <thead>
+      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="futako-1">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
+        <td><span class="cat hpb">HPB</span></td>
+        <td class="title-cell">セットメニュークーポン順番変更</td>
+        <td class="detail-cell" contenteditable="true">40%OFFのクーポン画像を1番目に掲載</td>
+        <td><span class="deadline" contenteditable="true">4/23</span></td>
+      </tr>
+      <tr data-id="futako-2">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
+        <td><span class="cat hpb">HPB</span></td>
+        <td class="title-cell">サロンTOP変更</td>
+        <td class="detail-cell" contenteditable="true">ブランド画像を1番目に掲載し、2番目にセット訴求の画像に変更</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="futako-3">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
+        <td><span class="cat ope">OPE</span></td>
+        <td class="title-cell">退職引継ぎの規定作成</td>
+        <td class="detail-cell" contenteditable="true">Tomoyo退職時の97%離脱の再発防止 → スタッフ退職時の引継ぎフロー標準化</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="futako-4">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">④</span></td>
+        <td><span class="cat line">LINE</span></td>
+        <td class="title-cell">LUMISS 3月客に対してリペア配信</td>
+        <td class="detail-cell" contenteditable="true">LUMISSブランド3月来店客向けリペアLINE配信</td>
+        <td><span class="deadline" contenteditable="true">未設定</span></td>
+      </tr>
+      <tr data-id="futako-5">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑤</span></td>
+        <td><span class="cat ope">OPE</span></td>
+        <td class="title-cell">月次SSIN予約振り分け変更タイミング確定</td>
+        <td class="detail-cell" contenteditable="true">1ヶ月ごとにSSINの予約振り分けを変更し、顧客獲得提案 → 内山さんと話し、いつのタイミングで行うか相談し確定までさせる</td>
+        <td><span class="deadline" contenteditable="true">4/24</span></td>
+      </tr>
+      <tr data-id="futako-6">
+        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑥</span></td>
+        <td><span class="cat crm">CRM</span></td>
+        <td class="title-cell">Tomoyo指名客31名への電話フォロー</td>
+        <td class="detail-cell" contenteditable="true">公式LINEとSMSで引き継ぎ内容の送信(月¥165kロス対策の主軸)</td>
+        <td><span class="deadline" contenteditable="true">4/23</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>2026/04/22作成 | 14アクション(熊本3 + 岐阜5 + 二子玉川6) | 編集内容はブラウザに自動保存(localStorage)</footer>
+
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'nextActionTracker_20260422';
+const TODAY = new Date(2026, 3, 22); // 2026-04-22 (月は0始まり)
+
+// 期限文字列を解析して classify
+function classifyDeadline(text) {
+  if (!text || /未設定|TBD|TBA|なし|-+/i.test(text.trim())) return 'tba';
+  if (/GW前|GW直前/.test(text)) return 'soon';
+  // M/D 形式
+  const m = text.match(/(\d{1,2})\s*[\/月]\s*(\d{1,2})/);
+  if (m) {
+    const month = parseInt(m[1]);
+    const day = parseInt(m[2]);
+    let year = 2026;
+    // 1-3月なら2027年扱い(年跨ぎ)
+    if (month <= 3) year = 2027;
+    const target = new Date(year, month - 1, day);
+    const diff = (target - TODAY) / (1000 * 60 * 60 * 24);
+    if (diff < 0) return 'expired';
+    if (diff <= 2) return 'urgent';
+    if (diff <= 7) return 'soon';
+    return 'normal';
+  }
+  return 'tba';
+}
+
+// 期限色を更新
+function updateDeadlineColor(el) {
+  const text = el.textContent.trim();
+  el.className = 'deadline ' + classifyDeadline(text);
+}
+
+// localStorage保存
+function saveAll() {
+  const data = { lastUpdate: new Date().toISOString(), rows: {} };
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = tr.dataset.id;
+    const detail = tr.querySelector('.detail-cell').textContent.trim();
+    const deadline = tr.querySelector('.deadline').textContent.trim();
+    const done = tr.querySelector('.check').checked;
+    data.rows[id] = { detail, deadline, done };
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  updateLastUpdate(data.lastUpdate);
+  updateSummary();
+  showToast('保存しました');
+}
+
+// 復元
+function loadAll() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    refreshAllColors();
+    updateSummary();
+    return;
+  }
+  try {
+    const data = JSON.parse(raw);
+    Object.entries(data.rows || {}).forEach(([id, val]) => {
+      const tr = document.querySelector(`tr[data-id="${id}"]`);
+      if (!tr) return;
+      tr.querySelector('.detail-cell').textContent = val.detail;
+      tr.querySelector('.deadline').textContent = val.deadline;
+      const cb = tr.querySelector('.check');
+      cb.checked = !!val.done;
+      tr.classList.toggle('done', !!val.done);
+    });
+    updateLastUpdate(data.lastUpdate);
+  } catch (e) { console.warn('load error', e); }
+  refreshAllColors();
+  updateSummary();
+}
+
+function refreshAllColors() {
+  document.querySelectorAll('.deadline').forEach(updateDeadlineColor);
+}
+
+function updateLastUpdate(iso) {
+  const d = new Date(iso);
+  document.getElementById('updatedTime').textContent = '最終更新: ' + d.toLocaleString('ja-JP');
+}
+
+function updateSummary() {
+  let urgent=0, soon=0, normal=0, done=0;
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    if (tr.querySelector('.check').checked) { done++; return; }
+    const el = tr.querySelector('.deadline');
+    const c = el.className.match(/urgent|soon|normal|expired|tba/);
+    if (!c) return;
+    if (c[0]==='urgent' || c[0]==='expired') urgent++;
+    else if (c[0]==='soon') soon++;
+    else normal++;
+  });
+  document.getElementById('cntUrgent').textContent = urgent + '件';
+  document.getElementById('cntSoon').textContent = soon + '件';
+  document.getElementById('cntNormal').textContent = normal + '件';
+  document.getElementById('cntDone').textContent = done + ' / 14件';
+}
+
+// イベント
+document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+  el.addEventListener('blur', () => {
+    if (el.classList.contains('deadline')) updateDeadlineColor(el);
+    saveAll();
+  });
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      el.blur();
+    }
+  });
+});
+
+// チェックボックス
+document.querySelectorAll('.check').forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.closest('tr').classList.toggle('done', cb.checked);
+    saveAll();
+  });
+});
+
+// エクスポート
+function exportJSON() {
+  const raw = localStorage.getItem(STORAGE_KEY) || '{}';
+  const blob = new Blob([raw], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `next_action_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('JSONをダウンロードしました');
+}
+
+// インポート
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      loadAll();
+      showToast('インポート完了');
+    } catch (err) { alert('JSONの読み込みに失敗: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// リセット
+function resetAll() {
+  if (!confirm('編集内容を破棄して初期値に戻しますか?(取り消せません)')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// トースト
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// 初期化
+loadAll();
+</script>
+</body>
+</html>
