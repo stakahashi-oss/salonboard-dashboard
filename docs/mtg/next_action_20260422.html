@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Next Action一覧 熊本/岐阜/二子玉川 (2026-04-22)</title>
+<title>経営mtgNA 熊本/岐阜/二子玉川 (2026-04-22)</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #fafbfc; color: #1a1a1a; line-height: 1.5; padding: 32px 20px; }
-.wrap { max-width: 1200px; margin: 0 auto; }
+.wrap { max-width: 1400px; margin: 0 auto; }
 .title { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
 .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
 
@@ -34,32 +34,45 @@ body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", san
 .shop-header .count { font-size: 13px; color: #555; }
 .shop-header .meta { font-size: 12px; color: #555; margin-top: 4px; }
 
-table.actions { width: 100%; border-collapse: collapse; }
-table.actions th, table.actions td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: top; }
+table.actions { width: 100%; border-collapse: collapse; table-layout: fixed; }
+table.actions th, table.actions td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; font-size: 12px; vertical-align: top; }
+table.actions th:last-child, table.actions td:last-child { border-right: none; }
 table.actions th { background: #f8fafc; font-weight: 600; color: #555; font-size: 11px; }
 table.actions tr:hover { background: #fafbfc; }
 
-.num { text-align: center; font-weight: 700; color: #1976d2; width: 70px; white-space: nowrap; }
-.num input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; vertical-align: middle; margin-right: 6px; accent-color: #2e7d32; }
-.num .num-label { vertical-align: middle; font-size: 16px; }
+.col-chk { width: 80px; }
+.col-theme { width: 160px; }
+.col-why { width: 220px; }
+.col-what { width: 260px; }
+.col-who { width: 110px; }
+.col-when { width: 100px; }
+.col-memo { min-width: 180px; }
+
+.num-wrap { display: flex; align-items: center; gap: 6px; }
+.num-wrap input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #2e7d32; flex-shrink: 0; }
+.num-wrap .num-label { font-weight: 700; color: #1976d2; font-size: 16px; }
+.theme-cell { font-weight: 600; font-size: 13px; color: #1a1a1a; }
 tr.done { background: #f5f5f5 !important; opacity: 0.55; }
-tr.done .title-cell, tr.done .detail-cell { text-decoration: line-through; color: #888 !important; }
+tr.done .theme-cell, tr.done .why-cell, tr.done .what-cell { text-decoration: line-through; color: #888 !important; }
 tr.done .deadline { opacity: 0.6; }
-.title-cell { font-weight: 600; min-width: 220px; }
-.detail-cell { color: #555; font-size: 12px; }
 
-[contenteditable="true"] { outline: none; cursor: text; transition: background 0.15s; min-width: 50px; }
+[contenteditable="true"] { outline: none; cursor: text; transition: background 0.15s; min-height: 20px; white-space: pre-wrap; word-break: break-word; }
 [contenteditable="true"]:hover { background: #e3f2fd; border-radius: 4px; }
-[contenteditable="true"]:focus { background: #fff9c4; padding: 2px 6px !important; border-radius: 4px; box-shadow: 0 0 0 2px #f9a825; }
+[contenteditable="true"]:focus { background: #fff9c4; box-shadow: 0 0 0 2px #f9a825; border-radius: 4px; }
 
-.deadline { font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; white-space: nowrap; min-width: 60px; text-align: center; }
+.why-cell { color: #555; font-size: 12px; line-height: 1.5; }
+.what-cell { color: #333; font-size: 12px; line-height: 1.5; }
+.memo-cell { color: #555; font-size: 12px; line-height: 1.5; min-height: 40px; background: #fffef5; }
+.who-cell { color: #1976d2; font-weight: 600; font-size: 12px; }
+
+.deadline { font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; white-space: nowrap; text-align: center; }
 .deadline.urgent { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
 .deadline.soon { background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; }
 .deadline.normal { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
 .deadline.expired { background: #efebe9; color: #4e342e; border: 1px solid #bcaaa4; text-decoration: line-through; }
 .deadline.tba { background: #f5f5f5; color: #777; border: 1px solid #ddd; }
 
-.cat { font-size: 10px; padding: 2px 8px; border-radius: 4px; display: inline-block; font-weight: 700; letter-spacing: 0.5px; }
+.cat { font-size: 10px; padding: 2px 6px; border-radius: 3px; display: inline-block; font-weight: 700; margin-right: 4px; }
 .cat.line { background: #00b900; color: white; }
 .cat.hpb { background: #ff6b35; color: white; }
 .cat.ope { background: #6a1b9a; color: white; }
@@ -75,12 +88,12 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
 <body>
 <div class="wrap">
 
-<div class="title">Next Action一覧 熊本/岐阜/二子玉川</div>
-<div class="sub">2026/04/22作成 | 担当: タカショー | 全14アクション(編集可能・自動保存)</div>
+<div class="title">経営mtgNA 熊本/岐阜/二子玉川</div>
+<div class="sub">2026/04/22作成 | 担当: タカショー | 全14アクション(編集可能・自動保存) | なぜ行うのか+完了後の備考 拡張版</div>
 
 <!-- ツールバー -->
 <div class="toolbar">
-  <span class="hint">📝 詳細セル/期限セルをクリックで編集 → タブやEnterで保存(自動)</span>
+  <span class="hint">📝 全セル(なぜ/何を/期限/誰が/備考)クリックで編集 → Enterで保存(自動)</span>
   <button onclick="exportJSON()">💾 エクスポート(JSON)</button>
   <button onclick="document.getElementById('importInput').click()">📂 インポート(JSON)</button>
   <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(event)">
@@ -89,7 +102,7 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
 </div>
 
 <!-- サマリー -->
-<div class="summary-grid" id="summaryGrid">
+<div class="summary-grid">
   <div class="summary-card urgent">
     <div class="lab">期限切迫(2日以内)</div>
     <div class="val" id="cntUrgent">-</div>
@@ -122,30 +135,41 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
     <div class="count">3アクション</div>
   </div>
   <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
     <thead>
-      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+      <tr>
+        <th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>完了後の備考</th>
+      </tr>
     </thead>
     <tbody>
       <tr data-id="kumamoto-1">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
-        <td><span class="cat line">LINE</span></td>
-        <td class="title-cell">回数券特典に関してLINE配信</td>
-        <td class="detail-cell" contenteditable="true">特典がまとまった画像を24日に配信する + クーポンを作成して反応率を上げる</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat line">LINE</span>回数券特典に関してLINE配信</td>
+        <td class="why-cell" contenteditable="true">回数券0円消化率64%(3月59%→4月悪化)・再来単価-¥353ダウンの主因。特典訴求で次回予約への導線を作り、LTVサイクルを復活させるため</td>
+        <td class="what-cell" contenteditable="true">特典がまとまった画像を24日に配信する + クーポンを作成して反応率を上げる</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">4/24</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="kumamoto-2">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
-        <td><span class="cat line">LINE</span></td>
-        <td class="title-cell">回数券特典をLINEリッチメニューに設置</td>
-        <td class="detail-cell" contenteditable="true">回数券画像も岩山さんが作成した画像と特典内容の設置</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat line">LINE</span>回数券特典をLINEリッチメニューに設置</td>
+        <td class="why-cell" contenteditable="true">LINE公式フォロー客が常時回数券情報にアクセスできる導線を作る。回数券販売・利用ともに不稼働の底上げ</td>
+        <td class="what-cell" contenteditable="true">回数券画像も岩山さんが作成した画像と特典内容の設置</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="kumamoto-3">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
-        <td><span class="cat hpb">HPB</span></td>
-        <td class="title-cell">0円消化に対しての対策</td>
-        <td class="detail-cell" contenteditable="true">サロンボードの付け替えOFFに、500円OPセットで800円などの設置</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat hpb">HPB</span>0円消化に対しての対策</td>
+        <td class="why-cell" contenteditable="true">回数券利用時¥0会計が4月64%まで悪化(議事録3月ToDo未実行)。オプション追加で単価を底上げし、T.Ran再来単価-¥1,234崩落を止める</td>
+        <td class="what-cell" contenteditable="true">サロンボードの付け替えOFFに、500円OPセットで800円などの設置</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
     </tbody>
   </table>
@@ -161,44 +185,59 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
     <div class="count">5アクション</div>
   </div>
   <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
     <thead>
-      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+      <tr>
+        <th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>完了後の備考</th>
+      </tr>
     </thead>
     <tbody>
       <tr data-id="gifu-1">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
-        <td><span class="cat brand">PR</span></td>
-        <td class="title-cell">GW直前打ち出し</td>
-        <td class="detail-cell" contenteditable="true">GW直前のキャンペーン/告知打ち出し</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat brand">PR</span>GW直前打ち出し</td>
+        <td class="why-cell" contenteditable="true">GW前の集客ピーク(年間最大の眉/まつ需要期)を取り逃さないため。4月新規前月比-24%の回復策として最後のチャンス</td>
+        <td class="what-cell" contenteditable="true">GW直前のキャンペーン/告知打ち出し</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">GW前</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="gifu-2">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
-        <td><span class="cat hpb">HPB</span></td>
-        <td class="title-cell">セットメニューの上位表示</td>
-        <td class="detail-cell" contenteditable="true">SET¥6,600主力化(KPI③単価対策と整合)</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat hpb">HPB</span>セットメニューの上位表示</td>
+        <td class="why-cell" contenteditable="true">4月メニュー構成がSET16%/眉単品54%偏重で客単価-¥275(¥5,525/目標¥5,800)。SET主力化で単価UPと新規CVR両取り</td>
+        <td class="what-cell" contenteditable="true">SET¥6,600主力化(KPI③単価対策と整合)</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="gifu-3">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
-        <td><span class="cat crm">CRM</span></td>
-        <td class="title-cell">公式LINE 7日以内次回予約導線設定</td>
-        <td class="detail-cell" contenteditable="true">来店後7日以内の次回予約LINE自動配信</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat crm">CRM</span>公式LINE 7日以内次回予約導線設定</td>
+        <td class="why-cell" contenteditable="true">Yuki1人体制(63名/月担当)で次回予約フォローまで手が回らない。仕組み化で再来サイクルを復活、3月→4月復帰率14.6%を改善</td>
+        <td class="what-cell" contenteditable="true">来店後7日以内の次回予約LINE自動配信</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="gifu-4">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">④</span></td>
-        <td><span class="cat line">LINE</span></td>
-        <td class="title-cell">回数券設定</td>
-        <td class="detail-cell" contenteditable="true">公式LINEのリッチメニューに回数券画像を応答に設置 + 特典</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat line">LINE</span>回数券設定</td>
+        <td class="why-cell" contenteditable="true">岐阜の回数券販売実績3月/4月ともに¥0(完全停止)・利用も1件のみ。LTV構造を作る入口として回数券復活が必須</td>
+        <td class="what-cell" contenteditable="true">公式LINEのリッチメニューに回数券画像を応答に設置 + 特典</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">4/23</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="gifu-5">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑤</span></td>
-        <td><span class="cat hpb">HPB</span></td>
-        <td class="title-cell">平日限定クーポン3種設定</td>
-        <td class="detail-cell" contenteditable="true">・セットメニュー OP2つ無料 ・まつげ OP2つ無料 ・眉毛 OP3つ無料</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑤</span></div></td>
+        <td class="theme-cell"><span class="cat hpb">HPB</span>平日限定クーポン3種設定</td>
+        <td class="why-cell" contenteditable="true">平日稼働率46.3%/土日66.7%(14ptギャップ)。平日の穴(月34%・金35%)を埋めるため。19-20時の夜枠ゼロも同時攻略</td>
+        <td class="what-cell" contenteditable="true">・セットメニュー OP2つ無料 ・まつげ OP2つ無料 ・眉毛 OP3つ無料</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">4/23</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
     </tbody>
   </table>
@@ -214,51 +253,68 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
     <div class="count">6アクション</div>
   </div>
   <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
     <thead>
-      <tr><th>#</th><th>カテゴリ</th><th>アクション</th><th>詳細(編集可)</th><th>期限(編集可)</th></tr>
+      <tr>
+        <th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>完了後の備考</th>
+      </tr>
     </thead>
     <tbody>
       <tr data-id="futako-1">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">①</span></td>
-        <td><span class="cat hpb">HPB</span></td>
-        <td class="title-cell">セットメニュークーポン順番変更</td>
-        <td class="detail-cell" contenteditable="true">40%OFFのクーポン画像を1番目に掲載</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat hpb">HPB</span>セットメニュークーポン順番変更</td>
+        <td class="why-cell" contenteditable="true">HPB検索一覧でのCTR改善。LUMISSマツエク16位/SSIN眉圏外の現状で、強いクーポン画像を上位に配置して詳細ページ誘導を増やす</td>
+        <td class="what-cell" contenteditable="true">40%OFFのクーポン画像を1番目に掲載</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">4/23</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="futako-2">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">②</span></td>
-        <td><span class="cat hpb">HPB</span></td>
-        <td class="title-cell">サロンTOP変更</td>
-        <td class="detail-cell" contenteditable="true">ブランド画像を1番目に掲載し、2番目にセット訴求の画像に変更</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat hpb">HPB</span>サロンTOP変更</td>
+        <td class="why-cell" contenteditable="true">サロン情報PV-25%(他サロン-4%)と崩落中。ブランド訴求を先頭にしてCVR改善・差別化軸を明確化</td>
+        <td class="what-cell" contenteditable="true">ブランド画像を1番目に掲載し、2番目にセット訴求の画像に変更</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="futako-3">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">③</span></td>
-        <td><span class="cat ope">OPE</span></td>
-        <td class="title-cell">退職引継ぎの規定作成</td>
-        <td class="detail-cell" contenteditable="true">Tomoyo退職時の97%離脱の再発防止 → スタッフ退職時の引継ぎフロー標準化</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat ope">OPE</span>退職引継ぎの規定作成</td>
+        <td class="why-cell" contenteditable="true">Tomoyo退職時の97%離脱(32名中31名)・月¥165kロスの再発防止。スタッフ退職時の客離脱を最小化する仕組みを標準化</td>
+        <td class="what-cell" contenteditable="true">Tomoyo退職時の97%離脱の再発防止 → スタッフ退職時の引継ぎフロー標準化</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="futako-4">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">④</span></td>
-        <td><span class="cat line">LINE</span></td>
-        <td class="title-cell">LUMISS 3月客に対してリペア配信</td>
-        <td class="detail-cell" contenteditable="true">LUMISSブランド3月来店客向けリペアLINE配信</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat line">LINE</span>LUMISS 3月客に対してリペア配信</td>
+        <td class="why-cell" contenteditable="true">3月来店LUMISS客の4月リピートを取り込む。マツエクリペアは月次習慣性が強く、LINE配信で即効的な再来が見込める</td>
+        <td class="what-cell" contenteditable="true">LUMISSブランド3月来店客向けリペアLINE配信</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">未設定</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="futako-5">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑤</span></td>
-        <td><span class="cat ope">OPE</span></td>
-        <td class="title-cell">月次SSIN予約振り分け変更タイミング確定</td>
-        <td class="detail-cell" contenteditable="true">1ヶ月ごとにSSINの予約振り分けを変更し、顧客獲得提案 → 内山さんと話し、いつのタイミングで行うか相談し確定までさせる</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑤</span></div></td>
+        <td class="theme-cell"><span class="cat ope">OPE</span>月次SSIN予約振り分け変更タイミング確定</td>
+        <td class="why-cell" contenteditable="true">一元管理S+Lで予約配分に偏りが発生。L側ACR低下の真因「SSIN予約が先に埋まる構造」を月次で調整し、両ブランドの顧客獲得機会を均等化</td>
+        <td class="what-cell" contenteditable="true">1ヶ月ごとにSSINの予約振り分けを変更し、顧客獲得提案 → 内山さんと話し、いつのタイミングで行うか相談し確定までさせる</td>
+        <td class="who-cell" contenteditable="true">タカショー+SV内山</td>
         <td><span class="deadline" contenteditable="true">4/24</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
       <tr data-id="futako-6">
-        <td class="num"><input type="checkbox" class="check"><span class="num-label">⑥</span></td>
-        <td><span class="cat crm">CRM</span></td>
-        <td class="title-cell">Tomoyo指名客31名への電話フォロー</td>
-        <td class="detail-cell" contenteditable="true">公式LINEとSMSで引き継ぎ内容の送信(月¥165kロス対策の主軸)</td>
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑥</span></div></td>
+        <td class="theme-cell"><span class="cat crm">CRM</span>Tomoyo指名客31名への電話フォロー</td>
+        <td class="why-cell" contenteditable="true">Tomoyo指名32名中31名が4月未復帰(離脱率97%)。月¥165kロスの主因。個別引き継ぎ連絡で担当継承を明確にし、再来を促す</td>
+        <td class="what-cell" contenteditable="true">公式LINEとSMSで引き継ぎ内容の送信(月¥165kロス対策の主軸)</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
         <td><span class="deadline" contenteditable="true">4/23</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
       </tr>
     </tbody>
   </table>
@@ -271,20 +327,17 @@ footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
 </div>
 
 <script>
-const STORAGE_KEY = 'nextActionTracker_20260422';
-const TODAY = new Date(2026, 3, 22); // 2026-04-22 (月は0始まり)
+const STORAGE_KEY = 'nextActionTracker_20260422_v2';
+const TODAY = new Date(2026, 3, 22); // 2026-04-22
 
-// 期限文字列を解析して classify
 function classifyDeadline(text) {
-  if (!text || /未設定|TBD|TBA|なし|-+/i.test(text.trim())) return 'tba';
+  if (!text || /未設定|TBD|TBA|なし|^-+$/i.test(text.trim())) return 'tba';
   if (/GW前|GW直前/.test(text)) return 'soon';
-  // M/D 形式
   const m = text.match(/(\d{1,2})\s*[\/月]\s*(\d{1,2})/);
   if (m) {
     const month = parseInt(m[1]);
     const day = parseInt(m[2]);
     let year = 2026;
-    // 1-3月なら2027年扱い(年跨ぎ)
     if (month <= 3) year = 2027;
     const target = new Date(year, month - 1, day);
     const diff = (target - TODAY) / (1000 * 60 * 60 * 24);
@@ -296,21 +349,23 @@ function classifyDeadline(text) {
   return 'tba';
 }
 
-// 期限色を更新
 function updateDeadlineColor(el) {
   const text = el.textContent.trim();
   el.className = 'deadline ' + classifyDeadline(text);
 }
 
-// localStorage保存
 function saveAll() {
   const data = { lastUpdate: new Date().toISOString(), rows: {} };
   document.querySelectorAll('tr[data-id]').forEach(tr => {
     const id = tr.dataset.id;
-    const detail = tr.querySelector('.detail-cell').textContent.trim();
-    const deadline = tr.querySelector('.deadline').textContent.trim();
-    const done = tr.querySelector('.check').checked;
-    data.rows[id] = { detail, deadline, done };
+    data.rows[id] = {
+      why: tr.querySelector('.why-cell').textContent.trim(),
+      what: tr.querySelector('.what-cell').textContent.trim(),
+      who: tr.querySelector('.who-cell').textContent.trim(),
+      deadline: tr.querySelector('.deadline').textContent.trim(),
+      memo: tr.querySelector('.memo-cell').textContent.trim(),
+      done: tr.querySelector('.check').checked
+    };
   });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   updateLastUpdate(data.lastUpdate);
@@ -318,7 +373,6 @@ function saveAll() {
   showToast('保存しました');
 }
 
-// 復元
 function loadAll() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
@@ -331,8 +385,11 @@ function loadAll() {
     Object.entries(data.rows || {}).forEach(([id, val]) => {
       const tr = document.querySelector(`tr[data-id="${id}"]`);
       if (!tr) return;
-      tr.querySelector('.detail-cell').textContent = val.detail;
-      tr.querySelector('.deadline').textContent = val.deadline;
+      if (val.why !== undefined) tr.querySelector('.why-cell').textContent = val.why;
+      if (val.what !== undefined) tr.querySelector('.what-cell').textContent = val.what;
+      if (val.who !== undefined) tr.querySelector('.who-cell').textContent = val.who;
+      if (val.deadline !== undefined) tr.querySelector('.deadline').textContent = val.deadline;
+      if (val.memo !== undefined) tr.querySelector('.memo-cell').textContent = val.memo;
       const cb = tr.querySelector('.check');
       cb.checked = !!val.done;
       tr.classList.toggle('done', !!val.done);
@@ -369,21 +426,19 @@ function updateSummary() {
   document.getElementById('cntDone').textContent = done + ' / 14件';
 }
 
-// イベント
 document.querySelectorAll('[contenteditable="true"]').forEach(el => {
   el.addEventListener('blur', () => {
     if (el.classList.contains('deadline')) updateDeadlineColor(el);
     saveAll();
   });
   el.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && el.classList.contains('deadline')) {
       e.preventDefault();
       el.blur();
     }
   });
 });
 
-// チェックボックス
 document.querySelectorAll('.check').forEach(cb => {
   cb.addEventListener('change', () => {
     cb.closest('tr').classList.toggle('done', cb.checked);
@@ -391,7 +446,6 @@ document.querySelectorAll('.check').forEach(cb => {
   });
 });
 
-// エクスポート
 function exportJSON() {
   const raw = localStorage.getItem(STORAGE_KEY) || '{}';
   const blob = new Blob([raw], { type: 'application/json' });
@@ -402,7 +456,6 @@ function exportJSON() {
   showToast('JSONをダウンロードしました');
 }
 
-// インポート
 function importJSON(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -418,14 +471,12 @@ function importJSON(event) {
   reader.readAsText(file);
 }
 
-// リセット
 function resetAll() {
   if (!confirm('編集内容を破棄して初期値に戻しますか?(取り消せません)')) return;
   localStorage.removeItem(STORAGE_KEY);
   location.reload();
 }
 
-// トースト
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -433,7 +484,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 1500);
 }
 
-// 初期化
 loadAll();
 </script>
 </body>
