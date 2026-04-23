@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>移転オープン+再来サイクル統合スケジュール</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #fafbfc; color: #1a1a1a; line-height: 1.5; padding: 32px 20px; }
+.wrap { max-width: 1400px; margin: 0 auto; }
+.title { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+
+.toolbar { background: white; border: 1px solid #e8ecef; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.toolbar label { font-size: 13px; color: #555; font-weight: 600; }
+.toolbar input[type="date"] { padding: 6px 10px; border: 2px solid #1976d2; border-radius: 6px; font-size: 14px; font-weight: 600; }
+.toolbar button { padding: 6px 14px; border: 1px solid #1976d2; background: white; color: #1976d2; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+.toolbar button:hover { background: #e3f2fd; }
+.toolbar button.danger { border-color: #d32f2f; color: #d32f2f; }
+.toolbar button.preset { border-color: #2e7d32; color: #2e7d32; }
+.toolbar .updated { font-size: 12px; color: #666; margin-left: auto; }
+
+.milestone-bar { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 20px 24px; border-radius: 12px; margin-bottom: 24px; }
+.milestone-bar h3 { font-size: 14px; opacity: 0.9; margin-bottom: 12px; }
+.milestone-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+@media (max-width: 900px) { .milestone-grid { grid-template-columns: repeat(3, 1fr); } }
+.ms-card { background: rgba(255,255,255,.15); padding: 12px 8px; border-radius: 8px; text-align: center; }
+.ms-card.dday { background: rgba(255,255,255,.4); border: 2px solid white; }
+.ms-card .ms-label { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
+.ms-card .ms-date { font-size: 16px; font-weight: 700; }
+.ms-card .ms-dow { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.ms-card .ms-rest { font-size: 10px; opacity: 0.7; margin-top: 4px; }
+
+.alert { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); color: white; padding: 18px 24px; border-radius: 10px; margin-bottom: 20px; }
+.alert .tag { display: inline-block; background: #fff; color: #b71c1c; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
+.alert h2 { color: white; font-size: 18px; margin-bottom: 6px; border: none; padding: 0; }
+.alert p { font-size: 13px; opacity: 0.95; }
+
+.section { background: white; border-radius: 12px; border: 1px solid #e8ecef; margin-bottom: 20px; overflow: hidden; }
+.section-header { padding: 16px 24px; border-bottom: 2px solid; display: flex; justify-content: space-between; align-items: center; }
+.section-header.eigyo { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); border-bottom-color: #1976d2; }
+.section-header.hattyu { background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%); border-bottom-color: #f57c00; }
+.section-header.eriman { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-bottom-color: #388e3c; }
+.section-header.kaihatsu { background: linear-gradient(135deg, #d1c4e9 0%, #b39ddb 100%); border-bottom-color: #5e35b1; }
+.section-header.recycle { background: linear-gradient(135deg, #f8bbd0 0%, #f48fb1 100%); border-bottom-color: #c2185b; }
+.section-header h2 { font-size: 18px; font-weight: 700; }
+.section-header .count { font-size: 13px; color: #555; }
+
+table.actions { width: 100%; border-collapse: collapse; table-layout: fixed; }
+table.actions th, table.actions td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; font-size: 12px; vertical-align: top; }
+table.actions th:last-child, table.actions td:last-child { border-right: none; }
+table.actions th { background: #f8fafc; font-weight: 600; color: #555; font-size: 11px; }
+table.actions tr:hover { background: #fafbfc; }
+
+.col-chk { width: 70px; }
+.col-theme { width: 200px; }
+.col-why { width: 240px; }
+.col-what { width: 240px; }
+.col-who { width: 120px; }
+.col-when { width: 120px; }
+.col-memo { min-width: 160px; }
+
+.num-wrap { display: flex; align-items: center; gap: 6px; }
+.num-wrap input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #2e7d32; flex-shrink: 0; }
+.num-wrap .num-label { font-weight: 700; color: #1976d2; font-size: 14px; }
+.theme-cell { font-weight: 600; font-size: 12px; color: #1a1a1a; }
+tr.done { background: #f5f5f5 !important; opacity: 0.55; }
+tr.done .theme-cell, tr.done .why-cell, tr.done .what-cell { text-decoration: line-through; color: #888 !important; }
+tr.done .deadline { opacity: 0.6; }
+
+[contenteditable="true"] { outline: none; cursor: text; transition: background 0.15s; min-height: 20px; white-space: pre-wrap; word-break: break-word; }
+[contenteditable="true"]:hover { background: #e3f2fd; border-radius: 4px; }
+[contenteditable="true"]:focus { background: #fff9c4; box-shadow: 0 0 0 2px #f9a825; border-radius: 4px; }
+
+.why-cell { color: #555; font-size: 11px; line-height: 1.5; }
+.what-cell { color: #333; font-size: 11px; line-height: 1.5; }
+.memo-cell { color: #555; font-size: 11px; line-height: 1.5; min-height: 30px; background: #fffef5; }
+.who-cell { color: #1976d2; font-weight: 600; font-size: 11px; }
+
+.deadline-wrap { display: flex; flex-direction: column; gap: 3px; }
+.deadline-meta { font-size: 9px; color: #999; }
+.deadline { font-weight: 700; padding: 3px 6px; border-radius: 4px; font-size: 10px; display: inline-block; white-space: nowrap; text-align: center; }
+.deadline.urgent { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+.deadline.soon { background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; }
+.deadline.normal { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.deadline.expired { background: #efebe9; color: #4e342e; border: 1px solid #bcaaa4; text-decoration: line-through; }
+
+.cat { font-size: 9px; padding: 2px 5px; border-radius: 3px; display: inline-block; font-weight: 700; margin-right: 4px; }
+.cat.eigyo { background: #1976d2; color: white; }
+.cat.hattyu { background: #f57c00; color: white; }
+.cat.eriman { background: #388e3c; color: white; }
+.cat.kaihatsu { background: #5e35b1; color: white; }
+.cat.recycle { background: #c2185b; color: white; }
+
+.toast { position: fixed; bottom: 24px; right: 24px; background: #2e7d32; color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 100; }
+.toast.show { opacity: 1; }
+
+footer { text-align: center; color: #999; font-size: 12px; padding: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="title">移転オープン + 再来サイクル統合スケジュール</div>
+<div class="sub">2026/04/23作成 | most/patra 2重掲載エリア(下北沢/所沢)関連 | D-Day切替可能・全締切自動再計算 | 再来サイクル対策込み</div>
+
+<!-- ツールバー -->
+<div class="toolbar">
+  <label>D-Day:</label>
+  <input type="date" id="ddayInput" value="2026-06-01">
+  <button class="preset" onclick="setDDay('2026-05-20')">5/20プリセット</button>
+  <button class="preset" onclick="setDDay('2026-06-01')">6/1プリセット</button>
+  <button onclick="exportJSON()">💾 JSON</button>
+  <button class="danger" onclick="resetAll()">↺ リセット</button>
+  <span class="updated" id="updatedTime"></span>
+</div>
+
+<!-- マイルストーンバー -->
+<div class="milestone-bar">
+  <h3 id="ddayHeader">📅 マイルストーン日(D-Day = 2026/06/01)</h3>
+  <div class="milestone-grid" id="msGrid"></div>
+</div>
+
+<!-- 期限切迫アラート -->
+<div class="alert" id="urgentAlert">
+  <span class="tag">⏰ 期限切迫</span>
+  <h2 id="urgentCount">期限切迫タスク 集計中…</h2>
+  <p id="urgentDetail">D-Day変更すると全締切日が自動で再計算されます</p>
+</div>
+
+<!-- 再来サイクル対策(再来がついてない問題) -->
+<div class="section">
+  <div class="section-header recycle">
+    <div>
+      <h2>♻ 再来サイクル対策(オープン時に必ず仕組み化)</h2>
+      <div style="font-size:12px; color:#555; margin-top:4px;">昨日分析で判明: m所沢1回離脱80%/p下北沢70%・POS次回予約両店0%・新店オープン時から仕組みを入れる</div>
+    </div>
+    <div class="count">8アクション</div>
+  </div>
+  <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
+    <thead>
+      <tr><th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>備考</th></tr>
+    </thead>
+    <tbody id="recycleBody">
+      <tr data-id="rcy-1" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">CRM</span>POS次回予約フロー オープン日から導入</td>
+        <td class="why-cell" contenteditable="true">m所沢/p下北沢ともPOS次回予約獲得率0%。来た客の70-80%が二度と来ない構造の根本原因。新店オープン時から「次回予約必須」運用にすれば0→30-50%獲得が見込める</td>
+        <td class="what-cell" contenteditable="true">スタッフ全員に会計時「4週間後にいかがですか?」スクリプト・SV梅田/内山がオープン前研修</td>
+        <td class="who-cell" contenteditable="true">SV+全スタッフ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-2" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">HPB</span>40日以内ご来店限定クーポン設置</td>
+        <td class="why-cell" contenteditable="true">2回目客への動機付け。p下北沢の再来¥12,000高すぎ問題の代替策。安価帯(¥5,500-7,500)を1本入れて再来サイクル復活</td>
+        <td class="what-cell" contenteditable="true">「40日以内ご来店¥1,000OFF」HPB+LINEクーポン設置(オープン時から稼働)</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-3" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">LINE</span>LINE再来配信自動化(14日/28日/45日)</td>
+        <td class="why-cell" contenteditable="true">既存店の再来サイクル断裂の主因はフォロー不在。新店オープン時に自動配信仕組みを入れれば、過去店の繰り返しを避けられる</td>
+        <td class="what-cell" contenteditable="true">会計後14日・28日・45日に自動LINE配信(再来催促+お知らせ)</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-4" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">HPB</span>HPB指名予約フロー有効化</td>
+        <td class="why-cell" contenteditable="true">既存4店舗とも指名予約フロー使用率0%。担当起点の再来導線を作る。スタッフプロフィール充実+指名動線設置</td>
+        <td class="what-cell" contenteditable="true">サロンボード/HPBで指名予約フロー有効化・スタッフプロフィール写真+紹介文</td>
+        <td class="who-cell" contenteditable="true">タカショー+SV</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-5" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑤</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">CRM</span>新規初回客 完了時 LINE登録誘導</td>
+        <td class="why-cell" contenteditable="true">LINE登録なしの客は再来配信届かない=離脱率高。オープン時から「初回会計時LINE登録特典(次回¥500OFF等)」を標準フロー化</td>
+        <td class="what-cell" contenteditable="true">会計時LINE登録特典クーポン(次回¥500OFF)・スタッフ案内スクリプト標準化</td>
+        <td class="who-cell" contenteditable="true">SV+スタッフ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-6" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑥</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">HPB</span>口コミ投稿割引クーポン設置</td>
+        <td class="why-cell" contenteditable="true">新店は口コミゼロからスタート=信頼の壁を早く越える必要。「投稿で次回¥500OFF」で月+30件の口コミ蓄積を狙う</td>
+        <td class="what-cell" contenteditable="true">HPBクーポンに「口コミ投稿で次回¥500OFF」設置</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-7" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑦</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">OPE</span>会計時アップセルトーク標準化</td>
+        <td class="why-cell" contenteditable="true">既存熊本でT.Ran単価-¥740・回数券0円64%の問題。新店ではオープン時からアップセルトーク標準化で単価+¥500-1,000の底上げ</td>
+        <td class="what-cell" contenteditable="true">回数券販売・オプション追加・次回予約のセールストークSOP作成・スタッフ研修</td>
+        <td class="who-cell" contenteditable="true">SV</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="rcy-8" data-offset="30">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑧</span></div></td>
+        <td class="theme-cell"><span class="cat recycle">分析</span>D+30 再来サイクル KPIレビュー</td>
+        <td class="why-cell" contenteditable="true">オープン1ヶ月時点で「1回離脱率」「次回予約獲得率」「LINE登録率」を測定。既存店の70-80%離脱を再現していないか早期検知</td>
+        <td class="what-cell" contenteditable="true">D+30で初月コホート分析(新規→再来率・離脱率・次回予約獲得率)</td>
+        <td class="who-cell" contenteditable="true">タカショー</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="30"></span><span class="deadline-meta">D+30</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 直営事業部 -->
+<div class="section">
+  <div class="section-header eigyo">
+    <div>
+      <h2>🔵 直営事業部</h2>
+      <div style="font-size:12px; color:#555; margin-top:4px;">配信・撮影・HPB/Web媒体更新・店舗内装連携</div>
+    </div>
+    <div class="count">14アクション</div>
+  </div>
+  <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
+    <thead>
+      <tr><th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="eg-1" data-offset="-30">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">配信</span>配信①(事前予告)</td>
+        <td class="why-cell" contenteditable="true">既存客への移転事前告知。離脱を最小化し、新店舗でのリピート確保</td>
+        <td class="what-cell" contenteditable="true">配信①原稿作成・スタッフ確認・配信</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-30"></span><span class="deadline-meta">D-30</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-2" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">配信</span>配信②(リマインド)</td>
+        <td class="why-cell" contenteditable="true">移転2週間前リマインド。新店舗写真・特典内容で「行ってみたい」を喚起</td>
+        <td class="what-cell" contenteditable="true">配信②原稿作成・スタッフ確認・配信</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-3" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">配信</span>配信③(オープン当日)</td>
+        <td class="why-cell" contenteditable="true">オープン当日告知。即日予約獲得を狙う</td>
+        <td class="what-cell" contenteditable="true">配信③原稿作成・配信</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-4" data-offset="-17">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">撮影</span>新店舗写真撮影(配信②までに)</td>
+        <td class="why-cell" contenteditable="true">配信②・HPB更新・SNSで使う新店舗ビジュアル。撮影→編集→配信に間に合わせる</td>
+        <td class="what-cell" contenteditable="true">新店舗写真撮影(店内・外観・施術風景)</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-17"></span><span class="deadline-meta">D-17</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-5" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑤</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">LINE</span>リッチメニュー差し替え準備(SSIN・LUMISS両方)</td>
+        <td class="why-cell" contenteditable="true">公式LINEのリッチメニュー(住所・地図・予約導線)更新。両ブランド忘れず</td>
+        <td class="what-cell" contenteditable="true">SSIN・LUMISSのリッチメニュー画像・リンク準備</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-6" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑥</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">LINE</span>リッチメニュー本切替(SSIN・LUMISS両方)</td>
+        <td class="why-cell" contenteditable="true">D-Day同時切替で全顧客に新店舗情報が届く</td>
+        <td class="what-cell" contenteditable="true">SSIN・LUMISSのリッチメニュー本切替</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-7" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑦</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">店内</span>店内POP作成・掲示</td>
+        <td class="why-cell" contenteditable="true">来店客への移転告知。Web媒体未到達層への案内</td>
+        <td class="what-cell" contenteditable="true">移転告知POP作成・旧店舗内に掲示</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-8" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑧</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">HPB</span>HPB住所変更申請(SSIN・LUMISS両方)</td>
+        <td class="why-cell" contenteditable="true">HPB住所変更は申請から反映1-2週間。D-14申請でも本番反映ギリギリ。両ブランド忘れず</td>
+        <td class="what-cell" contenteditable="true">HPB住所変更申請(SSIN+LUMISS)</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-9" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑨</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">Web</span>Google Business Profile更新準備</td>
+        <td class="why-cell" contenteditable="true">Google検索/Maps上の情報更新。新規顧客の発見導線</td>
+        <td class="what-cell" contenteditable="true">GBP住所・写真・営業時間更新準備</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-10" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑩</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">SNS</span>Instagram更新(SSIN・LUMISS両方)</td>
+        <td class="why-cell" contenteditable="true">プロフィール住所・固定投稿で移転告知。SNSフォロワーへの周知</td>
+        <td class="what-cell" contenteditable="true">SSIN・LUMISS両アカウントのプロフィール+固定投稿更新</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-11" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑪</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">Web</span>公式サイト住所更新準備</td>
+        <td class="why-cell" contenteditable="true">公式サイト経由の予約・問い合わせ顧客への情報提供</td>
+        <td class="what-cell" contenteditable="true">公式サイト住所・地図・営業時間更新準備</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-12" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑫</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">決済</span>決済端末登録住所変更</td>
+        <td class="why-cell" contenteditable="true">Square/Airペイ等の登録住所変更。返品/問合せ・税務処理に影響</td>
+        <td class="what-cell" contenteditable="true">決済端末登録住所変更</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-13" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑬</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">保険</span>損害保険・賠償責任保険の所在地変更</td>
+        <td class="why-cell" contenteditable="true">事故発生時の補償対象を新店舗に切替。書類往復の時間考慮</td>
+        <td class="what-cell" contenteditable="true">保険会社へ所在地変更申請</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="eg-14" data-offset="-1">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑭</span></div></td>
+        <td class="theme-cell"><span class="cat eigyo">SOP</span>スタッフ向けFAQ作成</td>
+        <td class="why-cell" contenteditable="true">顧客質問への回答を統一。スタッフによる説明のブレ防止</td>
+        <td class="what-cell" contenteditable="true">移転に関するスタッフ向けFAQ作成</td>
+        <td class="who-cell" contenteditable="true">直営事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-1"></span><span class="deadline-meta">D-1</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 発注担当 -->
+<div class="section">
+  <div class="section-header hattyu">
+    <div>
+      <h2>🟠 発注担当</h2>
+      <div style="font-size:12px; color:#555; margin-top:4px;">仕入先・在庫配送の段取り</div>
+    </div>
+    <div class="count">2アクション</div>
+  </div>
+  <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
+    <thead>
+      <tr><th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="ht-1" data-offset="-14">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat hattyu">発注</span>仕入先・ディーラーへの納品先変更通知</td>
+        <td class="why-cell" contenteditable="true">D-Day以降の納品が新店舗に届くよう事前通知。誤配送リスク回避</td>
+        <td class="what-cell" contenteditable="true">仕入先・ディーラーへ納品先変更を通知</td>
+        <td class="who-cell" contenteditable="true">発注担当</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-14"></span><span class="deadline-meta">D-14</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="ht-2" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat hattyu">発注</span>新店舗初期在庫の配送日調整</td>
+        <td class="why-cell" contenteditable="true">オープン時に在庫不足にならない配送タイミング調整</td>
+        <td class="what-cell" contenteditable="true">新店舗初期在庫の配送日を調整</td>
+        <td class="who-cell" contenteditable="true">発注担当</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- エリアマネージャー -->
+<div class="section">
+  <div class="section-header eriman">
+    <div>
+      <h2>🟢 エリアマネージャー</h2>
+      <div style="font-size:12px; color:#555; margin-top:4px;">特典確定・スタッフ事前共有・現場体制</div>
+    </div>
+    <div class="count">5アクション</div>
+  </div>
+  <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
+    <thead>
+      <tr><th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="em-1" data-offset="-30">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat eriman">特典</span>HPB新規向け特典の内容確定</td>
+        <td class="why-cell" contenteditable="true">配信①(D-30)で特典訴求するため事前確定。新店プレオープン特典として強い訴求材料が必要</td>
+        <td class="what-cell" contenteditable="true">HPB新規向け特典の内容確定</td>
+        <td class="who-cell" contenteditable="true">エリマネ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-30"></span><span class="deadline-meta">D-30</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="em-2" data-offset="-17">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat eriman">特典</span>完了日特典の内容確定(配信②前まで)</td>
+        <td class="why-cell" contenteditable="true">配信②(D-14)で告知するため事前確定</td>
+        <td class="what-cell" contenteditable="true">完了日特典の内容確定</td>
+        <td class="who-cell" contenteditable="true">エリマネ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-17"></span><span class="deadline-meta">D-17</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="em-3" data-offset="-30">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat eriman">人事</span>スタッフへの事前共有</td>
+        <td class="why-cell" contenteditable="true">通勤経路・営業時間・シフト体制変更の有無をスタッフに早めに共有。不安解消・離職防止</td>
+        <td class="what-cell" contenteditable="true">通勤経路・営業時間・シフト体制の事前共有</td>
+        <td class="who-cell" contenteditable="true">エリマネ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-30"></span><span class="deadline-meta">D-30</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="em-4" data-offset="-1">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat eriman">SOP</span>スタッフFAQの最終確認</td>
+        <td class="why-cell" contenteditable="true">D-Day前日に最終チェック・現場で迷わない状態に</td>
+        <td class="what-cell" contenteditable="true">スタッフFAQの最終確認</td>
+        <td class="who-cell" contenteditable="true">エリマネ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-1"></span><span class="deadline-meta">D-1</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="em-5" data-offset="0">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">⑤</span></div></td>
+        <td class="theme-cell"><span class="cat eriman">現場</span>移転当日の現場立ち会い体制</td>
+        <td class="why-cell" contenteditable="true">トラブル対応・スタッフサポート・初日のオペレーション安定化</td>
+        <td class="what-cell" contenteditable="true">移転当日の現場立ち会い体制構築</td>
+        <td class="who-cell" contenteditable="true">エリマネ</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="0"></span><span class="deadline-meta">D-Day</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 店舗開発事業部 -->
+<div class="section">
+  <div class="section-header kaihatsu">
+    <div>
+      <h2>🟣 店舗開発事業部(依頼事項)</h2>
+      <div style="font-size:12px; color:#555; margin-top:4px;">行政手続き・インフラ</div>
+    </div>
+    <div class="count">4アクション</div>
+  </div>
+  <table class="actions">
+    <colgroup>
+      <col class="col-chk"><col class="col-theme"><col class="col-why"><col class="col-what"><col class="col-who"><col class="col-when"><col class="col-memo">
+    </colgroup>
+    <thead>
+      <tr><th>チェック</th><th>テーマ</th><th>なぜ行うのか</th><th>何をするのか</th><th>誰がやるのか</th><th>いつまでに</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr data-id="kh-1" data-offset="-30">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">①</span></div></td>
+        <td class="theme-cell"><span class="cat kaihatsu">行政</span>保健所開設届(新店舗)</td>
+        <td class="why-cell" contenteditable="true">自治体によっては検査含めて2-4週間。D-30より前倒し推奨。営業開始の必須条件</td>
+        <td class="what-cell" contenteditable="true">新店舗の保健所開設届申請</td>
+        <td class="who-cell" contenteditable="true">店舗開発事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-30"></span><span class="deadline-meta">D-30(可能な限り前倒し)</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="kh-2" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">②</span></div></td>
+        <td class="theme-cell"><span class="cat kaihatsu">行政</span>保健所廃止届(旧店舗)</td>
+        <td class="why-cell" contenteditable="true">旧店舗の営業廃止届。オープン直前〜直後</td>
+        <td class="what-cell" contenteditable="true">旧店舗の保健所廃止届申請</td>
+        <td class="who-cell" contenteditable="true">店舗開発事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="kh-3" data-offset="-7">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">③</span></div></td>
+        <td class="theme-cell"><span class="cat kaihatsu">インフラ</span>電気・ガス・水道・ネット回線 開通(新店舗)</td>
+        <td class="why-cell" contenteditable="true">D-Dayまでに動作確認できる時間確保</td>
+        <td class="what-cell" contenteditable="true">新店舗のインフラ開通申請</td>
+        <td class="who-cell" contenteditable="true">店舗開発事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="-7"></span><span class="deadline-meta">D-7</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+      <tr data-id="kh-4" data-offset="1">
+        <td><div class="num-wrap"><input type="checkbox" class="check"><span class="num-label">④</span></div></td>
+        <td class="theme-cell"><span class="cat kaihatsu">インフラ</span>電気・ガス・水道・ネット回線 停止(旧店舗)</td>
+        <td class="why-cell" contenteditable="true">オープン後の旧店舗インフラ停止</td>
+        <td class="what-cell" contenteditable="true">旧店舗のインフラ停止申請</td>
+        <td class="who-cell" contenteditable="true">店舗開発事業部</td>
+        <td class="deadline-wrap"><span class="deadline" data-base-offset="1"></span><span class="deadline-meta">D+1</span></td>
+        <td class="memo-cell" contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>2026/04/23作成 | 33アクション(再来サイクル8 + 直営14 + 発注2 + エリマネ5 + 店舗開発4) | D-Day切替で全締切自動再計算 | localStorage自動保存</footer>
+
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'iten_open_schedule_20260423_v1';
+const TODAY = new Date(2026, 3, 23); // 2026-04-23
+
+function getDDay() {
+  return new Date(document.getElementById('ddayInput').value);
+}
+
+function classifyDeadline(targetDate) {
+  if (!targetDate) return 'normal';
+  const diff = (targetDate - TODAY) / (1000 * 60 * 60 * 24);
+  if (diff < 0) return 'expired';
+  if (diff <= 2) return 'urgent';
+  if (diff <= 7) return 'soon';
+  return 'normal';
+}
+
+function fmt(d) {
+  const m = (d.getMonth()+1).toString().padStart(2,'0');
+  const dd = d.getDate().toString().padStart(2,'0');
+  const dows = ['日','月','火','水','木','金','土'];
+  return `${d.getFullYear()}/${m}/${dd}(${dows[d.getDay()]})`;
+}
+
+function updateAllDeadlines() {
+  const dday = getDDay();
+  if (isNaN(dday)) return;
+
+  // milestone bar
+  const offsets = [-30, -14, -7, -1, 0, 1, 30];
+  const labels = ['D-30','D-14','D-7','D-1','D-Day','D+1','D+30'];
+  const grid = document.getElementById('msGrid');
+  grid.innerHTML = '';
+  offsets.forEach((off, i) => {
+    const d = new Date(dday); d.setDate(d.getDate() + off);
+    const rest = Math.round((d - TODAY)/(1000*60*60*24));
+    const restStr = rest === 0 ? '今日' : (rest > 0 ? `+${rest}日` : `${rest}日`);
+    const isDday = off === 0;
+    grid.innerHTML += `
+      <div class="ms-card${isDday ? ' dday' : ''}">
+        <div class="ms-label">${labels[i]}</div>
+        <div class="ms-date">${(d.getMonth()+1)}/${d.getDate()}</div>
+        <div class="ms-dow">${['日','月','火','水','木','金','土'][d.getDay()]}</div>
+        <div class="ms-rest">${restStr}</div>
+      </div>`;
+  });
+
+  document.getElementById('ddayHeader').textContent = `📅 マイルストーン日(D-Day = ${fmt(dday)})`;
+
+  // 各タスクの締切日更新
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    const offset = parseInt(tr.dataset.offset || '0');
+    const target = new Date(dday); target.setDate(target.getDate() + offset);
+    const span = tr.querySelector('.deadline');
+    if (span) {
+      span.textContent = fmt(target);
+      span.className = 'deadline ' + classifyDeadline(target);
+    }
+  });
+
+  updateUrgentSummary();
+  saveAll();
+}
+
+function updateUrgentSummary() {
+  let urgent=0, soon=0, expired=0, done=0;
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    if (tr.querySelector('.check').checked) { done++; return; }
+    const cls = tr.querySelector('.deadline').className;
+    if (cls.includes('expired')) expired++;
+    else if (cls.includes('urgent')) urgent++;
+    else if (cls.includes('soon')) soon++;
+  });
+  const total = document.querySelectorAll('tr[data-id]').length;
+  const urgentEl = document.getElementById('urgentCount');
+  const detailEl = document.getElementById('urgentDetail');
+  urgentEl.textContent = `期限切れ ${expired}件 / 切迫(2日以内) ${urgent}件 / 近日(7日以内) ${soon}件 / 完了 ${done}/${total}`;
+  detailEl.textContent = `D-Day変更すると全締切日が自動で再計算されます`;
+}
+
+function setDDay(date) {
+  document.getElementById('ddayInput').value = date;
+  updateAllDeadlines();
+}
+
+function saveAll() {
+  const data = {
+    lastUpdate: new Date().toISOString(),
+    dday: document.getElementById('ddayInput').value,
+    rows: {}
+  };
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = tr.dataset.id;
+    data.rows[id] = {
+      why: tr.querySelector('.why-cell').textContent.trim(),
+      what: tr.querySelector('.what-cell').textContent.trim(),
+      who: tr.querySelector('.who-cell').textContent.trim(),
+      memo: tr.querySelector('.memo-cell').textContent.trim(),
+      done: tr.querySelector('.check').checked
+    };
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  document.getElementById('updatedTime').textContent = '最終更新: ' + new Date().toLocaleString('ja-JP');
+}
+
+function loadAll() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      if (data.dday) document.getElementById('ddayInput').value = data.dday;
+      Object.entries(data.rows || {}).forEach(([id, val]) => {
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        if (!tr) return;
+        if (val.why !== undefined) tr.querySelector('.why-cell').textContent = val.why;
+        if (val.what !== undefined) tr.querySelector('.what-cell').textContent = val.what;
+        if (val.who !== undefined) tr.querySelector('.who-cell').textContent = val.who;
+        if (val.memo !== undefined) tr.querySelector('.memo-cell').textContent = val.memo;
+        const cb = tr.querySelector('.check');
+        cb.checked = !!val.done;
+        tr.classList.toggle('done', !!val.done);
+      });
+      document.getElementById('updatedTime').textContent = '最終更新: ' + new Date(data.lastUpdate).toLocaleString('ja-JP');
+    } catch(e) { console.warn(e); }
+  }
+  updateAllDeadlines();
+}
+
+document.getElementById('ddayInput').addEventListener('change', updateAllDeadlines);
+
+document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+  el.addEventListener('blur', saveAll);
+});
+
+document.querySelectorAll('.check').forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.closest('tr').classList.toggle('done', cb.checked);
+    saveAll();
+    updateUrgentSummary();
+  });
+});
+
+function exportJSON() {
+  const raw = localStorage.getItem(STORAGE_KEY) || '{}';
+  const blob = new Blob([raw], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `iten_schedule_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('JSONをダウンロードしました');
+}
+
+function resetAll() {
+  if (!confirm('編集内容を破棄して初期値に戻しますか?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+loadAll();
+</script>
+</body>
+</html>
