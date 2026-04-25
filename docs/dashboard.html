@@ -262,19 +262,17 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
     </div>
   </div>
   <div style="padding:8px 0">
-    <div class="nav-section">メイン</div>
     <div class="nav-item active" onclick="showTab('dashboard',this)">🏠 ホーム</div>
-<div class="nav-section">カウンセリング</div>
-    <div class="nav-item" onclick="showTab('counseling',this);if(!isLoaded('counseling'))loadCounseling()">📋 カウンセリング記録</div>
-    <div class="nav-item" onclick="showTab('analysis',this);if(!isLoaded('analysis'))loadAnalysis()">📈 顧客分析</div>
-    <div class="nav-section">LINE管理</div>
-    <div class="nav-item" onclick="showTab('line-friends-mgmt',this);if(!isLoaded('friends'))loadLineFriendsMgmt()">👥 友だち管理</div>
+    <div class="nav-item" onclick="showTab('line-friends-mgmt',this);if(!isLoaded('friends'))loadLineFriendsMgmt()">👥 顧客</div>
+    <div class="nav-item" onclick="showTab('counseling',this);if(!isLoaded('counseling'))loadCounseling()">📋 カウンセリング</div>
+    <div class="nav-item" onclick="showTab('analysis',this);if(!isLoaded('analysis'))loadAnalysis()">📈 分析</div>
     <div class="nav-item" onclick="showTab('line-broadcast',this);if(!isLoaded('broadcast'))loadBroadcastTab()">📢 配信</div>
-    <div class="nav-item" onclick="showTab('line-scenario',this);if(!isLoaded('scenario'))loadScenarioSettings()">⚙️ シナリオ設定</div>
-    <div class="nav-item" onclick="showTab('line-tags',this);if(!isLoaded('tags'))loadTags()">🏷️ タグ管理</div>
-    <div class="nav-item" onclick="showTab('auto-tag',this);if(!isLoaded('auto-tag'))loadAutoTagRules()">🤖 自動タグ設定</div>
-    <div class="nav-item" onclick="showTab('line-stats',this);if(!isLoaded('stats')){loadBroadcastStats();loadStepStats()}">📊 配信結果</div>
     <div class="nav-item" onclick="showTab('line-talk',this);if(!isLoaded('talk'))loadTalkList()">💬 トーク</div>
+    <div class="nav-section" style="margin-top:14px">設定</div>
+    <div class="nav-item" onclick="showTab('line-scenario',this);if(!isLoaded('scenario'))loadScenarioSettings()">⚙️ シナリオ</div>
+    <div class="nav-item" onclick="showTab('line-tags',this);if(!isLoaded('tags'))loadTags()">🏷️ タグ</div>
+    <div class="nav-item" onclick="showTab('auto-tag',this);if(!isLoaded('auto-tag'))loadAutoTagRules()">🤖 自動タグ</div>
+    <div class="nav-item" onclick="showTab('line-stats',this);if(!isLoaded('stats')){loadBroadcastStats();loadStepStats()}">📊 配信結果</div>
   </div>
 </nav>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active')"></div>
@@ -292,18 +290,38 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
       <button class="btn btn-green" onclick="refreshAll()">🔄 更新</button>
     </div>
   </div>
-  <!-- ═══════ ダッシュボード ═══════ -->
+  <!-- ═══════ ダッシュボード(シンプル版) ═══════ -->
   <div class="section active" id="tab-dashboard">
     <div class="kpi-grid" id="homeKpi">
       <div class="kpi-card line"><div class="kpi-label">👥 LINE友だち数</div><div class="kpi-value" id="kpi-friends">-</div></div>
       <div class="kpi-card"><div class="kpi-label">📋 カウンセリング総数</div><div class="kpi-value" id="kpi-counseling">-</div></div>
       <div class="kpi-card blue"><div class="kpi-label">📤 LINE配信数</div><div class="kpi-value" id="kpi-linelog">-</div></div>
     </div>
+
+    <!-- 要対応(40日離脱予兆) -->
+    <div class="card" style="margin-top:16px;border:2px solid #f59e0b;background:linear-gradient(135deg,#fff7ed,#fef3c7);">
+      <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:13px;color:#92400e;font-weight:600;margin-bottom:4px">🔥 要連絡: 40日離脱ゾーン</div>
+          <div style="font-size:24px;font-weight:700;color:#0f172a"><span id="kpi-churn-40">-</span> 名</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px">前回来店から40〜60日経過 ・離脱手前のお客様</div>
+        </div>
+        <button class="btn btn-green" onclick="showTab('line-friends-mgmt',document.querySelectorAll('.nav-item')[1]);if(!isLoaded('friends'))loadLineFriendsMgmt();setTimeout(()=>{const t=document.getElementById('friendsTagFilter');if(t){t.value='離脱予兆_40-60日';filterFriendsMgmt();}},800)">対象を一覧で見る →</button>
+      </div>
+    </div>
+
+    <!-- 店舗フィルタ + 当月実績 -->
     <div class="card" style="margin-top:16px">
-      <div style="padding:24px;text-align:center;color:#888">
-        <div style="font-size:40px;margin-bottom:12px">💎</div>
-        <div style="font-size:18px;font-weight:700;margin-bottom:8px;color:#0f172a">Sステップ</div>
-        <div style="font-size:13px;color:#64748b">カウンセリング記録・LINE管理・顧客分析ダッシュボード</div>
+      <div class="card-header">
+        <div class="card-title">📊 当月実績</div>
+        <select id="homeStoreFilter" class="btn btn-gray" onchange="loadHomeStoreStats()" style="font-weight:400">
+          <option value="">全店舗</option>
+        </select>
+      </div>
+      <div class="kpi-grid" id="homeStoreKpi" style="padding:0 16px 16px">
+        <div class="kpi-card"><div class="kpi-label">新規</div><div class="kpi-value" id="kpi-new-month">-</div></div>
+        <div class="kpi-card"><div class="kpi-label">再来</div><div class="kpi-value" id="kpi-rep-month">-</div></div>
+        <div class="kpi-card"><div class="kpi-label">売上</div><div class="kpi-value" id="kpi-sales-month">-</div></div>
       </div>
     </div>
   </div>
@@ -1004,9 +1022,63 @@ async function loadDashboard() {
     document.getElementById('kpi-linelog').textContent   = data.line_log_count   ?? '-';
   } catch(e) {}
   document.getElementById('updatedAt').textContent = '最終更新: ' + new Date().toLocaleString('ja-JP');
+  // 友だち→離脱予兆カウント / 店舗フィルタ初期化
+  if (typeof loadLineFriendsMgmt === 'function' && (allFriends||[]).length === 0) {
+    try { await loadLineFriendsMgmt(); } catch(e) {}
+  }
+  updateChurnKpi();
+  initHomeStoreFilter();
+  loadHomeStoreStats();
 }
 
 function refreshAll() { loadDashboard(); }
+
+// ── ホーム: 40日離脱ゾーン カウント ───────────
+function updateChurnKpi() {
+  const list = (allFriends || []).filter(f => {
+    const tags = (f['タグ']||'').split(',').map(t=>t.trim());
+    return tags.includes('離脱予兆_40-60日') || tags.includes('要注意_40日以内');
+  });
+  const el = document.getElementById('kpi-churn-40');
+  if (el) el.textContent = list.length;
+}
+
+// ── ホーム: 店舗フィルタ初期化 ───────────
+function initHomeStoreFilter() {
+  const sel = document.getElementById('homeStoreFilter');
+  if (!sel) return;
+  const stores = new Set();
+  (allFriends || []).forEach(f => {
+    const s = (f['登録店舗']||'').trim();
+    if (s) stores.add(s);
+  });
+  const current = sel.value;
+  sel.innerHTML = '<option value="">全店舗</option>' +
+    Array.from(stores).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+  if (current) sel.value = current;
+}
+
+// ── ホーム: 当月実績 ───────────
+function loadHomeStoreStats() {
+  const sel = document.getElementById('homeStoreFilter');
+  const store = sel ? sel.value : '';
+  const today = new Date();
+  const ym = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  let newCount = 0, repCount = 0, sales = 0;
+  (allFriends || []).forEach(f => {
+    if (store && (f['登録店舗']||'').trim() !== store) return;
+    const last = (f['最終来店日']||'').slice(0,7);
+    if (last !== ym) return;
+    const visits = parseInt(f['累計来店回数']||'0',10) || 0;
+    if (visits <= 1) newCount++;
+    else repCount++;
+    sales += parseInt((f['累計売上']||'0').toString().replace(/[^0-9]/g,''),10) || 0;
+  });
+  const set = (id,v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('kpi-new-month', newCount);
+  set('kpi-rep-month', repCount);
+  set('kpi-sales-month', sales ? '¥' + sales.toLocaleString() : '-');
+}
 
 // ── GASレコードをダッシュボード用にマッピング ────────────
 function mapGasRecord(r) {
