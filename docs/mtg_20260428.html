@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>マーケMTG 2026/04/28 ダッシュボード</title>
+<style>
+:root{
+  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e4e9f2;
+  --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
+  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;padding:24px;min-height:100vh}
+.container{max-width:1440px;margin:0 auto}
+
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.header .sub{color:var(--text2);font-size:12px}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.remaining-badge{background:#fff0f0;border:1px solid var(--red-border);color:var(--red);padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700}
+
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--card);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.kpi-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text)}
+.kpi-sub{color:var(--text2);font-size:11px;margin-top:4px}
+.kpi-good{border-left:3px solid var(--green)}
+.kpi-bad{border-left:3px solid var(--red)}
+.kpi-warn{border-left:3px solid var(--amber)}
+
+.grid{display:grid;gap:16px;margin-bottom:24px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+
+.card{background:var(--card);padding:20px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:16px}
+.card h2{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card h2::before{content:"";width:4px;height:16px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.card.red h2::before{background:var(--red)}
+.card.amber h2::before{background:var(--amber)}
+.card.green h2::before{background:var(--green)}
+.card.violet h2::before{background:var(--violet)}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:left;padding:8px 6px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#f8faff}
+tbody td{padding:8px 6px;border-bottom:1px solid var(--border);color:var(--text)}
+tbody tr:hover{background:#fafbff}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+
+.bar{display:inline-block;height:6px;border-radius:3px;background:#e4e9f2;width:60px;position:relative;vertical-align:middle;margin-right:6px}
+.bar-fill{position:absolute;height:100%;border-radius:3px;left:0;top:0}
+.bar-green{background:var(--green)}
+.bar-amber{background:var(--amber)}
+.bar-red{background:var(--red)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
+.badge-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+
+.store-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.store-item:last-child{border-bottom:none}
+.store-name{font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.store-factors{color:var(--text2);font-size:11px;padding:8px 12px;background:var(--red-bg);border-left:3px solid var(--red);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-top:6px;line-height:1.8}
+.store-action{color:#065f46;font-size:11px;padding:8px 12px;background:var(--green-bg);border-left:3px solid var(--green);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-top:6px;line-height:1.8}
+.store-result{color:#1e40af;font-size:11px;padding:8px 12px;background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 var(--r-sm) var(--r-sm) 0;margin-top:6px;line-height:1.8}
+
+.action-row{padding:10px 14px;border-radius:var(--r-sm);margin-bottom:8px;border:1px solid var(--border);background:#fafbff;display:flex;align-items:flex-start;gap:10px}
+.action-row:last-child{margin-bottom:0}
+.action-num{width:22px;height:22px;background:var(--violet);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.action-body{flex:1;min-width:0}
+.action-title{font-weight:600;font-size:12px;color:var(--text);margin-bottom:2px}
+.action-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.action-tag{font-size:10px;padding:1px 8px;border-radius:99px;border:1px solid}
+.tag-deadline{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+.tag-who{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}
+.tag-kpi{background:var(--violet-bg);color:var(--violet);border-color:var(--violet-border)}
+
+.insight-box{padding:12px 16px;border-radius:var(--r-sm);font-size:12px;border-left:3px solid;margin-bottom:8px;line-height:1.7}
+.insight-red{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+.insight-amber{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
+.insight-blue{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
+.insight-green{background:var(--green-bg);border-color:var(--green);color:#064e3b}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+.lesson-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.lesson-card .store-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.lesson-card .cause{font-size:11px;color:var(--text2);padding:6px 10px;background:var(--red-bg);border-radius:var(--r-sm);margin-bottom:6px;border-left:3px solid var(--red)}
+.lesson-card .fix{font-size:11px;color:#064e3b;padding:6px 10px;background:var(--green-bg);border-radius:var(--r-sm);border-left:3px solid var(--green)}
+
+.result-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;background:#f0f9ff;border:1px solid #bae6fd;font-size:11px;color:#1e40af;font-weight:600;margin:3px 3px 0 0}
+.result-chip .num-hi{color:var(--green);font-weight:700}
+
+.unresolved-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.unresolved-item:last-child{border-bottom:none}
+.unresolved-icon{width:20px;height:20px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+.unresolved-body .title{font-weight:600;font-size:12px;color:var(--text)}
+.unresolved-body .desc{font-size:11px;color:var(--text2);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>マーケMTG ダッシュボード</h1>
+    <div class="sub">2026年4月28日（月）/ 担当: 髙橋 / 出典: 文字起こし自動解析</div>
+  </div>
+  <div class="header-right">
+    <span class="remaining-badge">残り3日 — 4/30月末</span>
+    <span class="sub" style="color:var(--text3)">自担当目標: ¥7,000,000</span>
+  </div>
+</div>
+
+<!-- KPI Summary -->
+<div class="kpi-row">
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">自担当 着地見込</div>
+    <div class="kpi-val">¥8,800,000</div>
+    <div class="kpi-sub">目標 ¥7,000,000</div>
+  </div>
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">達成率（着地）</div>
+    <div class="kpi-val">83%</div>
+    <div class="kpi-sub">4/26時点 前日比+</div>
+  </div>
+  <div class="kpi kpi-good">
+    <div class="kpi-label">達成見込み店舗</div>
+    <div class="kpi-val">3店舗</div>
+    <div class="kpi-sub">藤沢・札幌・熊本</div>
+  </div>
+  <div class="kpi kpi-bad">
+    <div class="kpi-label">達成困難店舗</div>
+    <div class="kpi-val">2店舗</div>
+    <div class="kpi-sub">岐阜・二子玉川</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">再来率(50日以内)</div>
+    <div class="kpi-val">24%</div>
+    <div class="kpi-sub">Lステップ計測値</div>
+  </div>
+</div>
+
+<!-- Store Forecast Table -->
+<div class="card">
+  <h2>店舗別 4月着地見込（4/28時点）</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>店舗</th>
+        <th>着地見込</th>
+        <th>達成可否</th>
+        <th>主課題</th>
+        <th>進捗</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>S札幌</strong></td>
+        <td class="num">¥2,000,000超</td>
+        <td><span class="badge badge-green">達成見込</span></td>
+        <td>単品比率39%・客単価下振れ</td>
+        <td><span class="bar"><span class="bar-fill bar-green" style="width:100%"></span></span></td>
+      </tr>
+      <tr>
+        <td><strong>S藤沢</strong></td>
+        <td class="num">¥125〜130万</td>
+        <td><span class="badge badge-green">達成見込</span></td>
+        <td>新規ACR・再来サイクル課題残存</td>
+        <td><span class="bar"><span class="bar-fill bar-green" style="width:95%"></span></span></td>
+      </tr>
+      <tr>
+        <td><strong>S熊本</strong></td>
+        <td class="num">¥1,420,000</td>
+        <td><span class="badge badge-green">達成見込</span></td>
+        <td>0円会計残存・次回予約23%</td>
+        <td><span class="bar"><span class="bar-fill bar-green" style="width:90%"></span></span></td>
+      </tr>
+      <tr>
+        <td><strong>S二子玉川</strong></td>
+        <td class="num">—</td>
+        <td><span class="badge badge-red">達成困難</span></td>
+        <td>次回予約46人中7件のみ・LUMISS移行遅れ</td>
+        <td><span class="bar"><span class="bar-fill bar-red" style="width:65%"></span></span></td>
+      </tr>
+      <tr>
+        <td><strong>S岐阜</strong></td>
+        <td class="num">—</td>
+        <td><span class="badge badge-red">達成困難</span></td>
+        <td>回数券1件・次回予約不足→再来数不足</td>
+        <td><span class="bar"><span class="bar-fill bar-red" style="width:60%"></span></span></td>
+      </tr>
+      <tr>
+        <td><strong>m下北沢</strong></td>
+        <td class="num">—</td>
+        <td><span class="badge badge-amber">要確認</span></td>
+        <td>新規少ない・予約枠ほぼ満杯</td>
+        <td><span class="bar"><span class="bar-fill bar-amber" style="width:72%"></span></span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 4月 反省点 -->
+<div class="card red" style="margin-bottom:0">
+  <h2>4月 反省点（店舗別）</h2>
+</div>
+<div class="three-col" style="margin-top:12px">
+  <div class="lesson-card">
+    <div class="store-label">S岐阜</div>
+    <div class="cause">回数券・時間予約の準備が3月中にできていなかった。優先順位が下がっていた。</div>
+    <div class="fix">→ 月1件・12%止まりの直接原因。3月中に設定していれば回避可能だった。</div>
+  </div>
+  <div class="lesson-card">
+    <div class="store-label">S二子玉川</div>
+    <div class="cause">退職スタッフ引き継ぎフロー未確定。クーポン順番・打ち出し方法の問題把握が4月後半にずれ込んだ。</div>
+    <div class="fix">→ サロンボードの定点チェックが不足。PV・クーポン順位の確認を怠っていた。</div>
+  </div>
+  <div class="lesson-card">
+    <div class="store-label">S熊本</div>
+    <div class="cause">0円会計が多い状態に早期に気づけなかった。入りマネへの確認が遅れた。</div>
+    <div class="fix">→ 2〜3月の回数券消化量から入りマネ確認のタイミングを設計すれば防げた。</div>
+  </div>
+  <div class="lesson-card">
+    <div class="store-label">S札幌</div>
+    <div class="cause">単品比率39%・学生予約が土日にも入り込み客単価を引き下げ。セット誘導クーポン設計が甘かった。</div>
+    <div class="fix">→ 学生を平日限定にするかを名さんと合意できていれば単価を守れた。</div>
+  </div>
+  <div class="lesson-card">
+    <div class="store-label">S藤沢</div>
+    <div class="cause">再来率低明の原因（自家予約・なぜ取れないか）を3月中に深掘りできていなかった。</div>
+    <div class="fix">→ スタッフが提案しても取れない「なぜ」の構造把握が後手。事前ヒアリング設計が必要だった。</div>
+  </div>
+  <div class="lesson-card">
+    <div class="store-label">全体総括</div>
+    <div class="cause">「4月は事前準備が甘かった月」——タカショー自己評価</div>
+    <div class="fix">→ 3月中に翌月課題を出し切り、施策を仕込んでおく習慣が根本的に必要。</div>
+  </div>
+</div>
+
+<!-- 4月 良かったアクション -->
+<div class="card green" style="margin-top:16px">
+  <h2>4月 良かったアクション &amp; 成果</h2>
+
+  <div class="store-item">
+    <div class="store-name">S藤沢 <span class="badge badge-green">新規+再来</span></div>
+    <div class="store-result">
+      花粉症対策クーポン → <span style="font-weight:700">14件</span>入電<br>
+      新生活打ち出し → <span style="font-weight:700">13件</span>入電<br>
+      GWクーポン → <span style="font-weight:700">7件</span>入電<br>
+      吉本さん 月上旬だけで ¥15〜20万ペース
+    </div>
+  </div>
+
+  <div class="store-item">
+    <div class="store-name">S岐阜 <span class="badge badge-blue">再来掘り起こし</span></div>
+    <div class="store-result">
+      500円OFF LINE配信（60日以上休眠） → <span style="font-weight:700">6人</span>復帰<br>
+      メンズ上位化 + 新生活打ち出し → <span style="font-weight:700">12件</span>入電<br>
+      GWクーポン → <span style="font-weight:700">7件</span>入電<br>
+      回数券配信（先週金曜） → <span style="font-weight:700">1件</span>（速報）
+    </div>
+  </div>
+
+  <div class="store-item">
+    <div class="store-name">S二子玉川 <span class="badge badge-blue">再来回収</span></div>
+    <div class="store-result">
+      500円OFF LINE配信（60日以上休眠） → <span style="font-weight:700">5人</span>再来<br>
+      GW・新生活打ち出し → <span style="font-weight:700">12件</span>入電<br>
+      ※再来後の次回予約取得状況は要追跡
+    </div>
+  </div>
+
+  <div class="store-item">
+    <div class="store-name">S札幌 <span class="badge badge-blue">再来+メンズ</span></div>
+    <div class="store-result">
+      500円OFF LINE配信（60日以上休眠） → <span style="font-weight:700">10人</span>（うち60日以上4人）<br>
+      メンズ新社会人打ち出し → <span style="font-weight:700">1件</span>（通常再来に混在した模様）<br>
+      GW前打ち出し（毛パーマ）→ <span style="font-weight:700">3件</span>予約中
+    </div>
+  </div>
+
+  <div class="store-item">
+    <div class="store-name">S熊本 <span class="badge badge-green">新規</span></div>
+    <div class="store-result">
+      花粉対策限定クーポン → <span style="font-weight:700">12〜13件</span>入電（新規含む）<br>
+      打ち出しタイミング良好・新規も取れた<br>
+      ※500円OFF配信は集計設定漏れあり → 姉さんに確認中
+    </div>
+  </div>
+</div>
+
+<!-- 5月 アクション計画 -->
+<div class="card violet" style="margin-bottom:0;margin-top:4px">
+  <h2>5月 アクション計画</h2>
+</div>
+<div style="margin-top:12px;margin-bottom:16px">
+
+  <!-- 全店共通 -->
+  <div class="card" style="margin-bottom:12px;border-color:var(--violet-border)">
+    <h2 style="color:var(--violet)">【全店共通】エリマネ面談への同席開始</h2>
+    <div class="insight-box insight-amber" style="margin-bottom:12px">
+      現状: 「頑張りましょう」の応援で終わっている。原因分析・行動改善まで落ちていない。<br>
+      方針: 面談に同席し、事前に「ここを聞いてほしい」リストを3問以内でエリマネに投げる。
+    </div>
+    <div class="action-row">
+      <div class="action-num">1</div>
+      <div class="action-body">
+        <div class="action-title">エリマネ面談の同席 + 事前ヒアリング設計</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">「なんで取れないの？頑張って」で終わらない。同席前に仮説ベースの問いを3問準備してエリマネに渡す。234月の成長率を数字で出して変化を可視化する専用シートも作成。</div>
+        <div class="action-meta">
+          <span class="action-tag tag-deadline">5月入り〜随時</span>
+          <span class="action-tag tag-who">担当: タカショー同席</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 店舗別 -->
+  <div class="two-col">
+    <div class="card" style="margin-bottom:0">
+      <h2>S二子玉川 — LUMISS拡大</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">シーン→LUMISS 振り分け変更（半月ごと）</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">5月1日〜。半月ごとに比率を変え段階的にLUMISS比率を上げる。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5/1〜</span>
+            <span class="action-tag tag-kpi">目標: 5月20件移行</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">シーンお客様限定 LUMISS体験クーポン配信</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">まつパ既存客に対し「120/140本ブラウン」メニューで配信。内山さんにbefore/after写真編集を依頼。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">4/30までに設定</span>
+            <span class="action-tag tag-who">写真: 内山さん</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">3</div>
+        <div class="action-body">
+          <div class="action-title">GWペア割・母の日打ち出し（配信済み）</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">10%OFF・GW枠の新規+既存同伴を狙う。結果を追跡して5月施策に反映。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">配信完了・結果待ち</span>
+          </div>
+        </div>
+      </div>
+      <div class="insight-box insight-blue" style="margin-top:8px">
+        7月 シーン6：LUMISS4 → 8月 55:55 を目標に段階移行
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <h2>S岐阜 — 回数券 本格導入</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">HPBに回数券メニューを掲載</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">クーポンページにも回数券を設置。入口から「3回セットがお得」の認知を作る。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">4/30までに設置</span>
+            <span class="action-tag tag-who">担当: タカショー</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">2回目カウンセリングで3回セット提案スクリプト確立</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">「2回目来店 = 3回セットのお得さを伝えるタイミング」として面談でスタッフに落とし込む。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5月面談で実施</span>
+            <span class="action-tag tag-who">エリマネ経由</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">3</div>
+        <div class="action-body">
+          <div class="action-title">LINE 回数券配信（継続）</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">先週1件の速報あり。定期配信でナーチャリング継続。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">毎月定期化</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:0">
+    <div class="card" style="margin-bottom:0">
+      <h2>S札幌 — LUMISS本数構成最適化</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">80本クーポンを削減・120本をメインに設定変更</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">4月の80本入電は3件のみ。1日フル稼働時で+約¥7,000/日の単価UPが見込める。80本は1〜2枚残し、100・120・140本構成に。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5月中に設定・6月運用</span>
+            <span class="action-tag tag-who">担当: タカショー</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">学生予約を平日限定に整理（名さんと合意）</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">土日の客単価を守るため学生クーポンの曜日制限を名さんと相談して設定。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5月面談で合意</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <h2>S熊本 — 梅雨シーズン対策</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">梅雨クーポン設計・HPB掲載</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">「毛パーマ+アイシャンプー」「ブラックティント」等、梅雨季節に刺さるセット打ち出しで新規客を集める。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">GW明け〜5月中設置</span>
+            <span class="action-tag tag-who">A さんと内容確認</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">500円OFF集計設定漏れを確認・修正</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">今月の500円OFF配信で集計用割引設定が未入力。姉さんに確認依頼済み。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">今週中</span>
+            <span class="action-tag tag-who">姉さん確認</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:0">
+    <div class="card" style="margin-bottom:0">
+      <h2>m下北沢・m所沢 — 回数券 &amp; ステップ整備</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">回数券クーポンをHPB・公式LINEに設置</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">下北・所沢ともに未設置。40日以内来店条件付きで設定できるか要確認。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5月中</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">Lステップ ステップ配信の設定完了</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">追加だけで止まっている状態。配信シナリオを随時設定する。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">随時（ずるずる禁止）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <h2>S藤沢 — 同行・深掘り</h2>
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">5月に藤沢同行（面談内容の確認）</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">「提案しているのに取れない」の構造を直接確認。同行前にヒアリング設計3問を準備する。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">5月上旬</span>
+            <span class="action-tag tag-who">タカショー同行</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">LUMISS予約・吉本さん再来サイクルの追跡</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px">ルミス予約が入ってきているが、新規獲得に課題あり。再来サイクル設計の確認。</div>
+          <div class="action-meta">
+            <span class="action-tag tag-deadline">月次確認</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 未解決課題 -->
+<div class="card red">
+  <h2>未解決課題・懸念事項（要フォロー）</h2>
+
+  <div class="unresolved-item">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">二子玉川 次回予約の実態把握が不完全</div>
+      <div class="desc">46人中7件（15%）しか次回予約が入っていないと思われるが、冬沢さんが別枠設定しているため正確な数字が測れていない。全スタッフの設定を統一した上で再計測が必要。内山さんとの面談で設定統一を確認予定。</div>
+    </div>
+  </div>
+
+  <div class="unresolved-item">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">パトラ・モスト 再来率分析のアウトプット再設計</div>
+      <div class="desc">「なぜ再来率が低いのか」の分析を依頼したが、「サブアカウント比率が低い」という成果物が返ってきた。「そもそも戻ってきていない事実」からスタートする分析が抜けていた。次回依頼時は前提を明示した問いの設計が必要。</div>
+    </div>
+  </div>
+
+  <div class="unresolved-item">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">岐阜スタッフ（ランさん）のヒアリング実施確認</div>
+      <div class="desc">面談メイさんが休み中のため未実施。今日か明日に実施予定との情報あり。ヒアリング内容と結果を確認して次のアクションに落とし込む。</div>
+    </div>
+  </div>
+
+  <div class="unresolved-item">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">エリマネ向け 成長率共有シート 未作成</div>
+      <div class="desc">2〜4月の成長率を可視化してエリマネと共有する専用シートが構想段階。「変わっていないなら、なぜか」を問うベースラインになる。5月入り前に作成着手。</div>
+    </div>
+  </div>
+
+  <div class="unresolved-item">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">熊本 500円OFF配信の集計設定漏れ</div>
+      <div class="desc">割引設定が集計できる形で入力されていなかった。姉さんに確認依頼済みだが結果が出ていない。今月の成果集計に影響するため今週中に確認完了が必要。</div>
+    </div>
+  </div>
+
+  <div class="unresolved-item" style="border-bottom:none">
+    <div class="unresolved-icon">!</div>
+    <div class="unresolved-body">
+      <div class="title">立川 15分枠問題（1週間で11時間ロス）</div>
+      <div class="desc">15分単位の空き枠が積み上がり、1週間で11時間・1ヶ月換算で約44時間の稼働ロスが発生している。山さんとの調整でセットメニュー優先→下位メニューをずらす設定が必要。チェック未完了。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 全体総括 -->
+<div class="card" style="border-color:var(--violet-border);background:var(--violet-bg)">
+  <h2 style="color:var(--violet)">MTG 総括 — タカショー自己評価</h2>
+  <div class="insight-box insight-amber">
+    <strong>4月の根本反省:</strong> 3月中に翌月課題を出し切り施策を仕込む「先出し習慣」がなかった。事後対応ばかりになった。
+  </div>
+  <div class="insight-box insight-blue">
+    <strong>5月の重点:</strong> マーケ施策よりエリマネ面談の質向上を優先。現場の「なぜ」を翻訳して具体アクションに変換することが売上に最も直結する。
+  </div>
+  <div class="insight-box insight-green">
+    <strong>できていること:</strong> LINE配信施策の成果追跡（件数紐付け）・LUMISS移行計画の段階設計・各店舗の課題特定は正確にできている。
+  </div>
+</div>
+
+<div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0 8px">
+  マーケMTG 2026/04/28 ダッシュボード — 文字起こし解析生成 / salonboard-dashboard.vercel.app
+</div>
+
+</div>
+</body>
+</html>
