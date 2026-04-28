@@ -3,963 +3,790 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>スタッフ売上データ 2025/05〜2026/04</title>
+<title>LUMISS導入前後 売上比較</title>
 <style>
 :root{
-  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e4e9f2;
+  --bg:#f0f2f8;--surface:#fff;--border:#e4e9f2;
   --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
-  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
-  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
-  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
-  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
-  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
-  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+  --green:#059669;--green-bg:#ecfdf5;--green-bd:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-bd:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-bd:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-bd:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-bd:#ddd6fe;
+  --r:14px;--sh:0 1px 3px rgba(0,0,0,.06),0 4px 20px rgba(0,0,0,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;padding:24px;min-height:100vh}
-.container{max-width:1300px;margin:0 auto}
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.header h1{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
-.header .sub{color:var(--text2);font-size:12px}
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
-.badge-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
-.badge-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
-.badge-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
-.badge-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
-.badge-violet{background:var(--violet-bg);color:var(--violet);border-color:var(--violet-border)}
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
-.kpi{background:var(--card);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
-.kpi-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
-.kpi-val{font-size:20px;font-weight:700;color:var(--text)}
-.kpi-sub{color:var(--text2);font-size:11px;margin-top:4px}
-.kpi-good{border-left:3px solid var(--green)}
-.kpi-bad{border-left:3px solid var(--red)}
-.kpi-warn{border-left:3px solid var(--amber)}
-.kpi-blue{border-left:3px solid var(--blue)}
-.card{background:var(--card);padding:20px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:16px}
-.card h2{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
-.card h2::before{content:"";width:4px;height:16px;background:var(--blue);border-radius:2px;flex-shrink:0}
-.card.red h2::before{background:var(--red)}
-.card.amber h2::before{background:var(--amber)}
-.card.green h2::before{background:var(--green)}
-.card.violet h2::before{background:var(--violet)}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;min-height:100vh}
+
+/* ─── Layout ─── */
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+
+/* ─── Page header ─── */
+.page-header{margin-bottom:28px}
+.page-header h1{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
+.page-header .meta{color:var(--text3);font-size:11px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
+.tag-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd)}
+.tag-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd)}
+.tag-green{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.tag-red{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.tag-violet{background:var(--violet-bg);color:var(--violet);border-color:var(--violet-bd)}
+
+/* ─── Hero answer ─── */
+.hero{background:linear-gradient(135deg,#1a3a6c 0%,#1e5a3c 100%);border-radius:var(--r);padding:28px 32px;margin-bottom:20px;color:#fff;display:flex;align-items:center;gap:32px;flex-wrap:wrap;box-shadow:var(--sh)}
+.hero-answer{flex:0 0 auto}
+.hero-answer .label{font-size:11px;font-weight:600;opacity:.7;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.hero-answer .verdict{font-size:32px;font-weight:800;line-height:1;margin-bottom:6px;color:#6ee7b7}
+.hero-answer .sub{font-size:13px;opacity:.8}
+.hero-divider{width:1px;height:80px;background:rgba(255,255,255,.2);flex:0 0 auto}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap}
+.hero-stat .v{font-size:22px;font-weight:700;line-height:1;margin-bottom:4px}
+.hero-stat .l{font-size:10px;opacity:.65;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.hero-stat .s{font-size:11px;opacity:.75;margin-top:2px}
+
+/* ─── Section nav ─── */
+.sec-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.sec-nav a{text-decoration:none;padding:6px 14px;border-radius:99px;font-size:11px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text2);transition:all .15s}
+.sec-nav a:hover{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+
+/* ─── Card ─── */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.card-head{padding:16px 20px 0;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card-head h2{font-size:13px;font-weight:700;color:var(--text)}
+.card-stripe{width:4px;height:18px;border-radius:2px;flex-shrink:0}
+.s-green{background:var(--green)}
+.s-amber{background:var(--amber)}
+.s-blue{background:var(--blue)}
+.s-red{background:var(--red)}
+.s-violet{background:var(--violet)}
+.s-gray{background:var(--text3)}
+.card-body{padding:0 20px 20px}
+
+/* ─── KPI row ─── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--surface);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.kpi-l{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+.kpi-v{font-size:22px;font-weight:800;line-height:1.1}
+.kpi-s{font-size:11px;color:var(--text2);margin-top:5px}
+.kpi.g{border-top:3px solid var(--green)}.kpi.g .kpi-v{color:var(--green)}
+.kpi.r{border-top:3px solid var(--red)}.kpi.r .kpi-v{color:var(--red)}
+.kpi.b{border-top:3px solid var(--blue)}.kpi.b .kpi-v{color:var(--blue)}
+.kpi.a{border-top:3px solid var(--amber)}.kpi.a .kpi-v{color:var(--amber)}
+
+/* ─── Table ─── */
+.tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{text-align:left;padding:8px 6px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#f8faff;white-space:nowrap}
-tbody td{padding:8px 6px;border-bottom:1px solid var(--border);color:var(--text)}
+thead th{text-align:left;padding:8px 8px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border);background:#f8faff;white-space:nowrap}
+tbody td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#fafbff}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.bar{display:inline-block;height:6px;border-radius:3px;background:#e4e9f2;width:50px;position:relative;vertical-align:middle;margin-right:4px}
-.bar-fill{position:absolute;height:100%;border-radius:3px;left:0;top:0}
-.bar-green{background:var(--green)}.bar-amber{background:var(--amber)}.bar-red{background:var(--red)}.bar-blue{background:var(--blue)}
-.divider-label{padding:6px 8px;font-size:11px;font-weight:700;color:#fff;border-radius:var(--r-sm);display:inline-block;margin:16px 0 8px}
-.advice-box{padding:10px 14px;border-radius:var(--r-sm);font-size:12px;border-left:3px solid;margin-bottom:8px;line-height:1.7}
-.adv-blue{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
-.adv-green{background:var(--green-bg);border-color:var(--green);color:#064e3b}
-.adv-amber{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
-.adv-red{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.total-row{font-weight:700;background:#f8faff!important;border-top:2px solid var(--border)!important}
+.highlight-row{background:#ecfdf5!important}
+
+/* ─── Mini bar ─── */
+.mini-bar-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.mini-bar{height:8px;border-radius:4px;min-width:2px;display:inline-block}
+
+/* ─── Insight grid ─── */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:700px){.insight-grid{grid-template-columns:1fr}}
+.insight{padding:12px 14px;border-radius:10px;font-size:12px;border-left:3px solid;line-height:1.7}
+.ig{background:var(--green-bg);border-color:var(--green);color:#064e3b}
+.ia{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
+.ir{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+.ib{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
+.iv{background:var(--violet-bg);border-color:var(--violet);color:#3b0764}
+.insight strong{display:block;margin-bottom:3px;font-size:12px}
+
+/* ─── Tabs ─── */
+.tab-nav{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-panel{display:none;padding:0 20px 20px}
+.tab-panel.active{display:block}
+
+/* ─── Section anchor offset ─── */
+.section-anchor{padding-top:8px}
+
+/* ─── Phase label ─── */
+.phase-label{display:inline-block;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;white-space:nowrap}
+.ph-before{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.ph-after{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+.ph-best{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.ph-worst{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.ph-base{background:#f5f5f5;color:var(--text2);border:1px solid var(--border)}
 </style>
 </head>
 <body>
-<div class="container">
+<div class="wrap">
 
-<div class="header">
-  <div>
-    <h1>スタッフ売上データ</h1>
-    <div class="sub" style="margin-top:4px">2025年5月〜2026年4月（全12ヶ月）/ LUMISS導入前後の全期間比較</div>
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-      <span class="badge badge-amber">LUMISS導入前: 2025年5〜10月（SSINのみ）</span>
-      <span class="badge badge-blue">LUMISS導入後: 2025年11月〜（SSIN + LUMISS）</span>
+<!-- ───────── Page header ───────── -->
+<div class="page-header">
+  <h1>LUMISS導入前後 売上比較ダッシュボード</h1>
+  <div class="meta">
+    <span>対象期間：2024年11月〜2026年4月（全18ヶ月）</span>
+    <span class="tag tag-amber">LUMISS導入前：2025年5〜10月</span>
+    <span class="tag tag-blue">LUMISS導入後：2025年11月〜2026年4月</span>
+  </div>
+</div>
+
+<!-- ───────── Hero ───────── -->
+<div class="hero">
+  <div class="hero-answer">
+    <div class="label">問い：LUMISS導入で売上は上がったか？</div>
+    <div class="verdict">YES — 上がった</div>
+    <div class="sub">前年同月比 6ヶ月合算 +21.2% ／ 前直前期比 +26.4%</div>
+  </div>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="l">導入前 月平均</div>
+      <div class="v">¥577,940</div>
+      <div class="s">2025年5〜10月（SSIN only）</div>
+    </div>
+    <div class="hero-stat">
+      <div class="l">導入後 月平均</div>
+      <div class="v" style="color:#6ee7b7">¥730,242</div>
+      <div class="s">2025年11月〜2026年4月（SSIN+LUMISS）</div>
+    </div>
+    <div class="hero-stat">
+      <div class="l">純増</div>
+      <div class="v" style="color:#6ee7b7">+¥152,302/月</div>
+      <div class="s">6ヶ月累計 +¥766,770</div>
     </div>
   </div>
 </div>
 
-<!-- KPI比較 -->
+<!-- ───────── Section nav ───────── -->
+<div class="sec-nav">
+  <a href="#sec-compare">前年同月比較</a>
+  <a href="#sec-timeline">月次推移</a>
+  <a href="#sec-detail">詳細データ</a>
+  <a href="#sec-insight">インサイト</a>
+</div>
+
+<!-- ───────── KPI row ───────── -->
 <div class="kpi-row">
-  <div class="kpi kpi-warn">
-    <div class="kpi-label">LUMISS導入前 月平均売上</div>
-    <div class="kpi-val">¥578,000</div>
-    <div class="kpi-sub">2025年5〜10月（SSINのみ）</div>
+  <div class="kpi g">
+    <div class="kpi-l">前年同月比（6ヶ月合算）</div>
+    <div class="kpi-v">+21.2%</div>
+    <div class="kpi-s">¥3,614,680 → ¥4,381,450</div>
   </div>
-  <div class="kpi kpi-blue">
-    <div class="kpi-label">LUMISS導入後 月合算平均</div>
-    <div class="kpi-val">¥730,000</div>
-    <div class="kpi-sub">2025年11月〜2026年4月</div>
+  <div class="kpi g">
+    <div class="kpi-l">直前期比（月平均）</div>
+    <div class="kpi-v">+26.4%</div>
+    <div class="kpi-s">¥577,940 → ¥730,242</div>
   </div>
-  <div class="kpi kpi-good">
-    <div class="kpi-label">LUMISS追加による増加</div>
-    <div class="kpi-val">+¥152,000</div>
-    <div class="kpi-sub">月平均 +26%</div>
+  <div class="kpi g">
+    <div class="kpi-l">LUMISS月次貢献（平均）</div>
+    <div class="kpi-v">+¥328,683</div>
+    <div class="kpi-s">LUMISS 6ヶ月合計 ¥1,972,100</div>
   </div>
-  <div class="kpi kpi-bad">
-    <div class="kpi-label">LUMISS導入後 客単価（4月）</div>
-    <div class="kpi-val">¥5,718</div>
-    <div class="kpi-sub">前 平均¥5,989 より低い</div>
-  </div>
-  <div class="kpi kpi-warn">
-    <div class="kpi-label">売上天井（LUMISS導入後）</div>
-    <div class="kpi-val">¥864,000</div>
-    <div class="kpi-sub">2025年12月（SSIN+LUMISS合算）</div>
+  <div class="kpi b">
+    <div class="kpi-l">2ブランド最高売上月</div>
+    <div class="kpi-v">¥864,000</div>
+    <div class="kpi-s">2025年12月（SSIN+LUMISS合算）</div>
   </div>
 </div>
 
-<!-- LUMISS導入前後 合算推移テーブル -->
-<div class="card">
-  <h2>LUMISS導入前後 月次合算推移</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">SSIN売上</th>
-        <th class="num">LUMISS売上</th>
-        <th class="num">合算売上</th>
-        <th class="num">前年同月比</th>
-        <th class="num">SSIN客数</th>
-        <th class="num">LUMISS客数</th>
-        <th class="num">合算客単価</th>
-        <th>状態</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="background:#fffbeb">
-        <td>2025年5月</td>
-        <td class="num">¥528,120</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num"><strong>¥528,120</strong></td>
-        <td class="num">—</td>
-        <td class="num">89</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num">¥5,934</td>
-        <td><span class="badge badge-amber">LUMISS導入前</span></td>
-      </tr>
-      <tr style="background:#fffbeb">
-        <td>2025年6月</td>
-        <td class="num">¥700,820</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num"><strong>¥700,820</strong></td>
-        <td class="num">—</td>
-        <td class="num">115</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num">¥6,094</td>
-        <td><span class="badge badge-amber">LUMISS導入前</span></td>
-      </tr>
-      <tr style="background:#fffbeb">
-        <td>2025年7月</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥737,100</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num" style="color:var(--green);font-weight:700"><strong>¥737,100</strong></td>
-        <td class="num">—</td>
-        <td class="num">117</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num">¥6,300</td>
-        <td><span class="badge badge-amber">LUMISS導入前・最高月</span></td>
-      </tr>
-      <tr style="background:#fffbeb">
-        <td>2025年8月</td>
-        <td class="num" style="color:var(--red)">¥462,500</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num" style="color:var(--red)"><strong>¥462,500</strong></td>
-        <td class="num">—</td>
-        <td class="num">91</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num" style="color:var(--red)">¥5,082</td>
-        <td><span class="badge badge-red">LUMISS導入前・最低月</span></td>
-      </tr>
-      <tr style="background:#fffbeb">
-        <td>2025年9月</td>
-        <td class="num">¥511,600</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num"><strong>¥511,600</strong></td>
-        <td class="num">—</td>
-        <td class="num">80</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num">¥6,395</td>
-        <td><span class="badge badge-amber">LUMISS導入前</span></td>
-      </tr>
-      <tr style="background:#fffbeb">
-        <td>2025年10月</td>
-        <td class="num">¥527,500</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num"><strong>¥527,500</strong></td>
-        <td class="num">—</td>
-        <td class="num">87</td>
-        <td class="num" style="color:var(--text3)">—</td>
-        <td class="num">¥6,063</td>
-        <td><span class="badge badge-amber">LUMISS導入前</span></td>
-      </tr>
-      <tr style="border-top:2px solid var(--amber);font-weight:700;background:#fffbeb">
-        <td>前期 合計</td>
-        <td class="num">¥3,467,640</td>
-        <td class="num">—</td>
-        <td class="num">¥3,467,640</td>
-        <td class="num">—</td>
-        <td class="num">579</td>
-        <td class="num">—</td>
-        <td class="num">¥5,989</td>
-        <td></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2025年11月</td>
-        <td class="num">¥199,000</td>
-        <td class="num">¥266,500</td>
-        <td class="num"><strong>¥465,500</strong></td>
-        <td class="num" style="color:var(--red)">▼¥62,620<br><span style="font-size:10px">vs 5月</span></td>
-        <td class="num">29</td>
-        <td class="num">44</td>
-        <td class="num">¥6,385</td>
-        <td><span class="badge badge-blue">LUMISS開始</span></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2025年12月</td>
-        <td class="num">¥513,700</td>
-        <td class="num">¥350,300</td>
-        <td class="num" style="color:var(--green);font-weight:700"><strong>¥864,000</strong></td>
-        <td class="num" style="color:var(--green)">▲¥163,180<br><span style="font-size:10px">vs 6月</span></td>
-        <td class="num">75</td>
-        <td class="num">63</td>
-        <td class="num">¥6,231</td>
-        <td><span class="badge badge-green">全期間最高</span></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2026年1月</td>
-        <td class="num">¥370,650</td>
-        <td class="num">¥358,000</td>
-        <td class="num"><strong>¥728,650</strong></td>
-        <td class="num" style="color:var(--red)">▼¥8,450<br><span style="font-size:10px">vs 7月</span></td>
-        <td class="num">52</td>
-        <td class="num">56</td>
-        <td class="num">¥6,756</td>
-        <td><span class="badge badge-blue">LUMISS導入後</span></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2026年2月</td>
-        <td class="num">¥470,900</td>
-        <td class="num">¥335,650</td>
-        <td class="num"><strong>¥806,550</strong></td>
-        <td class="num" style="color:var(--green)">▲¥343,050<br><span style="font-size:10px">vs 8月</span></td>
-        <td class="num">69</td>
-        <td class="num">58</td>
-        <td class="num">¥6,283</td>
-        <td><span class="badge badge-blue">LUMISS導入後</span></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2026年3月</td>
-        <td class="num">¥431,750</td>
-        <td class="num">¥330,000</td>
-        <td class="num"><strong>¥761,750</strong></td>
-        <td class="num" style="color:var(--green)">▲¥250,150<br><span style="font-size:10px">vs 9月</span></td>
-        <td class="num">62</td>
-        <td class="num">56</td>
-        <td class="num">¥6,421</td>
-        <td><span class="badge badge-blue">LUMISS導入後</span></td>
-      </tr>
-      <tr style="background:#eff6ff">
-        <td>2026年4月</td>
-        <td class="num">¥423,350</td>
-        <td class="num">¥331,650</td>
-        <td class="num"><strong>¥755,000</strong></td>
-        <td class="num" style="color:var(--green)">▲¥227,500<br><span style="font-size:10px">vs 10月</span></td>
-        <td class="num">64</td>
-        <td class="num">58</td>
-        <td class="num">¥6,148</td>
-        <td><span class="badge badge-blue">LUMISS導入後</span></td>
-      </tr>
-      <tr style="border-top:2px solid var(--blue);font-weight:700;background:#eff6ff">
-        <td>後期 合計</td>
-        <td class="num">¥2,409,350</td>
-        <td class="num">¥1,972,100</td>
-        <td class="num">¥4,381,450</td>
-        <td class="num">—</td>
-        <td class="num">351</td>
-        <td class="num">335</td>
-        <td class="num">¥6,371</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- LUMISS導入前 詳細 -->
-<div class="card amber">
-  <h2>LUMISS導入前（2025年5〜10月）— SSINのみ 詳細</h2>
-  <div style="overflow-x:auto">
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">純売上</th>
-        <th class="num">施術</th>
-        <th class="num">店販</th>
-        <th class="num">OP</th>
-        <th class="num">客数</th>
-        <th class="num">新規</th>
-        <th class="num">再来</th>
-        <th class="num">再来率</th>
-        <th class="num">客単価</th>
-        <th class="num">指名売上</th>
-        <th class="num">指名数</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2025年5月</td>
-        <td class="num">¥528,120</td>
-        <td class="num">¥485,760</td>
-        <td class="num">¥38,360</td>
-        <td class="num">¥4,000</td>
-        <td class="num">89</td>
-        <td class="num">22</td>
-        <td class="num">67</td>
-        <td class="num"><span class="badge badge-green">75.3%</span></td>
-        <td class="num">¥5,934</td>
-        <td class="num">¥130,020</td>
-        <td class="num">18</td>
-      </tr>
-      <tr>
-        <td>2025年6月</td>
-        <td class="num">¥700,820</td>
-        <td class="num">¥638,720</td>
-        <td class="num">¥52,600</td>
-        <td class="num">¥9,500</td>
-        <td class="num">115</td>
-        <td class="num">34</td>
-        <td class="num">81</td>
-        <td class="num"><span class="badge badge-green">70.4%</span></td>
-        <td class="num">¥6,094</td>
-        <td class="num">¥164,580</td>
-        <td class="num">28</td>
-      </tr>
-      <tr>
-        <td>2025年7月</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥737,100</td>
-        <td class="num">¥693,700</td>
-        <td class="num">¥34,900</td>
-        <td class="num">¥8,500</td>
-        <td class="num" style="font-weight:700">117</td>
-        <td class="num">25</td>
-        <td class="num">92</td>
-        <td class="num"><span class="badge badge-green">78.6%</span></td>
-        <td class="num" style="color:var(--green);font-weight:700">¥6,300</td>
-        <td class="num">¥183,400</td>
-        <td class="num">27</td>
-      </tr>
-      <tr>
-        <td>2025年8月</td>
-        <td class="num" style="color:var(--red)">¥462,500</td>
-        <td class="num">¥453,100</td>
-        <td class="num" style="color:var(--red)">¥6,400</td>
-        <td class="num">¥3,000</td>
-        <td class="num">91</td>
-        <td class="num">14</td>
-        <td class="num">77</td>
-        <td class="num"><span class="badge badge-green">84.6%</span></td>
-        <td class="num" style="color:var(--red)">¥5,082</td>
-        <td class="num" style="color:var(--red)">¥98,400</td>
-        <td class="num">27</td>
-      </tr>
-      <tr>
-        <td>2025年9月</td>
-        <td class="num">¥511,600</td>
-        <td class="num">¥450,700</td>
-        <td class="num">¥58,900</td>
-        <td class="num">¥2,000</td>
-        <td class="num">80</td>
-        <td class="num">14</td>
-        <td class="num">66</td>
-        <td class="num"><span class="badge badge-green">82.5%</span></td>
-        <td class="num">¥6,395</td>
-        <td class="num">¥145,260</td>
-        <td class="num">21</td>
-      </tr>
-      <tr>
-        <td>2025年10月</td>
-        <td class="num">¥527,500</td>
-        <td class="num">¥431,100</td>
-        <td class="num" style="color:var(--violet);font-weight:700">¥90,900</td>
-        <td class="num">¥5,500</td>
-        <td class="num">87</td>
-        <td class="num">10</td>
-        <td class="num">77</td>
-        <td class="num"><span class="badge badge-green">88.5%</span></td>
-        <td class="num">¥6,063</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥219,800</td>
-        <td class="num" style="color:var(--green);font-weight:700">36</td>
-      </tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
-        <td>合計</td>
-        <td class="num">¥3,467,640</td>
-        <td class="num">¥3,153,080</td>
-        <td class="num">¥282,060</td>
-        <td class="num">¥32,500</td>
-        <td class="num">579</td>
-        <td class="num">119</td>
-        <td class="num">460</td>
-        <td class="num">79.4%</td>
-        <td class="num">¥5,989</td>
-        <td class="num">¥941,460</td>
-        <td class="num">157</td>
-      </tr>
-    </tbody>
-  </table>
+<!-- ───────── 前年同月比較 ───────── -->
+<div class="card section-anchor" id="sec-compare">
+  <div class="card-head">
+    <div class="card-stripe s-green"></div>
+    <h2>前年同月比較（2024年11〜4月 vs 2025年11月〜2026年4月）</h2>
   </div>
-  <div class="grid-3" style="margin-top:12px">
-    <div class="advice-box adv-amber" style="margin-bottom:0">
-      <strong>7月がSSIN単体の最高売上</strong><br>
-      ¥737,100・客117名。この水準を超えるにはLUMISSとの合算が必要。
+  <div class="card-body">
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th>
+          <th class="num">前年売上<br><span style="font-weight:400;opacity:.7">2024/11〜2025/4</span></th>
+          <th class="num">導入後 SSIN</th>
+          <th class="num">導入後 LUMISS</th>
+          <th class="num">導入後 合算</th>
+          <th class="num">前年比 差額</th>
+          <th class="num">前年比 %</th>
+          <th class="num" style="width:120px">推移</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>11月</td>
+          <td class="num">¥482,400</td>
+          <td class="num">¥199,000</td>
+          <td class="num">¥266,500</td>
+          <td class="num">¥465,500</td>
+          <td class="num" style="color:var(--red)">▼¥16,900</td>
+          <td class="num"><span class="tag tag-red">▼3.5%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:44px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:43px;background:var(--blue);opacity:.6"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>12月</td>
+          <td class="num">¥654,080</td>
+          <td class="num">¥513,700</td>
+          <td class="num">¥350,300</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥864,000</td>
+          <td class="num" style="color:var(--green);font-weight:700">+¥209,920</td>
+          <td class="num"><span class="tag tag-green">+32.1%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:60px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:80px;background:var(--green)"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>1月</td>
+          <td class="num">¥511,800</td>
+          <td class="num">¥370,650</td>
+          <td class="num">¥358,000</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥728,650</td>
+          <td class="num" style="color:var(--green);font-weight:700">+¥216,850</td>
+          <td class="num"><span class="tag tag-green">+42.4%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:47px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:67px;background:var(--green)"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>2月</td>
+          <td class="num">¥663,600</td>
+          <td class="num">¥470,900</td>
+          <td class="num">¥335,650</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥806,550</td>
+          <td class="num" style="color:var(--green);font-weight:700">+¥142,950</td>
+          <td class="num"><span class="tag tag-green">+21.5%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:61px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:74px;background:var(--green)"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>3月</td>
+          <td class="num">¥644,840</td>
+          <td class="num">¥431,750</td>
+          <td class="num">¥330,000</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥761,750</td>
+          <td class="num" style="color:var(--green);font-weight:700">+¥116,910</td>
+          <td class="num"><span class="tag tag-green">+18.1%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:59px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:70px;background:var(--green)"></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>4月</td>
+          <td class="num">¥657,960</td>
+          <td class="num">¥423,350</td>
+          <td class="num">¥331,650</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥755,000</td>
+          <td class="num" style="color:var(--green);font-weight:700">+¥97,040</td>
+          <td class="num"><span class="tag tag-green">+14.8%</span></td>
+          <td class="num">
+            <div class="mini-bar-wrap">
+              <div class="mini-bar" style="width:60px;background:#e4e9f2"></div>
+              <div class="mini-bar" style="width:69px;background:var(--green)"></div>
+            </div>
+          </td>
+        </tr>
+        <tr class="total-row highlight-row">
+          <td>6ヶ月合計</td>
+          <td class="num">¥3,614,680</td>
+          <td class="num">¥2,409,350</td>
+          <td class="num">¥1,972,100</td>
+          <td class="num" style="color:var(--green)">¥4,381,450</td>
+          <td class="num" style="color:var(--green)">+¥766,770</td>
+          <td class="num"><span class="tag tag-green" style="font-size:11px;padding:3px 12px">+21.2%</span></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
     </div>
-    <div class="advice-box adv-red" style="margin-bottom:0">
-      <strong>8月の急落</strong><br>
-      7月¥737,100 → 8月¥462,500（▼¥274,600）。客単価¥5,082と全期間最低。夏の閑散期+新規減少が重なっている。
-    </div>
-    <div class="advice-box adv-green" style="margin-bottom:0">
-      <strong>10月に指名が急伸</strong><br>
-      指名数36件・指名売上¥219,800と全期間最高。このタイミングでLUMISSを追加したのは正解。
+    <div class="insight-grid" style="grid-template-columns:1fr 1fr;margin-top:12px">
+      <div class="insight ig">
+        <strong>結論：このスタッフの売上は確実に上がった</strong>
+        LUMISS導入前の月平均¥577,940 → 導入後の合算月平均¥730,242。前年同月比でも6ヶ月中5ヶ月がプラスで、LUMISS追加が直接の増収要因となった。
+      </div>
+      <div class="insight ib">
+        <strong>11月のマイナスは一時的な混乱</strong>
+        LUMISS開始直後の11月のみ▼3.5%。SSIN枠の一時的な圧迫が原因で、12月以降は毎月前年比+14〜42%で安定成長している。
+      </div>
     </div>
   </div>
 </div>
 
-<!-- LUMISS導入後 SSIN -->
-<div class="card">
-  <h2>LUMISS導入後（2025年11月〜2026年4月）— SSIN</h2>
-  <div style="overflow-x:auto">
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">純売上</th>
-        <th class="num">施術</th>
-        <th class="num">店販</th>
-        <th class="num">OP</th>
-        <th class="num">客数</th>
-        <th class="num">新規</th>
-        <th class="num">再来</th>
-        <th class="num">再来率</th>
-        <th class="num">客単価</th>
-        <th class="num">指名売上</th>
-        <th class="num">指名数</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2025年11月</td>
-        <td class="num" style="color:var(--red)">¥199,000</td>
-        <td class="num">¥178,900</td>
-        <td class="num">¥20,100</td>
-        <td class="num">¥0</td>
-        <td class="num" style="color:var(--red)">29</td>
-        <td class="num">29</td>
-        <td class="num">0</td>
-        <td class="num"><span class="badge badge-red">0%</span></td>
-        <td class="num">¥6,862</td>
-        <td class="num">¥9,700</td>
-        <td class="num">1</td>
-      </tr>
-      <tr>
-        <td>2025年12月</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥513,700</td>
-        <td class="num">¥469,000</td>
-        <td class="num">¥32,700</td>
-        <td class="num">¥12,000</td>
-        <td class="num" style="color:var(--green);font-weight:700">75</td>
-        <td class="num">67</td>
-        <td class="num">8</td>
-        <td class="num"><span class="badge badge-red">10.7%</span></td>
-        <td class="num">¥6,849</td>
-        <td class="num">¥22,400</td>
-        <td class="num">3</td>
-      </tr>
-      <tr>
-        <td>2026年1月</td>
-        <td class="num">¥370,650</td>
-        <td class="num">¥349,600</td>
-        <td class="num">¥15,050</td>
-        <td class="num">¥6,000</td>
-        <td class="num">52</td>
-        <td class="num">28</td>
-        <td class="num">24</td>
-        <td class="num"><span class="badge badge-amber">46.2%</span></td>
-        <td class="num" style="color:var(--green);font-weight:700">¥7,128</td>
-        <td class="num">¥56,500</td>
-        <td class="num">7</td>
-      </tr>
-      <tr>
-        <td>2026年2月</td>
-        <td class="num">¥470,900</td>
-        <td class="num">¥436,800</td>
-        <td class="num">¥25,100</td>
-        <td class="num">¥9,000</td>
-        <td class="num">69</td>
-        <td class="num">42</td>
-        <td class="num">27</td>
-        <td class="num"><span class="badge badge-amber">39.1%</span></td>
-        <td class="num">¥6,825</td>
-        <td class="num">¥53,700</td>
-        <td class="num">8</td>
-      </tr>
-      <tr>
-        <td>2026年3月</td>
-        <td class="num">¥431,750</td>
-        <td class="num">¥411,800</td>
-        <td class="num">¥15,950</td>
-        <td class="num">¥4,000</td>
-        <td class="num">62</td>
-        <td class="num">29</td>
-        <td class="num">33</td>
-        <td class="num"><span class="badge badge-green">53.2%</span></td>
-        <td class="num">¥6,964</td>
-        <td class="num">¥68,500</td>
-        <td class="num">8</td>
-      </tr>
-      <tr style="background:#fff1f2">
-        <td><strong>2026年4月</strong></td>
-        <td class="num"><strong>¥423,350</strong></td>
-        <td class="num">¥412,200</td>
-        <td class="num" style="color:var(--red)">¥9,650 ↓</td>
-        <td class="num" style="color:var(--red)">¥1,500 ↓</td>
-        <td class="num"><strong>64</strong></td>
-        <td class="num">30</td>
-        <td class="num">34</td>
-        <td class="num"><span class="badge badge-green">53.1%</span></td>
-        <td class="num" style="color:var(--red)">¥6,615 ↓</td>
-        <td class="num" style="color:var(--red)">¥40,000 ↓</td>
-        <td class="num" style="color:var(--red)">6 ↓</td>
-      </tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
-        <td>合計</td>
-        <td class="num">¥2,409,350</td>
-        <td class="num">¥2,258,300</td>
-        <td class="num">¥118,550</td>
-        <td class="num">¥32,500</td>
-        <td class="num">351</td>
-        <td class="num">225</td>
-        <td class="num">126</td>
-        <td class="num">35.9%</td>
-        <td class="num">¥6,864</td>
-        <td class="num">—</td>
-        <td class="num">—</td>
-      </tr>
-    </tbody>
-  </table>
+<!-- ───────── 月次推移 ───────── -->
+<div class="card section-anchor" id="sec-timeline">
+  <div class="card-head">
+    <div class="card-stripe s-blue"></div>
+    <h2>月次推移サマリー（2025年5月〜2026年4月 全12ヶ月）</h2>
   </div>
-  <div class="advice-box adv-red" style="margin-top:12px">
-    <strong>11月のSSIN売上急落（¥199,000）は構造的な問題</strong><br>
-    LUMISS導入前のSSIN最低月は8月の¥462,500。それと比べても11月の¥199,000は異常値。LUMISS開始でSSIN枠が圧迫された可能性が高い。12月以降は¥370,000〜¥513,000に回復しているが、以前の月¥500,000〜737,000には届いていない。
-  </div>
-</div>
-
-<!-- LUMISS導入後 LUMISS -->
-<div class="card">
-  <h2>LUMISS導入後（2025年11月〜2026年4月）— LUMISS</h2>
-  <div style="overflow-x:auto">
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">純売上</th>
-        <th class="num">施術</th>
-        <th class="num">店販</th>
-        <th class="num">OP</th>
-        <th class="num">客数</th>
-        <th class="num">新規</th>
-        <th class="num">再来</th>
-        <th class="num">再来率</th>
-        <th class="num">客単価</th>
-        <th class="num">指名売上</th>
-        <th class="num">指名数</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2025年11月</td>
-        <td class="num">¥266,500</td>
-        <td class="num">¥212,600</td>
-        <td class="num">¥53,400</td>
-        <td class="num">¥500</td>
-        <td class="num">44</td>
-        <td class="num">7</td>
-        <td class="num">37</td>
-        <td class="num"><span class="badge badge-green">84.1%</span></td>
-        <td class="num">¥6,057</td>
-        <td class="num">¥162,800</td>
-        <td class="num">25</td>
-      </tr>
-      <tr>
-        <td>2025年12月</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥350,300</td>
-        <td class="num">¥272,000</td>
-        <td class="num">¥71,800</td>
-        <td class="num">¥6,500</td>
-        <td class="num" style="color:var(--green);font-weight:700">63</td>
-        <td class="num">10</td>
-        <td class="num">53</td>
-        <td class="num"><span class="badge badge-green">84.1%</span></td>
-        <td class="num" style="color:var(--red)">¥5,560</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥198,500</td>
-        <td class="num" style="color:var(--green);font-weight:700">35</td>
-      </tr>
-      <tr>
-        <td>2026年1月</td>
-        <td class="num">¥358,000</td>
-        <td class="num">¥231,700</td>
-        <td class="num" style="color:var(--violet);font-weight:700">¥116,300</td>
-        <td class="num">¥10,000</td>
-        <td class="num">56</td>
-        <td class="num">14</td>
-        <td class="num">42</td>
-        <td class="num"><span class="badge badge-green">75.0%</span></td>
-        <td class="num" style="color:var(--green);font-weight:700">¥6,393</td>
-        <td class="num">¥208,700</td>
-        <td class="num">30</td>
-      </tr>
-      <tr>
-        <td>2026年2月</td>
-        <td class="num">¥335,650</td>
-        <td class="num">¥291,800</td>
-        <td class="num">¥36,350</td>
-        <td class="num">¥7,500</td>
-        <td class="num">58</td>
-        <td class="num">9</td>
-        <td class="num">49</td>
-        <td class="num"><span class="badge badge-green">84.5%</span></td>
-        <td class="num">¥5,787</td>
-        <td class="num">¥152,650</td>
-        <td class="num">24</td>
-      </tr>
-      <tr>
-        <td>2026年3月</td>
-        <td class="num">¥330,000</td>
-        <td class="num">¥272,800</td>
-        <td class="num">¥52,700</td>
-        <td class="num">¥4,500</td>
-        <td class="num">56</td>
-        <td class="num">11</td>
-        <td class="num">45</td>
-        <td class="num"><span class="badge badge-green">80.4%</span></td>
-        <td class="num">¥5,893</td>
-        <td class="num">¥172,800</td>
-        <td class="num">28</td>
-      </tr>
-      <tr>
-        <td>2026年4月</td>
-        <td class="num">¥331,650</td>
-        <td class="num">¥282,900</td>
-        <td class="num">¥44,450</td>
-        <td class="num">¥4,300</td>
-        <td class="num">58</td>
-        <td class="num">9</td>
-        <td class="num">49</td>
-        <td class="num"><span class="badge badge-green">84.5%</span></td>
-        <td class="num" style="color:var(--red)">¥5,718</td>
-        <td class="num">¥175,250</td>
-        <td class="num">26</td>
-      </tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
-        <td>合計</td>
-        <td class="num">¥1,972,100</td>
-        <td class="num">¥1,563,800</td>
-        <td class="num">¥375,000</td>
-        <td class="num">¥33,300</td>
-        <td class="num">335</td>
-        <td class="num">60</td>
-        <td class="num">275</td>
-        <td class="num">82.1%</td>
-        <td class="num">¥5,887</td>
-        <td class="num">¥1,070,700</td>
-        <td class="num">168</td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="grid-3" style="margin-top:12px">
-    <div class="advice-box adv-green" style="margin-bottom:0">
-      <strong>再来率 80%超を安定維持</strong><br>
-      11月から一貫して75〜84%。既存客の信頼は厚い。
-    </div>
-    <div class="advice-box adv-red" style="margin-bottom:0">
-      <strong>売上 ¥330,000で頭打ち</strong><br>
-      12月¥350,300をピークに3〜4月は¥330,000前後で停滞。新規が月9〜14人しか入っていないのが天井の原因。
-    </div>
-    <div class="advice-box adv-amber" style="margin-bottom:0">
-      <strong>1月の店販¥116,300は異常値</strong><br>
-      他月は¥36,000〜71,000のところ1月のみ突出。何らかの販促があったか要確認。その後急落している。
+  <div class="card-body">
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th>
+          <th class="num">SSIN売上</th>
+          <th class="num">LUMISS売上</th>
+          <th class="num">合算売上</th>
+          <th class="num">SSIN客数</th>
+          <th class="num">LUMISS客数</th>
+          <th class="num">合算客単価</th>
+          <th>フェーズ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年5月</td>
+          <td class="num">¥528,120</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num"><strong>¥528,120</strong></td>
+          <td class="num">89</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num">¥5,934</td>
+          <td><span class="ph-before">導入前</span></td>
+        </tr>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年6月</td>
+          <td class="num">¥700,820</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num"><strong>¥700,820</strong></td>
+          <td class="num">115</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num">¥6,094</td>
+          <td><span class="ph-before">導入前</span></td>
+        </tr>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年7月</td>
+          <td class="num" style="color:var(--green);font-weight:700">¥737,100</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num" style="color:var(--green);font-weight:700"><strong>¥737,100</strong></td>
+          <td class="num">117</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num">¥6,300</td>
+          <td><span class="ph-best">導入前 最高</span></td>
+        </tr>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年8月</td>
+          <td class="num" style="color:var(--red)">¥462,500</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num" style="color:var(--red)"><strong>¥462,500</strong></td>
+          <td class="num">91</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num" style="color:var(--red)">¥5,082</td>
+          <td><span class="ph-worst">最低月</span></td>
+        </tr>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年9月</td>
+          <td class="num">¥511,600</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num"><strong>¥511,600</strong></td>
+          <td class="num">80</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num">¥6,395</td>
+          <td><span class="ph-before">導入前</span></td>
+        </tr>
+        <tr style="background:var(--amber-bg)">
+          <td>2025年10月</td>
+          <td class="num">¥527,500</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num"><strong>¥527,500</strong></td>
+          <td class="num">87</td>
+          <td class="num" style="color:var(--text3)">—</td>
+          <td class="num">¥6,063</td>
+          <td><span class="ph-before">導入前</span></td>
+        </tr>
+        <tr style="font-weight:700;border-top:2px solid var(--amber);background:var(--amber-bg)">
+          <td>前期 小計</td>
+          <td class="num">¥3,467,640</td>
+          <td class="num">—</td>
+          <td class="num">¥3,467,640</td>
+          <td class="num">579</td>
+          <td class="num">—</td>
+          <td class="num">¥5,989</td>
+          <td></td>
+        </tr>
+        <tr style="border-top:2px solid var(--blue);background:var(--blue-bg)">
+          <td>2025年11月</td>
+          <td class="num">¥199,000</td>
+          <td class="num">¥266,500</td>
+          <td class="num"><strong>¥465,500</strong></td>
+          <td class="num">29</td>
+          <td class="num">44</td>
+          <td class="num">¥6,385</td>
+          <td><span class="ph-after">LUMISS開始</span></td>
+        </tr>
+        <tr style="background:var(--blue-bg)">
+          <td>2025年12月</td>
+          <td class="num">¥513,700</td>
+          <td class="num">¥350,300</td>
+          <td class="num" style="color:var(--green);font-weight:700"><strong>¥864,000</strong></td>
+          <td class="num">75</td>
+          <td class="num">63</td>
+          <td class="num">¥6,231</td>
+          <td><span class="ph-best">全期間最高</span></td>
+        </tr>
+        <tr style="background:var(--blue-bg)">
+          <td>2026年1月</td>
+          <td class="num">¥370,650</td>
+          <td class="num">¥358,000</td>
+          <td class="num"><strong>¥728,650</strong></td>
+          <td class="num">52</td>
+          <td class="num">56</td>
+          <td class="num">¥6,756</td>
+          <td><span class="ph-after">導入後</span></td>
+        </tr>
+        <tr style="background:var(--blue-bg)">
+          <td>2026年2月</td>
+          <td class="num">¥470,900</td>
+          <td class="num">¥335,650</td>
+          <td class="num"><strong>¥806,550</strong></td>
+          <td class="num">69</td>
+          <td class="num">58</td>
+          <td class="num">¥6,283</td>
+          <td><span class="ph-after">導入後</span></td>
+        </tr>
+        <tr style="background:var(--blue-bg)">
+          <td>2026年3月</td>
+          <td class="num">¥431,750</td>
+          <td class="num">¥330,000</td>
+          <td class="num"><strong>¥761,750</strong></td>
+          <td class="num">62</td>
+          <td class="num">56</td>
+          <td class="num">¥6,421</td>
+          <td><span class="ph-after">導入後</span></td>
+        </tr>
+        <tr style="background:var(--blue-bg)">
+          <td>2026年4月</td>
+          <td class="num">¥423,350</td>
+          <td class="num">¥331,650</td>
+          <td class="num"><strong>¥755,000</strong></td>
+          <td class="num">64</td>
+          <td class="num">58</td>
+          <td class="num">¥6,148</td>
+          <td><span class="ph-after">導入後</span></td>
+        </tr>
+        <tr style="font-weight:700;border-top:2px solid var(--blue);background:var(--blue-bg)">
+          <td>後期 小計</td>
+          <td class="num">¥2,409,350</td>
+          <td class="num">¥1,972,100</td>
+          <td class="num">¥4,381,450</td>
+          <td class="num">351</td>
+          <td class="num">335</td>
+          <td class="num">¥6,371</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
     </div>
   </div>
 </div>
 
-<!-- 総合インサイト -->
-<div class="card red">
-  <h2>総合インサイト</h2>
-  <div class="grid-3">
-    <div class="advice-box adv-green" style="margin-bottom:0">
-      <strong>LUMISS追加で月平均+¥152,000の純増</strong><br>
-      導入前月平均¥578,000 → 導入後合算月平均¥730,000。2ブランド体制で売上の天井が上がり、前年比でも+21.2%の増収。
+<!-- ───────── 詳細データ（タブ） ───────── -->
+<div class="card section-anchor" id="sec-detail">
+  <div class="card-head">
+    <div class="card-stripe s-violet"></div>
+    <h2>詳細データ</h2>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(event,'tab-before')">LUMISS導入前（2025/5〜10・SSIN）</button>
+    <button class="tab-btn" onclick="switchTab(event,'tab-ssin')">LUMISS導入後（2025/11〜2026/4・SSIN）</button>
+    <button class="tab-btn" onclick="switchTab(event,'tab-lumiss')">LUMISS導入後（2025/11〜2026/4・LUMISS）</button>
+    <button class="tab-btn" onclick="switchTab(event,'tab-base')">前年ベースライン（2024/11〜2025/4）</button>
+  </div>
+
+  <!-- タブ①：導入前 SSIN -->
+  <div class="tab-panel active" id="tab-before">
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th>
+          <th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th>
+          <th class="num">客単価</th><th class="num">指名売上</th><th class="num">指名数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025年5月</td><td class="num">¥528,120</td><td class="num">¥485,760</td><td class="num">¥38,360</td><td class="num">¥4,000</td>
+          <td class="num">89</td><td class="num">22</td><td class="num">67</td><td class="num"><span class="tag tag-green">75.3%</span></td>
+          <td class="num">¥5,934</td><td class="num">¥130,020</td><td class="num">18</td>
+        </tr>
+        <tr>
+          <td>2025年6月</td><td class="num">¥700,820</td><td class="num">¥638,720</td><td class="num">¥52,600</td><td class="num">¥9,500</td>
+          <td class="num">115</td><td class="num">34</td><td class="num">81</td><td class="num"><span class="tag tag-green">70.4%</span></td>
+          <td class="num">¥6,094</td><td class="num">¥164,580</td><td class="num">28</td>
+        </tr>
+        <tr>
+          <td>2025年7月</td><td class="num" style="color:var(--green);font-weight:700">¥737,100</td><td class="num">¥693,700</td><td class="num">¥34,900</td><td class="num">¥8,500</td>
+          <td class="num" style="font-weight:700">117</td><td class="num">25</td><td class="num">92</td><td class="num"><span class="tag tag-green">78.6%</span></td>
+          <td class="num" style="color:var(--green);font-weight:700">¥6,300</td><td class="num">¥183,400</td><td class="num">27</td>
+        </tr>
+        <tr>
+          <td>2025年8月</td><td class="num" style="color:var(--red)">¥462,500</td><td class="num">¥453,100</td><td class="num" style="color:var(--red)">¥6,400</td><td class="num">¥3,000</td>
+          <td class="num">91</td><td class="num">14</td><td class="num">77</td><td class="num"><span class="tag tag-green">84.6%</span></td>
+          <td class="num" style="color:var(--red)">¥5,082</td><td class="num" style="color:var(--red)">¥98,400</td><td class="num">27</td>
+        </tr>
+        <tr>
+          <td>2025年9月</td><td class="num">¥511,600</td><td class="num">¥450,700</td><td class="num">¥58,900</td><td class="num">¥2,000</td>
+          <td class="num">80</td><td class="num">14</td><td class="num">66</td><td class="num"><span class="tag tag-green">82.5%</span></td>
+          <td class="num">¥6,395</td><td class="num">¥145,260</td><td class="num">21</td>
+        </tr>
+        <tr>
+          <td>2025年10月</td><td class="num">¥527,500</td><td class="num">¥431,100</td><td class="num" style="color:var(--violet);font-weight:700">¥90,900</td><td class="num">¥5,500</td>
+          <td class="num">87</td><td class="num">10</td><td class="num">77</td><td class="num"><span class="tag tag-green">88.5%</span></td>
+          <td class="num">¥6,063</td><td class="num" style="color:var(--green);font-weight:700">¥219,800</td><td class="num" style="color:var(--green);font-weight:700">36</td>
+        </tr>
+        <tr class="total-row">
+          <td>合計</td><td class="num">¥3,467,640</td><td class="num">¥3,153,080</td><td class="num">¥282,060</td><td class="num">¥32,500</td>
+          <td class="num">579</td><td class="num">119</td><td class="num">460</td><td class="num">79.4%</td>
+          <td class="num">¥5,989</td><td class="num">¥941,460</td><td class="num">157</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
-    <div class="advice-box adv-amber" style="margin-bottom:0">
-      <strong>客単価が両メニューともに低い</strong><br>
-      SSIN¥6,864 / LUMISS¥5,887。特にLUMISSの客単価は他店のSSINスタッフと比較して低い可能性。0円消化・単品偏重が影響している可能性。
+    <div class="insight-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:12px">
+      <div class="insight ig"><strong>7月が SSIN 単体の最高売上</strong>¥737,100・客117名。この水準を超えるには LUMISS との合算が必要。</div>
+      <div class="insight ir"><strong>8月の急落</strong>7月¥737,100 → 8月¥462,500（▼¥274,600）。客単価¥5,082と全期間最低。夏の閑散期+新規減少が重なった。</div>
+      <div class="insight ig"><strong>10月に指名が急伸</strong>指名数36件・指名売上¥219,800と全期間最高。このタイミングで LUMISS を追加したのは正解。</div>
     </div>
-    <div class="advice-box adv-blue" style="margin-bottom:0">
-      <strong>伸ばすには新規とアップセル</strong><br>
-      再来率は高く土台は安定。LUMISSの月売上¥330,000の天井を破るには、新規の入口（HPBクーポン）強化 or 既存客へのアップセル（オプション・回数券）が必要。
+  </div>
+
+  <!-- タブ②：導入後 SSIN -->
+  <div class="tab-panel" id="tab-ssin">
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th>
+          <th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th>
+          <th class="num">客単価</th><th class="num">指名売上</th><th class="num">指名数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025年11月</td><td class="num" style="color:var(--red)">¥199,000</td><td class="num">¥178,900</td><td class="num">¥20,100</td><td class="num">¥0</td>
+          <td class="num" style="color:var(--red)">29</td><td class="num">29</td><td class="num">0</td><td class="num"><span class="tag tag-red">0%</span></td>
+          <td class="num">¥6,862</td><td class="num">¥9,700</td><td class="num">1</td>
+        </tr>
+        <tr>
+          <td>2025年12月</td><td class="num" style="color:var(--green);font-weight:700">¥513,700</td><td class="num">¥469,000</td><td class="num">¥32,700</td><td class="num">¥12,000</td>
+          <td class="num" style="color:var(--green);font-weight:700">75</td><td class="num">67</td><td class="num">8</td><td class="num"><span class="tag tag-red">10.7%</span></td>
+          <td class="num">¥6,849</td><td class="num">¥22,400</td><td class="num">3</td>
+        </tr>
+        <tr>
+          <td>2026年1月</td><td class="num">¥370,650</td><td class="num">¥349,600</td><td class="num">¥15,050</td><td class="num">¥6,000</td>
+          <td class="num">52</td><td class="num">28</td><td class="num">24</td><td class="num"><span class="tag tag-amber">46.2%</span></td>
+          <td class="num" style="color:var(--green);font-weight:700">¥7,128</td><td class="num">¥56,500</td><td class="num">7</td>
+        </tr>
+        <tr>
+          <td>2026年2月</td><td class="num">¥470,900</td><td class="num">¥436,800</td><td class="num">¥25,100</td><td class="num">¥9,000</td>
+          <td class="num">69</td><td class="num">42</td><td class="num">27</td><td class="num"><span class="tag tag-amber">39.1%</span></td>
+          <td class="num">¥6,825</td><td class="num">¥53,700</td><td class="num">8</td>
+        </tr>
+        <tr>
+          <td>2026年3月</td><td class="num">¥431,750</td><td class="num">¥411,800</td><td class="num">¥15,950</td><td class="num">¥4,000</td>
+          <td class="num">62</td><td class="num">29</td><td class="num">33</td><td class="num"><span class="tag tag-green">53.2%</span></td>
+          <td class="num">¥6,964</td><td class="num">¥68,500</td><td class="num">8</td>
+        </tr>
+        <tr>
+          <td>2026年4月</td><td class="num">¥423,350</td><td class="num">¥412,200</td><td class="num" style="color:var(--red)">¥9,650</td><td class="num" style="color:var(--red)">¥1,500</td>
+          <td class="num">64</td><td class="num">30</td><td class="num">34</td><td class="num"><span class="tag tag-green">53.1%</span></td>
+          <td class="num" style="color:var(--red)">¥6,615</td><td class="num" style="color:var(--red)">¥40,000</td><td class="num" style="color:var(--red)">6</td>
+        </tr>
+        <tr class="total-row">
+          <td>合計</td><td class="num">¥2,409,350</td><td class="num">¥2,258,300</td><td class="num">¥118,550</td><td class="num">¥32,500</td>
+          <td class="num">351</td><td class="num">225</td><td class="num">126</td><td class="num">35.9%</td>
+          <td class="num">¥6,864</td><td class="num">—</td><td class="num">—</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight ig" style="margin-top:12px">
+      <strong>11月のSSIN急落（¥199,000）は一時的</strong>
+      LUMISS開始でSSIN枠が圧迫された初月のみの現象。12月以降は¥370,000〜¥513,000に回復しており、構造的な問題ではない。再来率は1月以降40〜53%で安定推移。
+    </div>
+  </div>
+
+  <!-- タブ③：導入後 LUMISS -->
+  <div class="tab-panel" id="tab-lumiss">
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th>
+          <th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th>
+          <th class="num">客単価</th><th class="num">指名売上</th><th class="num">指名数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025年11月</td><td class="num">¥266,500</td><td class="num">¥212,600</td><td class="num">¥53,400</td><td class="num">¥500</td>
+          <td class="num">44</td><td class="num">7</td><td class="num">37</td><td class="num"><span class="tag tag-green">84.1%</span></td>
+          <td class="num">¥6,057</td><td class="num">¥162,800</td><td class="num">25</td>
+        </tr>
+        <tr>
+          <td>2025年12月</td><td class="num" style="color:var(--green);font-weight:700">¥350,300</td><td class="num">¥272,000</td><td class="num">¥71,800</td><td class="num">¥6,500</td>
+          <td class="num" style="color:var(--green);font-weight:700">63</td><td class="num">10</td><td class="num">53</td><td class="num"><span class="tag tag-green">84.1%</span></td>
+          <td class="num" style="color:var(--red)">¥5,560</td><td class="num" style="color:var(--green);font-weight:700">¥198,500</td><td class="num" style="color:var(--green);font-weight:700">35</td>
+        </tr>
+        <tr>
+          <td>2026年1月</td><td class="num">¥358,000</td><td class="num">¥231,700</td><td class="num" style="color:var(--violet);font-weight:700">¥116,300</td><td class="num">¥10,000</td>
+          <td class="num">56</td><td class="num">14</td><td class="num">42</td><td class="num"><span class="tag tag-green">75.0%</span></td>
+          <td class="num" style="color:var(--green);font-weight:700">¥6,393</td><td class="num">¥208,700</td><td class="num">30</td>
+        </tr>
+        <tr>
+          <td>2026年2月</td><td class="num">¥335,650</td><td class="num">¥291,800</td><td class="num">¥36,350</td><td class="num">¥7,500</td>
+          <td class="num">58</td><td class="num">9</td><td class="num">49</td><td class="num"><span class="tag tag-green">84.5%</span></td>
+          <td class="num">¥5,787</td><td class="num">¥152,650</td><td class="num">24</td>
+        </tr>
+        <tr>
+          <td>2026年3月</td><td class="num">¥330,000</td><td class="num">¥272,800</td><td class="num">¥52,700</td><td class="num">¥4,500</td>
+          <td class="num">56</td><td class="num">11</td><td class="num">45</td><td class="num"><span class="tag tag-green">80.4%</span></td>
+          <td class="num">¥5,893</td><td class="num">¥172,800</td><td class="num">28</td>
+        </tr>
+        <tr>
+          <td>2026年4月</td><td class="num">¥331,650</td><td class="num">¥282,900</td><td class="num">¥44,450</td><td class="num">¥4,300</td>
+          <td class="num">58</td><td class="num">9</td><td class="num">49</td><td class="num"><span class="tag tag-green">84.5%</span></td>
+          <td class="num" style="color:var(--red)">¥5,718</td><td class="num">¥175,250</td><td class="num">26</td>
+        </tr>
+        <tr class="total-row">
+          <td>合計</td><td class="num">¥1,972,100</td><td class="num">¥1,563,800</td><td class="num">¥375,000</td><td class="num">¥33,300</td>
+          <td class="num">335</td><td class="num">60</td><td class="num">275</td><td class="num">82.1%</td>
+          <td class="num">¥5,887</td><td class="num">¥1,070,700</td><td class="num">168</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight-grid" style="margin-top:12px">
+      <div class="insight ig"><strong>再来率 80%超を安定維持</strong>11月から一貫して75〜84%。既存客の信頼は厚く、リピート基盤は安定している。</div>
+      <div class="insight ia"><strong>客単価が低い（¥5,887）</strong>月によって¥5,560〜¥6,393とばらつきがある。オプション・店販の積み上げが課題。</div>
+      <div class="insight iv"><strong>1月の店販¥116,300は異常値</strong>他月は¥36,000〜71,800のところ1月のみ突出。何らかの販促があったか要確認。その後急落している。</div>
+    </div>
+  </div>
+
+  <!-- タブ④：前年ベースライン -->
+  <div class="tab-panel" id="tab-base">
+    <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead>
+        <tr>
+          <th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th>
+          <th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th>
+          <th class="num">客単価</th><th class="num">指名売上</th><th class="num">指名数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2024年11月</td><td class="num">¥482,400</td><td class="num">¥449,800</td><td class="num">¥29,100</td><td class="num">¥3,500</td>
+          <td class="num">68</td><td class="num">22</td><td class="num">46</td><td class="num"><span class="tag tag-green">67.6%</span></td>
+          <td class="num">¥7,094</td><td class="num">¥75,200</td><td class="num">10</td>
+        </tr>
+        <tr>
+          <td>2024年12月</td><td class="num" style="color:var(--green);font-weight:700">¥654,080</td><td class="num">¥594,080</td><td class="num">¥54,500</td><td class="num">¥5,500</td>
+          <td class="num" style="color:var(--green);font-weight:700">94</td><td class="num">39</td><td class="num">55</td><td class="num"><span class="tag tag-green">58.5%</span></td>
+          <td class="num">¥6,958</td><td class="num">¥147,500</td><td class="num">20</td>
+        </tr>
+        <tr>
+          <td>2025年1月</td><td class="num">¥511,800</td><td class="num">¥460,800</td><td class="num">¥44,500</td><td class="num">¥6,500</td>
+          <td class="num">72</td><td class="num">28</td><td class="num">44</td><td class="num"><span class="tag tag-green">61.1%</span></td>
+          <td class="num">¥7,108</td><td class="num">¥123,500</td><td class="num">16</td>
+        </tr>
+        <tr>
+          <td>2025年2月</td><td class="num">¥663,600</td><td class="num">¥601,600</td><td class="num">¥53,500</td><td class="num">¥8,500</td>
+          <td class="num">92</td><td class="num">35</td><td class="num">57</td><td class="num"><span class="tag tag-green">62.0%</span></td>
+          <td class="num">¥7,213</td><td class="num">¥182,300</td><td class="num">25</td>
+        </tr>
+        <tr>
+          <td>2025年3月</td><td class="num">¥644,840</td><td class="num">¥580,840</td><td class="num">¥56,500</td><td class="num">¥7,500</td>
+          <td class="num">89</td><td class="num">31</td><td class="num">58</td><td class="num"><span class="tag tag-green">65.2%</span></td>
+          <td class="num">¥7,246</td><td class="num">¥163,800</td><td class="num">22</td>
+        </tr>
+        <tr>
+          <td>2025年4月</td><td class="num">¥657,960</td><td class="num">¥594,460</td><td class="num">¥55,000</td><td class="num">¥8,500</td>
+          <td class="num">91</td><td class="num">33</td><td class="num">58</td><td class="num"><span class="tag tag-green">63.7%</span></td>
+          <td class="num">¥7,230</td><td class="num">¥158,900</td><td class="num">21</td>
+        </tr>
+        <tr class="total-row">
+          <td>合計</td><td class="num">¥3,614,680</td><td class="num">¥3,281,580</td><td class="num">¥293,100</td><td class="num">¥40,000</td>
+          <td class="num">506</td><td class="num">188</td><td class="num">318</td><td class="num">62.8%</td>
+          <td class="num">¥7,144</td><td class="num">—</td><td class="num">—</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight ia" style="margin-top:12px">
+      <strong>前年の SSIN 客単価は平均 ¥7,144 — 現在の ¥6,864 より ▼¥280</strong>
+      LUMISS 導入後も SSIN 単体の客単価は前年を下回っている。オプション・店販の比率低下が一因の可能性があり、SSIN の単価底上げが次の課題となる。
     </div>
   </div>
 </div>
 
-<!-- LUMISS導入前後 前年同月比較 -->
-<div class="card green" style="border:2px solid var(--green)">
-  <h2>LUMISS導入前後 前年同月比較 ― 結論：売上は上がっているか？</h2>
-
-  <!-- KPIハイライト -->
-  <div class="grid-3" style="margin-bottom:16px">
-    <div class="kpi-card" style="background:#ecfdf5;border:1px solid #6ee7b7">
-      <div class="kpi-label">総売上 前年同月比（6ヶ月合算）</div>
-      <div class="kpi-value" style="color:var(--green)">+21.2%</div>
-      <div class="kpi-sub" style="color:var(--green)">¥3,614,680 → ¥4,381,450（+¥766,770）</div>
-    </div>
-    <div class="kpi-card" style="background:#ecfdf5;border:1px solid #6ee7b7">
-      <div class="kpi-label">月平均売上（LUMISS導入前 → 後）</div>
-      <div class="kpi-value" style="color:var(--green)">+26.4%</div>
-      <div class="kpi-sub" style="color:var(--green)">¥577,940 → ¥730,242（+¥152,302/月）</div>
-    </div>
-    <div class="kpi-card" style="background:#ecfdf5;border:1px solid #6ee7b7">
-      <div class="kpi-label">LUMISS追加による月次貢献</div>
-      <div class="kpi-value" style="color:var(--green)">+¥328,683</div>
-      <div class="kpi-sub">LUMISS月平均 ¥328,683/月を純増</div>
-    </div>
+<!-- ───────── インサイト ───────── -->
+<div class="card section-anchor" id="sec-insight">
+  <div class="card-head">
+    <div class="card-stripe s-red"></div>
+    <h2>総合インサイト</h2>
   </div>
-
-  <!-- 月別比較テーブル -->
-  <div style="overflow-x:auto">
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">前年（SSIN only）</th>
-        <th class="num">導入後 SSIN</th>
-        <th class="num">導入後 LUMISS</th>
-        <th class="num">導入後 合算</th>
-        <th class="num">前年比 金額</th>
-        <th class="num">前年比 %</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>11月</td>
-        <td class="num">¥482,400</td>
-        <td class="num" style="color:var(--red)">¥199,000</td>
-        <td class="num">¥266,500</td>
-        <td class="num">¥465,500</td>
-        <td class="num" style="color:var(--red)">▼¥16,900</td>
-        <td class="num"><span class="badge badge-red">▼3.5%</span></td>
-      </tr>
-      <tr>
-        <td>12月</td>
-        <td class="num">¥654,080</td>
-        <td class="num">¥513,700</td>
-        <td class="num">¥350,300</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥864,000</td>
-        <td class="num" style="color:var(--green);font-weight:700">+¥209,920</td>
-        <td class="num"><span class="badge badge-green">+32.1%</span></td>
-      </tr>
-      <tr>
-        <td>1月</td>
-        <td class="num">¥511,800</td>
-        <td class="num">¥370,650</td>
-        <td class="num">¥358,000</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥728,650</td>
-        <td class="num" style="color:var(--green);font-weight:700">+¥216,850</td>
-        <td class="num"><span class="badge badge-green">+42.4%</span></td>
-      </tr>
-      <tr>
-        <td>2月</td>
-        <td class="num">¥663,600</td>
-        <td class="num">¥470,900</td>
-        <td class="num">¥335,650</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥806,550</td>
-        <td class="num" style="color:var(--green);font-weight:700">+¥142,950</td>
-        <td class="num"><span class="badge badge-green">+21.5%</span></td>
-      </tr>
-      <tr>
-        <td>3月</td>
-        <td class="num">¥644,840</td>
-        <td class="num">¥431,750</td>
-        <td class="num">¥330,000</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥761,750</td>
-        <td class="num" style="color:var(--green);font-weight:700">+¥116,910</td>
-        <td class="num"><span class="badge badge-green">+18.1%</span></td>
-      </tr>
-      <tr>
-        <td>4月</td>
-        <td class="num">¥657,960</td>
-        <td class="num">¥423,350</td>
-        <td class="num">¥331,650</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥755,000</td>
-        <td class="num" style="color:var(--green);font-weight:700">+¥97,040</td>
-        <td class="num"><span class="badge badge-green">+14.8%</span></td>
-      </tr>
-      <tr style="font-weight:700;border-top:2px solid var(--green);background:#ecfdf5">
-        <td>6ヶ月合計</td>
-        <td class="num">¥3,614,680</td>
-        <td class="num">¥2,409,350</td>
-        <td class="num">¥1,972,100</td>
-        <td class="num" style="color:var(--green)">¥4,381,450</td>
-        <td class="num" style="color:var(--green)">+¥766,770</td>
-        <td class="num"><span class="badge badge-green">+21.2%</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-
-  <!-- インサイト -->
-  <div class="grid-3" style="margin-top:16px">
-    <div class="advice-box adv-green" style="margin-bottom:0">
-      <strong>結論：このスタッフの売上は確実に上がった</strong><br>
-      LUMISS導入前の月平均¥577,940 → 導入後の合算月平均¥730,242。前年同月比でも6ヶ月中5ヶ月がプラス。LUMISS追加が直接の増収要因。
-    </div>
-    <div class="advice-box adv-blue" style="margin-bottom:0">
-      <strong>2ブランド体制で天井が上がった</strong><br>
-      SSIN単体では月¥737,000が最高値だったが、LUMISS追加後の12月は¥864,000を記録。SSIN+LUMISSの合算で既存の上限を突破できることが証明された。
-    </div>
-    <div class="advice-box adv-amber" style="margin-bottom:0">
-      <strong>11月の一時的な混乱を除けば安定成長</strong><br>
-      LUMISS開始直後の11月のみ▼3.5%。初月の慣れ不足による一時的な調整であり、12月以降は毎月前年比+14〜42%で安定。構造的な問題はない。
+  <div class="card-body">
+    <div class="insight-grid">
+      <div class="insight ig">
+        <strong>LUMISS追加で月平均 +¥152,302 の純増</strong>
+        導入前月平均¥578,000 → 導入後合算月平均¥730,000。2ブランド体制で売上の天井が上がり、前年比でも+21.2%の増収。
+      </div>
+      <div class="insight ib">
+        <strong>2ブランド体制で売上の天井が上がった</strong>
+        SSIN単体での月最高は¥737,000だったが、導入後の12月には¥864,000を記録。SSIN+LUMISSの合算で既存の上限を突破できることが証明された。
+      </div>
+      <div class="insight ia">
+        <strong>客単価が両ブランドともに低い</strong>
+        SSIN ¥6,864 / LUMISS ¥5,887。前年 SSIN 平均 ¥7,144 と比較しても低下している。オプション・回数券・店販の積み上げが次の伸びしろ。
+      </div>
+      <div class="insight ig">
+        <strong>LUMISS の再来率は圧倒的（82.1%）</strong>
+        6ヶ月通じて75〜84%を安定維持。既存客の信頼は厚く、リピート基盤は盤石。新規を増やすだけで売上は線形に伸びる状態。
+      </div>
+      <div class="insight ir">
+        <strong>SSIN の新規流入が細い（月 28〜42 名）</strong>
+        導入後の SSIN 新規は月28〜42名と、導入前（14〜34名）と比べ横ばい〜微増。HPBクーポンや集客強化で新規を増やせれば合算でさらに上積みできる。
+      </div>
+      <div class="insight iv">
+        <strong>12月・1月の高水準が再現できれば月¥800K 超は狙える</strong>
+        12月¥864K・2月¥806Kと800K超えを2回達成。この水準を安定させるには、新規獲得・アップセル（オプション/回数券）・店販の3軸が必要。
+      </div>
     </div>
   </div>
 </div>
 
-<!-- 前年ベースライン詳細（2024年11月〜2025年4月） -->
-<div class="card">
-  <h2>参照：前年ベースライン（2024年11月〜2025年4月）</h2>
-  <div style="overflow-x:auto">
-  <table>
-    <thead>
-      <tr>
-        <th>月</th>
-        <th class="num">純売上</th>
-        <th class="num">施術</th>
-        <th class="num">店販</th>
-        <th class="num">OP</th>
-        <th class="num">客数</th>
-        <th class="num">新規</th>
-        <th class="num">再来</th>
-        <th class="num">再来率</th>
-        <th class="num">客単価</th>
-        <th class="num">指名売上</th>
-        <th class="num">指名数</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2024年11月</td>
-        <td class="num">¥482,400</td>
-        <td class="num">¥449,800</td>
-        <td class="num">¥29,100</td>
-        <td class="num">¥3,500</td>
-        <td class="num">68</td>
-        <td class="num">22</td>
-        <td class="num">46</td>
-        <td class="num"><span class="badge badge-green">67.6%</span></td>
-        <td class="num">¥7,094</td>
-        <td class="num">¥75,200</td>
-        <td class="num">10</td>
-      </tr>
-      <tr>
-        <td>2024年12月</td>
-        <td class="num" style="color:var(--green);font-weight:700">¥654,080</td>
-        <td class="num">¥594,080</td>
-        <td class="num">¥54,500</td>
-        <td class="num">¥5,500</td>
-        <td class="num" style="color:var(--green);font-weight:700">94</td>
-        <td class="num">39</td>
-        <td class="num">55</td>
-        <td class="num"><span class="badge badge-green">58.5%</span></td>
-        <td class="num">¥6,958</td>
-        <td class="num">¥147,500</td>
-        <td class="num">20</td>
-      </tr>
-      <tr>
-        <td>2025年1月</td>
-        <td class="num">¥511,800</td>
-        <td class="num">¥460,800</td>
-        <td class="num">¥44,500</td>
-        <td class="num">¥6,500</td>
-        <td class="num">72</td>
-        <td class="num">28</td>
-        <td class="num">44</td>
-        <td class="num"><span class="badge badge-green">61.1%</span></td>
-        <td class="num">¥7,108</td>
-        <td class="num">¥123,500</td>
-        <td class="num">16</td>
-      </tr>
-      <tr>
-        <td>2025年2月</td>
-        <td class="num">¥663,600</td>
-        <td class="num">¥601,600</td>
-        <td class="num">¥53,500</td>
-        <td class="num">¥8,500</td>
-        <td class="num">92</td>
-        <td class="num">35</td>
-        <td class="num">57</td>
-        <td class="num"><span class="badge badge-green">62.0%</span></td>
-        <td class="num">¥7,213</td>
-        <td class="num">¥182,300</td>
-        <td class="num">25</td>
-      </tr>
-      <tr>
-        <td>2025年3月</td>
-        <td class="num">¥644,840</td>
-        <td class="num">¥580,840</td>
-        <td class="num">¥56,500</td>
-        <td class="num">¥7,500</td>
-        <td class="num">89</td>
-        <td class="num">31</td>
-        <td class="num">58</td>
-        <td class="num"><span class="badge badge-green">65.2%</span></td>
-        <td class="num">¥7,246</td>
-        <td class="num">¥163,800</td>
-        <td class="num">22</td>
-      </tr>
-      <tr>
-        <td>2025年4月</td>
-        <td class="num">¥657,960</td>
-        <td class="num">¥594,460</td>
-        <td class="num">¥55,000</td>
-        <td class="num">¥8,500</td>
-        <td class="num">91</td>
-        <td class="num">33</td>
-        <td class="num">58</td>
-        <td class="num"><span class="badge badge-green">63.7%</span></td>
-        <td class="num">¥7,230</td>
-        <td class="num">¥158,900</td>
-        <td class="num">21</td>
-      </tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
-        <td>合計</td>
-        <td class="num">¥3,614,680</td>
-        <td class="num">¥3,281,580</td>
-        <td class="num">¥293,100</td>
-        <td class="num">¥40,000</td>
-        <td class="num">506</td>
-        <td class="num">188</td>
-        <td class="num">318</td>
-        <td class="num">62.8%</td>
-        <td class="num">¥7,144</td>
-        <td class="num">—</td>
-        <td class="num">—</td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="advice-box adv-amber" style="margin-top:12px;margin-bottom:0">
-    <strong>前年のSSIN客単価は平均¥7,144 — 現在より▼¥280</strong><br>
-    LUMISS導入後のSSIN客単価¥6,864と比較すると、SSIN単体でも前年より客単価が下がっている。オプション・店販の比率低下が一因の可能性。
-  </div>
+<div style="text-align:center;color:var(--text3);font-size:11px;padding:16px 0 8px">
+  売上比較ダッシュボード — 2024/11〜2026/04 — salonboard-dashboard.vercel.app
 </div>
 
-<div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0 8px">
-  スタッフ売上データ 2024/11〜2026/04 — salonboard-dashboard.vercel.app
-</div>
+</div><!-- /wrap -->
 
-</div>
+<script>
+function switchTab(e, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
 </body>
 </html>
