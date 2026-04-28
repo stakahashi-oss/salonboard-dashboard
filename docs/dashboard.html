@@ -318,6 +318,11 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       配信結果
     </div>
+    <div class="nav-section" style="margin-top:8px">分析</div>
+    <div class="nav-item" onclick="showTab('lstep-results',this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+      Lステップ成果
+    </div>
   </div>
 </nav>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active')"></div>
@@ -954,6 +959,184 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       🕐 <strong>送信時間は各ステップで個別に設定できます。</strong>「保存」ボタンを押すと自動でGASトリガーに反映されます。
     </div>
     <div id="scenarioSteps"><div class="loading"><span class="spinner"></span>設定を読込中...</div></div>
+  </div>
+
+  <!-- ═══════ Lステップ成果 ═══════ -->
+  <div class="section" id="tab-lstep-results">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">S/L札幌 — 2026年2月導入</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text)">Lステップ 成果サマリー</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);background:var(--accent-light);color:var(--accent);padding:4px 10px;border-radius:20px;font-weight:600">データ更新: 2026-04-28</div>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="kpi-grid" style="margin-bottom:20px">
+      <div class="kpi-card line">
+        <div class="kpi-label">👥 LINE友達総数</div>
+        <div class="kpi-value">668名</div>
+        <div class="kpi-sub">S/L札幌 合計</div>
+      </div>
+      <div class="kpi-card" style="border-top:3px solid var(--accent)">
+        <div class="kpi-label">🔄 新規再来率（1ヶ月後）</div>
+        <div class="kpi-value" style="color:var(--accent)">21.1%</div>
+        <div class="kpi-sub" style="color:var(--accent)">導入前 14.7% → <strong>+6.4pt</strong></div>
+      </div>
+      <div class="kpi-card" style="border-top:3px solid var(--accent)">
+        <div class="kpi-label">📈 再来率（全体・1ヶ月後）</div>
+        <div class="kpi-value" style="color:var(--accent)">35.7%</div>
+        <div class="kpi-sub" style="color:var(--accent)">導入前 30.4% → <strong>+5.3pt</strong></div>
+      </div>
+      <div class="kpi-card" style="border-top:3px solid var(--accent)">
+        <div class="kpi-label">💰 月平均 再来客数</div>
+        <div class="kpi-value" style="color:var(--accent)">212名</div>
+        <div class="kpi-sub" style="color:var(--accent)">導入前 177名 → <strong>+35名/月</strong></div>
+      </div>
+    </div>
+
+    <!-- 再来率トレンドチャート -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header" style="margin-bottom:4px">
+        <div class="card-title">再来率 月次推移（S札幌）</div>
+        <div style="font-size:11px;color:var(--text-muted)">出所: 全店舗再来率(1ヶ月)タブ ※2026年2月が最新確定値</div>
+      </div>
+      <div style="position:relative;height:260px">
+        <canvas id="lstepReturnChart"></canvas>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:16px;height:3px;background:#1D9E75;display:inline-block;border-radius:2px"></span>再来率(全体)</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:16px;height:3px;background:#378ADD;display:inline-block;border-radius:2px"></span>新規再来率</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:16px;height:3px;background:#EF9F27;display:inline-block;border-radius:2px"></span>再来再来率</span>
+        <span style="display:flex;align-items:center;gap:5px;color:var(--accent);font-weight:600">▲ 縦線 = Lステップ導入（2026年2月）</span>
+      </div>
+    </div>
+
+    <!-- 売上 & 再来客数 棒グラフ -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="card">
+        <div class="card-header" style="margin-bottom:4px">
+          <div class="card-title">月次売上推移（S札幌）</div>
+        </div>
+        <div style="position:relative;height:200px">
+          <canvas id="lstepSalesChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="margin-bottom:4px">
+          <div class="card-title">再来客数推移（S札幌）</div>
+        </div>
+        <div style="position:relative;height:200px">
+          <canvas id="lstepRepeatChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Before / After 比較表 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 導入前後 比較</div></div>
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg)">
+              <th style="padding:8px 10px;text-align:left;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:1px solid var(--border)">指標</th>
+              <th style="padding:8px 10px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:1px solid var(--border)">導入前<br><span style="font-weight:400">25/9〜26/1 平均</span></th>
+              <th style="padding:8px 10px;text-align:right;font-weight:600;color:var(--accent);font-size:11px;border-bottom:1px solid var(--border)">導入後<br><span style="font-weight:400">26/2〜4 平均</span></th>
+              <th style="padding:8px 10px;text-align:right;font-weight:600;font-size:11px;border-bottom:1px solid var(--border)">変化</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">月次売上</td><td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)">¥1,589,000</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border)">¥1,976,000</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700;border-bottom:1px solid var(--border)">+24%</td></tr>
+            <tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">再来客数/月</td><td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)">177名</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border)">212名</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700;border-bottom:1px solid var(--border)">+35名</td></tr>
+            <tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">新規数/月</td><td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)">90名</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border)">127名</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700;border-bottom:1px solid var(--border)">+41%</td></tr>
+            <tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">新規再来率</td><td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)">14.7%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border)">21.1%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700;border-bottom:1px solid var(--border)">+6.4pt</td></tr>
+            <tr><td style="padding:8px 10px;border-bottom:1px solid var(--border)">再来再来率</td><td style="padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)">27.4%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600;border-bottom:1px solid var(--border)">37.9%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700;border-bottom:1px solid var(--border)">+10.5pt</td></tr>
+            <tr><td style="padding:8px 10px">再来率（全体）</td><td style="padding:8px 10px;text-align:right">30.4%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:600">35.7%</td><td style="padding:8px 10px;text-align:right;color:var(--accent);font-weight:700">+5.3pt</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--warn-light);border-radius:8px;font-size:11px;color:#92400e">
+          ⚠️ 再来率データは2026年2月が最新。3月・4月の確認が必要。
+        </div>
+      </div>
+
+      <!-- LINE登録率 & HPB比較 -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📱 LINE登録状況（3月来店）</div></div>
+          <div style="display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);font-size:12px">
+            <div style="flex:54.4;background:var(--line-light);padding:12px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:#16a34a">54.4%</div>
+              <div style="color:#15803d;font-weight:600">LINE登録済み</div>
+              <div style="color:#166534;margin-top:2px">341名</div>
+            </div>
+            <div style="flex:45.6;background:var(--bg);padding:12px;text-align:center">
+              <div style="font-size:18px;font-weight:700;color:var(--text-muted)">45.6%</div>
+              <div style="color:var(--text-muted);font-weight:600">LINE未登録</div>
+              <div style="color:var(--text-muted);margin-top:2px">286名</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">
+            4月来店 LINE登録率: <strong style="color:var(--accent)">62.0%</strong>（341/550名）<br>
+            非LINE客の3月→4月再来率: <strong>73.1%</strong>（209/286名）
+          </div>
+        </div>
+
+        <div class="card" style="flex:1">
+          <div class="card-header"><div class="card-title">🔍 HPB 競合比較（S札幌 4月）</div></div>
+          <table style="width:100%;font-size:12px;border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--bg)">
+                <th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:1px solid var(--border)">指標</th>
+                <th style="padding:6px 8px;text-align:right;font-weight:600;font-size:11px;border-bottom:1px solid var(--border)">S札幌</th>
+                <th style="padding:6px 8px;text-align:right;font-weight:600;font-size:11px;border-bottom:1px solid var(--border)">競合平均</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px;border-bottom:1px solid var(--border)">PV/日</td><td style="padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)">97</td><td style="padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)">99</td></tr>
+              <tr><td style="padding:6px 8px;border-bottom:1px solid var(--border)">予約CVR</td><td style="padding:6px 8px;text-align:right;color:var(--danger);font-weight:600;border-bottom:1px solid var(--border)">4.1%</td><td style="padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)">5.0%</td></tr>
+              <tr><td style="padding:6px 8px">予約単価</td><td style="padding:6px 8px;text-align:right;color:var(--danger);font-weight:600">¥4,987</td><td style="padding:6px 8px;text-align:right">¥7,108</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:8px;padding:8px;background:var(--danger-light);border-radius:8px;font-size:11px;color:var(--danger);font-weight:600">
+            単価差による機会損失: −¥220,584（4月1〜26日）
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 月次データ詳細テーブル -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 S札幌 月次データ一覧</div></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;min-width:600px">
+          <thead>
+            <tr style="background:var(--bg)">
+              <th style="padding:8px 12px;text-align:left;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">月</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">売上</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">新規</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">再来</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">総客</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">客単価</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">新規再来率</th>
+              <th style="padding:8px 12px;text-align:right;font-weight:600;color:var(--text-muted);font-size:11px;border-bottom:2px solid var(--border)">再来率(全体)</th>
+            </tr>
+          </thead>
+          <tbody id="lstepMonthlyTable">
+            <tr style="background:#fffbeb"><td colspan="8" style="padding:8px 12px;font-size:11px;color:#92400e;font-weight:600">── 導入前 ──</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)">25年9月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥1,677,745</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">100</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">152</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">252</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥6,658</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">24.2%</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">41.5%</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)">25年10月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥1,629,427</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">83</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">197</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">280</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,819</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">16.9%</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">41.4%</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)">25年11月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥1,575,092</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">95</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">189</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">284</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,546</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">18.9%</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">38.0%</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)">25年12月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥1,796,355</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">114</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">195</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">309</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,813</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">12.6%</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">26.6%</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)">26年1月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥1,265,639</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">59</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">153</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">212</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,970</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">12.6%</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">26.6%</td></tr>
+            <tr style="background:var(--accent-light)"><td colspan="8" style="padding:8px 12px;font-size:11px;color:var(--accent);font-weight:700">── Lステップ導入（2026年2月〜） ──</td></tr>
+            <tr style="background:#f0fdf4"><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">26年2月 ★導入月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600">¥1,870,713</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600">111</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">207</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600">318</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,883</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:700;color:var(--accent)">21.1%↑</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:700;color:var(--accent)">35.7%↑</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">26年3月</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">¥2,234,771</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">166</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">222</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">388</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)">¥5,760</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted)">— *</td><td style="padding:8px 12px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted)">— *</td></tr>
+            <tr><td style="padding:8px 12px">26年4月(途中)</td><td style="padding:8px 12px;text-align:right;font-weight:600">¥1,821,130</td><td style="padding:8px 12px;text-align:right">103</td><td style="padding:8px 12px;text-align:right;font-weight:600">206</td><td style="padding:8px 12px;text-align:right">309</td><td style="padding:8px 12px;text-align:right">¥5,894</td><td style="padding:8px 12px;text-align:right;color:var(--text-muted)">— *</td><td style="padding:8px 12px;text-align:right;color:var(--text-muted)">— *</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:8px 12px;font-size:11px;color:var(--text-muted)">* 3月・4月の再来率は全店舗再来率タブに未入力のため取得不可</div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════ 自動タグ設定 ═══════ -->
@@ -1749,13 +1932,123 @@ function showTab(name, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
-  const titles = {dashboard:'ホーム',counseling:'カウンセリング記録',analysis:'顧客分析','line-friends-mgmt':'友だち管理','line-broadcast':'配信','line-scenario':'シナリオ設定','line-tags':'タグ管理','auto-tag':'自動タグ設定','line-stats':'配信結果','line-talk':'トーク'};
+  const titles = {dashboard:'ホーム',counseling:'カウンセリング記録',analysis:'顧客分析','line-friends-mgmt':'友だち管理','line-broadcast':'配信','line-scenario':'シナリオ設定','line-tags':'タグ管理','auto-tag':'自動タグ設定','line-stats':'配信結果','line-talk':'トーク','lstep-results':'Lステップ成果'};
   document.querySelector('.header h1').textContent = titles[name] || '管理ダッシュボード';
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('active');
   if (name === 'stores') renderStoreCharts();
   if (name === 'line-stats') loadLineStats();
   if (name === 'line-log') loadBroadcastLog();
+  if (name === 'lstep-results') initLstepCharts();
+}
+
+// ── Lステップ成果チャート ────────────────────────────────────
+let _lstepChartsInited = false;
+function initLstepCharts() {
+  if (_lstepChartsInited) return;
+  _lstepChartsInited = true;
+
+  const months = ['25/8','25/9','25/10','25/11','25/12','26/1','26/2'];
+  const beforeIdx = 5; // 26/1 まで = 導入前
+  const introLabel = '26/2';
+
+  // 再来率トレンドチャート
+  const ctx1 = document.getElementById('lstepReturnChart').getContext('2d');
+  const returnData = {
+    全体: [28.1, 41.5, 41.4, 38.0, 26.6, 26.6, 35.7],
+    新規: [20.9, 24.2, 16.9, 18.9, 12.6, 12.6, 21.1],
+    再来: [35.4, 45.8, 37.0, 22.7, 29.7, 29.7, 37.9]
+  };
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        { label:'再来率(全体)', data: returnData['全体'], borderColor:'#1D9E75', backgroundColor:'rgba(29,158,117,.08)', tension:.35, pointRadius:4, pointBackgroundColor: months.map(m => m==='26/2'?'#1D9E75':'#fff'), pointBorderWidth:2, fill:true },
+        { label:'新規再来率',   data: returnData['新規'], borderColor:'#378ADD', backgroundColor:'transparent', tension:.35, pointRadius:4, borderDash:[4,2] },
+        { label:'再来再来率',   data: returnData['再来'], borderColor:'#EF9F27', backgroundColor:'transparent', tension:.35, pointRadius:4, borderDash:[4,2] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
+        annotation: undefined
+      },
+      scales: {
+        y: { min:0, max:60, ticks:{ callback:v=>v+'%', font:{size:11} }, grid:{color:'rgba(0,0,0,.05)'} },
+        x: { ticks:{font:{size:11}}, grid:{display:false} }
+      }
+    },
+    plugins: [{
+      id:'lstep-intro-line',
+      afterDraw(chart) {
+        const idx = chart.data.labels.indexOf('26/2');
+        if (idx < 0) return;
+        const x = chart.scales.x.getPixelForValue(idx);
+        const {top, bottom} = chart.chartArea;
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.strokeStyle = '#1D9E75';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5,3]);
+        ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#1D9E75';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillText('Lステップ導入', x+4, top+14);
+        ctx.restore();
+      }
+    }]
+  });
+
+  // 売上チャート
+  const ctx2 = document.getElementById('lstepSalesChart').getContext('2d');
+  const salesMonths = ['25/9','25/10','25/11','25/12','26/1','26/2','26/3','26/4'];
+  const salesData =   [1677745,1629427,1575092,1796355,1265639,1870713,2234771,1821130];
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: salesMonths,
+      datasets: [{
+        data: salesData,
+        backgroundColor: salesMonths.map(m => ['26/2','26/3','26/4'].includes(m) ? '#1D9E75' : '#E5E7EB'),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>'¥'+ctx.parsed.y.toLocaleString() }}},
+      scales: {
+        y: { ticks:{ callback:v=>'¥'+(v/10000)+'万', font:{size:10} }, grid:{color:'rgba(0,0,0,.05)'} },
+        x: { ticks:{font:{size:10}}, grid:{display:false} }
+      }
+    }
+  });
+
+  // 再来客数チャート
+  const ctx3 = document.getElementById('lstepRepeatChart').getContext('2d');
+  const repeatData = [152,197,189,195,153,207,222,206];
+  new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: salesMonths,
+      datasets: [{
+        data: repeatData,
+        backgroundColor: salesMonths.map(m => ['26/2','26/3','26/4'].includes(m) ? '#1D9E75' : '#E5E7EB'),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>ctx.parsed.y+'名' }}},
+      scales: {
+        y: { ticks:{ callback:v=>v+'名', font:{size:10} }, grid:{color:'rgba(0,0,0,.05)'} },
+        x: { ticks:{font:{size:10}}, grid:{display:false} }
+      }
+    }
+  });
 }
 
 // ── Reservations ────────────────────────────────────
