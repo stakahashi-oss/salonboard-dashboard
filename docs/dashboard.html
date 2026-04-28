@@ -666,7 +666,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       💡 <strong>coming-soonコンセプト</strong>：失客率を半分にするだけで売上は倍になる。お客様ごとの来店サイクルを把握し、そろそろ来店するタイミングにアプローチすることが重要です。
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card orange"><div class="kpi-label">🔁 リピーター率</div><div class="kpi-value" id="kpi-repeat-rate">-</div><div class="kpi-sub">2回以上来店の割合</div></div>
+      <div class="kpi-card orange" style="cursor:pointer" onclick="showRepeatersModal()" title="クリックでリピーター一覧を表示"><div class="kpi-label">🔁 リピーター率</div><div class="kpi-value" id="kpi-repeat-rate">-</div><div class="kpi-sub">2回以上来店 ▶ 一覧を見る</div></div>
       <div class="kpi-card red"><div class="kpi-label">⚠️ 失客リスク</div><div class="kpi-value" id="kpi-churn-risk">-</div><div class="kpi-sub">60日以上来店なし</div></div>
       <div class="kpi-card blue"><div class="kpi-label">📅 平均来店サイクル</div><div class="kpi-value" id="kpi-avg-cycle">-</div></div>
       <div class="kpi-card purple"><div class="kpi-label">👥 ユニーク顧客数</div><div class="kpi-value" id="kpi-unique-customers">-</div></div>
@@ -1019,6 +1019,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
 <script>
 // ── State ────────────────────────────────────────────
 let resData = [], lstepData = {}, lineInfo = {};
+let _repeaters = [];
 let resPage = 1;
 const PAGE_SIZE = 30;
 let currentMsgType = 'text';
@@ -1423,10 +1424,12 @@ function renderAnalysis() {
   records.forEach(r => {
     const key = r.phone || r.name;
     if (!key) return;
-    if (!byKey[key]) byKey[key] = { name: r.name, phone: r.phone, visits: [], sources: [] };
+    if (!byKey[key]) byKey[key] = { name: r.name, phone: r.phone, visits: [], visitDates: [], menus: [], stores: [], sources: [] };
     const d = r.visit_date || r.created_at;
-    if (d) byKey[key].visits.push(new Date(d));
+    if (d) { byKey[key].visits.push(new Date(d)); byKey[key].visitDates.push({ date: d, menu: r.menu, store: r.store, staff: r.staff }); }
     if (r.source) byKey[key].sources.push(r.source);
+    if (r.menu) byKey[key].menus.push(r.menu);
+    if (r.store) byKey[key].stores.push(r.store);
   });
 
   const customers = Object.values(byKey);
@@ -1452,6 +1455,20 @@ function renderAnalysis() {
     return { ...c, lastVisit, daysSince };
   }).filter(c => c.daysSince !== null && c.daysSince >= 60)
     .sort((a, b) => b.daysSince - a.daysSince);
+
+  // リピーター一覧をグローバル保存（モーダル用）
+  _repeaters = repeaters.map(c => {
+    const sorted = [...c.visits].sort((a, b) => a - b);
+    let myDays = 0, myCnt = 0;
+    for (let i = 1; i < sorted.length; i++) { myDays += (sorted[i] - sorted[i-1]) / 86400000; myCnt++; }
+    const myCycle = myCnt > 0 ? Math.round(myDays / myCnt) : null;
+    const lastVisit = sorted[sorted.length - 1];
+    const daysSince = Math.floor((today - lastVisit) / 86400000);
+    const lastRecord = c.visitDates.slice().sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    const lastMenu = lastRecord?.menu || '-';
+    const lastStore = lastRecord?.store || (c.stores[c.stores.length - 1] || '-');
+    return { name: c.name, phone: c.phone, visitCount: c.visits.length, lastVisit: lastVisit.toISOString().split('T')[0], daysSince, avgCycle: myCycle, lastMenu, lastStore };
+  }).sort((a, b) => b.visitCount - a.visitCount);
 
   // KPI更新
   document.getElementById('kpi-unique-customers').textContent = totalUnique;
@@ -1519,6 +1536,89 @@ function renderAnalysis() {
     data: { labels: Object.keys(srcMap), datasets: [{ data: Object.values(srcMap), backgroundColor: ['#6366f1','#3498db','#e67e22','#9b59b6','#e74c3c','#1abc9c','#f39c12','#2ecc71'] }] },
     options: { plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
   });
+}
+
+function showRepeatersModal() {
+  if (!_repeaters.length) {
+    alert('先に「分析」タブを開いてデータを読み込んでください');
+    return;
+  }
+  const total = _repeaters.length;
+  // 検索フィルタ付きモーダル
+  const html = `
+  <div id="repeatersModal" style="position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()">
+    <div style="background:#fff;border-radius:16px;padding:24px;max-width:760px;width:100%;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 16px 40px rgba(0,0,0,.14)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0">
+        <div>
+          <div style="font-size:17px;font-weight:700">🔁 リピーター一覧</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:2px">2回以上来店 ${total}名 — 来店回数の多い順</div>
+        </div>
+        <button onclick="document.getElementById('repeatersModal').remove()" style="background:#F3F4F6;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:#6B7280">✕ 閉じる</button>
+      </div>
+      <div style="margin-bottom:12px;flex-shrink:0">
+        <input id="repeaterSearch" type="text" placeholder="名前・電話番号・店舗で絞り込み..." oninput="filterRepeatersList()"
+          style="width:100%;padding:9px 13px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;outline:none;font-family:inherit"
+          onfocus="this.style.borderColor='#1D9E75'" onblur="this.style.borderColor='#E5E7EB'">
+      </div>
+      <div style="overflow-y:auto;flex:1">
+        <table style="width:100%;border-collapse:collapse;font-size:13px" id="repeatersTbl">
+          <thead style="position:sticky;top:0;background:#fff;z-index:1">
+            <tr style="border-bottom:1px solid #E5E7EB">
+              <th style="padding:9px 10px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">お名前</th>
+              <th style="padding:9px 10px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">電話番号</th>
+              <th style="padding:9px 10px;text-align:center;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">来店回数</th>
+              <th style="padding:9px 10px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">最終来店</th>
+              <th style="padding:9px 10px;text-align:center;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">経過</th>
+              <th style="padding:9px 10px;text-align:center;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">Avg周期</th>
+              <th style="padding:9px 10px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">直近メニュー</th>
+              <th style="padding:9px 10px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">店舗</th>
+            </tr>
+          </thead>
+          <tbody id="repeatersBody">
+            ${buildRepeaterRows(_repeaters)}
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;flex-shrink:0;font-size:12px;color:#9CA3AF;text-align:right" id="repeaterCount">表示: ${total}名</div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function buildRepeaterRows(list) {
+  if (!list.length) return '<tr><td colspan="8" style="text-align:center;padding:24px;color:#9CA3AF">該当なし</td></tr>';
+  return list.map(c => {
+    const visitColor = c.visitCount >= 10 ? '#1D9E75' : c.visitCount >= 5 ? '#378ADD' : '#374151';
+    const dayBadge = c.daysSince >= 60
+      ? `<span style="background:#FEE9E2;color:#b91c1c;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600">${c.daysSince}日</span>`
+      : c.daysSince >= 30
+      ? `<span style="background:#FEF3C7;color:#b45309;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600">${c.daysSince}日</span>`
+      : `<span style="background:#E1F5EE;color:#047857;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600">${c.daysSince}日</span>`;
+    return `<tr style="border-bottom:1px solid #F3F4F6" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background=''">
+      <td style="padding:9px 10px;font-weight:600">${safeEsc(c.name||'―')}</td>
+      <td style="padding:9px 10px;color:#6B7280;font-size:12px">${safeEsc(c.phone||'―')}</td>
+      <td style="padding:9px 10px;text-align:center">
+        <span style="font-size:16px;font-weight:700;color:${visitColor}">${c.visitCount}</span>
+        <span style="font-size:11px;color:#9CA3AF">回</span>
+      </td>
+      <td style="padding:9px 10px;white-space:nowrap;font-size:12px">${c.lastVisit}</td>
+      <td style="padding:9px 10px;text-align:center">${dayBadge}</td>
+      <td style="padding:9px 10px;text-align:center;color:#6B7280;font-size:12px">${c.avgCycle ? c.avgCycle+'日' : '―'}</td>
+      <td style="padding:9px 10px;font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${safeEsc(c.lastMenu)}</td>
+      <td style="padding:9px 10px;font-size:12px;color:#6B7280">${safeEsc(c.lastStore)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterRepeatersList() {
+  const q = document.getElementById('repeaterSearch').value.toLowerCase();
+  const filtered = q ? _repeaters.filter(c =>
+    (c.name||'').toLowerCase().includes(q) ||
+    (c.phone||'').includes(q) ||
+    (c.lastStore||'').toLowerCase().includes(q)
+  ) : _repeaters;
+  document.getElementById('repeatersBody').innerHTML = buildRepeaterRows(filtered);
+  document.getElementById('repeaterCount').textContent = `表示: ${filtered.length}名`;
 }
 
 function calcLtv() {
