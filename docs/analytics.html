@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全店舗 分析ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
+:root{
+  --primary:#d4849e;--primary-dark:#c2527a;--primary-light:#fef2f6;
+  --sidebar-bg:#2e1a24;--bg:#fffbfc;--surface:#ffffff;
+  --border:#f5e8ed;--text:#3d2530;--text-muted:#9a7080;
+  --green:#5cb88a;--green-light:#f0faf5;
+  --orange:#e8a87a;--orange-light:#fff8f2;
+  --red:#e0849a;--red-light:#fef5f7;
+  --shadow:0 4px 18px rgba(180,120,140,.09),0 2px 6px rgba(180,120,140,.05);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Zen Kaku Gothic New','Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px;}
+.sidebar{width:220px;background:var(--sidebar-bg);position:fixed;height:100vh;overflow-y:auto;z-index:100;background-image:linear-gradient(180deg,#3a2030 0%,#2e1a24 60%,#251520 100%);}
+.sidebar-logo{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
+.sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),#e8a8bc);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;}
+.sidebar-logo-text{font-size:14px;font-weight:700;color:#fff;}
+.sidebar-logo-sub{font-size:11px;color:#9a7080;margin-top:2px;}
+nav a{display:flex;align-items:center;gap:10px;padding:11px 18px;color:#d4b8c4;text-decoration:none;font-size:13px;transition:all .2s;}
+nav a:hover,nav a.active{background:rgba(212,132,158,.12);color:#fff;}
+.main{margin-left:220px;flex:1;padding:28px 32px;max-width:1400px;}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.page-title{font-size:20px;font-weight:700;}
+.page-meta{font-size:12px;color:var(--text-muted);}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.card{background:var(--surface);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.card-label{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.5px;margin-bottom:6px;}
+.card-value{font-size:22px;font-weight:700;}
+.card-sub{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.filters{display:flex;gap:8px;margin-bottom:14px;align-items:center;}
+.filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;}
+.filter-btn.active,.filter-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.search{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--text);outline:none;width:160px;}
+.table-wrap{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{padding:11px 14px;text-align:right;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.4px;border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface);z-index:1;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--primary-dark);}
+thead th:first-child{text-align:left;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:hover{background:var(--primary-light);}
+tbody td{padding:10px 14px;text-align:right;white-space:nowrap;}
+tbody td:first-child{text-align:left;}
+.store-name{font-weight:600;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;margin-left:5px;vertical-align:middle;}
+.badge-ssin{background:#fef2f6;color:var(--primary-dark);}
+.badge-most{background:#f2f7fc;color:#4a7aaa;}
+.rate-hi{color:var(--green);font-weight:700;}
+.rate-md{color:var(--orange);font-weight:600;}
+.rate-lo{color:var(--red);}
+.total-row{background:#fdf6f8!important;font-weight:700;border-top:2px solid var(--border);}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;}
+.chart-card{background:var(--surface);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.chart-title{font-size:13px;font-weight:700;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">💎</div>
+    <div class="sidebar-logo-text">SSIN STUDIO</div>
+    <div class="sidebar-logo-sub">分析ダッシュボード</div>
+  </div>
+  <nav>
+    <a href="/dashboard.html">📊 管理ダッシュボード</a>
+    <a href="/analytics.html" class="active">📈 全店舗分析</a>
+    <a href="/staff/">👥 スタッフ</a>
+    <a href="/counseling/">💬 カウンセリング</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <div class="page-title">全店舗 分析レポート</div>
+      <div class="page-meta">対象期間: 2026/04/01 〜 2026/04/28　|　生成: 2026/04/28 12:57</div>
+    </div>
+  </div>
+
+  <div class="cards" id="summary-cards"></div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all',this)">全店舗</button>
+    <button class="filter-btn" onclick="setFilter('ssin',this)">SSIN / S / L系</button>
+    <button class="filter-btn" onclick="setFilter('most',this)">most / m系</button>
+    <input class="search" id="search" placeholder="店舗名を絞り込み…" oninput="renderTable()">
+  </div>
+
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th onclick="sortBy('店舗')">店舗</th>
+          <th onclick="sortBy('来店人数')">来店</th>
+          <th onclick="sortBy('新規客数')">新規</th>
+          <th onclick="sortBy('再来客数')">再来</th>
+          <th onclick="sortBy('総売上')">総売上</th>
+          <th onclick="sortBy('新規単価')">新規単価</th>
+          <th onclick="sortBy('再来単価')">再来単価</th>
+          <th onclick="sortBy('新規再来率_30日')">新規再来率<br><small style="font-weight:400">30日</small></th>
+          <th onclick="sortBy('新規再来率_60日')">60日</th>
+          <th onclick="sortBy('再来継続率_30日')">再来継続率<br><small style="font-weight:400">30日</small></th>
+          <th onclick="sortBy('再来継続率_60日')">60日</th>
+          <th onclick="sortBy('セット比率_全体')">セット率</th>
+          <th onclick="sortBy('総施術分数')">施術分数</th>
+        </tr>
+      </thead>
+      <tbody id="store-rows"></tbody>
+    </table>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <div class="chart-title">店舗別 総売上</div>
+      <canvas id="chart-sales" height="280"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">店舗別 新規再来率（30日）</div>
+      <canvas id="chart-repeat" height="280"></canvas>
+    </div>
+  </div>
+</main>
+
+<script>
+const DATA = [{"店舗": "SSIN京都", "来店人数": 120, "新規客数": 45, "再来客数": 75, "総売上": 980000, "新規単価": 7800, "再来単価": 8200, "新規再来率_30日": 38.5, "新規再来率_60日": 52.1, "再来継続率_30日": 62.0, "再来継続率_60日": 74.3, "セット比率_全体": 44.2, "総施術分数": 5400}, {"店舗": "SSIN新越谷", "来店人数": 95, "新規客数": 38, "再来客数": 57, "総売上": 840000, "新規単価": 8100, "再来単価": 8500, "新規再来率_30日": 42.1, "新規再来率_60日": 55.8, "再来継続率_30日": 58.9, "再来継続率_60日": 70.2, "セット比率_全体": 39.5, "総施術分数": 4900}, {"店舗": "most武蔵小杉", "来店人数": 88, "新規客数": 30, "再来客数": 58, "総売上": 810000, "新規単価": 9200, "再来単価": 9600, "新規再来率_30日": 21.3, "新規再来率_60日": 33.7, "再来継続率_30日": 37.8, "再来継続率_60日": 51.2, "セット比率_全体": 28.1, "総施術分数": 5120}, {"店舗": "most調布", "来店人数": 72, "新規客数": 22, "再来客数": 50, "総売上": 690000, "新規単価": 9100, "再来単価": 9400, "新規再来率_30日": 18.2, "新規再来率_60日": 28.5, "再来継続率_30日": 32.0, "再来継続率_60日": 46.0, "セット比率_全体": 22.5, "総施術分数": 4350}, {"店舗": "S札幌", "来店人数": 102, "新規客数": 40, "再来客数": 62, "総売上": 750000, "新規単価": 7200, "再来単価": 7800, "新規再来率_30日": 45.0, "新規再来率_60日": 60.5, "再来継続率_30日": 68.5, "再来継続率_60日": 79.1, "セット比率_全体": 51.0, "総施術分数": 4800}, {"店舗": "m下北沢", "来店人数": 65, "新規客数": 20, "再来客数": 45, "総売上": 620000, "新規単価": 9500, "再来単価": 9800, "新規再来率_30日": 15.0, "新規再来率_60日": 24.5, "再来継続率_30日": 30.0, "再来継続率_60日": 42.0, "セット比率_全体": 20.0, "総施術分数": 3900}];
+let currentFilter = 'all';
+let sortKey = '総売上';
+let sortAsc = false;
+
+function isMost(n) { return /^(most|m)/i.test(n); }
+function fmt(v)    { return (v == null || v === '') ? '—' : v; }
+function fmtY(v)   { return (v == null || v === '') ? '—' : '¥' + Number(v).toLocaleString(); }
+function fmtR(v)   { return (v == null || v === '' || isNaN(v)) ? '—' : Number(v).toFixed(1) + '%'; }
+function rc(v,hi,md) {
+  if (v == null || isNaN(v)) return '';
+  return v >= hi ? 'rate-hi' : v >= md ? 'rate-md' : 'rate-lo';
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(); renderCharts();
+}
+
+function sortBy(k) {
+  if (sortKey === k) sortAsc = !sortAsc;
+  else { sortKey = k; sortAsc = false; }
+  renderTable();
+}
+
+function filtered() {
+  const q = (document.getElementById('search')?.value || '').toLowerCase();
+  return DATA
+    .filter(r => currentFilter === 'all' ? true : currentFilter === 'most' ? isMost(r['店舗']||'') : !isMost(r['店舗']||''))
+    .filter(r => !q || (r['店舗']||'').toLowerCase().includes(q))
+    .sort((a,b) => {
+      const av = a[sortKey], bv = b[sortKey];
+      const an = parseFloat(av), bn = parseFloat(bv);
+      const cmp = isNaN(an) ? String(av).localeCompare(String(bv)) : an - bn;
+      return sortAsc ? cmp : -cmp;
+    });
+}
+
+function renderTable() {
+  const rows = filtered();
+  const tbody = document.getElementById('store-rows');
+  tbody.innerHTML = '';
+  let ts=0,tv=0,tn=0,tr_=0;
+
+  rows.forEach(r => {
+    const name = r['店舗'] || '';
+    const badge = isMost(name)
+      ? '<span class="badge badge-most">most</span>'
+      : '<span class="badge badge-ssin">SSIN</span>';
+    const nr30 = r['新規再来率_30日'], nr60 = r['新規再来率_60日'];
+    const rc30 = r['再来継続率_30日'], rc60 = r['再来継続率_60日'];
+    const sr   = r['セット比率_全体'];
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="store-name">${name}${badge}</td>
+      <td>${fmt(r['来店人数'])}</td>
+      <td>${fmt(r['新規客数'])}</td>
+      <td>${fmt(r['再来客数'])}</td>
+      <td>${fmtY(r['総売上'])}</td>
+      <td>${fmtY(r['新規単価'])}</td>
+      <td>${fmtY(r['再来単価'])}</td>
+      <td class="${rc(nr30,40,25)}">${fmtR(nr30)}</td>
+      <td class="${rc(nr60,50,35)}">${fmtR(nr60)}</td>
+      <td class="${rc(rc30,60,40)}">${fmtR(rc30)}</td>
+      <td class="${rc(rc60,70,50)}">${fmtR(rc60)}</td>
+      <td class="${rc(sr,40,25)}">${fmtR(sr)}</td>
+      <td>${fmt(r['総施術分数'])}分</td>
+    `;
+    tbody.appendChild(tr);
+    ts += Number(r['総売上']||0);
+    tv += Number(r['来店人数']||0);
+    tn += Number(r['新規客数']||0);
+    tr_ += Number(r['再来客数']||0);
+  });
+
+  const foot = document.createElement('tr');
+  foot.className = 'total-row';
+  foot.innerHTML = `<td>合計（${rows.length}店）</td><td>${tv}</td><td>${tn}</td><td>${tr_}</td><td>${fmtY(ts)}</td><td colspan="8"></td>`;
+  tbody.appendChild(foot);
+}
+
+function renderCards() {
+  const d = DATA;
+  const ts = d.reduce((s,r)=>s+Number(r['総売上']||0),0);
+  const tv = d.reduce((s,r)=>s+Number(r['来店人数']||0),0);
+  const avgNR = (d.reduce((s,r)=>s+Number(r['新規再来率_30日']||0),0)/Math.max(d.length,1)).toFixed(1);
+  const avgRC = (d.reduce((s,r)=>s+Number(r['再来継続率_30日']||0),0)/Math.max(d.length,1)).toFixed(1);
+  document.getElementById('summary-cards').innerHTML = `
+    <div class="card"><div class="card-label">総売上（全店）</div><div class="card-value" style="color:var(--primary-dark)">¥${ts.toLocaleString()}</div><div class="card-sub">${d.length}店舗合計</div></div>
+    <div class="card"><div class="card-label">総来店人数</div><div class="card-value">${tv.toLocaleString()}</div><div class="card-sub">名</div></div>
+    <div class="card"><div class="card-label">新規再来率（30日）</div><div class="card-value" style="color:var(--green)">${avgNR}%</div><div class="card-sub">全店平均</div></div>
+    <div class="card"><div class="card-label">再来継続率（30日）</div><div class="card-value" style="color:var(--orange)">${avgRC}%</div><div class="card-sub">全店平均</div></div>
+  `;
+}
+
+let salesChart, repeatChart;
+function renderCharts() {
+  const d = filtered();
+  const labels = d.map(r=>r['店舗']);
+  const colors = d.map(r=>isMost(r['店舗']||'')?'rgba(144,180,216,.8)':'rgba(212,132,158,.8)');
+  if (salesChart)  salesChart.destroy();
+  if (repeatChart) repeatChart.destroy();
+  salesChart = new Chart(document.getElementById('chart-sales'),{
+    type:'bar',
+    data:{labels,datasets:[{data:d.map(r=>Number(r['総売上']||0)),backgroundColor:colors,borderRadius:6}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'¥'+(v/10000).toFixed(0)+'万'}},x:{ticks:{font:{size:10}}}}}
+  });
+  repeatChart = new Chart(document.getElementById('chart-repeat'),{
+    type:'bar',
+    data:{labels,datasets:[{data:d.map(r=>Number(r['新規再来率_30日']||0)),backgroundColor:colors,borderRadius:6}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{font:{size:10}}}}}
+  });
+}
+
+renderCards();
+renderTable();
+renderCharts();
+</script>
+</body>
+</html>
