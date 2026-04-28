@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>S郡山 高沢 売上データ 2025/05〜2026/04</title>
+<style>
+:root{
+  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e4e9f2;
+  --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
+  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;padding:24px;min-height:100vh}
+.container{max-width:1300px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.header .sub{color:var(--text2);font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
+.badge-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.badge-violet{background:var(--violet-bg);color:var(--violet);border-color:var(--violet-border)}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--card);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.kpi-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text)}
+.kpi-sub{color:var(--text2);font-size:11px;margin-top:4px}
+.kpi-good{border-left:3px solid var(--green)}
+.kpi-bad{border-left:3px solid var(--red)}
+.kpi-warn{border-left:3px solid var(--amber)}
+.kpi-blue{border-left:3px solid var(--blue)}
+.card{background:var(--card);padding:20px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:16px}
+.card h2{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card h2::before{content:"";width:4px;height:16px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.card.red h2::before{background:var(--red)}
+.card.amber h2::before{background:var(--amber)}
+.card.green h2::before{background:var(--green)}
+.card.violet h2::before{background:var(--violet)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:left;padding:8px 6px;color:var(--text3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#f8faff;white-space:nowrap}
+tbody td{padding:8px 6px;border-bottom:1px solid var(--border);color:var(--text)}
+tbody tr:hover{background:#fafbff}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{display:inline-block;height:6px;border-radius:3px;background:#e4e9f2;width:50px;position:relative;vertical-align:middle;margin-right:4px}
+.bar-fill{position:absolute;height:100%;border-radius:3px;left:0;top:0}
+.bar-green{background:var(--green)}.bar-amber{background:var(--amber)}.bar-red{background:var(--red)}.bar-blue{background:var(--blue)}
+.divider-label{padding:6px 8px;font-size:11px;font-weight:700;color:#fff;border-radius:var(--r-sm);display:inline-block;margin:16px 0 8px}
+.advice-box{padding:10px 14px;border-radius:var(--r-sm);font-size:12px;border-left:3px solid;margin-bottom:8px;line-height:1.7}
+.adv-blue{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
+.adv-green{background:var(--green-bg);border-color:var(--green);color:#064e3b}
+.adv-amber{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
+.adv-red{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div>
+    <h1>S郡山 高沢 売上データ</h1>
+    <div class="sub" style="margin-top:4px">2025年5月〜2026年4月（全12ヶ月）/ まつエク導入前後の全期間比較</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <span class="badge badge-amber">まつエク前: 2025年5〜10月（眉毛のみ）</span>
+      <span class="badge badge-blue">まつエク後: 2025年11月〜（眉毛 + まつエク）</span>
+    </div>
+  </div>
+</div>
+
+<!-- KPI比較 -->
+<div class="kpi-row">
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">まつエク前 月平均売上</div>
+    <div class="kpi-val">¥578,000</div>
+    <div class="kpi-sub">2025年5〜10月（眉毛のみ）</div>
+  </div>
+  <div class="kpi kpi-blue">
+    <div class="kpi-label">まつエク後 月合算平均</div>
+    <div class="kpi-val">¥730,000</div>
+    <div class="kpi-sub">2025年11月〜2026年4月</div>
+  </div>
+  <div class="kpi kpi-good">
+    <div class="kpi-label">まつエク追加による増加</div>
+    <div class="kpi-val">+¥152,000</div>
+    <div class="kpi-sub">月平均 +26%</div>
+  </div>
+  <div class="kpi kpi-bad">
+    <div class="kpi-label">まつエク後 客単価（4月）</div>
+    <div class="kpi-val">¥5,718</div>
+    <div class="kpi-sub">前 平均¥5,989 より低い</div>
+  </div>
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">売上天井（まつエク後）</div>
+    <div class="kpi-val">¥864,000</div>
+    <div class="kpi-sub">2025年12月（眉+まつエク合算）</div>
+  </div>
+</div>
+
+<!-- まつエク前後 合算推移テーブル -->
+<div class="card">
+  <h2>まつエク前後 月次合算推移</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>月</th>
+        <th class="num">眉毛売上</th>
+        <th class="num">まつエク売上</th>
+        <th class="num">合算売上</th>
+        <th class="num">前年同月比</th>
+        <th class="num">眉毛客数</th>
+        <th class="num">まつエク客数</th>
+        <th class="num">合算客単価</th>
+        <th>状態</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#fffbeb">
+        <td>2025年5月</td>
+        <td class="num">¥528,120</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num"><strong>¥528,120</strong></td>
+        <td class="num">—</td>
+        <td class="num">89</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num">¥5,934</td>
+        <td><span class="badge badge-amber">まつエク前</span></td>
+      </tr>
+      <tr style="background:#fffbeb">
+        <td>2025年6月</td>
+        <td class="num">¥700,820</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num"><strong>¥700,820</strong></td>
+        <td class="num">—</td>
+        <td class="num">115</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num">¥6,094</td>
+        <td><span class="badge badge-amber">まつエク前</span></td>
+      </tr>
+      <tr style="background:#fffbeb">
+        <td>2025年7月</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥737,100</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num" style="color:var(--green);font-weight:700"><strong>¥737,100</strong></td>
+        <td class="num">—</td>
+        <td class="num">117</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num">¥6,300</td>
+        <td><span class="badge badge-amber">まつエク前・最高月</span></td>
+      </tr>
+      <tr style="background:#fffbeb">
+        <td>2025年8月</td>
+        <td class="num" style="color:var(--red)">¥462,500</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num" style="color:var(--red)"><strong>¥462,500</strong></td>
+        <td class="num">—</td>
+        <td class="num">91</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num" style="color:var(--red)">¥5,082</td>
+        <td><span class="badge badge-red">まつエク前・最低月</span></td>
+      </tr>
+      <tr style="background:#fffbeb">
+        <td>2025年9月</td>
+        <td class="num">¥511,600</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num"><strong>¥511,600</strong></td>
+        <td class="num">—</td>
+        <td class="num">80</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num">¥6,395</td>
+        <td><span class="badge badge-amber">まつエク前</span></td>
+      </tr>
+      <tr style="background:#fffbeb">
+        <td>2025年10月</td>
+        <td class="num">¥527,500</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num"><strong>¥527,500</strong></td>
+        <td class="num">—</td>
+        <td class="num">87</td>
+        <td class="num" style="color:var(--text3)">—</td>
+        <td class="num">¥6,063</td>
+        <td><span class="badge badge-amber">まつエク前</span></td>
+      </tr>
+      <tr style="border-top:2px solid var(--amber);font-weight:700;background:#fffbeb">
+        <td>前期 合計</td>
+        <td class="num">¥3,467,640</td>
+        <td class="num">—</td>
+        <td class="num">¥3,467,640</td>
+        <td class="num">—</td>
+        <td class="num">579</td>
+        <td class="num">—</td>
+        <td class="num">¥5,989</td>
+        <td></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2025年11月</td>
+        <td class="num">¥199,000</td>
+        <td class="num">¥266,500</td>
+        <td class="num"><strong>¥465,500</strong></td>
+        <td class="num" style="color:var(--red)">▼¥62,620<br><span style="font-size:10px">vs 5月</span></td>
+        <td class="num">29</td>
+        <td class="num">44</td>
+        <td class="num">¥6,385</td>
+        <td><span class="badge badge-blue">まつエク開始</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2025年12月</td>
+        <td class="num">¥513,700</td>
+        <td class="num">¥350,300</td>
+        <td class="num" style="color:var(--green);font-weight:700"><strong>¥864,000</strong></td>
+        <td class="num" style="color:var(--green)">▲¥163,180<br><span style="font-size:10px">vs 6月</span></td>
+        <td class="num">75</td>
+        <td class="num">63</td>
+        <td class="num">¥6,231</td>
+        <td><span class="badge badge-green">全期間最高</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2026年1月</td>
+        <td class="num">¥370,650</td>
+        <td class="num">¥358,000</td>
+        <td class="num"><strong>¥728,650</strong></td>
+        <td class="num" style="color:var(--red)">▼¥8,450<br><span style="font-size:10px">vs 7月</span></td>
+        <td class="num">52</td>
+        <td class="num">56</td>
+        <td class="num">¥6,756</td>
+        <td><span class="badge badge-blue">まつエク後</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2026年2月</td>
+        <td class="num">¥470,900</td>
+        <td class="num">¥335,650</td>
+        <td class="num"><strong>¥806,550</strong></td>
+        <td class="num" style="color:var(--green)">▲¥343,050<br><span style="font-size:10px">vs 8月</span></td>
+        <td class="num">69</td>
+        <td class="num">58</td>
+        <td class="num">¥6,283</td>
+        <td><span class="badge badge-blue">まつエク後</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2026年3月</td>
+        <td class="num">¥431,750</td>
+        <td class="num">¥330,000</td>
+        <td class="num"><strong>¥761,750</strong></td>
+        <td class="num" style="color:var(--green)">▲¥250,150<br><span style="font-size:10px">vs 9月</span></td>
+        <td class="num">62</td>
+        <td class="num">56</td>
+        <td class="num">¥6,421</td>
+        <td><span class="badge badge-blue">まつエク後</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td>2026年4月</td>
+        <td class="num">¥423,350</td>
+        <td class="num">¥331,650</td>
+        <td class="num"><strong>¥755,000</strong></td>
+        <td class="num" style="color:var(--green)">▲¥227,500<br><span style="font-size:10px">vs 10月</span></td>
+        <td class="num">64</td>
+        <td class="num">58</td>
+        <td class="num">¥6,148</td>
+        <td><span class="badge badge-blue">まつエク後</span></td>
+      </tr>
+      <tr style="border-top:2px solid var(--blue);font-weight:700;background:#eff6ff">
+        <td>後期 合計</td>
+        <td class="num">¥2,409,350</td>
+        <td class="num">¥1,972,100</td>
+        <td class="num">¥4,381,450</td>
+        <td class="num">—</td>
+        <td class="num">351</td>
+        <td class="num">335</td>
+        <td class="num">¥6,371</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- まつエク前 詳細 -->
+<div class="card amber">
+  <h2>まつエク前（2025年5〜10月）— 眉毛のみ 詳細</h2>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>月</th>
+        <th class="num">純売上</th>
+        <th class="num">施術</th>
+        <th class="num">店販</th>
+        <th class="num">OP</th>
+        <th class="num">客数</th>
+        <th class="num">新規</th>
+        <th class="num">再来</th>
+        <th class="num">再来率</th>
+        <th class="num">客単価</th>
+        <th class="num">指名売上</th>
+        <th class="num">指名数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025年5月</td>
+        <td class="num">¥528,120</td>
+        <td class="num">¥485,760</td>
+        <td class="num">¥38,360</td>
+        <td class="num">¥4,000</td>
+        <td class="num">89</td>
+        <td class="num">22</td>
+        <td class="num">67</td>
+        <td class="num"><span class="badge badge-green">75.3%</span></td>
+        <td class="num">¥5,934</td>
+        <td class="num">¥130,020</td>
+        <td class="num">18</td>
+      </tr>
+      <tr>
+        <td>2025年6月</td>
+        <td class="num">¥700,820</td>
+        <td class="num">¥638,720</td>
+        <td class="num">¥52,600</td>
+        <td class="num">¥9,500</td>
+        <td class="num">115</td>
+        <td class="num">34</td>
+        <td class="num">81</td>
+        <td class="num"><span class="badge badge-green">70.4%</span></td>
+        <td class="num">¥6,094</td>
+        <td class="num">¥164,580</td>
+        <td class="num">28</td>
+      </tr>
+      <tr>
+        <td>2025年7月</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥737,100</td>
+        <td class="num">¥693,700</td>
+        <td class="num">¥34,900</td>
+        <td class="num">¥8,500</td>
+        <td class="num" style="font-weight:700">117</td>
+        <td class="num">25</td>
+        <td class="num">92</td>
+        <td class="num"><span class="badge badge-green">78.6%</span></td>
+        <td class="num" style="color:var(--green);font-weight:700">¥6,300</td>
+        <td class="num">¥183,400</td>
+        <td class="num">27</td>
+      </tr>
+      <tr>
+        <td>2025年8月</td>
+        <td class="num" style="color:var(--red)">¥462,500</td>
+        <td class="num">¥453,100</td>
+        <td class="num" style="color:var(--red)">¥6,400</td>
+        <td class="num">¥3,000</td>
+        <td class="num">91</td>
+        <td class="num">14</td>
+        <td class="num">77</td>
+        <td class="num"><span class="badge badge-green">84.6%</span></td>
+        <td class="num" style="color:var(--red)">¥5,082</td>
+        <td class="num" style="color:var(--red)">¥98,400</td>
+        <td class="num">27</td>
+      </tr>
+      <tr>
+        <td>2025年9月</td>
+        <td class="num">¥511,600</td>
+        <td class="num">¥450,700</td>
+        <td class="num">¥58,900</td>
+        <td class="num">¥2,000</td>
+        <td class="num">80</td>
+        <td class="num">14</td>
+        <td class="num">66</td>
+        <td class="num"><span class="badge badge-green">82.5%</span></td>
+        <td class="num">¥6,395</td>
+        <td class="num">¥145,260</td>
+        <td class="num">21</td>
+      </tr>
+      <tr>
+        <td>2025年10月</td>
+        <td class="num">¥527,500</td>
+        <td class="num">¥431,100</td>
+        <td class="num" style="color:var(--violet);font-weight:700">¥90,900</td>
+        <td class="num">¥5,500</td>
+        <td class="num">87</td>
+        <td class="num">10</td>
+        <td class="num">77</td>
+        <td class="num"><span class="badge badge-green">88.5%</span></td>
+        <td class="num">¥6,063</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥219,800</td>
+        <td class="num" style="color:var(--green);font-weight:700">36</td>
+      </tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
+        <td>合計</td>
+        <td class="num">¥3,467,640</td>
+        <td class="num">¥3,153,080</td>
+        <td class="num">¥282,060</td>
+        <td class="num">¥32,500</td>
+        <td class="num">579</td>
+        <td class="num">119</td>
+        <td class="num">460</td>
+        <td class="num">79.4%</td>
+        <td class="num">¥5,989</td>
+        <td class="num">¥941,460</td>
+        <td class="num">157</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid-3" style="margin-top:12px">
+    <div class="advice-box adv-amber" style="margin-bottom:0">
+      <strong>7月が眉毛単体の最高売上</strong><br>
+      ¥737,100・客117名。この水準を超えるにはまつエクとの合算が必要。
+    </div>
+    <div class="advice-box adv-red" style="margin-bottom:0">
+      <strong>8月の急落</strong><br>
+      7月¥737,100 → 8月¥462,500（▼¥274,600）。客単価¥5,082と全期間最低。夏の閑散期+新規減少が重なっている。
+    </div>
+    <div class="advice-box adv-green" style="margin-bottom:0">
+      <strong>10月に指名が急伸</strong><br>
+      指名数36件・指名売上¥219,800と全期間最高。このタイミングでまつエクを追加したのは正解。
+    </div>
+  </div>
+</div>
+
+<!-- まつエク後 眉毛 -->
+<div class="card">
+  <h2>まつエク後（2025年11月〜2026年4月）— 眉毛</h2>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>月</th>
+        <th class="num">純売上</th>
+        <th class="num">施術</th>
+        <th class="num">店販</th>
+        <th class="num">OP</th>
+        <th class="num">客数</th>
+        <th class="num">新規</th>
+        <th class="num">再来</th>
+        <th class="num">再来率</th>
+        <th class="num">客単価</th>
+        <th class="num">指名売上</th>
+        <th class="num">指名数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025年11月</td>
+        <td class="num" style="color:var(--red)">¥199,000</td>
+        <td class="num">¥178,900</td>
+        <td class="num">¥20,100</td>
+        <td class="num">¥0</td>
+        <td class="num" style="color:var(--red)">29</td>
+        <td class="num">29</td>
+        <td class="num">0</td>
+        <td class="num"><span class="badge badge-red">0%</span></td>
+        <td class="num">¥6,862</td>
+        <td class="num">¥9,700</td>
+        <td class="num">1</td>
+      </tr>
+      <tr>
+        <td>2025年12月</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥513,700</td>
+        <td class="num">¥469,000</td>
+        <td class="num">¥32,700</td>
+        <td class="num">¥12,000</td>
+        <td class="num" style="color:var(--green);font-weight:700">75</td>
+        <td class="num">67</td>
+        <td class="num">8</td>
+        <td class="num"><span class="badge badge-red">10.7%</span></td>
+        <td class="num">¥6,849</td>
+        <td class="num">¥22,400</td>
+        <td class="num">3</td>
+      </tr>
+      <tr>
+        <td>2026年1月</td>
+        <td class="num">¥370,650</td>
+        <td class="num">¥349,600</td>
+        <td class="num">¥15,050</td>
+        <td class="num">¥6,000</td>
+        <td class="num">52</td>
+        <td class="num">28</td>
+        <td class="num">24</td>
+        <td class="num"><span class="badge badge-amber">46.2%</span></td>
+        <td class="num" style="color:var(--green);font-weight:700">¥7,128</td>
+        <td class="num">¥56,500</td>
+        <td class="num">7</td>
+      </tr>
+      <tr>
+        <td>2026年2月</td>
+        <td class="num">¥470,900</td>
+        <td class="num">¥436,800</td>
+        <td class="num">¥25,100</td>
+        <td class="num">¥9,000</td>
+        <td class="num">69</td>
+        <td class="num">42</td>
+        <td class="num">27</td>
+        <td class="num"><span class="badge badge-amber">39.1%</span></td>
+        <td class="num">¥6,825</td>
+        <td class="num">¥53,700</td>
+        <td class="num">8</td>
+      </tr>
+      <tr>
+        <td>2026年3月</td>
+        <td class="num">¥431,750</td>
+        <td class="num">¥411,800</td>
+        <td class="num">¥15,950</td>
+        <td class="num">¥4,000</td>
+        <td class="num">62</td>
+        <td class="num">29</td>
+        <td class="num">33</td>
+        <td class="num"><span class="badge badge-green">53.2%</span></td>
+        <td class="num">¥6,964</td>
+        <td class="num">¥68,500</td>
+        <td class="num">8</td>
+      </tr>
+      <tr style="background:#fff1f2">
+        <td><strong>2026年4月</strong></td>
+        <td class="num"><strong>¥423,350</strong></td>
+        <td class="num">¥412,200</td>
+        <td class="num" style="color:var(--red)">¥9,650 ↓</td>
+        <td class="num" style="color:var(--red)">¥1,500 ↓</td>
+        <td class="num"><strong>64</strong></td>
+        <td class="num">30</td>
+        <td class="num">34</td>
+        <td class="num"><span class="badge badge-green">53.1%</span></td>
+        <td class="num" style="color:var(--red)">¥6,615 ↓</td>
+        <td class="num" style="color:var(--red)">¥40,000 ↓</td>
+        <td class="num" style="color:var(--red)">6 ↓</td>
+      </tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
+        <td>合計</td>
+        <td class="num">¥2,409,350</td>
+        <td class="num">¥2,258,300</td>
+        <td class="num">¥118,550</td>
+        <td class="num">¥32,500</td>
+        <td class="num">351</td>
+        <td class="num">225</td>
+        <td class="num">126</td>
+        <td class="num">35.9%</td>
+        <td class="num">¥6,864</td>
+        <td class="num">—</td>
+        <td class="num">—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="advice-box adv-red" style="margin-top:12px">
+    <strong>11月の眉毛売上急落（¥199,000）は構造的な問題</strong><br>
+    まつエク前の眉毛最低月は8月の¥462,500。それと比べても11月の¥199,000は異常値。まつエク開始で眉毛枠が圧迫された可能性が高い。12月以降は¥370,000〜¥513,000に回復しているが、以前の月¥500,000〜737,000には届いていない。
+  </div>
+</div>
+
+<!-- まつエク後 まつエク -->
+<div class="card">
+  <h2>まつエク後（2025年11月〜2026年4月）— まつエク</h2>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr>
+        <th>月</th>
+        <th class="num">純売上</th>
+        <th class="num">施術</th>
+        <th class="num">店販</th>
+        <th class="num">OP</th>
+        <th class="num">客数</th>
+        <th class="num">新規</th>
+        <th class="num">再来</th>
+        <th class="num">再来率</th>
+        <th class="num">客単価</th>
+        <th class="num">指名売上</th>
+        <th class="num">指名数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025年11月</td>
+        <td class="num">¥266,500</td>
+        <td class="num">¥212,600</td>
+        <td class="num">¥53,400</td>
+        <td class="num">¥500</td>
+        <td class="num">44</td>
+        <td class="num">7</td>
+        <td class="num">37</td>
+        <td class="num"><span class="badge badge-green">84.1%</span></td>
+        <td class="num">¥6,057</td>
+        <td class="num">¥162,800</td>
+        <td class="num">25</td>
+      </tr>
+      <tr>
+        <td>2025年12月</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥350,300</td>
+        <td class="num">¥272,000</td>
+        <td class="num">¥71,800</td>
+        <td class="num">¥6,500</td>
+        <td class="num" style="color:var(--green);font-weight:700">63</td>
+        <td class="num">10</td>
+        <td class="num">53</td>
+        <td class="num"><span class="badge badge-green">84.1%</span></td>
+        <td class="num" style="color:var(--red)">¥5,560</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥198,500</td>
+        <td class="num" style="color:var(--green);font-weight:700">35</td>
+      </tr>
+      <tr>
+        <td>2026年1月</td>
+        <td class="num">¥358,000</td>
+        <td class="num">¥231,700</td>
+        <td class="num" style="color:var(--violet);font-weight:700">¥116,300</td>
+        <td class="num">¥10,000</td>
+        <td class="num">56</td>
+        <td class="num">14</td>
+        <td class="num">42</td>
+        <td class="num"><span class="badge badge-green">75.0%</span></td>
+        <td class="num" style="color:var(--green);font-weight:700">¥6,393</td>
+        <td class="num">¥208,700</td>
+        <td class="num">30</td>
+      </tr>
+      <tr>
+        <td>2026年2月</td>
+        <td class="num">¥335,650</td>
+        <td class="num">¥291,800</td>
+        <td class="num">¥36,350</td>
+        <td class="num">¥7,500</td>
+        <td class="num">58</td>
+        <td class="num">9</td>
+        <td class="num">49</td>
+        <td class="num"><span class="badge badge-green">84.5%</span></td>
+        <td class="num">¥5,787</td>
+        <td class="num">¥152,650</td>
+        <td class="num">24</td>
+      </tr>
+      <tr>
+        <td>2026年3月</td>
+        <td class="num">¥330,000</td>
+        <td class="num">¥272,800</td>
+        <td class="num">¥52,700</td>
+        <td class="num">¥4,500</td>
+        <td class="num">56</td>
+        <td class="num">11</td>
+        <td class="num">45</td>
+        <td class="num"><span class="badge badge-green">80.4%</span></td>
+        <td class="num">¥5,893</td>
+        <td class="num">¥172,800</td>
+        <td class="num">28</td>
+      </tr>
+      <tr>
+        <td>2026年4月</td>
+        <td class="num">¥331,650</td>
+        <td class="num">¥282,900</td>
+        <td class="num">¥44,450</td>
+        <td class="num">¥4,300</td>
+        <td class="num">58</td>
+        <td class="num">9</td>
+        <td class="num">49</td>
+        <td class="num"><span class="badge badge-green">84.5%</span></td>
+        <td class="num" style="color:var(--red)">¥5,718</td>
+        <td class="num">¥175,250</td>
+        <td class="num">26</td>
+      </tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border);background:#f8faff">
+        <td>合計</td>
+        <td class="num">¥1,972,100</td>
+        <td class="num">¥1,563,800</td>
+        <td class="num">¥375,000</td>
+        <td class="num">¥33,300</td>
+        <td class="num">335</td>
+        <td class="num">60</td>
+        <td class="num">275</td>
+        <td class="num">82.1%</td>
+        <td class="num">¥5,887</td>
+        <td class="num">¥1,070,700</td>
+        <td class="num">168</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid-3" style="margin-top:12px">
+    <div class="advice-box adv-green" style="margin-bottom:0">
+      <strong>再来率 80%超を安定維持</strong><br>
+      11月から一貫して75〜84%。既存客の信頼は厚い。
+    </div>
+    <div class="advice-box adv-red" style="margin-bottom:0">
+      <strong>売上 ¥330,000で頭打ち</strong><br>
+      12月¥350,300をピークに3〜4月は¥330,000前後で停滞。新規が月9〜14人しか入っていないのが天井の原因。
+    </div>
+    <div class="advice-box adv-amber" style="margin-bottom:0">
+      <strong>1月の店販¥116,300は異常値</strong><br>
+      他月は¥36,000〜71,000のところ1月のみ突出。何らかの販促があったか要確認。その後急落している。
+    </div>
+  </div>
+</div>
+
+<!-- 総合インサイト -->
+<div class="card red">
+  <h2>総合インサイト</h2>
+  <div class="grid-3">
+    <div class="advice-box adv-red" style="margin-bottom:0">
+      <strong>まつエク追加で+¥152,000/月だが、眉毛が落ちた</strong><br>
+      まつエク前の眉毛平均¥578,000 → 後の眉毛平均¥401,000（▼¥177,000）。まつエク追加分¥329,000がほぼ眉毛の穴埋めになっている。
+    </div>
+    <div class="advice-box adv-amber" style="margin-bottom:0">
+      <strong>客単価が両メニューともに低い</strong><br>
+      眉毛¥6,864 / まつエク¥5,887。特にまつエクの客単価は他店のSSINスタッフと比較して低い可能性。0円消化・単品偏重が影響している可能性。
+    </div>
+    <div class="advice-box adv-blue" style="margin-bottom:0">
+      <strong>伸ばすには新規とアップセル</strong><br>
+      再来率は高く土台は安定。まつエクの月売上¥330,000の天井を破るには、新規の入口（HPBクーポン）強化 or 既存客へのアップセル（オプション・回数券）が必要。
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0 8px">
+  S郡山 高沢 売上データ 2025/05〜2026/04 — salonboard-dashboard.vercel.app
+</div>
+
+</div>
+</body>
+</html>
