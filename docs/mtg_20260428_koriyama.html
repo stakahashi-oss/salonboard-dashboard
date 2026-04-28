@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>郡山 山田さん面談 2026/04/28</title>
+<style>
+:root{
+  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e4e9f2;
+  --text:#1a1f36;--text2:#4e5a78;--text3:#8b97b1;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --red:#dc2626;--red-bg:#fff1f2;--red-border:#fecdd3;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;--violet-border:#ddd6fe;
+  --r:12px;--r-sm:8px;--sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;font-size:13px;line-height:1.6;padding:24px;min-height:100vh}
+.container{max-width:1200px;margin:0 auto}
+
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.header .sub{color:var(--text2);font-size:12px}
+.status-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:1px solid}
+.chip-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.chip-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.chip-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.chip-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--card);padding:16px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)}
+.kpi-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text)}
+.kpi-sub{color:var(--text2);font-size:11px;margin-top:4px}
+.kpi-good{border-left:3px solid var(--green)}
+.kpi-bad{border-left:3px solid var(--red)}
+.kpi-warn{border-left:3px solid var(--amber)}
+.kpi-blue{border-left:3px solid var(--blue)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+.card{background:var(--card);padding:20px;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:16px}
+.card h2{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card h2::before{content:"";width:4px;height:16px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.card.red h2::before{background:var(--red)}
+.card.amber h2::before{background:var(--amber)}
+.card.green h2::before{background:var(--green)}
+.card.violet h2::before{background:var(--violet)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid}
+.badge-green{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.badge-violet{background:var(--violet-bg);color:var(--violet);border-color:var(--violet-border)}
+
+.bar{display:inline-block;height:6px;border-radius:3px;background:#e4e9f2;width:60px;position:relative;vertical-align:middle;margin-right:6px}
+.bar-fill{position:absolute;height:100%;border-radius:3px;left:0;top:0}
+.bar-green{background:var(--green)}.bar-amber{background:var(--amber)}.bar-red{background:var(--red)}.bar-blue{background:var(--blue)}
+
+.topic-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.topic-item:last-child{border-bottom:none}
+.topic-head{font-weight:600;font-size:13px;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.topic-body{font-size:12px;color:var(--text2);line-height:1.8}
+.topic-body strong{color:var(--text);font-weight:600}
+
+.advice-box{padding:10px 14px;border-radius:var(--r-sm);font-size:12px;border-left:3px solid;margin-bottom:8px;line-height:1.7}
+.advice-box:last-child{margin-bottom:0}
+.adv-blue{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
+.adv-green{background:var(--green-bg);border-color:var(--green);color:#064e3b}
+.adv-amber{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
+.adv-red{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+.adv-violet{background:var(--violet-bg);border-color:var(--violet);color:#4c1d95}
+
+.action-row{padding:10px 14px;border-radius:var(--r-sm);margin-bottom:8px;border:1px solid var(--border);background:#fafbff;display:flex;align-items:flex-start;gap:10px}
+.action-row:last-child{margin-bottom:0}
+.action-num{width:22px;height:22px;background:var(--violet);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.action-body .action-title{font-weight:600;font-size:12px;color:var(--text);margin-bottom:2px}
+.action-body .action-desc{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.7}
+.action-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.tag{font-size:10px;padding:1px 8px;border-radius:99px;border:1px solid}
+.tag-who{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}
+.tag-deadline{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+.tag-warn{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.tag-ok{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+
+.two-metric{display:flex;gap:24px;padding:12px 0;border-bottom:1px solid var(--border)}
+.two-metric:last-child{border-bottom:none}
+.metric-label{font-size:11px;color:var(--text3);width:120px;flex-shrink:0;font-weight:600;padding-top:2px}
+.metric-val{font-size:13px;color:var(--text);flex:1}
+
+.flow-box{display:flex;align-items:stretch;gap:0;margin:12px 0}
+.flow-step{flex:1;padding:10px 12px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r-sm);font-size:11px;color:#1e3a5f;text-align:center;position:relative}
+.flow-arrow{display:flex;align-items:center;padding:0 6px;color:var(--blue);font-size:14px;font-weight:700}
+.flow-step .step-num{font-size:9px;font-weight:700;color:var(--blue);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.flow-step strong{display:block;font-weight:700;margin-bottom:2px;color:#1e40af}
+
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--border);border-radius:2px}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-24px;top:3px;width:10px;height:10px;border-radius:50%;border:2px solid}
+.tl-dot-blue{background:var(--blue-bg);border-color:var(--blue)}
+.tl-dot-amber{background:var(--amber-bg);border-color:var(--amber)}
+.tl-dot-red{background:var(--red-bg);border-color:var(--red)}
+.tl-dot-green{background:var(--green-bg);border-color:var(--green)}
+.tl-dot-violet{background:var(--violet-bg);border-color:var(--violet)}
+.tl-time{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:3px}
+.tl-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.tl-body{font-size:11px;color:var(--text2);line-height:1.7}
+.tl-body strong{color:var(--text);font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>郡山 山田裕香さん 面談ダッシュボード</h1>
+    <div class="sub" style="margin-top:4px">2026年4月28日 / 参加: 山田裕香・花山侑以・髙橋 / 出典: 文字起こし自動解析</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <span class="status-chip chip-blue">デビュー約2ヶ月</span>
+      <span class="status-chip chip-green">物販 先月比+600%</span>
+      <span class="status-chip chip-amber">次回予約率 14%（要改善）</span>
+      <span class="status-chip chip-red">まつ毛スランプ中</span>
+    </div>
+  </div>
+  <div style="text-align:right">
+    <div class="sub" style="color:var(--text3)">S郡山店</div>
+  </div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi kpi-good">
+    <div class="kpi-label">物販 今月実績</div>
+    <div class="kpi-val">¥70,000</div>
+    <div class="kpi-sub">先月¥10,000 → 7倍増</div>
+  </div>
+  <div class="kpi kpi-blue">
+    <div class="kpi-label">物販 来月目標</div>
+    <div class="kpi-val">¥100,000</div>
+    <div class="kpi-sub">最優先目標・物販を極める</div>
+  </div>
+  <div class="kpi kpi-bad">
+    <div class="kpi-label">次回予約率</div>
+    <div class="kpi-val">14%</div>
+    <div class="kpi-sub">目標 20〜30%（新規60人中）</div>
+  </div>
+  <div class="kpi kpi-warn">
+    <div class="kpi-label">店舗売上 今月見込</div>
+    <div class="kpi-val">¥160万</div>
+    <div class="kpi-sub">先月¥150万ちょっと超え</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">3人目採用ライン</div>
+    <div class="kpi-val">夏以降</div>
+    <div class="kpi-sub">再来30〜40人定着が条件</div>
+  </div>
+</div>
+
+<!-- 議事録タイムライン -->
+<div class="card" style="margin-bottom:16px">
+  <h2>面談サマリー（時系列）</h2>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-amber"></div>
+      <div class="tl-time">00:00 〜 05:27</div>
+      <div class="tl-title">デビュー後の状況・技術的な不安</div>
+      <div class="tl-body">
+        デビュー約2ヶ月。タイムは問題ないが技術面に不安あり。<strong>最大の悩みは左右非対称な目元でのロッド選定に時間がかかること</strong>。詰まりすぎると焦る・1件クレームをもらってから手が震えるほどのプレッシャーを感じながら施術している。<br>
+        → 花山さん: 「デビューして2ヶ月はロッド種類を試す期間ではない。まず根本（根元への薬剤塗布・ロッドの置き位置）を固めることが先。それこそ講師側の落ち度で、ロッドの種類を覚えさせることに集中して根本技術を教えきれていなかった。」と謝罪＆方針転換を説明。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-blue"></div>
+      <div class="tl-time">05:27 〜 11:39</div>
+      <div class="tl-title">ロッド方針の確定 &amp; 新テクニック共有</div>
+      <div class="tl-body">
+        山田さん自身も<strong>Uカールが1番やりやすいと感じていた</strong>ことが判明。<br>
+        <strong>方針確定:</strong> 一旦Uカールを極める。Uカールだけで立ち上げ・カールの両方に対応可能（サイズ調整で対応）。<br>
+        <strong>新テクニック:</strong> 二重整形で目頭が被さっている目元 → Uカールのロッドを左右逆に使用。目頭側が薄いロッドの向きを反転させ、太い方を目頭に配置することで立ち上がりが容易になる。この使い分けは二重幅が目尻にかけて広がる目元にも応用可能。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-amber"></div>
+      <div class="tl-time">11:39 〜 14:02</div>
+      <div class="tl-title">眉毛施術・クレーム対策</div>
+      <div class="tl-body">
+        眉毛は楽しくなっており得意感あり。直し・クレームはもらっていないが<strong>口コミで「思ったより細くなった」の投稿が1件</strong>あった。<br>
+        → 原因: デザイン取りの際にコンシーラーで隠れている毛があるため、施術後に細く見えがち。<br>
+        → 対策: 太さを残したい・細くしたくないお客様には、デザイン確認時に<strong>「これより気持ち細く見えてしまうかもしれませんが大丈夫ですか？」</strong>と一言追加するだけで予防できる。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-green"></div>
+      <div class="tl-time">15:29 〜 22:03</div>
+      <div class="tl-title">物販急伸の要因分析・オプション課題</div>
+      <div class="tl-body">
+        <strong>物販¥1万→¥7万:</strong> コーティング剤をフランクに「やったことありますか？こんな感じで簡単にできますよ」と鏡を持ちながら説明 → 自然に売れた。売らなさそうな人でも声をかけると買ってくれるパターンが多かった。<br>
+        <strong>オプション課題:</strong> 物販と同時に提案すると押しが強く見えてしまう懸念。フランクスタイルが有効なのでオプションも同様に行くべきだが、<strong>まず物販月10万円を安定させてからオプションに手を出す段階的な目標設定</strong>に合意。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-blue"></div>
+      <div class="tl-time">22:03 〜 28:46</div>
+      <div class="tl-title">美容液販売の促進策</div>
+      <div class="tl-body">
+        現状: 美容液販売がほぼゼロ。「高い」と言われてうまく持っていけない。<br>
+        → 課題: 毛の状態説明と商品説明を同じ施術ブースで全部やってしまっている。<br>
+        → 改善: <strong>施術ブース（毛の状態説明）→ 会計ブース（商品説明）に分離</strong>。会計ブースでラッシュアディクト（長さ特化）orエグータム（ボリューム特化）を毛の状態に基づいて推奨。<br>
+        サロン専売品の優位性（ネット品は成分を変えて安く販売 → 目荒れリスク）も説明する。<br>
+        「持っています」系の人 → 今使っている美容液が長さ出しかボリューム出しか確認 → 不足しているケアを指摘して推奨品を提案。<br>
+        写真活用: 2回目の貼り付け後に写真を撮り、切れている部分を見せながら説明すると説得力が大きく上がる。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-red"></div>
+      <div class="tl-time">28:46 〜 37:54</div>
+      <div class="tl-title">次回予約率14%の課題分析</div>
+      <div class="tl-body">
+        現状: シフトが分からないと言われてホットペッパーからに流される。物販と同時提案で押しが強くなりすぎる懸念。<br>
+        → 対策（花山さん）: <strong>2段階提案</strong>。①施術ブースで周期を伝える（眉3週間・まつ毛4週間）→ ②会計ブースで明確な日付を提示（「5月末〜6月1週目にはかけてほしいので」）。<br>
+        → 学生客: 金銭的・スケジュール的に難しいため無理に取らなくてOK。メンテナンス目安を伝えるだけでよい。<br>
+        → HPBでその場で予約させるのも臨機応変に対応可。<br>
+        → GW中: 単発客が多いため物販・オプション注力期間にする。GW後の安定客に対して次回予約注力。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-violet"></div>
+      <div class="tl-time">33:23 〜 36:20</div>
+      <div class="tl-title">売上目標・店舗運営・3人目採用</div>
+      <div class="tl-body">
+        インセンティブ発生ライン: 65万。1日目標: 約3万円。<br>
+        150万超 → オーナーへの貢献。160〜170万超えると備品追加等の余裕も出る。<br>
+        3人目スタッフ: 夏以降を想定。再来30〜40人が定着したら入れる方針。<br>
+        来月（5月）は梅雨・閑散期になる可能性あり。それでも毎月目標を上げる意識で。
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-amber"></div>
+      <div class="tl-time">43:41 〜 45:03</div>
+      <div class="tl-title">次回予約が取れない要因分析 &amp; カウンセリングフォーム問題</div>
+      <div class="tl-body">
+        花山さん整理: 次回予約が取れない要因は①提案していない ②提案の仕方が悪い ③技術・接客が悪い の3パターン。自分でやりながらどれかを特定していく。<br>
+        <strong>カウンセリングフォーム問題:</strong> 電波が悪い状況でタブレットを操作した際に名前・職業・年齢等の入力内容が消えてしまった。→ タカショーが修正対応を約束。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 技術方針 & 接客改善 -->
+<div class="grid-2" style="margin-bottom:0">
+
+  <div class="card" style="margin-bottom:0">
+    <h2 class="">技術方針 — まつ毛パーマ</h2>
+
+    <div class="advice-box adv-blue">
+      <strong>当面の方針: Uカール1本を極める</strong><br>
+      ロッドの種類を広げる段階ではない。根元への薬剤塗布・ロッドの置き位置という「土台」を固めることが最優先。
+    </div>
+
+    <div class="advice-box adv-blue">
+      <strong>Uカールで対応できるデザイン幅</strong><br>
+      立ち上げ（パリジェンヌ系）→ 小さめサイズ、毛先がギリギリはみ出るかどうか<br>
+      カールしっかり → 大きめサイズ、ロッドの中間が最も高い位置に
+    </div>
+
+    <div class="advice-box adv-green">
+      <strong>新テクニック: ロッドの左右逆使い</strong><br>
+      二重整形で目頭が被さっている目元や、目尻にかけて二重幅が広がる目元に対し、Uカールを左右逆に使用。目頭側（薄い方）を目尻に、太い方を目頭に配置することで立ち上がりが容易になる。
+    </div>
+
+    <div class="advice-box adv-amber">
+      <strong>スランプへの向き合い方</strong><br>
+      クレームをもらったこと自体は成長の糧。「私が悪い」と向き合えるタイプはむしろいい。研修側のロッド種類偏重の落ち度も認めた上で、今後は根本技術にフォーカスする方針に変更済み。
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:0">
+    <h2>技術方針 — 眉毛施術</h2>
+
+    <div class="advice-box adv-green">
+      <strong>現状評価</strong><br>
+      直し・クレームなし。楽しくなっている・得意感あり。スタッフプロフィールに「眉毛得意」の追記を推奨。
+    </div>
+
+    <div class="advice-box adv-amber">
+      <strong>口コミ「細くなった」対策</strong><br>
+      デザイン取りの時点でコンシーラーで隠れた毛があるため、施術後は必ず少し細く見える。<br><br>
+      太さ残したい系・細くしたくない系のお客様には必ずこの一言を追加：<br>
+      <span style="font-weight:700;color:#92400e">「これより気持ち細く見えてしまうかもしれませんが大丈夫ですか？」</span>
+    </div>
+  </div>
+</div>
+
+<!-- 物販・美容液・次回予約 -->
+<div class="card" style="margin-top:16px">
+  <h2 class="">物販 / 美容液 / オプション 戦略</h2>
+
+  <div class="grid-3" style="margin-bottom:0">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">物販（現状 → 目標）</div>
+      <div class="advice-box adv-green" style="margin-bottom:6px">
+        <strong>¥1万 → ¥7万の成功要因</strong><br>
+        「売ろう」感を出さない。コーティング剤を「使ってますか？こんな感じで簡単にできますよ」とフランクに実演。買わないと思った人でも声をかけると買ってくれるパターンが多かった。
+      </div>
+      <div class="advice-box adv-blue">
+        <strong>来月目標: 月10万円</strong><br>
+        物販を安定させてからオプションに手を出す。片方集中型の性格を活かす戦略。
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">美容液 販売フロー</div>
+      <div class="flow-box" style="flex-direction:column;gap:6px">
+        <div class="flow-step" style="text-align:left">
+          <span class="step-num">施術ブース</span>
+          <strong>毛の状態を説明</strong>
+          2回目の貼り付け後に写真を撮り、切れている部分・細い部分を指差しで見せながら「ここが切れているのでケアが必要です」と伝える
+        </div>
+        <div style="text-align:center;color:var(--blue);font-weight:700">↓ 会計ブースへ移動</div>
+        <div class="flow-step" style="text-align:left">
+          <span class="step-num">会計ブース</span>
+          <strong>商品の説明</strong>
+          ラッシュアディクト（長さ特化）かエグータム（ボリューム特化）か毛の状態に基づいて推奨。サロン専売品の優位性も説明（ネット品は成分変更→目荒れリスク）
+        </div>
+      </div>
+      <div class="advice-box adv-amber" style="margin-top:8px">
+        <strong>「持っています」系への対応</strong><br>
+        「今使っているのは長さ出し？ボリューム出し？どちらか分かりますか？」と確認。不足しているケアを指摘して推奨品を提案。
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">オプション（5月以降）</div>
+      <div class="advice-box adv-violet">
+        <strong>アイシャンプー・ケラチンの提案切り口</strong><br>
+        餌倒し中・テープ貼り付け中に「アイシャンプーとケラチンってやったことありますか？」から入る。<br><br>
+        やったことある → 「今日もお付けしますか？」<br>
+        ない → 2種類の違いを説明して提案
+      </div>
+      <div class="advice-box adv-blue">
+        <strong>物販と同時提案を避けるタイミング管理</strong><br>
+        物販と次回予約と同時進行になると「押しが強い」印象を与える。段階的・人に合わせた提案が重要。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 次回予約 -->
+<div class="card amber">
+  <h2>次回予約率 14% 改善策</h2>
+
+  <div style="margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">2段階アプローチ（花山さん推奨）</div>
+    <div class="flow-box">
+      <div class="flow-step">
+        <span class="step-num">Step 1 — 施術ブース</span>
+        <strong>周期を伝える</strong>
+        眉: 3週間<br>まつ毛: 4週間（1ヶ月）で状態が変わることを伝える
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="step-num">Step 2 — 会計ブース</span>
+        <strong>明確な日付を提示</strong>
+        「4/28なので大体5月末〜6月1週目にはかけてほしいです」と具体的な日付まで言う
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:0">
+    <div>
+      <div class="advice-box adv-amber">
+        <strong>学生客は無理に取らなくてOK</strong><br>
+        バイト・学校でスケジュールが組みにくい。金銭的ハードルも高い。「大体このぐらいが目安の時期です」と伝えるだけで十分。
+      </div>
+      <div class="advice-box adv-blue">
+        <strong>HPBからその場で予約させてもOK</strong><br>
+        「シフトが分からない」と言われたらその場でHPBを開いて予約させる。臨機応変に対応。
+      </div>
+    </div>
+    <div>
+      <div class="advice-box adv-violet">
+        <strong>GW中は物販・オプション注力に切り替える</strong><br>
+        GW中は単発・イベント系の客が多く次回予約につながりにくい。物販とオプション伸ばす期間と割り切る。GW後の安定層に対して次回予約注力。
+      </div>
+      <div class="advice-box adv-green">
+        <strong>取れない要因の自己分析（花山さん整理）</strong><br>
+        ①提案していない ②提案の仕方が悪い ③技術・接客が悪い — の3パターン。やりながら自分でどれかを特定する。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ネクストアクション -->
+<div class="card violet">
+  <h2>ネクストアクション</h2>
+
+  <div class="grid-2" style="margin-bottom:0">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">山田裕香さん</div>
+
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">Uカール習得集中</div>
+          <div class="action-desc">複数ロッドを試す段階ではない。Uカール1本で根元技術（薬剤塗布・ロッド奥位置）を磨き切る。</div>
+          <div class="action-meta"><span class="tag tag-who">最優先・継続</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">Uカールロッド逆使いテクニックを習得</div>
+          <div class="action-desc">二重整形・左右差のある目元に対応するため、ロッドを左右逆に配置する使い方を練習する。</div>
+          <div class="action-meta"><span class="tag tag-who">新知識</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">3</div>
+        <div class="action-body">
+          <div class="action-title">スタッフプロフィールに眉毛得意を追記</div>
+          <div class="action-desc">クレームなし・楽しくなっている → 得意技術として打ち出す。</div>
+          <div class="action-meta"><span class="tag tag-deadline">今月中</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">4</div>
+        <div class="action-body">
+          <div class="action-title">眉毛細さの事前説明を追加</div>
+          <div class="action-desc">太さ残したい・細くしたくない客に対し「これより気持ち細く見えてしまうかもしれませんが大丈夫ですか？」を毎回言う。</div>
+          <div class="action-meta"><span class="tag tag-warn">クレーム予防</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">5</div>
+        <div class="action-body">
+          <div class="action-title">物販 月10万円達成</div>
+          <div class="action-desc">フランクスタイルを継続。まず10万を安定させてからオプションに手を出す。ラッシュアディクト10本が目安。</div>
+          <div class="action-meta"><span class="tag tag-deadline">5月目標</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">6</div>
+        <div class="action-body">
+          <div class="action-title">美容液販売フローの実践</div>
+          <div class="action-desc">施術ブース（毛の状態・写真）→ 会計ブース（商品説明・推奨）に分離。「持ってます」系にはタイプ確認から入る。</div>
+          <div class="action-meta"><span class="tag tag-ok">即日実践</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="action-num">7</div>
+        <div class="action-body">
+          <div class="action-title">次回予約 2段階提案を実践</div>
+          <div class="action-desc">ブースで周期 → 会計で明確な日付。1日1件取ることを意識するだけでOK。学生は無理に取らなくてよい。</div>
+          <div class="action-meta"><span class="tag tag-deadline">5月から徹底</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">株式会社Lime（タカショー）</div>
+
+      <div class="action-row">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">カウンセリングフォームの修正</div>
+          <div class="action-desc">電波不良でタブレット操作中に名前・職業・年齢等の入力内容が変わってしまった。フォーム内容を元に戻す。</div>
+          <div class="action-meta"><span class="tag tag-deadline">今週中</span><span class="tag tag-warn">約束済み</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:14px;background:#f8faff;border-radius:var(--r-sm);border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:10px">山田さんのポジティブ評価（引き続き伸ばす）</div>
+        <div class="advice-box adv-green" style="margin-bottom:6px">
+          <strong>物販センス:</strong> デビュー2ヶ月で7万は異例の数字。フランクスタイルが有効と自己認識できている。
+        </div>
+        <div class="advice-box adv-green" style="margin-bottom:6px">
+          <strong>クレームへの向き合い方:</strong> 真摯に受け止めて成長につなげようとしている。「自分が悪い」と向き合える姿勢は強み。
+        </div>
+        <div class="advice-box adv-green">
+          <strong>眉毛スキル:</strong> 直し・クレームなし・楽しくなっている。得意分野として磨ける状態。
+        </div>
+      </div>
+
+      <div style="margin-top:12px;padding:14px;background:#fffbeb;border-radius:var(--r-sm);border:1px solid var(--amber-border)">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px">郡山店 インフラ問題</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">
+          電波状況が常時悪い。Wi-Fi接続中でもスクエアが反応しないケースあり。カウンセリングフォームのデータ消失も電波起因。根本的な対策（モバイルルーター設置等）を検討する必要あり。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;color:var(--text3);font-size:11px;padding:20px 0 8px">
+  郡山 山田裕香さん面談 2026/04/28 ダッシュボード — 文字起こし解析生成 / salonboard-dashboard.vercel.app
+</div>
+
+</div>
+</body>
+</html>
