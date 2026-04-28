@@ -927,6 +927,12 @@ textarea.msg-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgb
             <option value="b_allergy">眉アレルギー</option>
             <option value="l_glue">グルーアレルギー</option>
             <option value="next_menu">次回提案</option>
+            <option value="e_design">エクステ_デザイン</option>
+            <option value="e_curl">エクステ_カール</option>
+            <option value="e_glue">エクステ_グルーアレルギー</option>
+            <option value="e_allergy">エクステ_アレルギー</option>
+            <option value="e_trouble">エクステ_目元トラブル</option>
+            <option value="e_condition">エクステ_体調</option>
           </select>
         </div>
         <div>
@@ -3474,7 +3480,10 @@ function renderAutoTagRules() {
     menu:'メニュー', store:'店舗', skin_type:'肌質', allergy:'アレルギー',
     freq:'施術頻度', interest:'興味メニュー', source:'来店きっかけ',
     b_design:'眉デザイン', l_design:'まつ毛デザイン', b_allergy:'眉アレルギー',
-    l_glue:'グルーアレルギー', next_menu:'次回提案'
+    l_glue:'グルーアレルギー', next_menu:'次回提案',
+    e_design:'エクステ_デザイン', e_curl:'エクステ_カール',
+    e_glue:'エクステ_グルーアレルギー', e_allergy:'エクステ_アレルギー',
+    e_trouble:'エクステ_目元トラブル', e_condition:'エクステ_体調'
   };
   const condLabels = { equals:'＝', contains:'含む', not_empty:'入力あり' };
   el.innerHTML = `
