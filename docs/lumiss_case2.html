@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LUMISS導入 成果報告書 ― 参考事例</title>
+<title>LUMISS導入 成果報告書 ― 参考事例②</title>
 <style>
 :root{
   --bg:#f6f7fb;--white:#fff;--border:#e8ecf4;
@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .wrap{max-width:960px;margin:0 auto;padding:32px 20px 80px}
 
 .doc-header{text-align:center;margin-bottom:28px;padding:36px 24px 28px;background:var(--white);border-radius:var(--r);box-shadow:var(--sh)}
-.doc-badge{display:inline-block;padding:4px 16px;border-radius:99px;background:var(--blue-lt);color:var(--blue);font-size:11px;font-weight:700;border:1px solid var(--blue-bd);margin-bottom:14px;letter-spacing:.5px}
+.doc-badge{display:inline-block;padding:4px 16px;border-radius:99px;background:var(--blue-lt);color:var(--blue);font-size:11px;font-weight:700;border:1px solid var(--blue-bd);margin-bottom:14px}
 .doc-header h1{font-size:24px;font-weight:800;margin-bottom:6px}
 .doc-header .sub{color:var(--text2);font-size:13px}
 .doc-header .period{margin-top:10px;font-size:11px;color:var(--text3)}
@@ -31,60 +31,58 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .answer-detail{font-size:13px;opacity:.8}
 .answer-note{margin-top:10px;padding:10px 14px;background:rgba(255,255,255,.12);border-radius:8px;font-size:12px;line-height:1.7}
 
-.kpi3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
-@media(max-width:640px){.kpi3{grid-template-columns:1fr}}
-.kpi-big{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:22px;text-align:center}
-.kpi-big .icon{font-size:26px;margin-bottom:6px}
-.kpi-big .num{font-size:30px;font-weight:900;line-height:1.1;margin-bottom:5px}
-.kpi-big .lbl{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:3px}
-.kpi-big .note{font-size:11px;color:var(--text3)}
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:700px){.kpi4{grid-template-columns:repeat(2,1fr)}}
+.kpi-big{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:20px;text-align:center}
+.kpi-big .icon{font-size:24px;margin-bottom:5px}
+.kpi-big .num{font-size:26px;font-weight:900;line-height:1.1;margin-bottom:4px}
+.kpi-big .lbl{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:3px}
+.kpi-big .note{font-size:10px;color:var(--text3)}
 .kpi-big.g{border-top:4px solid var(--green)}.kpi-big.g .num{color:var(--green)}
 .kpi-big.b{border-top:4px solid var(--blue)}.kpi-big.b .num{color:var(--blue)}
 .kpi-big.a{border-top:4px solid var(--amber)}.kpi-big.a .num{color:var(--amber)}
+.kpi-big.r{border-top:4px solid var(--red)}.kpi-big.r .num{color:var(--red)}
 
 .card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:18px;padding:26px}
 .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
-.sec-num.g{background:var(--green);color:#fff}
-.sec-num.b{background:var(--blue);color:#fff}
-.sec-num.a{background:var(--amber);color:#fff}
-.sec-num.r{background:var(--red);color:#fff}
+.sec-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;color:#fff}
+.sec-num.g{background:var(--green)}.sec-num.b{background:var(--blue)}.sec-num.a{background:var(--amber)}.sec-num.r{background:var(--red)}.sec-num.grey{background:var(--text3)}
 .sec-title h2{font-size:15px;font-weight:700}
 
+/* Before / After */
 .ba-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center;margin-bottom:16px}
 @media(max-width:600px){.ba-wrap{grid-template-columns:1fr;gap:12px}}
 .ba-box{border-radius:12px;padding:20px;text-align:center}
-.ba-box .phase{font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+.ba-box .phase{font-size:11px;font-weight:700;letter-spacing:.4px;margin-bottom:6px}
 .ba-box .amount{font-size:28px;font-weight:900;line-height:1;margin-bottom:5px}
 .ba-box .desc{font-size:12px;line-height:1.6}
 .ba-before{background:var(--amber-lt);border:1px solid var(--amber-bd)}
-.ba-before .phase{color:var(--amber)}.ba-before .amount{color:var(--amber)}
+.ba-before .phase,.ba-before .amount{color:var(--amber)}
 .ba-after{background:var(--green-lt);border:1px solid var(--green-bd)}
-.ba-after .phase{color:var(--green)}.ba-after .amount{color:var(--green)}
+.ba-after .phase,.ba-after .amount{color:var(--green)}
 .ba-arrow{text-align:center;padding:0 10px}
 .ba-arrow .al{font-size:22px;font-weight:900;color:var(--green);display:block}
 .ba-arrow .as{font-size:11px;color:var(--green);font-weight:700;white-space:nowrap}
 
-/* chart */
-.chart-row{display:grid;grid-template-columns:60px 1fr 86px;gap:8px;align-items:center;margin-bottom:7px}
-.chart-label{font-size:12px;color:var(--text2);text-align:right;font-weight:600;white-space:nowrap}
+/* Chart */
+.chart-row{display:grid;grid-template-columns:68px 1fr 86px;gap:8px;align-items:center;margin-bottom:7px}
+.chart-label{font-size:11px;color:var(--text2);text-align:right;font-weight:600;white-space:nowrap}
 .chart-bar-bg{background:#f0f2f8;border-radius:6px;height:26px;position:relative;overflow:hidden}
-.chart-bar-fill{height:100%;border-radius:6px;position:absolute;left:0;top:0;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
-.chart-val{font-size:12px;font-weight:700;text-align:right;color:var(--text2);white-space:nowrap}
+.chart-val{font-size:12px;font-weight:700;text-align:right;white-space:nowrap}
 .stack-ssin{background:#f59e0b;flex-shrink:0}
 .stack-lumiss{background:#059669;flex-shrink:0}
-.chart-avg-line{margin-left:68px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);margin-bottom:10px;margin-top:4px}
+.stack-prev{background:#9ca3af;flex-shrink:0}
+.chart-avg-line{margin-left:76px;display:flex;align-items:center;gap:6px;font-size:11px;margin-top:4px;margin-bottom:10px}
 .chart-avg-line .dot{width:10px;height:4px;border-radius:2px;flex-shrink:0}
 
-/* tags */
+/* Tags */
 .tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:700;border:1px solid}
 .tg{background:var(--green-lt);color:var(--green);border-color:var(--green-bd)}
 .tr{background:var(--red-lt);color:var(--red);border-color:#fca5a5}
 .ta{background:var(--amber-lt);color:var(--amber);border-color:var(--amber-bd)}
 .tb{background:var(--blue-lt);color:var(--blue);border-color:var(--blue-bd)}
-.tv{background:var(--violet-lt);color:var(--violet);border-color:#ddd6fe}
 
-/* tables */
+/* Tables */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead th{text-align:left;padding:8px 10px;color:var(--text3);font-weight:600;font-size:10px;border-bottom:2px solid var(--border);background:#f8faff;white-space:nowrap}
@@ -93,19 +91,19 @@ tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:#fafbff}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .total-row{font-weight:700;background:#f8faff!important;border-top:2px solid var(--border)!important}
-.hl-green{background:#f0fdf4!important}
 
-/* insight */
-.ig-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+/* Insights */
+.ig-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
 @media(max-width:640px){.ig-row{grid-template-columns:1fr}}
 .insight{padding:13px 15px;border-radius:10px;font-size:12px;line-height:1.7;border-left:3px solid}
 .ig{background:var(--green-lt);border-color:var(--green);color:#064e3b}
 .ia{background:var(--amber-lt);border-color:var(--amber);color:#78350f}
 .ib{background:var(--blue-lt);border-color:var(--blue);color:#1e3a5f}
 .ir{background:var(--red-lt);border-color:var(--red);color:#7f1d1d}
+.iv{background:var(--violet-lt);border-color:var(--violet);color:#3b0764}
 .insight strong{display:block;margin-bottom:3px}
 
-/* accordion */
+/* Accordion */
 .detail-toggle{width:100%;background:none;border:1px solid var(--border);border-radius:10px;padding:13px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:var(--text2);margin-bottom:8px}
 .detail-toggle:hover{background:#fafbff}
 .detail-body{display:none;margin-bottom:14px}
@@ -121,39 +119,45 @@ tbody tr:hover{background:#fafbff}
 <div class="doc-header">
   <div class="doc-badge">加盟店オーナー様向け参考資料 ― 事例②</div>
   <h1>LUMISS導入 成果報告書</h1>
-  <div class="sub">別スタッフ1名を対象とした、LUMISS導入後3ヶ月の実績データです</div>
-  <div class="period">対象期間：2026年2月〜4月 ／ 前年比較：2025年2〜4月 ／ 作成：2026年4月29日</div>
+  <div class="sub">スタッフ1名を対象とした、LUMISS導入後3ヶ月の実績データです</div>
+  <div class="period">対象期間：2026年2月〜4月 ／ 導入前比較：2025年9〜12月（SSIN） ／ 作成：2026年4月28日</div>
 </div>
 
 <!-- ─── HERO ─── -->
 <div class="answer-banner">
   <div class="answer-q">Q. LUMISSを導入すると、スタッフの売上は上がるのか？</div>
-  <div class="answer-a">上がります。+10.7%</div>
-  <div class="answer-detail">前年同月比 3ヶ月合算で +¥178,970（¥1,672,050 → ¥1,851,020）</div>
+  <div class="answer-a">上がります。+19.6%</div>
+  <div class="answer-detail">導入前月平均 ¥568,100 → フル稼働月平均（3〜4月）¥679,280（+¥111,180/月）</div>
   <div class="answer-note">
-    ※ 2月のSSINは稼働12名（開始初月）のため実質部分稼働。フル稼働の3〜4月のみで比較すると前年比 <strong style="color:#6ee7b7">+23.3%（+¥257,110）</strong>。月平均増収 <strong style="color:#6ee7b7">+¥128,555</strong>。
+    ※ 2月はLUMISS稼働12名（開始初月・部分稼働）のため3〜4月フル稼働月で比較。導入前（2025年9〜12月）の月平均¥568,100に対して、導入後はSSINの既存基盤にLUMISSが上乗せされ合算で<strong style="color:#6ee7b7">+¥111,180/月（+19.6%）</strong>の成長。
   </div>
 </div>
 
-<!-- ─── 3 KPIs ─── -->
-<div class="kpi3">
+<!-- ─── 4 KPIs ─── -->
+<div class="kpi4">
   <div class="kpi-big g">
     <div class="icon">📈</div>
-    <div class="lbl">月次売上増加（3〜4月実績）</div>
-    <div class="num">+¥128,555</div>
-    <div class="note">フル稼働月の前年同月比平均</div>
+    <div class="lbl">月次増収（vs 導入前）</div>
+    <div class="num">+¥111,180</div>
+    <div class="note">導入前¥568K → 導入後¥679K（+19.6%）</div>
   </div>
   <div class="kpi-big b">
     <div class="icon">🔁</div>
-    <div class="lbl">LUMISS 再来率（3ヶ月平均）</div>
+    <div class="lbl">SSIN 再来率（3ヶ月平均）</div>
     <div class="num">76.2%</div>
-    <div class="note">202人中154人が再来客</div>
+    <div class="note">既存SSIN客が安定してリピート中</div>
   </div>
   <div class="kpi-big a">
+    <div class="icon">🆕</div>
+    <div class="lbl">LUMISS 再来率の推移</div>
+    <div class="num">0→35.9%</div>
+    <div class="note">2月0% → 4月35.9%（育成中）</div>
+  </div>
+  <div class="kpi-big r">
     <div class="icon">💡</div>
-    <div class="lbl">LUMISS 月平均売上</div>
-    <div class="num">¥388,003</div>
-    <div class="note">SSIN月平均¥229,003 + LUMISS月平均¥388,003</div>
+    <div class="lbl">SSIN 客単価 vs LUMISS</div>
+    <div class="num">¥5,762 / ¥6,543</div>
+    <div class="note">LUMISS の方が¥781高い</div>
   </div>
 </div>
 
@@ -166,23 +170,23 @@ tbody tr:hover{background:#fafbff}
 
   <div class="ba-wrap">
     <div class="ba-box ba-before">
-      <div class="phase">前年（2025年2〜4月）SSINのみ</div>
-      <div class="amount">¥557,350<span style="font-size:13px;font-weight:400">/月</span></div>
-      <div class="desc">SSIN単体での月平均<br>客数106名/月、再来率50.6%</div>
+      <div class="phase">導入前（2025年9〜12月）SSINのみ</div>
+      <div class="amount">¥568,100<span style="font-size:13px;font-weight:400">/月</span></div>
+      <div class="desc">LUMISS導入前の月平均<br>客数96名/月・再来率71.3%</div>
     </div>
     <div class="ba-arrow">
       <span class="al">→</span>
-      <span class="as">+23.3%<br>（3〜4月実績）</span>
+      <span class="as">+19.6%<br>（3〜4月実績）</span>
     </div>
     <div class="ba-box ba-after">
       <div class="phase">今年（2026年3〜4月）SSIN+LUMISS</div>
       <div class="amount">¥679,280<span style="font-size:13px;font-weight:400">/月</span></div>
-      <div class="desc">2ブランド合算の月平均<br>LUMISS再来率76%が安定貢献</div>
+      <div class="desc">2ブランド合算の月平均<br>SSIN¥376K + LUMISS¥303K</div>
     </div>
   </div>
 
   <div style="background:#f8faff;border-radius:10px;padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.8">
-    💡 <strong>2月の SSIN ¥81,100 は稼働開始初月（12名のみ）のため除外して比較するのが適切です。</strong>3月・4月のフル稼働データが実力値となります。
+    💡 <strong>構造の読み方：</strong>導入前（2025年9〜12月）はSSIN単体で月平均¥568,100。LUMISSを追加した初月（2月）は12名スタートと部分稼働でしたが、3月以降はSSIN¥397K＋LUMISS¥351Kで¥748Kを達成。LUMISSの再来客が積み上がるほど、さらに売上が伸びる構造です。
   </div>
 </div>
 
@@ -195,61 +199,71 @@ tbody tr:hover{background:#fafbff}
   </div>
 
   <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--amber)"><div style="width:12px;height:12px;background:#f59e0b;border-radius:3px"></div>SSIN（今年）</div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--green)"><div style="width:12px;height:12px;background:#059669;border-radius:3px"></div>LUMISS（追加分）</div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text3)"><div style="width:12px;height:12px;background:#d1d5db;border-radius:3px"></div>前年 SSIN</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--amber)">
+      <div style="width:12px;height:12px;background:#f59e0b;border-radius:3px"></div>SSIN
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--green)">
+      <div style="width:12px;height:12px;background:#059669;border-radius:3px"></div>LUMISS（追加分）
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text3)">
+      <div style="width:12px;height:12px;background:#9ca3af;border-radius:3px"></div>導入前 SSIN
+    </div>
   </div>
 
-  <!-- 前年ライン -->
-  <div style="margin-left:68px;margin-bottom:8px">
+  <!-- 導入前 -->
+  <div style="margin-left:76px;margin-bottom:6px">
     <span style="font-size:10px;font-weight:700;background:#f5f5f5;color:var(--text2);padding:2px 10px;border-radius:4px;border:1px solid var(--border)">
-      ◀ 前年 SSIN（2025年）
+      ◀ 導入前 SSIN（2025年9〜12月）
     </span>
   </div>
   <div class="chart-row">
-    <div class="chart-label">2025/2月</div>
-    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:76.3%;background:#9ca3af">¥570,600</div></div>
-    <div class="chart-val" style="color:var(--text3)">¥571K</div>
+    <div class="chart-label">2025/9月</div>
+    <div class="chart-bar-bg"><div style="height:100%;width:80.1%;background:#9ca3af;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;color:#fff">¥598,800</div></div>
+    <div class="chart-val" style="color:var(--text3)">¥599K</div>
   </div>
   <div class="chart-row">
-    <div class="chart-label">2025/3月</div>
-    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:71.4%;background:#9ca3af">¥533,800</div></div>
-    <div class="chart-val" style="color:var(--text3)">¥534K</div>
+    <div class="chart-label">2025/10月</div>
+    <div class="chart-bar-bg"><div style="height:100%;width:74.6%;background:#9ca3af;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;color:#fff">¥557,600</div></div>
+    <div class="chart-val" style="color:var(--text3)">¥558K</div>
   </div>
   <div class="chart-row">
-    <div class="chart-label">2025/4月</div>
-    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:75.9%;background:#9ca3af">¥567,650</div></div>
-    <div class="chart-val" style="color:var(--text3)">¥568K</div>
+    <div class="chart-label">2025/11月</div>
+    <div class="chart-bar-bg"><div style="height:100%;width:70.3%;background:#9ca3af;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;color:#fff">¥525,600</div></div>
+    <div class="chart-val" style="color:var(--text3)">¥526K</div>
   </div>
-
+  <div class="chart-row">
+    <div class="chart-label">2025/12月</div>
+    <div class="chart-bar-bg"><div style="height:100%;width:78.9%;background:#9ca3af;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;color:#fff">¥590,400</div></div>
+    <div class="chart-val" style="color:var(--text3)">¥590K</div>
+  </div>
   <div class="chart-avg-line">
     <div class="dot" style="background:#9ca3af"></div>
-    <span>前年月平均 ¥557,350</span>
+    <span style="color:var(--text3)">導入前月平均 ¥568,100</span>
   </div>
 
-  <hr style="border:none;border-top:2px dashed var(--border);margin:10px 0 10px 68px">
+  <hr style="border:none;border-top:2px dashed var(--border);margin:8px 0 10px 76px">
 
-  <!-- 今年 -->
-  <div style="margin-left:68px;margin-bottom:8px">
+  <!-- 導入後 -->
+  <div style="margin-left:76px;margin-bottom:6px">
     <span style="font-size:10px;font-weight:700;background:var(--green-lt);color:var(--green);padding:2px 10px;border-radius:4px;border:1px solid var(--green-bd)">
-      ▶ 今年 SSIN+LUMISS（2026年）― 黄色＝SSIN ／ 緑＝LUMISS
+      ▶ LUMISS導入後（2026年）― 黄色＝SSIN ／ 緑＝LUMISS
     </span>
   </div>
 
-  <!-- 2月（半月稼働注意） -->
+  <!-- 2月（LUMISS部分稼働） -->
   <div class="chart-row">
     <div class="chart-label">2026/2月</div>
     <div class="chart-bar-bg" style="background:#fef9c3">
-      <div style="height:100%;width:65.8%;display:flex;flex-direction:row">
-        <div class="stack-ssin" style="width:16.5%;display:flex;align-items:center;padding-left:4px;font-size:9px;color:#fff">¥81K</div>
-        <div class="stack-lumiss" style="width:83.5%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥411K</div>
+      <div style="height:100%;width:65.8%;display:flex">
+        <div class="stack-ssin" style="width:55.6%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff">¥411K</div>
+        <div class="stack-lumiss" style="width:44.4%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥81K</div>
       </div>
     </div>
     <div class="chart-val">¥492K</div>
   </div>
-  <div style="margin-left:68px;margin-bottom:8px;margin-top:-4px">
+  <div style="margin-left:76px;margin-bottom:8px;margin-top:-4px">
     <span style="font-size:10px;background:#fef9c3;color:#92400e;padding:2px 10px;border-radius:4px;border:1px solid #fde68a">
-      ※ SSIN稼働12名のみ（開始初月・実質部分稼働）
+      ※ LUMISS稼働12名のみ（開始初月・実質部分稼働）
     </span>
   </div>
 
@@ -257,9 +271,9 @@ tbody tr:hover{background:#fafbff}
   <div class="chart-row">
     <div class="chart-label">2026/3月</div>
     <div class="chart-bar-bg">
-      <div style="height:100%;width:100%;display:flex;flex-direction:row">
-        <div class="stack-ssin" style="width:46.9%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff">¥351K</div>
-        <div class="stack-lumiss" style="width:53.1%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥397K ★</div>
+      <div style="height:100%;width:100%;display:flex">
+        <div class="stack-ssin" style="width:53.1%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff">¥397K</div>
+        <div class="stack-lumiss" style="width:46.9%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥351K</div>
       </div>
     </div>
     <div class="chart-val" style="color:var(--green);font-weight:900">¥748K ★</div>
@@ -269,56 +283,85 @@ tbody tr:hover{background:#fafbff}
   <div class="chart-row">
     <div class="chart-label">2026/4月</div>
     <div class="chart-bar-bg">
-      <div style="height:100%;width:81.6%;display:flex;flex-direction:row">
-        <div class="stack-ssin" style="width:41.8%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff">¥255K</div>
-        <div class="stack-lumiss" style="width:58.2%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥355K</div>
+      <div style="height:100%;width:81.6%;display:flex">
+        <div class="stack-ssin" style="width:58.2%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff">¥355K</div>
+        <div class="stack-lumiss" style="width:41.8%;display:flex;align-items:center;padding-left:4px;font-size:10px;color:#fff">¥255K</div>
       </div>
     </div>
     <div class="chart-val" style="color:var(--green)">¥611K</div>
   </div>
 
-  <div class="chart-avg-line" style="color:var(--green);font-weight:700;margin-top:6px">
+  <div class="chart-avg-line">
     <div class="dot" style="background:var(--green)"></div>
-    <span>今年 月平均（3〜4月）¥679,280（前年比 +23.3%）</span>
+    <span style="color:var(--green);font-weight:700">導入後月平均（3〜4月）¥679,280（導入前比 +19.6%）</span>
   </div>
 
-  <!-- 前年同月比サマリー -->
+  <!-- 導入前→導入後 タイムライン比較テーブル -->
   <div style="margin-top:14px;overflow-x:auto">
   <table>
     <thead>
       <tr>
         <th>月</th>
-        <th class="num">前年売上</th>
-        <th class="num">今年 SSIN</th>
-        <th class="num">今年 LUMISS</th>
-        <th class="num">今年 合算</th>
-        <th class="num">前年比</th>
+        <th class="num">SSIN売上</th>
+        <th class="num">LUMISS売上</th>
+        <th class="num">合算</th>
+        <th class="num">状態</th>
       </tr>
     </thead>
     <tbody>
+      <tr style="background:#f9fafb">
+        <td>2025年9月</td>
+        <td class="num">¥598,800</td><td class="num" style="color:var(--text3)">―</td>
+        <td class="num">¥598,800</td><td class="num"><span class="tag ta">導入前</span></td>
+      </tr>
+      <tr style="background:#f9fafb">
+        <td>2025年10月</td>
+        <td class="num">¥557,600</td><td class="num" style="color:var(--text3)">―</td>
+        <td class="num">¥557,600</td><td class="num"><span class="tag ta">導入前</span></td>
+      </tr>
+      <tr style="background:#f9fafb">
+        <td>2025年11月</td>
+        <td class="num">¥525,600</td><td class="num" style="color:var(--text3)">―</td>
+        <td class="num">¥525,600</td><td class="num"><span class="tag ta">導入前</span></td>
+      </tr>
+      <tr style="background:#f9fafb">
+        <td>2025年12月</td>
+        <td class="num">¥590,400</td><td class="num" style="color:var(--text3)">―</td>
+        <td class="num">¥590,400</td><td class="num"><span class="tag ta">導入前</span></td>
+      </tr>
+      <tr style="background:#fffbeb;font-weight:700;border-top:2px solid var(--border)">
+        <td style="color:var(--amber)">導入前月平均</td>
+        <td class="num" style="color:var(--amber)">¥568,100</td>
+        <td class="num" style="color:var(--text3)">―</td>
+        <td class="num" style="color:var(--amber)">¥568,100</td>
+        <td class="num">―</td>
+      </tr>
       <tr style="background:#fef9c3">
-        <td>2月<span style="font-size:10px;color:#92400e;display:block;font-weight:600">※部分稼働</span></td>
-        <td class="num">¥570,600</td><td class="num">¥81,100</td><td class="num">¥411,360</td>
+        <td>2026年2月<span style="font-size:10px;color:#92400e;display:block;font-weight:600">※LUMISS部分稼働</span></td>
+        <td class="num">¥411,360</td><td class="num" style="color:var(--green)">¥81,100</td>
         <td class="num">¥492,460</td>
-        <td class="num"><span class="tag tr">▼13.7%</span><br><span style="font-size:9px;color:#92400e">参考値</span></td>
+        <td class="num"><span style="font-size:9px;color:#92400e">参考値</span></td>
       </tr>
       <tr>
-        <td>3月</td>
-        <td class="num">¥533,800</td><td class="num">¥350,500</td><td class="num">¥397,350</td>
+        <td>2026年3月</td>
+        <td class="num">¥397,350</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥350,500</td>
         <td class="num" style="font-weight:700;color:var(--green)">¥747,850</td>
-        <td class="num"><span class="tag tg">+40.1%</span></td>
+        <td class="num"><span class="tag tg">導入後</span></td>
       </tr>
       <tr>
-        <td>4月</td>
-        <td class="num">¥567,650</td><td class="num">¥255,410</td><td class="num">¥355,300</td>
+        <td>2026年4月</td>
+        <td class="num">¥355,300</td>
+        <td class="num" style="color:var(--green);font-weight:700">¥255,410</td>
         <td class="num" style="font-weight:700;color:var(--green)">¥610,710</td>
-        <td class="num"><span class="tag tg">+7.6%</span></td>
+        <td class="num"><span class="tag tg">導入後</span></td>
       </tr>
-      <tr class="total-row hl-green">
-        <td>3ヶ月合計</td>
-        <td class="num">¥1,672,050</td><td class="num">¥687,010</td><td class="num">¥1,164,010</td>
-        <td class="num" style="color:var(--green)">¥1,851,020</td>
-        <td class="num"><span class="tag tg">+10.7%</span></td>
+      <tr style="background:#f0fdf4;font-weight:700;border-top:2px solid var(--border)">
+        <td style="color:var(--green)">導入後月平均（3〜4月）</td>
+        <td class="num" style="color:var(--amber)">¥376,325</td>
+        <td class="num" style="color:var(--green)">¥302,955</td>
+        <td class="num" style="color:var(--green)">¥679,280</td>
+        <td class="num"><span class="tag tg">+19.6%</span></td>
       </tr>
     </tbody>
   </table>
@@ -331,18 +374,18 @@ tbody tr:hover{background:#fafbff}
     <div class="sec-num a">3</div>
     <h2>この事例から読み取れること</h2>
   </div>
-  <div class="ig-row" style="grid-template-columns:1fr 1fr 1fr">
+  <div class="ig-row">
     <div class="insight ig">
-      <strong>LUMISSが売上の主力になっている</strong>
-      3〜4月の合算売上のうち、LUMISSが54〜58%を占める。SSIN単体の水準（¥229K/月）よりLUMISS（¥388K/月）が上回っており、2ブランド体制が完全に機能している。
+      <strong>SSINの既存客基盤が強固（再来率76%）</strong>
+      202名のSSIN客のうち154名が再来客（再来率76.2%）。導入前（2025年9〜12月）の平均71.3%からさらに+4.9pt改善。この「既存客の厚さ」がLUMISS追加の安定した土台となっている。
     </div>
     <div class="insight ib">
-      <strong>LUMISS の再来率が圧倒的に高い（76.2%）</strong>
-      3ヶ月計202名のうち154名が再来客。前年のSSIN再来率50.6%と比べて+25.6pt。一度ついたお客様が安定してリピートする構造が出来上がっている。
+      <strong>LUMISSは急速に立ち上がっている</strong>
+      2月12名（開始初月）→ 3月54名 → 4月39名。4月時点での再来率はすでに35.9%（14名）まで上昇。あと3〜4ヶ月でLUMISSの再来客層が固まれば合算売上が¥800K超えも視野に入る。
     </div>
-    <div class="insight ia">
-      <strong>SSIN の再来率は育成中（初月0%→35.9%）</strong>
-      2月は再来1名（開始初月のため当然）、3月5名・4月14名と着実に増加。今後3〜6ヶ月でSSINの再来客が積み上がれば、さらなる売上増が期待できる。
+    <div class="insight iv">
+      <strong>LUMISSの客単価はSSINより¥781高い</strong>
+      SSIN¥5,762 vs LUMISS¥6,543。LUMISSの客単価が高いため、LUMISS客の増加は単価アップにも直結する。新規獲得を強化することで高効率な売上増が期待できる。
     </div>
   </div>
 </div>
@@ -350,59 +393,14 @@ tbody tr:hover{background:#fafbff}
 <!-- ─── SECTION 4: 詳細データ ─── -->
 <div class="card">
   <div class="sec-title">
-    <div class="sec-num b" style="background:var(--text3)">4</div>
+    <div class="sec-num grey">4</div>
     <h2>詳細データ（参考）</h2>
   </div>
 
-  <!-- SSIN 今年 -->
   <button class="detail-toggle" onclick="toggleDetail('d1')">
     SSIN 詳細（2026年2〜4月）<span>▼</span>
   </button>
   <div class="detail-body" id="d1">
-    <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr><th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th><th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th><th class="num">客単価</th><th class="num">指名売上</th></tr>
-      </thead>
-      <tbody>
-        <tr style="background:#fef9c3">
-          <td>2026年2月<br><span style="font-size:10px;color:#92400e">※部分稼働</span></td>
-          <td class="num" style="color:var(--red)">¥81,100</td><td class="num">¥81,100</td><td class="num">¥0</td><td class="num">¥0</td>
-          <td class="num" style="color:var(--red)">12</td><td class="num">11</td><td class="num">1</td>
-          <td class="num"><span class="tag tr">8.3%</span></td><td class="num">¥6,758</td><td class="num">¥0</td>
-        </tr>
-        <tr>
-          <td>2026年3月</td>
-          <td class="num" style="color:var(--green);font-weight:700">¥350,500</td><td class="num">¥330,400</td><td class="num">¥20,100</td><td class="num">¥0</td>
-          <td class="num">54</td><td class="num">49</td><td class="num">5</td>
-          <td class="num"><span class="tag tr">9.3%</span></td><td class="num">¥6,491</td><td class="num">¥6,200</td>
-        </tr>
-        <tr>
-          <td>2026年4月</td>
-          <td class="num">¥255,410</td><td class="num">¥233,010</td><td class="num">¥17,900</td><td class="num">¥4,500</td>
-          <td class="num">39</td><td class="num">25</td><td class="num">14</td>
-          <td class="num"><span class="tag ta">35.9%</span></td><td class="num">¥6,549</td><td class="num">¥6,700</td>
-        </tr>
-        <tr class="total-row">
-          <td>合計</td>
-          <td class="num">¥687,010</td><td class="num">¥644,510</td><td class="num">¥38,000</td><td class="num">¥4,500</td>
-          <td class="num">105</td><td class="num">85</td><td class="num">20</td>
-          <td class="num">19.0%</td><td class="num">¥6,543</td><td class="num">¥12,900</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <div class="insight ia" style="margin-top:10px">
-      <strong>SSIN 再来率は今後伸びる</strong>
-      4月時点で再来率35.9%まで回復中。SSIN の新規客がリピートし始めており、あと2〜3ヶ月で安定的な再来客層が形成される見込み。
-    </div>
-  </div>
-
-  <!-- LUMISS 今年 -->
-  <button class="detail-toggle" onclick="toggleDetail('d2')">
-    LUMISS 詳細（2026年2〜4月）<span>▼</span>
-  </button>
-  <div class="detail-body" id="d2">
     <div class="tbl-wrap">
     <table>
       <thead>
@@ -436,55 +434,101 @@ tbody tr:hover{background:#fafbff}
       </tbody>
     </table>
     </div>
-    <div class="ig-row">
-      <div class="insight ig">
-        <strong>店販売上が非常に高い（¥201,460 / 3ヶ月）</strong>
-        月平均¥67,153。LUMISS商材への信頼が厚く、施術後のホームケア提案が浸透している。事例①との大きな差別化ポイント。
-      </div>
-      <div class="insight ib">
-        <strong>指名売上¥306,610 / 3ヶ月</strong>
-        月平均¥102,203の指名売上。再来率76%と相まって、固定客が確実に積み上がっている。このペースを維持すれば半年後には強固な収益基盤となる。
-      </div>
+    <div class="insight ig" style="margin-top:10px">
+      <strong>店販¥201,460（3ヶ月）・指名¥306,610が突出して高い</strong>
+      月平均店販¥67,153、指名売上¥102,203。既存客の信頼度が高く、商品提案と指名取得が機能している状態。
     </div>
   </div>
 
-  <!-- 前年比 SSIN -->
-  <button class="detail-toggle" onclick="toggleDetail('d3')">
-    前年ベースライン SSIN 詳細（2025年2〜4月）<span>▼</span>
+  <button class="detail-toggle" onclick="toggleDetail('d2')">
+    LUMISS 詳細（2026年2〜4月）<span>▼</span>
   </button>
-  <div class="detail-body" id="d3">
+  <div class="detail-body" id="d2">
     <div class="tbl-wrap">
     <table>
       <thead>
         <tr><th>月</th><th class="num">純売上</th><th class="num">施術</th><th class="num">店販</th><th class="num">OP</th><th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th><th class="num">客単価</th><th class="num">指名売上</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td>2025年2月</td>
-          <td class="num">¥570,600</td><td class="num">¥542,400</td><td class="num">¥8,700</td><td class="num">¥19,500</td>
-          <td class="num">102</td><td class="num">57</td><td class="num">45</td>
-          <td class="num"><span class="tag ta">44.1%</span></td><td class="num">¥5,594</td><td class="num">¥52,700</td>
+        <tr style="background:#fef9c3">
+          <td>2026年2月<br><span style="font-size:10px;color:#92400e;font-weight:600">※部分稼働</span></td>
+          <td class="num" style="color:var(--red)">¥81,100</td><td class="num">¥81,100</td><td class="num">¥0</td><td class="num">¥0</td>
+          <td class="num" style="color:var(--red)">12</td><td class="num">11</td><td class="num">1</td>
+          <td class="num"><span class="tag tr">8.3%</span></td><td class="num">¥6,758</td><td class="num">¥0</td>
         </tr>
         <tr>
-          <td>2025年3月</td>
-          <td class="num">¥533,800</td><td class="num">¥517,300</td><td class="num">¥5,500</td><td class="num">¥11,000</td>
-          <td class="num">108</td><td class="num">48</td><td class="num">60</td>
-          <td class="num"><span class="tag tg">55.6%</span></td><td class="num">¥4,943</td><td class="num">¥53,400</td>
+          <td>2026年3月</td>
+          <td class="num" style="font-weight:700;color:var(--green)">¥350,500</td><td class="num">¥330,400</td><td class="num">¥20,100</td><td class="num">¥0</td>
+          <td class="num">54</td><td class="num">49</td><td class="num">5</td>
+          <td class="num"><span class="tag tr">9.3%</span></td><td class="num">¥6,491</td><td class="num">¥6,200</td>
         </tr>
         <tr>
-          <td>2025年4月</td>
-          <td class="num">¥567,650</td><td class="num">¥534,700</td><td class="num">¥16,450</td><td class="num">¥16,500</td>
-          <td class="num">108</td><td class="num">52</td><td class="num">56</td>
-          <td class="num"><span class="tag tg">51.9%</span></td><td class="num">¥5,256</td><td class="num">¥45,000</td>
+          <td>2026年4月</td>
+          <td class="num">¥255,410</td><td class="num">¥233,010</td><td class="num">¥17,900</td><td class="num">¥4,500</td>
+          <td class="num">39</td><td class="num">25</td><td class="num">14</td>
+          <td class="num"><span class="tag ta">35.9%</span></td><td class="num">¥6,549</td><td class="num">¥6,700</td>
         </tr>
         <tr class="total-row">
           <td>合計</td>
-          <td class="num">¥1,672,050</td><td class="num">¥1,594,400</td><td class="num">¥30,650</td><td class="num">¥47,000</td>
-          <td class="num">318</td><td class="num">157</td><td class="num">161</td>
-          <td class="num">50.6%</td><td class="num">¥5,258</td><td class="num">¥151,100</td>
+          <td class="num">¥687,010</td><td class="num">¥644,510</td><td class="num">¥38,000</td><td class="num">¥4,500</td>
+          <td class="num">105</td><td class="num">85</td><td class="num">20</td>
+          <td class="num">19.0%</td><td class="num">¥6,543</td><td class="num">¥12,900</td>
         </tr>
       </tbody>
     </table>
+    </div>
+    <div class="insight ia" style="margin-top:10px">
+      <strong>LUMISSの再来率は今後急伸する見込み</strong>
+      4月時点で再来率35.9%（14名）まで上昇。3月の新規49名が次月以降に戻ってくれば、5〜6月には再来客が40〜50名規模になる。このペースなら半年後の月売上¥400K超えも現実的。
+    </div>
+  </div>
+
+  <button class="detail-toggle" onclick="toggleDetail('d3')">
+    導入前ベースライン SSIN（2025年9〜12月）<span>▼</span>
+  </button>
+  <div class="detail-body" id="d3">
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>月</th><th class="num">純売上</th><th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th><th class="num">客単価</th><th class="num">指名売上</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025年9月</td>
+          <td class="num">¥598,800</td>
+          <td class="num">86</td><td class="num">29</td><td class="num">57</td>
+          <td class="num"><span class="tag ta">66.3%</span></td><td class="num">¥6,963</td><td class="num">¥76,500</td>
+        </tr>
+        <tr>
+          <td>2025年10月</td>
+          <td class="num">¥557,600</td>
+          <td class="num">93</td><td class="num">21</td><td class="num">72</td>
+          <td class="num"><span class="tag tg">77.4%</span></td><td class="num">¥5,996</td><td class="num">¥79,000</td>
+        </tr>
+        <tr>
+          <td>2025年11月</td>
+          <td class="num">¥525,600</td>
+          <td class="num">99</td><td class="num">29</td><td class="num">70</td>
+          <td class="num"><span class="tag tg">70.7%</span></td><td class="num">¥5,309</td><td class="num">¥89,700</td>
+        </tr>
+        <tr>
+          <td>2025年12月</td>
+          <td class="num">¥590,400</td>
+          <td class="num">105</td><td class="num">31</td><td class="num">74</td>
+          <td class="num"><span class="tag tg">70.5%</span></td><td class="num">¥5,623</td><td class="num">¥91,500</td>
+        </tr>
+        <tr class="total-row">
+          <td>月平均 / 合計</td>
+          <td class="num">¥568,100 / 月</td>
+          <td class="num">96 / 月</td><td class="num">110 計</td><td class="num">273 計</td>
+          <td class="num">71.3%</td><td class="num">¥5,933</td><td class="num">¥84,175 / 月</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="insight ib" style="margin-top:10px">
+      <strong>導入前から再来率71.3%・指名¥84K/月と既に高水準</strong>
+      LUMISS導入前のSSIN単体でも再来率71.3%・月売上¥568,100と安定した基盤を持っていた。このスタッフの元々の接客力がLUMISS追加の土台となっている。
     </div>
   </div>
 </div>
