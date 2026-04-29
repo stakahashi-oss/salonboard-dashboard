@@ -1792,6 +1792,18 @@ async function executePush(lineUid) {
 // ══════════════════════════════════════════════════════════
 const SCENARIO_STEPS = [
   {
+    id: 'greeting',
+    label: '挨拶メッセージ（友達追加時）',
+    icon: '👋',
+    enableKey: '有効_挨拶',
+    timingKey: null,
+    timingUnit: null,
+    msgKey: 'メッセージ_挨拶',
+    defaultTiming: null,
+    defaultMsg: '{store}です😊\n\nLINEのご登録ありがとうございます✨\n{name}様のご来店をスタッフ一同心よりお待ちしております🌸\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ📱',
+    placeholder: '{name} {store}',
+  },
+  {
     id: 'reminder',
     label: '来店前リマインド',
     icon: '📅',
