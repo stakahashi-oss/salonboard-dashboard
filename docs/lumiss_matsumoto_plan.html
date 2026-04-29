@@ -382,6 +382,111 @@ tbody tr:hover{background:var(--s2)}
     <div class="annual">年間換算 +¥1,126,032 の追加収益</div>
   </div>
 
+  <!-- 別々計算 内訳 -->
+  <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">① 別々計算の内訳（安定後）</div>
+  <table style="margin-bottom:18px">
+    <thead>
+      <tr>
+        <th style="text-align:left">スタッフ</th>
+        <th>SSIN売上</th>
+        <th>SSIN ROY <span style="font-weight:400;font-size:10px">(10%)</span></th>
+        <th>LUMISS売上</th>
+        <th>LUMISS ROY <span style="font-weight:400;font-size:10px">(10%)</span></th>
+        <th>個人ROY計</th>
+        <th>¥150万ライン</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>大久保</strong></td>
+        <td>¥621,810</td>
+        <td>¥62,181</td>
+        <td style="color:var(--green)">¥341,200</td>
+        <td style="color:var(--green)">¥34,120</td>
+        <td style="font-weight:700">¥96,301</td>
+        <td style="color:var(--red)">¥963,010 ▲¥537K</td>
+      </tr>
+      <tr>
+        <td><strong>2名目</strong></td>
+        <td>¥572,503</td>
+        <td>¥57,250</td>
+        <td style="color:var(--green)">¥341,200</td>
+        <td style="color:var(--green)">¥34,120</td>
+        <td style="font-weight:700">¥91,370</td>
+        <td style="color:var(--red)">¥913,703 ▲¥586K</td>
+      </tr>
+      <tr class="total-row">
+        <td>合計</td>
+        <td>¥1,194,313</td>
+        <td style="color:var(--muted)">¥119,431</td>
+        <td style="color:var(--green)">¥682,400</td>
+        <td style="color:var(--green)">¥68,240</td>
+        <td style="color:var(--muted);font-size:16px">¥187,671</td>
+        <td style="color:var(--red)">誰も¥150万未達 → 永遠10%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 合算計算 内訳 -->
+  <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">② 合算計算の内訳（安定後）</div>
+  <table style="margin-bottom:18px">
+    <thead>
+      <tr>
+        <th style="text-align:left">内訳</th>
+        <th>SSIN合計</th>
+        <th>LUMISS合計</th>
+        <th>店舗合算</th>
+        <th>¥150万判定</th>
+        <th>ROY率</th>
+        <th style="color:var(--green)">月次ROY</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-hit">
+        <td><strong>店舗全体</strong></td>
+        <td>¥1,194,313</td>
+        <td style="color:var(--green)">¥682,400</td>
+        <td style="font-weight:700;color:var(--green)">¥1,876,713</td>
+        <td style="color:var(--green);font-weight:700">✓ +¥376,713</td>
+        <td style="color:var(--green);font-weight:800">15%</td>
+        <td style="color:var(--green);font-size:16px;font-weight:800">¥281,507</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 年間比較 -->
+  <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">年間ROY比較</div>
+  <table style="margin-bottom:18px">
+    <thead>
+      <tr>
+        <th style="text-align:left">計算方式</th>
+        <th>月次ROY</th>
+        <th>年間ROY</th>
+        <th>vs 別々計算</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>① 別々計算（SSIN/LUMISS 別々・永遠10%）</td>
+        <td style="color:var(--muted)">¥187,671</td>
+        <td style="color:var(--muted)">¥2,252,052</td>
+        <td style="color:var(--muted)">—</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>② 合算計算（現行契約・15%）</strong></td>
+        <td style="color:var(--green);font-weight:700">¥281,507</td>
+        <td style="color:var(--green);font-weight:700">¥3,378,084</td>
+        <td style="color:var(--green);font-weight:700">+¥1,126,032</td>
+      </tr>
+      <tr class="total-row">
+        <td>差額（合算の優位性）</td>
+        <td style="color:var(--green)">+¥93,836</td>
+        <td style="color:var(--green)">+¥1,126,032</td>
+        <td style="color:var(--green)">+59.9%</td>
+      </tr>
+    </tbody>
+  </table>
+
   <!-- MONTHLY PROGRESSION TABLE -->
   <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">月次ROY推移：①別々 vs ②合算</div>
   <table>
