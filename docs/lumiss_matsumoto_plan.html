@@ -26,191 +26,360 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);padding:20px 24px;line-height:1.55;font-size:14px}
-h1{font-size:22px;font-weight:700;letter-spacing:.02em}
-h2{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+h1{font-size:22px;font-weight:700}
+h2{font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 
-.alert{background:linear-gradient(135deg,rgba(32,210,133,.15),rgba(247,183,49,.1));border:1px solid rgba(32,210,133,.35);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px}
-.alert-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 8px var(--green)}
-.alert-text{font-size:13px;color:#a0f5d5;font-weight:500}
+.alert{border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.alert.green{background:linear-gradient(135deg,rgba(32,210,133,.15),rgba(75,158,248,.08));border:1px solid rgba(32,210,133,.35)}
+.alert.warn{background:linear-gradient(135deg,rgba(255,92,92,.14),rgba(247,183,49,.07));border:1px solid rgba(255,92,92,.3)}
+.alert-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.alert.green .alert-dot{background:var(--green);box-shadow:0 0 8px var(--green)}
+.alert.warn .alert-dot{background:var(--red)}
+.alert-text{font-size:13px;font-weight:500}
+.alert.green .alert-text{color:#9af5d2}
+.alert.warn .alert-text{color:#ffa0a0}
 .alert-text strong{color:#fff}
 
-.alert-warn{background:linear-gradient(135deg,rgba(255,92,92,.15),rgba(247,183,49,.08));border:1px solid rgba(255,92,92,.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#ffa0a0}
-.alert-warn strong{color:#fff}
+.header{margin-bottom:24px}
+.header-meta{font-size:12px;color:var(--muted);margin-top:5px}
+.header-meta span{margin-right:14px}
 
-.header{margin-bottom:28px}
-.header-meta{font-size:12px;color:var(--muted);margin-top:6px}
-.header-meta span{margin-right:16px}
-
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
-.kpi{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi{border-radius:12px;padding:16px 18px;border:1px solid var(--border);background:var(--s1)}
 .kpi.amber{border-color:rgba(247,183,49,.4);background:var(--amber-d)}
 .kpi.green{border-color:rgba(32,210,133,.4);background:var(--green-d)}
-.kpi.blue{border-color:rgba(75,158,248,.4);background:var(--blue-d)}
 .kpi.purple{border-color:rgba(199,125,255,.4);background:var(--purple-d)}
-.kpi-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.kpi-value{font-size:24px;font-weight:800;letter-spacing:-.01em}
+.kpi.blue{border-color:rgba(75,158,248,.4);background:var(--blue-d)}
+.kpi-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:800}
 .kpi.amber .kpi-value{color:var(--amber)}
 .kpi.green .kpi-value{color:var(--green)}
-.kpi.blue .kpi-value{color:var(--blue)}
 .kpi.purple .kpi-value{color:var(--purple)}
+.kpi.blue .kpi-value{color:var(--blue)}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
 
-.section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:20px}
+.section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px}
 
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+thead th{padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border)}
 thead th:first-child{text-align:left}
 tbody td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--border)}
-tbody td:first-child{text-align:left;color:var(--muted);font-weight:500}
+tbody td:first-child{text-align:left;color:var(--muted)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:var(--s2)}
 .total-row td{font-weight:700;background:var(--s2) !important;color:var(--text) !important}
-.num-pos{color:var(--green)}
-.num-neg{color:var(--red)}
-.num-amber{color:var(--amber);font-weight:700}
-.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
-.tag-green{background:var(--green-d);color:var(--green);border:1px solid rgba(32,210,133,.3)}
-.tag-amber{background:var(--amber-d);color:var(--amber);border:1px solid rgba(247,183,49,.3)}
-.tag-red{background:var(--red-d);color:var(--red);border:1px solid rgba(255,92,92,.25)}
-.tag-gray{background:rgba(104,112,160,.12);color:var(--muted);border:1px solid rgba(104,112,160,.25)}
-.tag-purple{background:var(--purple-d);color:var(--purple);border:1px solid rgba(199,125,255,.3)}
 
-/* 15% tier highlight row */
-.row-15pct{background:rgba(32,210,133,.06) !important}
-.row-15pct td:first-child::after{content:" ▶ 15%";font-size:10px;color:var(--green);font-weight:700;margin-left:4px}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.tg{background:var(--green-d);color:var(--green);border:1px solid rgba(32,210,133,.3)}
+.ta{background:var(--amber-d);color:var(--amber);border:1px solid rgba(247,183,49,.3)}
+.tr{background:var(--red-d);color:var(--red);border:1px solid rgba(255,92,92,.25)}
+.tgy{background:rgba(104,112,160,.1);color:var(--muted);border:1px solid rgba(104,112,160,.2)}
+.tp{background:var(--purple-d);color:var(--purple);border:1px solid rgba(199,125,255,.3)}
+
+/* ¥150万到達行 */
+.row-hit{background:rgba(32,210,133,.07) !important}
 .row-zero td{color:var(--red) !important}
-.milestone-label{font-size:10px;color:var(--amber);margin-left:6px}
+.num-g{color:var(--green);font-weight:600}
+.num-a{color:var(--amber);font-weight:700}
+.num-p{color:var(--purple)}
+.num-r{color:var(--red)}
+.ms{font-size:10px;margin-left:4px}
 
-.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:0}
-.sc-card{border-radius:12px;padding:18px;border:1px solid var(--border)}
-.sc-card.off{background:rgba(104,112,160,.06);border-color:rgba(104,112,160,.2)}
-.sc-card.one{background:var(--blue-d);border-color:rgba(75,158,248,.3)}
-.sc-card.two{background:linear-gradient(135deg,rgba(32,210,133,.12),rgba(247,183,49,.08));border-color:rgba(32,210,133,.4)}
-.sc-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-.sc-card.off .sc-title{color:var(--muted)}
-.sc-card.one .sc-title{color:var(--blue)}
-.sc-card.two .sc-title{color:var(--green)}
-.sc-val{font-size:26px;font-weight:800;margin-bottom:4px}
-.sc-card.off .sc-val{color:var(--muted)}
-.sc-card.one .sc-val{color:var(--blue)}
-.sc-card.two .sc-val{color:var(--amber)}
-.sc-sub{font-size:11px;color:var(--muted);line-height:1.7}
-.sc-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;margin-top:8px}
-.sc-card.off .sc-badge{background:rgba(104,112,160,.12);color:var(--muted);border:1px solid rgba(104,112,160,.2)}
-.sc-card.one .sc-badge{background:var(--blue-d);color:var(--blue);border:1px solid rgba(75,158,248,.3)}
-.sc-card.two .sc-badge{background:var(--green-d);color:var(--green);border:1px solid rgba(32,210,133,.35)}
+/* case1 data source box */
+.source-box{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.source-title{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
 
-.compare-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
-.c-card{border-radius:12px;padding:16px;border:1px solid var(--border)}
-.c-card.off{background:rgba(104,112,160,.06)}
-.c-card.one{background:var(--blue-d);border-color:rgba(75,158,248,.3)}
-.c-card.two{background:var(--green-d);border-color:rgba(32,210,133,.4)}
-.c-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
-.c-card.off .c-title{color:var(--muted)}
-.c-card.one .c-title{color:var(--blue)}
-.c-card.two .c-title{color:var(--green)}
-.c-line{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
-.c-line:last-child{border-bottom:none}
-.c-line .l{color:var(--muted)}
-.c-line .v{font-weight:600}
+/* two col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
-.note{background:var(--s2);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}
+.note{background:var(--s2);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6}
 .note strong{color:var(--text)}
 
-.action-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.action-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
 .action-item:last-child{border-bottom:none}
-.action-num{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.action-num.urgent{background:var(--red-d);color:var(--red);border:1px solid rgba(255,92,92,.3)}
-.action-num.high{background:var(--amber-d);color:var(--amber);border:1px solid rgba(247,183,49,.3)}
-.action-num.normal{background:var(--blue-d);color:var(--blue);border:1px solid rgba(75,158,248,.3)}
-.action-body .title{font-weight:600;font-size:13px;margin-bottom:2px}
-.action-body .desc{font-size:12px;color:var(--muted)}
-.action-body .due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:4px;display:inline-block}
-.due-red{background:var(--red-d);color:var(--red)}
-.due-amber{background:var(--amber-d);color:var(--amber)}
-.due-blue{background:var(--blue-d);color:var(--blue)}
+.anum{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.anum.r{background:var(--red-d);color:var(--red);border:1px solid rgba(255,92,92,.3)}
+.anum.a{background:var(--amber-d);color:var(--amber);border:1px solid rgba(247,183,49,.3)}
+.anum.b{background:var(--blue-d);color:var(--blue);border:1px solid rgba(75,158,248,.3)}
+.abody .t{font-weight:600;font-size:13px;margin-bottom:2px}
+.abody .d{font-size:12px;color:var(--muted)}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:4px;display:inline-block}
+.dr{background:var(--red-d);color:var(--red)}
+.da{background:var(--amber-d);color:var(--amber)}
+.db{background:var(--blue-d);color:var(--blue)}
 
-.tier-box{background:linear-gradient(135deg,rgba(32,210,133,.1),rgba(247,183,49,.06));border:1px solid rgba(32,210,133,.3);border-radius:10px;padding:14px 16px;margin-bottom:20px}
-.tier-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.tier-item{text-align:center}
-.tier-num{font-size:20px;font-weight:800}
-.tier-lbl{font-size:11px;color:var(--muted);margin-top:3px}
-
-@media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.scenario-grid{grid-template-columns:1fr}.compare-row{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.kpi-row,.three-col{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <!-- ALERT -->
-<div class="alert">
+<div class="alert green">
   <div class="alert-dot"></div>
-  <div class="alert-text"><strong>2名体制 + 15%tier前提で全面再計算。</strong> SSINベース¥119.5万があるため、LUMISSが¥30.5万を超えた翌月から即15%が発動する。</div>
+  <div class="alert-text"><strong>ケース事例①実績ベース再計算。</strong> LUMISS1名フル平均¥341,200/月 × 2名 = ¥682,400/月。SSINベース¥119.5万があるため、<strong>8月（デビュー翌月）に合算¥154.4万 → 15%発動。</strong></div>
 </div>
 
 <!-- HEADER -->
 <div class="header">
   <h1>S松本 LUMISS導入 ｜ SSIN利益シミュレーション</h1>
   <div class="header-meta">
-    <span>スタッフ2名体制（大久保さん7月 + 2名目10月デビュー）</span>
+    <span>2名体制（大久保7月・2名目10月デビュー）</span>
     <span>合算10%・¥150万超で15%・デビューから発生</span>
+    <span>LUMISS予測値はケース事例①実績ベース</span>
     <span style="color:var(--amber)">2026-04-29</span>
   </div>
 </div>
 
-<!-- KPI ROW -->
+<!-- KPI -->
 <div class="kpi-row">
   <div class="kpi amber">
     <div class="kpi-label">12ヶ月合計収益</div>
-    <div class="kpi-value">¥5,905,000</div>
-    <div class="kpi-sub">加盟金¥220万 + ROY¥370.5万</div>
+    <div class="kpi-value">¥4,769,670</div>
+    <div class="kpi-sub">加盟金¥220万 + ROY¥256.9万</div>
   </div>
   <div class="kpi green">
     <div class="kpi-label">LUMISS無し比較 増分</div>
-    <div class="kpi-value">+¥4,471,000</div>
+    <div class="kpi-value">+¥3,336,000</div>
     <div class="kpi-sub">vs 現状SSIN ROYのみ¥143.4万/年</div>
   </div>
   <div class="kpi purple">
-    <div class="kpi-label">安定後 月次ROY</div>
-    <div class="kpi-value">¥479,250</div>
-    <div class="kpi-sub">合算¥319.5万 × 15%（2名フル稼働後）</div>
+    <div class="kpi-label">安定後 月次ROY（2名フル）</div>
+    <div class="kpi-value">¥281,549</div>
+    <div class="kpi-sub">合算¥187.7万 × 15%（2名フル稼働後）</div>
   </div>
   <div class="kpi blue">
-    <div class="kpi-label">15%tier 発動月</div>
-    <div class="kpi-value">8月〜</div>
-    <div class="kpi-sub">LUMISS¥50万で合算¥169.5万 → 即15%</div>
+    <div class="kpi-label">¥150万超・15%発動月</div>
+    <div class="kpi-value">2026年8月</div>
+    <div class="kpi-sub">デビュー翌月 合算¥154.4万</div>
   </div>
 </div>
 
-<!-- 15%TIER INSIGHT -->
-<div class="tier-box">
-  <div class="tier-title">15%tier 発動構造</div>
-  <div class="tier-grid">
-    <div class="tier-item">
-      <div class="tier-num" style="color:var(--muted)">¥1,195,000</div>
-      <div class="tier-lbl">SSINベース売上（固定）</div>
-    </div>
-    <div class="tier-item">
-      <div class="tier-num" style="color:var(--amber)">¥ 305,000</div>
-      <div class="tier-lbl">15%発動に必要なLUMISS最低額</div>
-    </div>
-    <div class="tier-item">
-      <div class="tier-num" style="color:var(--green)">8月から</div>
-      <div class="tier-lbl">LUMISS¥50万で余裕でクリア → 即15%常時適用</div>
-    </div>
-  </div>
-</div>
-
-<!-- 月次キャッシュフロー -->
+<!-- CASE1 DATA SOURCE -->
 <div class="section">
-  <h2>月次キャッシュフロー（2名体制・15%tier）</h2>
+  <h2>ケース事例①実績データ（LUMISS 1名あたり月次売上）</h2>
+
+  <div class="source-box">
+    <div class="source-title">出典：LUMISS導入 成果報告書 ― 事例① / 稼働6ヶ月</div>
+    <div class="two-col">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">稼働月</th>
+            <th>LUMISS売上</th>
+            <th>SSIN売上</th>
+            <th>合計</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>月1（11月）</td>
+            <td style="color:var(--green)">¥267,000</td>
+            <td>¥199,000</td>
+            <td>¥466,000</td>
+            <td><span class="tag tgy">半月分</span></td>
+          </tr>
+          <tr>
+            <td>月2（12月）</td>
+            <td style="color:var(--green);font-weight:700">¥350,000</td>
+            <td>¥514,000</td>
+            <td style="font-weight:700">¥864,000 ★</td>
+            <td><span class="tag tg">フル稼働</span></td>
+          </tr>
+          <tr>
+            <td>月3（1月）</td>
+            <td style="color:var(--green)">¥358,000</td>
+            <td>¥371,000</td>
+            <td>¥729,000</td>
+            <td><span class="tag tg">フル稼働</span></td>
+          </tr>
+          <tr>
+            <td>月4（2月）</td>
+            <td style="color:var(--green)">¥336,000</td>
+            <td>¥471,000</td>
+            <td>¥807,000</td>
+            <td><span class="tag tg">フル稼働</span></td>
+          </tr>
+          <tr>
+            <td>月5（3月）</td>
+            <td style="color:var(--green)">¥330,000</td>
+            <td>¥432,000</td>
+            <td>¥762,000</td>
+            <td><span class="tag tg">フル稼働</span></td>
+          </tr>
+          <tr>
+            <td>月6（4月）</td>
+            <td style="color:var(--green)">¥332,000</td>
+            <td>¥423,000</td>
+            <td>¥755,000</td>
+            <td><span class="tag tg">フル稼働</span></td>
+          </tr>
+          <tr class="total-row">
+            <td>フル5ヶ月平均</td>
+            <td style="color:var(--green);font-weight:800">¥341,200</td>
+            <td>¥442,200</td>
+            <td style="color:var(--amber)">¥783,400</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div>
+        <div style="background:var(--s3);border-radius:10px;padding:14px;margin-bottom:12px">
+          <div style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">松本 2名体制への適用</div>
+          <div style="font-size:13px;line-height:1.9">
+            LUMISS 1名フル平均<br>
+            <strong style="font-size:20px;color:var(--green)">¥341,200</strong><span style="color:var(--muted);font-size:12px">/月/人</span><br>
+            × 2名体制<br>
+            <strong style="font-size:22px;color:var(--amber)">¥682,400</strong><span style="color:var(--muted);font-size:12px">/月（安定後）</span>
+          </div>
+        </div>
+        <div style="background:var(--s3);border-radius:10px;padding:14px">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">ケース1の前年同月比</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.8">
+            SSIN月平均 ¥577,940<br>→ SSIN+LUMISS ¥730,242<br>
+            <strong style="color:var(--green)">+¥152,302/月（+26.4%）</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>注意：</strong>ケース事例①はSSIN売上が導入後に¥577,940→¥401,667へ減少しています（1名がLUMISSに時間を割いた影響）。松本店は<strong>2名体制のためSSINは維持できる前提</strong>で計算していますが、実態に応じて調整が必要です。
+  </div>
+</div>
+
+<!-- TIMING TABLE -->
+<div class="section">
+  <h2>合算売上 推移と¥150万到達タイミング</h2>
+
   <table>
     <thead>
       <tr>
         <th style="text-align:left">月</th>
+        <th>SSIN合計</th>
         <th>大久保 LUMISS</th>
         <th>2名目 LUMISS</th>
-        <th>SSIN合計</th>
+        <th>合算売上</th>
+        <th>¥150万判定</th>
+        <th>ROY率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-zero">
+        <td><strong>2026年5月</strong> <span class="tag tr">デビュー前</span></td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--red)">0%</td>
+      </tr>
+      <tr class="row-zero">
+        <td><strong>2026年6月</strong> <span class="tag tgy">研修月</span></td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--red)">0%</td>
+      </tr>
+      <tr>
+        <td><strong>2026年7月</strong> <span class="tag tg">大久保デビュー</span></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥267,000 <span class="ms" style="color:var(--muted)">月1</span></td>
+        <td style="color:var(--muted)">—</td>
+        <td>¥1,461,590</td>
+        <td><span style="color:var(--red);font-weight:700">✗ ▲¥38,410</span></td>
+        <td style="color:var(--muted)">10%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2026年8月</strong> <span style="font-size:10px;color:var(--green);font-weight:700;margin-left:4px">◀ 15%発動</span></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥350,000 <span class="ms" style="color:var(--muted)">月2</span></td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--green);font-weight:700">¥1,544,590</td>
+        <td><span style="color:var(--green);font-weight:700">✓ +¥44,590</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2026年9月</strong></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥358,000 <span class="ms" style="color:var(--muted)">月3</span></td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--green)">¥1,552,590</td>
+        <td><span style="color:var(--green)">✓</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2026年10月</strong> <span class="tag tp">2名目デビュー</span></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥336,000 <span class="ms" style="color:var(--muted)">月4</span></td>
+        <td style="color:var(--purple)">¥267,000 <span class="ms" style="color:var(--muted)">月1</span></td>
+        <td style="color:var(--green)">¥1,797,590</td>
+        <td><span style="color:var(--green)">✓</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2026年11月</strong></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥330,000 <span class="ms" style="color:var(--muted)">月5</span></td>
+        <td style="color:var(--purple)">¥350,000 <span class="ms" style="color:var(--muted)">月2</span></td>
+        <td style="color:var(--green)">¥1,874,590</td>
+        <td><span style="color:var(--green)">✓</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2026年12月</strong></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥332,000 <span class="ms" style="color:var(--muted)">月6</span></td>
+        <td style="color:var(--purple)">¥358,000 <span class="ms" style="color:var(--muted)">月3</span></td>
+        <td style="color:var(--green)">¥1,884,590</td>
+        <td><span style="color:var(--green)">✓</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+      <tr class="row-hit">
+        <td><strong>2027年1月〜</strong> <span class="tag tg">2名フル安定</span></td>
+        <td>¥1,194,590</td>
+        <td style="color:var(--green)">¥341,200 <span class="ms" style="color:var(--muted)">安定</span></td>
+        <td style="color:var(--purple)">¥341,200 <span class="ms" style="color:var(--muted)">安定</span></td>
+        <td style="color:var(--green)">¥1,876,990</td>
+        <td><span style="color:var(--green)">✓</span></td>
+        <td style="color:var(--green);font-weight:700">15%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background:rgba(32,210,133,.08);border:1px solid rgba(32,210,133,.3);border-radius:10px;padding:14px 16px;margin-top:14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:3px">7月（惜しくも10%）</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text)">¥1,461,590</div>
+        <div style="font-size:11px;color:var(--red)">¥150万まで あと ¥38,410</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:3px">8月 ← 15%発動</div>
+        <div style="font-size:18px;font-weight:800;color:var(--green)">¥1,544,590</div>
+        <div style="font-size:11px;color:var(--green)">¥150万超 +¥44,590</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:3px">2名フル安定後</div>
+        <div style="font-size:18px;font-weight:800;color:var(--amber)">¥1,876,990</div>
+        <div style="font-size:11px;color:var(--amber)">ROY ¥281,549/月</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CASHFLOW -->
+<div class="section">
+  <h2>月次収益キャッシュフロー（SSIN受取）</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align:left">月</th>
         <th>合算売上</th>
         <th>ROY率</th>
         <th>ROY金額</th>
@@ -220,350 +389,199 @@ tbody tr:hover{background:var(--s2)}
       </tr>
     </thead>
     <tbody>
-      <!-- PRE-DEBUT -->
       <tr class="row-zero">
-        <td><strong>2026年5月</strong> <span class="tag tag-red">デビュー前</span></td>
-        <td style="color:var(--muted)">—</td>
-        <td style="color:var(--muted)">—</td>
-        <td style="color:var(--muted)">—</td>
+        <td><strong>2026年5月</strong></td>
         <td style="color:var(--muted)">—</td>
         <td style="color:var(--red)">0%</td>
         <td style="color:var(--red)">¥0</td>
         <td style="color:var(--amber);font-weight:700">¥700,000</td>
-        <td style="color:var(--amber);font-weight:700">¥700,000</td>
-        <td style="color:var(--purple)">¥700,000</td>
+        <td class="num-a">¥700,000</td>
+        <td class="num-p">¥700,000</td>
       </tr>
       <tr class="row-zero">
-        <td><strong>2026年6月</strong> <span class="tag tag-gray">研修月</span></td>
-        <td style="color:var(--muted)">—</td>
-        <td style="color:var(--muted)">—</td>
-        <td style="color:var(--muted)">—</td>
+        <td><strong>2026年6月</strong></td>
         <td style="color:var(--muted)">—</td>
         <td style="color:var(--red)">0%</td>
         <td style="color:var(--red)">¥0</td>
         <td style="color:var(--muted)">¥0</td>
         <td style="color:var(--red)">¥0</td>
-        <td style="color:var(--purple)">¥700,000</td>
+        <td class="num-p">¥700,000</td>
       </tr>
-      <!-- 7月: LUMISS開始、¥150万未満 → 10% -->
       <tr>
-        <td><strong>2026年7月</strong> <span class="tag tag-green">大久保デビュー</span></td>
-        <td>¥300,000</td>
-        <td style="color:var(--muted)">—</td>
-        <td>¥1,195,000</td>
-        <td>¥1,495,000</td>
+        <td><strong>2026年7月</strong> <span class="tag tg">大久保デビュー</span></td>
+        <td>¥1,461,590</td>
         <td style="color:var(--muted)">10%</td>
-        <td class="num-pos">¥149,500</td>
+        <td class="num-g">¥146,159</td>
         <td style="color:var(--muted)">¥0</td>
-        <td class="num-amber">¥149,500</td>
-        <td style="color:var(--purple)">¥849,500</td>
+        <td class="num-a">¥146,159</td>
+        <td class="num-p">¥846,159</td>
       </tr>
-      <!-- 8月以降: 15%tier発動 -->
-      <tr class="row-15pct">
-        <td><strong>2026年8月</strong></td>
-        <td>¥500,000</td>
-        <td style="color:var(--muted)">—</td>
-        <td>¥1,195,000</td>
-        <td>¥1,695,000</td>
+      <tr class="row-hit">
+        <td><strong>2026年8月</strong> <span style="font-size:10px;color:var(--green);font-weight:700">◀ 15%発動</span></td>
+        <td style="color:var(--green)">¥1,544,590</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥254,250</td>
+        <td style="color:var(--green);font-weight:700">¥231,689</td>
         <td style="color:var(--muted)">¥0</td>
-        <td class="num-amber">¥254,250</td>
-        <td style="color:var(--purple)">¥1,103,750</td>
+        <td class="num-a">¥231,689</td>
+        <td class="num-p">¥1,077,848</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2026年9月</strong> <span class="tag tag-amber">分割①</span></td>
-        <td>¥700,000</td>
-        <td style="color:var(--muted)">—</td>
-        <td>¥1,195,000</td>
-        <td>¥1,895,000</td>
+      <tr class="row-hit">
+        <td><strong>2026年9月</strong> <span class="tag ta">分割①</span></td>
+        <td style="color:var(--green)">¥1,552,590</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥284,250</td>
+        <td style="color:var(--green);font-weight:700">¥232,889</td>
         <td style="color:var(--amber)">¥300,000</td>
-        <td class="num-amber">¥584,250</td>
-        <td style="color:var(--purple)">¥1,688,000</td>
+        <td class="num-a">¥532,889</td>
+        <td class="num-p">¥1,610,737</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2026年10月</strong> <span class="tag tag-amber">分割②</span> <span class="tag tag-purple">2名目デビュー</span></td>
-        <td>¥900,000</td>
-        <td>¥150,000</td>
-        <td>¥1,195,000</td>
-        <td>¥2,245,000</td>
+      <tr class="row-hit">
+        <td><strong>2026年10月</strong> <span class="tag ta">分割②</span> <span class="tag tp">2名目</span></td>
+        <td style="color:var(--green)">¥1,797,590</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥336,750</td>
+        <td style="color:var(--green);font-weight:700">¥269,639</td>
         <td style="color:var(--amber)">¥300,000</td>
-        <td class="num-amber">¥636,750</td>
-        <td style="color:var(--purple)">¥2,324,750</td>
+        <td class="num-a">¥569,639</td>
+        <td class="num-p">¥2,180,376</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2026年11月</strong> <span class="tag tag-amber">分割③</span></td>
-        <td>¥1,000,000</td>
-        <td>¥300,000</td>
-        <td>¥1,195,000</td>
-        <td>¥2,495,000</td>
+      <tr class="row-hit">
+        <td><strong>2026年11月</strong> <span class="tag ta">分割③</span></td>
+        <td style="color:var(--green)">¥1,874,590</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥374,250</td>
+        <td style="color:var(--green);font-weight:700">¥281,189</td>
         <td style="color:var(--amber)">¥300,000</td>
-        <td class="num-amber">¥674,250</td>
-        <td style="color:var(--purple)">¥2,999,000</td>
+        <td class="num-a">¥581,189</td>
+        <td class="num-p">¥2,761,565</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2026年12月</strong> <span class="tag tag-amber">分割④</span></td>
-        <td>¥1,100,000</td>
-        <td>¥500,000</td>
-        <td>¥1,195,000</td>
-        <td>¥2,795,000</td>
+      <tr class="row-hit">
+        <td><strong>2026年12月</strong> <span class="tag ta">分割④</span></td>
+        <td style="color:var(--green)">¥1,884,590</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥419,250</td>
+        <td style="color:var(--green);font-weight:700">¥282,689</td>
         <td style="color:var(--amber)">¥300,000</td>
-        <td class="num-amber">¥719,250</td>
-        <td style="color:var(--purple)">¥3,718,250</td>
+        <td class="num-a">¥582,689</td>
+        <td class="num-p">¥3,344,254</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2027年1月</strong> <span class="tag tag-amber">分割⑤</span> <span class="milestone-label">◀ 加盟金全額回収</span></td>
-        <td>¥1,100,000</td>
-        <td>¥700,000</td>
-        <td>¥1,195,000</td>
-        <td>¥2,995,000</td>
+      <tr class="row-hit">
+        <td><strong>2027年1月</strong> <span class="tag ta">分割⑤</span> <span style="font-size:10px;color:var(--amber);margin-left:4px">◀ 加盟金全額回収</span></td>
+        <td style="color:var(--green)">¥1,871,790</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥449,250</td>
+        <td style="color:var(--green);font-weight:700">¥280,769</td>
         <td style="color:var(--amber)">¥300,000</td>
-        <td class="num-amber">¥749,250</td>
-        <td style="color:var(--purple)">¥4,467,500</td>
+        <td class="num-a">¥580,769</td>
+        <td class="num-p">¥3,925,023</td>
       </tr>
-      <tr class="row-15pct">
-        <td><strong>2027年2月</strong> <span class="tag tag-green">ROYのみ</span></td>
-        <td>¥1,100,000</td>
-        <td>¥900,000</td>
-        <td>¥1,195,000</td>
-        <td>¥3,195,000</td>
+      <tr class="row-hit">
+        <td><strong>2027年2月</strong> <span class="tag tg">ROYのみ</span></td>
+        <td style="color:var(--green)">¥1,876,990</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥479,250</td>
+        <td style="color:var(--green);font-weight:700">¥281,549</td>
         <td style="color:var(--muted)">¥0</td>
-        <td class="num-amber">¥479,250</td>
-        <td style="color:var(--purple)">¥4,946,750</td>
+        <td class="num-a">¥281,549</td>
+        <td class="num-p">¥4,206,572</td>
       </tr>
-      <tr class="row-15pct">
+      <tr class="row-hit">
         <td><strong>2027年3月</strong></td>
-        <td>¥1,100,000</td>
-        <td>¥900,000</td>
-        <td>¥1,195,000</td>
-        <td>¥3,195,000</td>
+        <td style="color:var(--green)">¥1,876,990</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥479,250</td>
+        <td style="color:var(--green);font-weight:700">¥281,549</td>
         <td style="color:var(--muted)">¥0</td>
-        <td class="num-amber">¥479,250</td>
-        <td style="color:var(--purple)">¥5,426,000</td>
+        <td class="num-a">¥281,549</td>
+        <td class="num-p">¥4,488,121</td>
       </tr>
-      <tr class="row-15pct">
+      <tr class="row-hit">
         <td><strong>2027年4月</strong></td>
-        <td>¥1,100,000</td>
-        <td>¥900,000</td>
-        <td>¥1,195,000</td>
-        <td>¥3,195,000</td>
+        <td style="color:var(--green)">¥1,876,990</td>
         <td style="color:var(--green);font-weight:700">15%</td>
-        <td style="color:var(--green);font-weight:700">¥479,250</td>
+        <td style="color:var(--green);font-weight:700">¥281,549</td>
         <td style="color:var(--muted)">¥0</td>
-        <td class="num-amber">¥479,250</td>
-        <td style="color:var(--purple)">¥5,905,250</td>
+        <td class="num-a">¥281,549</td>
+        <td class="num-p">¥4,769,670</td>
       </tr>
       <tr class="total-row">
         <td>12ヶ月合計</td>
         <td>—</td>
         <td>—</td>
-        <td>—</td>
-        <td>—</td>
-        <td></td>
-        <td style="color:var(--green);font-weight:800">¥3,705,250</td>
+        <td style="color:var(--green);font-weight:800">¥2,569,670</td>
         <td style="color:var(--amber);font-weight:800">¥2,200,000</td>
-        <td style="color:var(--amber);font-weight:800">¥5,905,250</td>
+        <td style="color:var(--amber);font-weight:800">¥4,769,670</td>
         <td></td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- COMPARISON -->
+<div class="section">
+  <h2>SSIN利益比較</h2>
+  <div class="three-col">
+    <div style="background:rgba(104,112,160,.07);border:1px solid rgba(104,112,160,.2);border-radius:12px;padding:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">LUMISS無し</div>
+      <div style="font-size:22px;font-weight:800;color:var(--muted);margin-bottom:8px">¥1,434,000</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">SSIN ROY ¥119,459/月<br>加盟金収入 ¥0<br>2年目/年 ¥1,434,000</div>
+    </div>
+    <div style="background:var(--green-d);border:1px solid rgba(32,210,133,.4);border-radius:12px;padding:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">LUMISS導入 2名15%tier ★</div>
+      <div style="font-size:22px;font-weight:800;color:var(--amber);margin-bottom:8px">¥4,769,670</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">ROY安定後 ¥281,549/月<br>加盟金 ¥2,200,000<br>2年目/年 <strong style="color:var(--green)">¥3,378,588</strong></div>
+    </div>
+    <div style="background:var(--amber-d);border:1px solid rgba(247,183,49,.4);border-radius:12px;padding:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">2年間 増分</div>
+      <div style="font-size:22px;font-weight:800;color:var(--amber);margin-bottom:8px">+¥7,045,000</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">1年目 +¥3,336,000<br>2年目 +¥1,945,000/年<br>2年合計 LUMISS有り <strong style="color:var(--amber)">¥8,148,000</strong></div>
+    </div>
+  </div>
   <div class="note">
-    <strong>前提：</strong>SSIN売上¥1,195,000/月固定（4月実績）。大久保7月デビュー・2名目10月デビュー。合算¥150万以上は全額15%。デビュー前の5〜6月はROY¥0（要交渉）。<br>
-    <strong>15%tier：</strong>SSINの¥119.5万ベースがあるため、LUMISSが¥30.5万を超えれば即発動。7月は¥149.5万で惜しくも10%（¥149,500 vs 15%なら¥224,250の差¥74,750）。8月から常時15%。
+    <strong>7月10%を15%に変えるには：</strong>デビュー月のLUMISS売上が¥267Kではなく¥306K以上になればよい。差は¥39K。初月から¥306K稼ぐには月前半から予約を埋める必要あり。HPB・LINE配信でLUMISSの先行告知を6月中に打つことで達成可能。
   </div>
 </div>
 
-<!-- シナリオ比較 -->
+<!-- ACTIONS -->
 <div class="section">
-  <h2>3パターン比較</h2>
-  <div class="scenario-grid" style="margin-bottom:20px">
-    <div class="sc-card off">
-      <div class="sc-title">LUMISS無し</div>
-      <div class="sc-val">¥1,434,000</div>
-      <div class="sc-sub">
-        SSIN ROY¥119,500/月のみ<br>
-        加盟金収入なし
-      </div>
-      <div class="sc-badge">月ROY ¥119,500（固定）</div>
-    </div>
-    <div class="sc-card one">
-      <div class="sc-title">旧試算（1名・合算10%）</div>
-      <div class="sc-val">¥4,170,000</div>
-      <div class="sc-sub">
-        LUMISS¥100万安定後 合算10%のみ<br>
-        加盟金¥220万 + ROY¥197万
-      </div>
-      <div class="sc-badge">月ROY安定 ¥219,500</div>
-    </div>
-    <div class="sc-card two">
-      <div class="sc-title">今回試算（2名・15%tier）★</div>
-      <div class="sc-val">¥5,905,250</div>
-      <div class="sc-sub">
-        2名LUMISS・8月から15%常時適用<br>
-        加盟金¥220万 + ROY¥370.5万
-      </div>
-      <div class="sc-badge">月ROY安定 ¥479,250</div>
+  <h2>アクション</h2>
+  <div class="action-item">
+    <div class="anum r">1</div>
+    <div class="abody">
+      <div class="t">契約書「デビュー前SSIN ROY継続」明記を要求</div>
+      <div class="d">5〜6月の¥239,000を守る。5/11頭金支払い前に書面確認。</div>
+      <span class="due dr">5/11前</span>
     </div>
   </div>
-
-  <!-- 2年間比較 -->
-  <div class="compare-row">
-    <div class="c-card off">
-      <div class="c-title">LUMISS無し</div>
-      <div class="c-line"><span class="l">12ヶ月</span><span class="v">¥1,434,000</span></div>
-      <div class="c-line"><span class="l">2年目/年</span><span class="v">¥1,434,000</span></div>
-      <div class="c-line"><span class="l">2年合計</span><span class="v">¥2,868,000</span></div>
-    </div>
-    <div class="c-card one">
-      <div class="c-title">1名・10%（旧）</div>
-      <div class="c-line"><span class="l">12ヶ月</span><span class="v" style="color:var(--blue)">¥4,170,000</span></div>
-      <div class="c-line"><span class="l">2年目/年</span><span class="v" style="color:var(--blue)">¥2,634,000</span></div>
-      <div class="c-line"><span class="l">2年合計</span><span class="v" style="color:var(--blue)">¥6,804,000</span></div>
-    </div>
-    <div class="c-card two">
-      <div class="c-title">2名・15%（今回）★</div>
-      <div class="c-line"><span class="l">12ヶ月</span><span class="v" style="color:var(--amber)">¥5,905,250</span></div>
-      <div class="c-line"><span class="l">2年目/年</span><span class="v" style="color:var(--green)">¥5,751,000</span></div>
-      <div class="c-line"><span class="l">2年合計</span><span class="v" style="color:var(--amber)">¥11,656,250</span></div>
+  <div class="action-item">
+    <div class="anum r">2</div>
+    <div class="abody">
+      <div class="t">頭金¥700,000 入金確認</div>
+      <div class="d">5/11（月）振込確認。入金後に6月研修スケジュール確定へ。</div>
+      <span class="due dr">5/11当日</span>
     </div>
   </div>
-
-  <div style="background:var(--s2);border-radius:10px;padding:16px 18px">
-    <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">2年間で見ると</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px">
-      <div>
-        <div style="color:var(--muted);font-size:11px;margin-bottom:4px">LUMISS無し 2年合計</div>
-        <div style="font-size:22px;font-weight:700;color:var(--muted)">¥2,868,000</div>
-      </div>
-      <div>
-        <div style="color:var(--green);font-size:11px;margin-bottom:4px">2名・15%tier 2年合計</div>
-        <div style="font-size:22px;font-weight:700;color:var(--amber)">¥11,656,250</div>
-        <div style="color:var(--green);font-size:11px;margin-top:3px">差額 <strong>+¥8,788,250（4.1倍）</strong></div>
-      </div>
+  <div class="action-item">
+    <div class="anum a">3</div>
+    <div class="abody">
+      <div class="t">7月デビュー月にLUMISS¥306K超を狙う → HPB/LINE先行告知</div>
+      <div class="d">初月¥267K（case1半月相当）のまま10%で終わるか、¥306K以上で15%になるかで月差¥85,530。6月中にLUMISSメニューをHPBへ掲載し、先行予約を埋める。</div>
+      <span class="due da">6月研修確定後即</span>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum a">4</div>
+    <div class="abody">
+      <div class="t">2名目LUMISS研修の費用・時期をオーナーと合意</div>
+      <div class="d">1枠無料は大久保さんで消化済。2名目は有料研修（9月研修→10月デビューを目標）。費用負担をオーナーが確認していなければ早めに打診。</div>
+      <span class="due da">7月デビュー確定後</span>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum b">5</div>
+    <div class="abody">
+      <div class="t">分割開始を9/20→7/20に前倒し交渉</div>
+      <div class="d">デビュー後「稼働開始に合わせて分割も7/20から」と提案。2ヶ月で¥600,000前倒し。</div>
+      <span class="due db">6月研修確定後</span>
     </div>
   </div>
 </div>
 
-<!-- 大久保実績 -->
-<div class="section">
-  <h2>大久保さん 実績サマリー（LUMISS予測根拠）</h2>
-  <table>
-    <thead>
-      <tr>
-        <th style="text-align:left">月</th>
-        <th>大久保売上</th>
-        <th>松本全体</th>
-        <th>シェア</th>
-        <th>客単価</th>
-        <th>新規</th>
-        <th>再来</th>
-        <th>総客</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>2025年12月</td>
-        <td>¥392,800</td><td>¥1,026,830</td><td>38.3%</td>
-        <td>¥3,741</td><td>11</td><td>94</td><td>105</td>
-      </tr>
-      <tr>
-        <td>2026年1月</td>
-        <td>¥486,180</td><td>¥905,760</td><td>53.7%</td>
-        <td>¥4,814</td><td>31</td><td>70</td><td>101</td>
-      </tr>
-      <tr>
-        <td>2026年2月</td>
-        <td>¥546,500</td><td>¥1,128,020</td><td>48.4%</td>
-        <td>¥5,255</td><td>39</td><td>65</td><td>104</td>
-      </tr>
-      <tr>
-        <td>2026年3月</td>
-        <td>¥694,930</td><td>¥1,260,330</td><td>55.1%</td>
-        <td>¥5,186</td><td>49</td><td>85</td><td>134</td>
-      </tr>
-      <tr>
-        <td>2026年4月</td>
-        <td>¥624,000</td><td>¥1,194,590</td><td>52.2%</td>
-        <td>¥5,200</td><td>52</td><td>68</td><td>120</td>
-      </tr>
-      <tr class="total-row">
-        <td>直近3ヶ月平均</td>
-        <td>¥621,810</td><td>¥1,194,313</td><td>52.1%</td>
-        <td>¥5,194</td><td>47</td><td>73</td><td>119</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="note">
-    <strong>LUMISS推算根拠：</strong>大久保さんは4月に新規52名獲得（月+10名ペース）・客単価¥3,741→¥5,200（+39%改善）。この新規獲得力があるため月¥110万LUMISSは現実圏内。2名目もSSIN¥570K/月の実力があり、遅れてデビューしても6ヶ月で¥90万水準に到達可能と想定。
-  </div>
-</div>
-
-<!-- アクション -->
-<div class="section">
-  <h2>アクションリスト</h2>
-
-  <div class="alert-warn">
-    <strong>7月デビューを1日前倒しして、合算売上が¥150万を超える日から15%にできるか確認：</strong>現状7月は合算¥149.5万で惜しくも10%。LUMISS初月を¥305K超にすれば即15%（月差¥74,750）。
-  </div>
-
-  <div class="action-item">
-    <div class="action-num urgent">1</div>
-    <div class="action-body">
-      <div class="title">契約書「デビュー前SSIN ROY継続」明記を要求</div>
-      <div class="desc">5〜6月の¥239,000を守る。5/11頭金支払い前に書面確認。</div>
-      <span class="due due-red">5/11 前</span>
-    </div>
-  </div>
-  <div class="action-item">
-    <div class="action-num urgent">2</div>
-    <div class="action-body">
-      <div class="title">頭金¥700,000 入金確認</div>
-      <div class="desc">5/11（月）振込確認。入金後に6月研修スケジュール確定へ。</div>
-      <span class="due due-red">5/11 当日</span>
-    </div>
-  </div>
-  <div class="action-item">
-    <div class="action-num high">3</div>
-    <div class="action-body">
-      <div class="title">2名目の研修費・研修月を合意する</div>
-      <div class="desc">2名目の研修は有料枠（1枠無料は大久保で消化済）。費用はオーナー負担か加盟金内包かを確認し、10月デビューに向けて9月研修を押さえる。</div>
-      <span class="due due-amber">6月研修確定後</span>
-    </div>
-  </div>
-  <div class="action-item">
-    <div class="action-num high">4</div>
-    <div class="action-body">
-      <div class="title">「LUMISS月¥120万到達で2名目採用着手」書面合意</div>
-      <div class="desc">大久保の新規52名/月ペースから6〜8ヶ月で到達可能。2名体制確定でROY月¥479Kが永続する。口約束は後で覆る。</div>
-      <span class="due due-amber">7月デビュー前</span>
-    </div>
-  </div>
-  <div class="action-item">
-    <div class="action-num normal">5</div>
-    <div class="action-body">
-      <div class="title">分割開始を9/20→7/20に前倒し交渉</div>
-      <div class="desc">デビュー後「稼働開始に合わせて分割も7/20から」と提案。2ヶ月早まれば¥600,000前倒し。</div>
-      <span class="due due-blue">6月研修確定後</span>
-    </div>
-  </div>
-</div>
-
-<div style="text-align:right;font-size:11px;color:var(--muted);margin-top:12px">
-  S松本 LUMISS利益シミュレーション ｜ 更新：2026-04-29 ｜ SSIN STUDIO
+<div style="text-align:right;font-size:11px;color:var(--muted);margin-top:10px">
+  S松本 LUMISS利益シミュレーション（ケース事例①実績ベース）｜ 更新：2026-04-29
 </div>
 
 </body>
