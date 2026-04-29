@@ -978,7 +978,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
   <div class="section" id="tab-line-scenario">
     <div class="notice-green" style="margin-bottom:16px">
       ⚙️ <strong>Lステップ風シナリオ</strong> — 来店後に自動送信するメッセージの内容・タイミングを設定できます。<br>
-      プレースホルダー: <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{name}</code> お名前 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{store}</code> 店舗名 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_menu}</code> 次回メニュー &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_timing}</code> 次回時期
+      プレースホルダー: <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{name}</code> お名前 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{store}</code> 店舗名 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_menu}</code> 次回メニュー &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{next_timing}</code> 次回時期 &nbsp; <code style="background:#d4f5d4;padding:2px 5px;border-radius:4px">{url}</code> カウンセリングURL（挨拶のみ）
     </div>
     <!-- 送信時間設定の説明 -->
     <div style="background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#3730a3">
@@ -3092,8 +3092,8 @@ const SCENARIO_STEPS = [
     defaultHour: null,
     msgKey: 'メッセージ_挨拶',
     defaultTiming: null,
-    defaultMsg: '{store}です😊\n\nLINEのご登録ありがとうございます✨\n{name}様のご来店をスタッフ一同心よりお待ちしております🌸\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ📱',
-    placeholder: '{name} {store}',
+    defaultMsg: '{store}です😊\n\nLINEのご登録ありがとうございます✨\n\nご来店前に下記のカウンセリングシートをご記入いただけるとスムーズにご案内できます📋\n\n▼ カウンセリングシート\n{url}\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ🌸',
+    placeholder: '{name} {store} {url}',
   },
   {
     id: 'reminder',

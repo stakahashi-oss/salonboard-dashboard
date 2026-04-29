@@ -55,15 +55,12 @@ async function handleLineEvents(body) {
     var userId = event.source && event.source.userId;
 
     if (event.type === "follow" && userId && storeInfo) {
-      // 挨拶メッセージをWorkerから直接送信
+      // GAS設定シートから挨拶メッセージを取得して送信
       var formUrl = COUNSELING_URL + "?uid=" + userId + "&store=" + encodeURIComponent(storeInfo.store);
-      var message = "友だち追加ありがとうございます！😊\n"
-        + storeInfo.store + " です✨\n\n"
-        + "ご来店前に下記のカウンセリングシートにご記入いただけると\n"
-        + "スムーズにご案内できます📋\n\n"
-        + "▼ カウンセリングシート\n" + formUrl + "\n\n"
-        + "ご不明点はこちらのLINEへお気軽に🌸";
-      await pushToLine(userId, message, storeInfo.token);
+      var message = await buildGreetingMessage(storeInfo.store, formUrl);
+      if (message) {
+        await pushToLine(userId, message, storeInfo.token);
+      }
 
       // GAS GETでUID登録（POST失敗時のフォールバック）
       var registerUrl = GAS_URL
@@ -85,6 +82,30 @@ async function handleLineEvents(body) {
 
   // GASにも全イベントを転送（トーク保存など）
   await forwardToGAS(body);
+}
+
+async function buildGreetingMessage(storeName, counselingUrl) {
+  var defaultMsg = storeName + "です😊\n\nLINEのご登録ありがとうございます✨\n\nご来店前に下記のカウンセリングシートをご記入いただけるとスムーズにご案内できます📋\n\n▼ カウンセリングシート\n" + counselingUrl + "\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ🌸";
+  try {
+    var settingsUrl = GAS_URL + "?key=ssin2026&action=get_settings";
+    var res = await fetch(settingsUrl);
+    if (res.ok) {
+      var json = await res.json();
+      var settings = (json && json.settings) ? json.settings : {};
+      // 挨拶が無効設定なら送信しない
+      if (settings["有効_挨拶"] === "false" || settings["有効_挨拶"] === false) return null;
+      var template = settings["メッセージ_挨拶"];
+      if (template) {
+        return template
+          .replace(/\{store\}/g, storeName)
+          .replace(/\{name\}/g, "お客様")
+          .replace(/\{url\}/g, counselingUrl);
+      }
+    }
+  } catch(e) {
+    console.error("buildGreetingMessage error:", e);
+  }
+  return defaultMsg;
 }
 
 async function pushToLine(userId, message, token) {
