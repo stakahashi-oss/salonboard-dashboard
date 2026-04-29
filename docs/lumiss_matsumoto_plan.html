@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>S松本 LUMISS Aプラン加盟 ― 収益ダッシュボード</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --white:#ffffff;
+  --border:#e8ecf4;
+  --text:#18223a;
+  --text2:#576079;
+  --text3:#9ba8c0;
+  --green:#059669;
+  --green-lt:#ecfdf5;
+  --green-bd:#86efac;
+  --red:#dc2626;
+  --red-lt:#fff1f2;
+  --amber:#d97706;
+  --amber-lt:#fffbeb;
+  --blue:#1d4ed8;
+  --blue-lt:#eff6ff;
+  --blue-bd:#bfdbfe;
+  --gold:#b45309;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.06);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;font-size:14px;line-height:1.7}
+.wrap{max-width:960px;margin:0 auto;padding:32px 20px 80px}
+
+/* Header */
+.doc-header{text-align:center;margin-bottom:32px;padding:40px 24px 32px;background:var(--white);border-radius:var(--r);box-shadow:var(--sh)}
+.doc-badge{display:inline-block;padding:4px 16px;border-radius:99px;background:var(--green-lt);color:var(--green);font-size:11px;font-weight:700;border:1px solid var(--green-bd);margin-bottom:16px;letter-spacing:.5px}
+.doc-header h1{font-size:24px;font-weight:800;color:var(--text);margin-bottom:8px}
+.doc-header .subtitle{color:var(--text2);font-size:13px}
+.doc-header .period{margin-top:10px;font-size:12px;color:var(--text3)}
+
+/* Alert banner */
+.alert-banner{background:linear-gradient(135deg,#7f1d1d 0%,#dc2626 100%);border-radius:var(--r);padding:20px 28px;margin-bottom:24px;color:#fff;display:flex;align-items:center;gap:20px;box-shadow:0 4px 20px rgba(220,38,38,.3)}
+.alert-banner .icon{font-size:36px;flex-shrink:0}
+.alert-banner .msg{flex:1}
+.alert-banner .msg strong{font-size:18px;font-weight:800;display:block;margin-bottom:2px}
+.alert-banner .msg span{font-size:13px;opacity:.9}
+.alert-banner .deadline{background:rgba(255,255,255,.15);border-radius:10px;padding:12px 20px;text-align:center;flex-shrink:0}
+.alert-banner .deadline .d{font-size:24px;font-weight:900;line-height:1}
+.alert-banner .deadline .ds{font-size:11px;opacity:.8;margin-top:2px}
+
+/* Section title */
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sec-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.sec-num.g{background:var(--green);color:#fff}
+.sec-num.b{background:var(--blue);color:#fff}
+.sec-num.a{background:var(--amber);color:#fff}
+.sec-num.r{background:var(--red);color:#fff}
+.sec-title h2{font-size:16px;font-weight:700;color:var(--text)}
+.sec-title .sub{font-size:12px;color:var(--text3);margin-left:4px}
+
+/* Card */
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);margin-bottom:20px;padding:28px}
+
+/* 3 KPIs */
+.kpi3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:640px){.kpi3{grid-template-columns:1fr}}
+.kpi-big{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:24px;text-align:center}
+.kpi-big .icon{font-size:26px;margin-bottom:8px}
+.kpi-big .num{font-size:30px;font-weight:900;line-height:1;margin-bottom:6px}
+.kpi-big .lbl{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px}
+.kpi-big .note{font-size:11px;color:var(--text3)}
+.kpi-big.g .num{color:var(--green)}
+.kpi-big.g{border-top:4px solid var(--green)}
+.kpi-big.b .num{color:var(--blue)}
+.kpi-big.b{border-top:4px solid var(--blue)}
+.kpi-big.r .num{color:var(--red)}
+.kpi-big.r{border-top:4px solid var(--red)}
+.kpi-big.a .num{color:var(--amber)}
+.kpi-big.a{border-top:4px solid var(--amber)}
+
+/* Contract grid */
+.contract-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:600px){.contract-grid{grid-template-columns:1fr}}
+.contract-box{border-radius:14px;padding:20px 24px;border:1px solid var(--border)}
+.contract-box h3{font-size:12px;font-weight:700;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:14px}
+.contract-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border)}
+.contract-row:last-child{border-bottom:none}
+.contract-row .key{font-size:12px;color:var(--text2)}
+.contract-row .val{font-size:14px;font-weight:700;color:var(--text)}
+.contract-row .val.big{font-size:18px;color:var(--green)}
+.contract-row .val.warn{color:var(--red)}
+.contract-note{margin-top:12px;background:var(--amber-lt);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--amber);border:1px solid #fde68a}
+
+/* Payment timeline */
+.pay-timeline{display:flex;flex-direction:column;gap:0;margin-top:4px}
+.pay-item{display:grid;grid-template-columns:90px 20px 1fr;gap:0 0;align-items:stretch}
+.pay-dot-col{display:flex;flex-direction:column;align-items:center;padding:0 8px}
+.pay-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pay-dot.red{background:var(--red)}
+.pay-dot.green{background:var(--green)}
+.pay-dot.blue{background:var(--blue)}
+.pay-dot.gray{background:var(--text3)}
+.pay-line{width:2px;flex:1;margin:2px 0}
+.pay-line.solid{background:var(--border)}
+.pay-line.dashed{background:repeating-linear-gradient(to bottom,var(--border) 0,var(--border) 4px,transparent 4px,transparent 8px)}
+.pay-date{font-size:12px;font-weight:700;color:var(--text2);padding:4px 0;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:0}
+.pay-content{padding:4px 0 20px 12px}
+.pay-content .amount{font-size:16px;font-weight:800;color:var(--text)}
+.pay-content .amount.big{font-size:20px;color:var(--red)}
+.pay-content .desc{font-size:12px;color:var(--text2);margin-top:2px}
+.pay-content .tag{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.tag-red{background:var(--red-lt);color:var(--red)}
+.tag-blue{background:var(--blue-lt);color:var(--blue)}
+.tag-green{background:var(--green-lt);color:var(--green)}
+.tag-gray{background:#f1f5f9;color:var(--text3)}
+
+/* ROY compare */
+.roy-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:600px){.roy-compare{grid-template-columns:1fr}}
+.roy-box{border-radius:14px;padding:24px;border:2px solid var(--border);position:relative}
+.roy-box.current{border-color:#e2e8f0;background:#fafbff}
+.roy-box.target{border-color:var(--green);background:var(--green-lt)}
+.roy-box .badge{position:absolute;top:-10px;left:16px;padding:2px 12px;border-radius:99px;font-size:11px;font-weight:700}
+.roy-box.current .badge{background:#e2e8f0;color:var(--text2)}
+.roy-box.target .badge{background:var(--green);color:#fff}
+.roy-box h3{font-size:14px;font-weight:700;margin-bottom:16px;margin-top:6px}
+.roy-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.roy-row{display:flex;align-items:center;gap:8px}
+.roy-bar-bg{flex:1;height:28px;background:#f0f2f8;border-radius:6px;overflow:hidden}
+.roy-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#fff;transition:width .8s ease}
+.fill-ssin{background:#f59e0b}
+.fill-lumiss{background:#059669}
+.fill-lumiss15{background:#047857}
+.roy-row-label{font-size:11px;font-weight:700;color:var(--text2);width:40px;flex-shrink:0}
+.roy-row-val{font-size:12px;font-weight:700;text-align:right;width:70px;flex-shrink:0}
+.roy-total{border-top:2px solid var(--border);padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+.roy-total .label{font-size:13px;font-weight:700;color:var(--text2)}
+.roy-total .val{font-size:26px;font-weight:900}
+.roy-box.current .roy-total .val{color:var(--text)}
+.roy-box.target .roy-total .val{color:var(--green)}
+.roy-note{font-size:11px;color:var(--text3);margin-top:8px}
+.roy-diff{text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;padding:12px 0}
+.roy-diff .arrow{font-size:28px;color:var(--green)}
+.roy-diff .val{font-size:16px;font-weight:800;color:var(--green)}
+.roy-diff .sub{font-size:11px;color:var(--text3)}
+
+/* ROY 年間 */
+.annual-bar{margin:16px 0}
+.ann-row{display:grid;grid-template-columns:60px 1fr 90px;gap:8px;align-items:center;margin-bottom:8px}
+.ann-label{font-size:12px;color:var(--text2);font-weight:700;text-align:right}
+.ann-bar-bg{height:32px;background:#f0f2f8;border-radius:8px;overflow:hidden;position:relative}
+.ann-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:700;color:#fff;gap:0;transition:width .8s ease}
+.ann-val{font-size:12px;font-weight:700;color:var(--text2);text-align:right}
+
+/* Roadmap */
+.roadmap{display:flex;flex-direction:column;gap:0}
+.rm-item{display:grid;grid-template-columns:72px 20px 1fr;gap:0;align-items:stretch}
+.rm-dot-col{display:flex;flex-direction:column;align-items:center;padding:0 8px}
+.rm-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+.rm-line{width:2px;flex:1;background:var(--border);margin:2px 0}
+.rm-month{font-size:12px;font-weight:800;color:var(--text2);padding-top:3px;display:flex;justify-content:flex-end;align-items:flex-start}
+.rm-content{padding:3px 0 22px 14px}
+.rm-content h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.rm-content p{font-size:12px;color:var(--text2);line-height:1.6}
+.rm-tag{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+
+/* Action list */
+.action-list{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.action-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--border)}
+.action-item.urgent{border-color:var(--red);background:var(--red-lt)}
+.action-item.important{border-color:var(--amber);background:var(--amber-lt)}
+.action-item.normal{border-color:var(--blue-bd);background:var(--blue-lt)}
+.action-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.action-body h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.action-body p{font-size:12px;color:var(--text2);line-height:1.6}
+.action-item.urgent h4{color:var(--red)}
+.action-item.important h4{color:var(--amber)}
+.action-item.normal h4{color:var(--blue)}
+
+/* Breakeven */
+.breakeven-box{background:linear-gradient(135deg,#0f2a5e 0%,#065f46 100%);border-radius:var(--r);padding:28px 32px;color:#fff;margin-bottom:24px}
+.breakeven-box .title{font-size:12px;font-weight:700;opacity:.7;margin-bottom:8px;letter-spacing:.3px}
+.breakeven-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px}
+@media(max-width:540px){.breakeven-grid{grid-template-columns:1fr}}
+.be-item{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 20px}
+.be-item .scenario{font-size:11px;font-weight:700;opacity:.7;margin-bottom:6px}
+.be-item .months{font-size:32px;font-weight:900;color:#6ee7b7;line-height:1;margin-bottom:4px}
+.be-item .detail{font-size:12px;opacity:.8}
+
+/* Highlight table */
+table.hl-table{width:100%;border-collapse:collapse;font-size:13px}
+table.hl-table th{background:#f1f5f9;padding:8px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.4px;border-bottom:1px solid var(--border)}
+table.hl-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+table.hl-table tr:last-child td{border-bottom:none}
+table.hl-table .num{text-align:right;font-weight:700}
+table.hl-table .green{color:var(--green)}
+table.hl-table .red{color:var(--red)}
+table.hl-table .bold{font-weight:800;font-size:14px}
+table.hl-table tr.total td{background:#f8faff;font-weight:800;border-top:2px solid var(--border)}
+
+.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+<div class="doc-header">
+  <div class="doc-badge">S松本 LUMISS加盟 Aプラン ― 収益管理ダッシュボード</div>
+  <h1>S松本 × LUMISS 加盟計画</h1>
+  <div class="subtitle">SSIN利益最大化ロードマップ ／ 支払いスケジュール管理</div>
+  <div class="period">作成日：2026年4月29日 ／ 頭金期限まであと <strong style="color:#dc2626">12日</strong></div>
+</div>
+
+<!-- 🔴 Alert -->
+<div class="alert-banner">
+  <div class="icon">⚠️</div>
+  <div class="msg">
+    <strong>頭金 ¥700,000 の回収期限が迫っています</strong>
+    <span>5月11日（月）までに振込確認。未入金の場合は即日連絡・対応が必要です。</span>
+  </div>
+  <div class="deadline">
+    <div class="d">5/11</div>
+    <div class="ds">月曜日 締切</div>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi3">
+  <div class="kpi-big g">
+    <div class="icon">💰</div>
+    <div class="lbl">加盟金（確定収入）</div>
+    <div class="num">¥220万</div>
+    <div class="note">税込・頭金70万＋分割150万</div>
+  </div>
+  <div class="kpi-big b">
+    <div class="icon">📈</div>
+    <div class="lbl">ROY目標（2名体制時）</div>
+    <div class="num">¥33万/月</div>
+    <div class="note">LUMISS単独・15%tier適用時</div>
+  </div>
+  <div class="kpi-big a">
+    <div class="icon">🎯</div>
+    <div class="lbl">15%tier到達ライン</div>
+    <div class="num">¥150万/月</div>
+    <div class="note">LUMISS売上のみ・SSINと別計算</div>
+  </div>
+</div>
+
+<!-- Section 1: 契約概要 -->
+<div class="sec-title">
+  <div class="sec-num g">1</div>
+  <h2>契約概要 <span class="sub">Aプラン詳細</span></h2>
+</div>
+<div class="card">
+  <div class="contract-grid">
+    <div class="contract-box">
+      <h3>加盟金・ロイヤリティ</h3>
+      <div class="contract-row"><span class="key">加盟金（税込）</span><span class="val big">¥2,200,000</span></div>
+      <div class="contract-row"><span class="key">採用費/研修費</span><span class="val">1枠 無料</span></div>
+      <div class="contract-row"><span class="key">ロイヤリティ（通常）</span><span class="val">10%</span></div>
+      <div class="contract-row"><span class="key">ロイヤリティ（¥150万超）</span><span class="val" style="color:var(--green)">全額 15%</span></div>
+      <div class="contract-row"><span class="key">ROY計算基準</span><span class="val warn">SSIN・LUMISS 別々</span></div>
+      <div class="contract-note">⚠️ LUMISS単体で¥150万を超えないと15%は発動しない。SSIN売上は合算不可。</div>
+    </div>
+    <div class="contract-box">
+      <h3>研修・スタッフ</h3>
+      <div class="contract-row"><span class="key">無料枠対象</span><span class="val">大久保さん（既存）</span></div>
+      <div class="contract-row"><span class="key">研修月</span><span class="val">2026年 6月</span></div>
+      <div class="contract-row"><span class="key">LUMISS稼働開始</span><span class="val" style="color:var(--blue)">2026年 7月〜</span></div>
+      <div class="contract-row"><span class="key">2人目研修</span><span class="val">有料（追加提案）</span></div>
+      <div class="contract-row"><span class="key">枠消化ルール</span><span class="val warn">既存スタッフでも消化</span></div>
+      <div class="contract-note">⚠️ 大久保さん研修で無料枠消化。2人目は有料になるが回収は3ヶ月以内。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 2: 支払いスケジュール -->
+<div class="sec-title">
+  <div class="sec-num r">2</div>
+  <h2>支払いスケジュール <span class="sub">加盟金 ¥2,200,000 の回収管理</span></h2>
+</div>
+<div class="card">
+  <div class="pay-timeline">
+
+    <div class="pay-item">
+      <div class="pay-date">5月11日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot red"></div>
+        <div class="pay-line solid"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount big">¥700,000</div>
+        <div class="desc">頭金 ― 振込確認必須</div>
+        <span class="tag tag-red">⚠️ 期限まで12日</span>
+      </div>
+    </div>
+
+    <div class="pay-item">
+      <div class="pay-date">9月20日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot blue"></div>
+        <div class="pay-line solid"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount">¥300,000</div>
+        <div class="desc">分割①</div>
+        <span class="tag tag-blue">累計 ¥1,000,000</span>
+      </div>
+    </div>
+
+    <div class="pay-item">
+      <div class="pay-date">10月20日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot blue"></div>
+        <div class="pay-line solid"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount">¥300,000</div>
+        <div class="desc">分割②</div>
+        <span class="tag tag-blue">累計 ¥1,300,000</span>
+      </div>
+    </div>
+
+    <div class="pay-item">
+      <div class="pay-date">11月20日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot blue"></div>
+        <div class="pay-line solid"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount">¥300,000</div>
+        <div class="desc">分割③</div>
+        <span class="tag tag-blue">累計 ¥1,600,000</span>
+      </div>
+    </div>
+
+    <div class="pay-item">
+      <div class="pay-date">12月20日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot blue"></div>
+        <div class="pay-line solid"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount">¥300,000</div>
+        <div class="desc">分割④</div>
+        <span class="tag tag-blue">累計 ¥1,900,000</span>
+      </div>
+    </div>
+
+    <div class="pay-item">
+      <div class="pay-date">1月20日</div>
+      <div class="pay-dot-col">
+        <div class="pay-dot green"></div>
+        <div class="pay-line" style="background:transparent"></div>
+      </div>
+      <div class="pay-content">
+        <div class="amount">¥300,000</div>
+        <div class="desc">分割⑤（最終）</div>
+        <span class="tag tag-green">✅ 加盟金 ¥2,200,000 完納</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Section 3: ROYシミュレーション -->
+<div class="sec-title">
+  <div class="sec-num b">3</div>
+  <h2>ROY収入シミュレーション <span class="sub">1名体制 vs 2名体制</span></h2>
+</div>
+
+<div class="roy-compare">
+  <!-- 現状: 1名 -->
+  <div class="roy-box current">
+    <span class="badge">現状プラン（大久保1名）</span>
+    <h3 style="margin-top:12px">LUMISS 1名体制</h3>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">8客/日 × 25日 × ¥5,500 = <strong>¥1,100,000/月</strong></div>
+    <div class="roy-stack">
+      <div class="roy-row">
+        <div class="roy-row-label">SSIN</div>
+        <div class="roy-bar-bg">
+          <div class="roy-bar-fill fill-ssin" style="width:52%">¥116,000</div>
+        </div>
+        <div class="roy-row-val">¥116,000</div>
+      </div>
+      <div class="roy-row">
+        <div class="roy-row-label">LUMISS</div>
+        <div class="roy-bar-bg">
+          <div class="roy-bar-fill fill-lumiss" style="width:39%">¥110,000</div>
+        </div>
+        <div class="roy-row-val">¥110,000</div>
+      </div>
+    </div>
+    <div class="roy-total">
+      <span class="label">月合計ROY</span>
+      <span class="val">¥226,000</span>
+    </div>
+    <div class="roy-note">LUMISS ¥1.1M &lt; ¥150万 → 10%適用のまま</div>
+  </div>
+
+  <!-- 目標: 2名 -->
+  <div class="roy-box target">
+    <span class="badge">🎯 目標（2名体制）</span>
+    <h3 style="margin-top:12px">LUMISS 2名体制</h3>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">16客/日 × 25日 × ¥5,500 = <strong>¥2,200,000/月</strong></div>
+    <div class="roy-stack">
+      <div class="roy-row">
+        <div class="roy-row-label">SSIN</div>
+        <div class="roy-bar-bg">
+          <div class="roy-bar-fill fill-ssin" style="width:26%">¥116,000</div>
+        </div>
+        <div class="roy-row-val">¥116,000</div>
+      </div>
+      <div class="roy-row">
+        <div class="roy-row-label" style="color:var(--green)">LUMISS<br><small>15%</small></div>
+        <div class="roy-bar-bg">
+          <div class="roy-bar-fill fill-lumiss15" style="width:74%">¥330,000 (15%)</div>
+        </div>
+        <div class="roy-row-val" style="color:var(--green)">¥330,000</div>
+      </div>
+    </div>
+    <div class="roy-total">
+      <span class="label">月合計ROY</span>
+      <span class="val">¥446,000</span>
+    </div>
+    <div class="roy-note">¥2.2M &gt; ¥150万 → 15%tier発動</div>
+  </div>
+</div>
+
+<!-- 差分ハイライト -->
+<div class="card" style="text-align:center;padding:20px 28px">
+  <div style="font-size:12px;color:var(--text3);margin-bottom:6px">2名体制移行による月間ROY増収</div>
+  <div style="font-size:42px;font-weight:900;color:var(--green);line-height:1">+¥220,000/月</div>
+  <div style="font-size:13px;color:var(--text2);margin-top:6px">年換算 <strong>+¥2,640,000/年</strong> ／ 2人目研修費（仮¥40万）は2ヶ月以内に回収</div>
+</div>
+
+<!-- Section 4: 年間収入シミュレーション -->
+<div class="sec-title">
+  <div class="sec-num g">4</div>
+  <h2>SSIN年間収入シミュレーション <span class="sub">加盟金＋ROY合算</span></h2>
+</div>
+<div class="card">
+  <div style="margin-bottom:20px">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+      前提：7月LUMISS稼働開始、9月〜2名体制（有料研修¥40万はオーナー負担）
+    </div>
+    <table class="hl-table">
+      <thead>
+        <tr>
+          <th>期間</th>
+          <th>内容</th>
+          <th class="num">加盟金収入</th>
+          <th class="num">SSIN ROY</th>
+          <th class="num">LUMISS ROY</th>
+          <th class="num">月計</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>5月</td>
+          <td>頭金受領</td>
+          <td class="num green">¥700,000</td>
+          <td class="num">¥116,000</td>
+          <td class="num">—</td>
+          <td class="num bold">¥816,000</td>
+        </tr>
+        <tr>
+          <td>6月</td>
+          <td>大久保さん研修</td>
+          <td class="num">—</td>
+          <td class="num">¥116,000</td>
+          <td class="num">—</td>
+          <td class="num">¥116,000</td>
+        </tr>
+        <tr>
+          <td>7〜8月</td>
+          <td>LUMISS稼働（1名）</td>
+          <td class="num">—</td>
+          <td class="num">¥232,000</td>
+          <td class="num">¥220,000</td>
+          <td class="num bold">¥452,000</td>
+        </tr>
+        <tr>
+          <td>9月</td>
+          <td>分割①＋2名体制開始</td>
+          <td class="num green">¥300,000</td>
+          <td class="num">¥116,000</td>
+          <td class="num green">¥330,000</td>
+          <td class="num bold">¥746,000</td>
+        </tr>
+        <tr>
+          <td>10〜12月</td>
+          <td>2名体制フル稼働＋分割②〜④</td>
+          <td class="num green">¥900,000</td>
+          <td class="num">¥348,000</td>
+          <td class="num green">¥990,000</td>
+          <td class="num bold">¥2,238,000</td>
+        </tr>
+        <tr>
+          <td>1月</td>
+          <td>分割⑤（最終）</td>
+          <td class="num green">¥300,000</td>
+          <td class="num">¥116,000</td>
+          <td class="num green">¥330,000</td>
+          <td class="num bold">¥746,000</td>
+        </tr>
+        <tr class="total">
+          <td colspan="2">2026年5月〜2027年1月 合計（9ヶ月）</td>
+          <td class="num green">¥2,200,000</td>
+          <td class="num">¥1,044,000</td>
+          <td class="num green">¥1,870,000</td>
+          <td class="num bold" style="font-size:16px;color:var(--green)">¥5,114,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="background:var(--green-lt);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--green);border:1px solid var(--green-bd)">
+    ✅ <strong>2名体制が軌道に乗れば2年目以降は ROY のみで年間 ¥5,352,000</strong>（SSIN ¥1,392,000 ＋ LUMISS ¥3,960,000）
+  </div>
+</div>
+
+<!-- Section 5: ロードマップ -->
+<div class="sec-title">
+  <div class="sec-num a">5</div>
+  <h2>月次ロードマップ <span class="sub">5月〜12月</span></h2>
+</div>
+<div class="card">
+  <div class="roadmap">
+    <div class="rm-item">
+      <div class="rm-month">5月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:#dc2626">!</div>
+        <div class="rm-line"></div>
+      </div>
+      <div class="rm-content">
+        <h4>契約確定・頭金受領</h4>
+        <p>5/11（月）までに頭金¥700,000の振込確認。入金後、研修日程を確定。</p>
+        <span class="rm-tag" style="background:var(--red-lt);color:var(--red)">🔴 最優先</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-month">6月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:#7c3aed">研</div>
+        <div class="rm-line"></div>
+      </div>
+      <div class="rm-content">
+        <h4>大久保さん LUMISS研修（無料枠消化）</h4>
+        <p>研修スケジュールを月初に確定。7月稼働に向けて什器・消耗品の発注確認も並行。</p>
+        <span class="rm-tag" style="background:#f3e8ff;color:#7c3aed">研修</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-month">7月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:var(--green)">▶</div>
+        <div class="rm-line"></div>
+      </div>
+      <div class="rm-content">
+        <h4>LUMISS稼働スタート（1名体制）</h4>
+        <p>大久保さんによるLUMISS営業開始。HPB・LINEへのメニュー追加を7月1日に合わせる。ROY発生開始 ¥110,000/月見込み。</p>
+        <span class="rm-tag tag-green">🟢 ROY開始</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-month">8月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:var(--blue)">📊</div>
+        <div class="rm-line"></div>
+      </div>
+      <div class="rm-content">
+        <h4>1ヶ月実績の確認・2人目提案</h4>
+        <p>大久保さんのLUMISS月次売上を確認。「¥80万超えたら2人目採用を検討しましょう」とオーナーに提案。採用開始・9月研修の打診。</p>
+        <span class="rm-tag tag-blue">🎯 2人目提案タイミング</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-month">9月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:var(--amber)">②</div>
+        <div class="rm-line"></div>
+      </div>
+      <div class="rm-content">
+        <h4>分割①受領（¥300,000）＋2人目研修</h4>
+        <p>9/20分割①の入金確認。2人目スタッフの有料研修を実施。LUMISS 2名体制の準備完了。</p>
+        <span class="rm-tag" style="background:var(--amber-lt);color:var(--amber)">分割① + 有料研修</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-month">10〜12月</div>
+      <div class="rm-dot-col">
+        <div class="rm-dot" style="background:var(--green)">🚀</div>
+        <div class="rm-line" style="background:transparent"></div>
+      </div>
+      <div class="rm-content">
+        <h4>2名体制フル稼働 → 15%tier突入</h4>
+        <p>LUMISS月売上¥150万超え → 15%ROY発動。¥330,000/月。分割②③④も順次回収。</p>
+        <span class="rm-tag tag-green">🟢 15%tier ¥330K/月</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 6: アクション -->
+<div class="sec-title">
+  <div class="sec-num r">6</div>
+  <h2>今すぐ動くアクション <span class="sub">SSIN利益優先</span></h2>
+</div>
+<div class="card">
+  <div class="action-list">
+    <div class="action-item urgent">
+      <div class="action-icon">🔴</div>
+      <div class="action-body">
+        <h4>【今週中】頭金¥700,000 の振込確認</h4>
+        <p>5/11（月）が期限。オーナーへの入金案内・振込先確認を今週中に完結させる。未確認ならリマインド連絡を入れる。</p>
+      </div>
+    </div>
+    <div class="action-item urgent">
+      <div class="action-icon">📅</div>
+      <div class="action-body">
+        <h4>【5月中】6月研修の日程確定</h4>
+        <p>大久保さんの6月研修日程を松本店と調整・確定。7月1日のLUMISS稼働に間に合わせるため逆算スケジュールを引く。</p>
+      </div>
+    </div>
+    <div class="action-item important">
+      <div class="action-icon">🤝</div>
+      <div class="action-body">
+        <h4>【7月初旬】2人目採用トリガーの合意取得</h4>
+        <p>「LUMISS月売上が¥80万を超えた時点で2人目採用を始めましょう」という条件をオーナーと今のうちに合意。後から言い出すより今決める方が摩擦ゼロ。</p>
+      </div>
+    </div>
+    <div class="action-item important">
+      <div class="action-icon">📣</div>
+      <div class="action-body">
+        <h4>【6月末】HPB・LINEへのLUMISSメニュー追加</h4>
+        <p>7月稼働に合わせてHPBのクーポン・メニューにLUMISSを追加。LINE配信でLUMISS開始告知。初月から集客を最大化する。</p>
+      </div>
+    </div>
+    <div class="action-item normal">
+      <div class="action-icon">📊</div>
+      <div class="action-body">
+        <h4>【毎月】LUMISS売上の単独トラッキング</h4>
+        <p>SSINとLUMISSのROYは別計算のため、毎月LUMISS分を切り出して管理。¥150万ラインへの進捗を可視化してオーナーにも共有することで2人目への動機付けになる。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:32px;font-size:11px;color:var(--text3)">
+  S松本 LUMISS Aプラン 収益ダッシュボード ／ 作成: 2026-04-29
+</div>
+</div>
+</body>
+</html>
