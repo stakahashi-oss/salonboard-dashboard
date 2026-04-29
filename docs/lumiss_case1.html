@@ -864,6 +864,65 @@ tbody tr:hover{background:#fafbff}
           </tbody>
         </table>
       </div>
+      <button class="detail-toggle" onclick="toggleDetail('c2d4')" style="background:#fff">前年同月比（2025年2〜4月 vs 2026年2〜4月）<span>▼</span></button>
+      <div class="detail-body" id="c2d4">
+        <!-- 前年同月比テーブル -->
+        <div style="overflow-x:auto;margin-bottom:12px">
+        <table style="font-size:12px;width:100%;border-collapse:collapse">
+          <thead>
+            <tr>
+              <th>月</th>
+              <th class="num" style="background:#f9fafb;color:var(--text3)">前年 SSIN</th>
+              <th class="num">今年 SSIN</th>
+              <th class="num">今年 LUMISS</th>
+              <th class="num">今年 合算</th>
+              <th class="num">前年比</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#fef9c3">
+              <td>2月<span style="font-size:10px;color:#92400e;display:block;font-weight:600">※LUMISS部分稼働</span></td>
+              <td class="num" style="color:var(--text3)">¥570,600</td><td class="num">¥411,360</td><td class="num" style="color:var(--green)">¥81,100</td>
+              <td class="num">¥492,460</td>
+              <td class="num"><span class="tag tr">▼13.7%</span><br><span style="font-size:9px;color:#92400e">参考値</span></td>
+            </tr>
+            <tr>
+              <td>3月</td>
+              <td class="num" style="color:var(--text3)">¥533,800</td><td class="num">¥397,350</td><td class="num" style="color:var(--green);font-weight:700">¥350,500</td>
+              <td class="num" style="font-weight:700;color:var(--green)">¥747,850</td>
+              <td class="num"><span class="tag tg">+40.1%</span></td>
+            </tr>
+            <tr>
+              <td>4月</td>
+              <td class="num" style="color:var(--text3)">¥567,650</td><td class="num">¥355,300</td><td class="num" style="color:var(--green);font-weight:700">¥255,410</td>
+              <td class="num" style="font-weight:700;color:var(--green)">¥610,710</td>
+              <td class="num"><span class="tag tg">+7.6%</span></td>
+            </tr>
+            <tr class="total-row" style="background:#f0fdf4!important">
+              <td>3ヶ月合計</td>
+              <td class="num" style="color:var(--text3)">¥1,672,050</td><td class="num">¥1,164,010</td><td class="num" style="color:var(--green)">¥687,010</td>
+              <td class="num" style="color:var(--green)">¥1,851,020</td>
+              <td class="num"><span class="tag tg">+10.7%</span></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <!-- 前年詳細データ -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px">前年（2025年2〜4月）詳細</div>
+        <div style="overflow-x:auto">
+        <table style="font-size:12px;width:100%;border-collapse:collapse">
+          <thead>
+            <tr><th>月</th><th class="num">純売上</th><th class="num">客数</th><th class="num">新規</th><th class="num">再来</th><th class="num">再来率</th><th class="num">客単価</th><th class="num">指名売上</th><th class="num">指名数</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2025年2月</td><td class="num">¥570,600</td><td class="num">102</td><td class="num">57</td><td class="num">45</td><td class="num"><span class="tag ta">44.1%</span></td><td class="num">¥5,594</td><td class="num">¥52,700</td><td class="num">8</td></tr>
+            <tr><td>2025年3月</td><td class="num">¥533,800</td><td class="num">108</td><td class="num">48</td><td class="num">60</td><td class="num"><span class="tag tg">55.6%</span></td><td class="num">¥4,943</td><td class="num">¥53,400</td><td class="num">11</td></tr>
+            <tr><td>2025年4月</td><td class="num">¥567,650</td><td class="num">108</td><td class="num">52</td><td class="num">56</td><td class="num"><span class="tag tg">51.9%</span></td><td class="num">¥5,256</td><td class="num">¥45,000</td><td class="num">9</td></tr>
+            <tr class="total-row"><td>合計</td><td class="num">¥1,672,050</td><td class="num">318</td><td class="num">157</td><td class="num">161</td><td class="num">50.6%</td><td class="num">¥5,258</td><td class="num">¥151,100</td><td class="num">28</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
     </div>
   </div>
 
