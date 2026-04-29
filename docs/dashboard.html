@@ -3082,6 +3082,20 @@ async function executePush(lineUid) {
 // ══════════════════════════════════════════════════════════
 const SCENARIO_STEPS = [
   {
+    id: 'greeting',
+    label: '挨拶メッセージ（友達追加時）',
+    icon: '👋',
+    enableKey: '有効_挨拶',
+    timingKey: null,
+    timingUnit: null,
+    timeKey: null,
+    defaultHour: null,
+    msgKey: 'メッセージ_挨拶',
+    defaultTiming: null,
+    defaultMsg: '{store}です😊\n\nLINEのご登録ありがとうございます✨\n{name}様のご来店をスタッフ一同心よりお待ちしております🌸\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ📱',
+    placeholder: '{name} {store}',
+  },
+  {
     id: 'reminder',
     label: '来店前リマインド',
     icon: '📅',
@@ -3224,11 +3238,14 @@ function renderScenarioSteps() {
           <span style="font-size:12px;color:#aaa;margin-left:8px">送信時間:</span>
           <select id="hour-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:4px 8px;font-size:13px">${hourOptions}</select>
           <span style="font-size:11px;color:#aaa">${timeNote}</span>
-        </div>` : `
+        </div>` : step.timeKey ? `
         <div class="scenario-timing-row">
           <span class="scenario-timing-label">🕐 送信時間:</span>
           <select id="hour-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:4px 8px;font-size:13px">${hourOptions}</select>
           <span style="font-size:12px;color:#aaa">に自動配信 ${timeNote}</span>
+        </div>` : `
+        <div class="scenario-timing-row">
+          <span style="font-size:12px;color:#6366f1;background:#eef2ff;padding:4px 10px;border-radius:20px">⚡ 友達追加時に即時送信</span>
         </div>`;
 
     const tagOptions = ['<option value="">👥 全員（絞り込みなし）</option>',
