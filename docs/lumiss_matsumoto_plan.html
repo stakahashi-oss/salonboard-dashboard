@@ -25,9 +25,15 @@
   --purple-d: rgba(124,58,237,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);padding:24px 28px;line-height:1.55;font-size:14px}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);padding:28px 36px;line-height:1.6;font-size:14px;max-width:1280px;margin:0 auto}
 h1{font-size:22px;font-weight:700}
-h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+h2{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+
+/* ── Page nav ── */
+.page-nav{position:sticky;top:0;z-index:100;background:rgba(244,246,251,.97);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:10px;padding:7px 12px;margin-bottom:22px;display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+.nav-link{font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 9px;border-radius:5px;white-space:nowrap;transition:all .12s}
+.nav-link:hover{background:var(--blue-d);color:var(--blue)}
+.nav-sep{width:1px;height:12px;background:var(--border);margin:0 3px;flex-shrink:0}
 
 /* exec summary */
 .exec-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:20px}
@@ -153,30 +159,53 @@ tbody tr:hover{background:var(--s2)}
 .db{background:var(--blue-d);color:var(--blue)}
 .dg{background:var(--green-d);color:var(--green)}
 
-.section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 16px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
-.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-divider{display:block;background:linear-gradient(90deg,rgba(26,111,212,.07),transparent);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:9px 16px;margin:30px 0 12px;font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── Stat rows (capacity section) ── */
+.stat-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--s2);border-radius:7px}
+.stat-row .sl{font-size:11px;color:var(--muted)}
+.stat-row .sv{font-size:13px;font-weight:700}
 
 .footnote{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
 
-@media(max-width:1000px){.kpi-row,.strategy-grid,.three-col{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr}.scenario-wrap{grid-template-columns:1fr}}
-@media(max-width:600px){.kpi-row{grid-template-columns:1fr}.exec-findings{grid-template-columns:1fr}}
+@media(max-width:1000px){.kpi-row,.strategy-grid,.three-col{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr}.scenario-wrap{grid-template-columns:1fr}.stat-rows{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.exec-findings{grid-template-columns:1fr}.stat-rows{grid-template-columns:1fr}.page-nav{gap:2px}body{padding:16px 18px}}
+@media(max-width:480px){.kpi-row{grid-template-columns:1fr}.strategy-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<div style="margin-bottom:20px">
-  <div style="font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase">S松本 ／ SSIN本部 収益シミュレーション</div>
+<div style="margin-bottom:16px">
+  <div style="font-size:11px;color:var(--muted);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase">S松本 ／ SSIN本部 収益シミュレーション</div>
   <h1>LUMISS Aプラン導入 ― 本部ROY分析レポート</h1>
-  <div style="font-size:12px;color:var(--muted);margin-top:6px">
-    <span style="margin-right:16px">加盟店：S松本（大久保 Okubo）</span>
-    <span style="margin-right:16px">契約：Aプラン / 加盟金¥220万 / 合算10%・¥150万超全額15%</span>
-    <span style="margin-right:16px">データ：CSV実績〜2026/3/23 ＋ 季節予測</span>
-    <span style="color:var(--amber);font-weight:600">作成：2026-04-29</span>
+  <div style="font-size:12px;color:var(--muted);margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+    <span style="background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 8px">加盟店：S松本（大久保 / 柏原）</span>
+    <span style="background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 8px">Aプラン / 加盟金¥220万</span>
+    <span style="background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 8px">合算10%・¥150万超で全額15%</span>
+    <span style="background:var(--s2);border:1px solid var(--border);border-radius:5px;padding:2px 8px">稼働：10:00〜19:00 / 月8日休み = 22日</span>
+    <span style="background:var(--amber-d);border:1px solid rgba(196,125,0,.25);border-radius:5px;padding:2px 8px;color:var(--amber);font-weight:600">作成：2026-04-30</span>
   </div>
 </div>
 
+<!-- NAV -->
+<nav class="page-nav">
+  <a class="nav-link" href="#proposal">📋 提案書</a>
+  <div class="nav-sep"></div>
+  <a class="nav-link" href="#ssin">SSIN実績</a>
+  <a class="nav-link" href="#capacity">稼働分析</a>
+  <a class="nav-link" href="#seasonal">季節変動</a>
+  <a class="nav-link" href="#strategy">¥150万戦略</a>
+  <a class="nav-link" href="#timing">参入タイミング</a>
+  <a class="nav-link" href="#scenario">シナリオ比較</a>
+  <a class="nav-link" href="#breakdown">ROY内訳</a>
+  <a class="nav-link" href="#cashflow">CF</a>
+  <a class="nav-link" href="#actions">⚡ アクション</a>
+</nav>
+
 <!-- ===== 上長向け提案書 ===== -->
+<div id="proposal"></div>
 <div style="background:linear-gradient(135deg,#111827,#1e3a8a);border-radius:16px;padding:20px 26px;margin-bottom:6px">
   <div style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">CONFIDENTIAL ／ 本部提案資料</div>
   <div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:4px">S松本 LUMISS導入 ― 柏原参入タイミング・意思決定依頼</div>
@@ -316,7 +345,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== SSIN実績 ===== -->
-<div class="section-divider">スタッフ別SSIN実績（CSV実データ）</div>
+<div id="ssin" class="section-divider">スタッフ別 SSIN実績（CSV実データ）</div>
 <div class="section">
   <h2>大久保（Okubo）vs 柏原（kasiwabara）― 個人別SSIN月次売上</h2>
   <table>
@@ -370,7 +399,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== スタッフ別 1日稼働シミュレーション ===== -->
-<div class="section-divider">スタッフ別 1日稼働シミュレーション（SSIN 60分 / LUMISS 実メニュー）</div>
+<div id="capacity" class="section-divider">スタッフ別 1日稼働シミュレーション（SSIN 60分 / LUMISS 実メニュー）</div>
 <div class="section">
   <h2>大久保 vs 柏原 ― 1日480分（10:00〜19:00 / 休憩1h）の時間配分と月商試算</h2>
   <div style="font-size:12px;color:var(--muted);margin-bottom:14px;padding:8px 12px;background:var(--s2);border-radius:8px;display:flex;gap:20px">
@@ -401,34 +430,12 @@ tbody tr:hover{background:var(--s2)}
       </div>
 
       <!-- メトリクス -->
-      <table style="font-size:12px;margin-bottom:14px">
-        <tbody>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">SSIN客数/日</td>
-            <td style="text-align:right;padding:6px 8px;font-weight:700">4.2人</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">SSIN所要時間/日</td>
-            <td style="text-align:right;padding:6px 8px">249分（4.2h）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS残り枠/日</td>
-            <td style="text-align:right;padding:6px 8px;color:var(--blue);font-weight:700">231分（3.8h）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS実稼働時間/日</td>
-            <td style="text-align:right;padding:6px 8px">約2.0h（Case①必要量）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">Case①必要稼働率</td>
-            <td style="text-align:right;padding:6px 8px"><span class="num-g">51%</span><span class="ms">（余裕あり）</span></td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS時間上限売上</td>
-            <td style="text-align:right;padding:6px 8px">¥672,182/月</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="stat-rows" style="margin-bottom:14px">
+        <div class="stat-row"><span class="sl">SSIN客数/日</span><span class="sv">4.2人 × 60分 = 249分</span></div>
+        <div class="stat-row"><span class="sl">LUMISS残り枠/日</span><span class="sv" style="color:var(--blue)">231分（3.8h）</span></div>
+        <div class="stat-row"><span class="sl">Case①必要稼働率</span><span class="sv"><span class="num-g">51%</span> 余裕あり</span></div>
+        <div class="stat-row"><span class="sl">LUMISS時間上限</span><span class="sv">¥672,182/月</span></div>
+      </div>
 
       <!-- 月商サマリー -->
       <div style="background:rgba(10,158,106,.08);border-radius:8px;padding:12px 14px">
@@ -467,34 +474,12 @@ tbody tr:hover{background:var(--s2)}
       </div>
 
       <!-- メトリクス -->
-      <table style="font-size:12px;margin-bottom:14px">
-        <tbody>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">SSIN客数/日</td>
-            <td style="text-align:right;padding:6px 8px;font-weight:700">4.7人</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">SSIN所要時間/日</td>
-            <td style="text-align:right;padding:6px 8px">284分（4.7h）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS残り枠/日</td>
-            <td style="text-align:right;padding:6px 8px;color:var(--blue);font-weight:700">196分（3.3h）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS実稼働時間/日</td>
-            <td style="text-align:right;padding:6px 8px">約2.0h（Case①必要量）</td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">Case①必要稼働率</td>
-            <td style="text-align:right;padding:6px 8px"><span class="num-a">60%</span><span class="ms">（達成可能・枠確保要）</span></td>
-          </tr>
-          <tr>
-            <td style="color:var(--muted);padding:6px 8px">LUMISS時間上限売上</td>
-            <td style="text-align:right;padding:6px 8px">¥570,379/月</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="stat-rows" style="margin-bottom:14px">
+        <div class="stat-row"><span class="sl">SSIN客数/日</span><span class="sv">4.7人 × 60分 = 284分</span></div>
+        <div class="stat-row"><span class="sl">LUMISS残り枠/日</span><span class="sv" style="color:var(--blue)">196分（3.3h）</span></div>
+        <div class="stat-row"><span class="sl">Case①必要稼働率</span><span class="sv"><span class="num-a">60%</span> 枠確保要</span></div>
+        <div class="stat-row"><span class="sl">LUMISS時間上限</span><span class="sv">¥570,379/月</span></div>
+      </div>
 
       <!-- 月商サマリー -->
       <div style="background:rgba(124,58,237,.07);border-radius:8px;padding:12px 14px">
@@ -629,7 +614,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== 季節変動シミュレーション ===== -->
-<div class="section-divider">季節変動シミュレーション（大久保のみ LUMISS）</div>
+<div id="seasonal" class="section-divider">季節変動シミュレーション（大久保のみ LUMISS）</div>
 <div class="section">
   <h2>月次¥150万到達シミュレーション ― SSIN季節変動加味</h2>
 
@@ -762,7 +747,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== ¥150万到達戦略 ===== -->
-<div class="section-divider">¥150万到達戦略（3択比較）</div>
+<div id="strategy" class="section-divider">¥150万到達戦略（3択比較）</div>
 <div class="section">
   <h2>どうすれば毎月¥150万を超えられるか</h2>
 
@@ -924,7 +909,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== 柏原参入タイミング別シミュレーション ===== -->
-<div class="section-divider">柏原参入タイミング別シミュレーション</div>
+<div id="timing" class="section-divider">柏原参入タイミング別シミュレーション</div>
 <div class="section">
   <h2>いつ柏原がLUMISSを始めるか ― タイミング別 年間ROY・¥150万到達月数の全比較</h2>
 
@@ -1140,7 +1125,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== シナリオ別12ヶ月収益比較 ===== -->
-<div class="section-divider">シナリオ別 12ヶ月収益比較</div>
+<div id="scenario" class="section-divider">シナリオ別 12ヶ月収益比較</div>
 <div class="section">
   <h2>大久保のみ vs 柏原参入 ― 本部受取総額</h2>
   <div class="scenario-wrap">
@@ -1212,85 +1197,48 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== SSIN vs LUMISS ROY 月別内訳 ===== -->
-<div class="section-divider">SSIN ROY / LUMISS ROY 月別内訳（柏原10月参入シナリオ）</div>
+<div id="breakdown" class="section-divider">SSIN ROY / LUMISS ROY 月別内訳（柏原10月参入シナリオ）</div>
 <div class="section">
   <h2>SSIN ROY と LUMISS ROY の別々回収額 ― 月次内訳</h2>
 
-  <div class="two-col" style="gap:14px;margin-bottom:16px">
-    <!-- 大久保のみ -->
-    <div>
-      <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">大久保のみ（現行）</div>
-      <table style="font-size:12px">
-        <thead>
-          <tr>
-            <th style="text-align:left">月</th>
-            <th>SSIN売上</th>
-            <th style="color:var(--muted)">SSIN ROY</th>
-            <th>LUMISS売上</th>
-            <th style="color:var(--green)">LUMISS ROY</th>
-            <th>Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row-miss"><td><strong>7月</strong></td><td>¥1,110,381</td><td>¥111,038</td><td>¥267,000</td><td style="color:var(--green)">¥26,700</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>8月</strong></td><td>¥1,059,909</td><td>¥105,991</td><td>¥350,000</td><td style="color:var(--green)">¥35,000</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>9月</strong></td><td>¥958,965</td><td>¥95,896</td><td>¥358,000</td><td style="color:var(--green)">¥35,800</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>10月</strong></td><td>¥1,009,437</td><td>¥100,944</td><td>¥336,000</td><td style="color:var(--green)">¥33,600</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>11月</strong></td><td>¥1,110,381</td><td>¥111,038</td><td>¥330,000</td><td style="color:var(--green)">¥33,000</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-near"><td><strong>12月</strong></td><td>¥1,160,853</td><td>¥116,085</td><td>¥332,000</td><td style="color:var(--green)">¥33,200</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>1月</strong></td><td>¥858,021</td><td style="color:var(--red)">¥85,802</td><td>¥341,200</td><td style="color:var(--green)">¥34,120</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>2月</strong></td><td>¥958,965</td><td>¥95,896</td><td>¥341,200</td><td style="color:var(--green)">¥34,120</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-hit"><td><strong>3月</strong></td><td>¥1,160,853</td><td style="color:var(--green);font-weight:700">¥174,128</td><td>¥341,200</td><td style="color:var(--green);font-weight:700">¥51,180</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>4月</strong></td><td>¥1,211,324</td><td style="color:var(--green);font-weight:700">¥181,699</td><td>¥341,200</td><td style="color:var(--green);font-weight:700">¥51,180</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="total-row">
-            <td>合計</td>
-            <td></td>
-            <td style="color:var(--red)">¥1,178,517</td>
-            <td></td>
-            <td style="color:var(--green)">¥367,900</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 柏原10月参入 -->
-    <div>
-      <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">柏原10月参入★（推奨）</div>
-      <table style="font-size:12px">
-        <thead>
-          <tr>
-            <th style="text-align:left">月</th>
-            <th>SSIN売上</th>
-            <th style="color:var(--muted)">SSIN ROY</th>
-            <th>LUMISS合計</th>
-            <th style="color:var(--green)">LUMISS ROY</th>
-            <th>Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row-miss"><td><strong>7月</strong></td><td>¥1,110,381</td><td>¥111,038</td><td>¥267,000</td><td style="color:var(--green)">¥26,700</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>8月</strong></td><td>¥1,059,909</td><td>¥105,991</td><td>¥350,000</td><td style="color:var(--green)">¥35,000</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-miss"><td><strong>9月</strong></td><td>¥958,965</td><td>¥95,896</td><td>¥358,000</td><td style="color:var(--green)">¥35,800</td><td style="color:var(--muted)">10%</td></tr>
-          <tr class="row-hit"><td><strong>10月</strong> <span style="font-size:9px;color:var(--green);font-weight:700">◀柏原IN</span></td><td>¥1,009,437</td><td style="color:var(--green);font-weight:700">¥151,416</td><td style="color:var(--green)">¥603,000</td><td style="color:var(--green);font-weight:700">¥90,450</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>11月</strong></td><td>¥1,110,381</td><td style="color:var(--green);font-weight:700">¥166,557</td><td style="color:var(--green)">¥680,000</td><td style="color:var(--green);font-weight:700">¥102,000</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>12月</strong></td><td>¥1,160,853</td><td style="color:var(--green);font-weight:700">¥174,128</td><td style="color:var(--green)">¥690,000</td><td style="color:var(--green);font-weight:700">¥103,500</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>1月</strong> <span class="tag tr" style="font-size:9px;padding:1px 4px">閑散</span></td><td>¥858,021</td><td style="color:var(--green);font-weight:700">¥128,703</td><td style="color:var(--green)">¥677,200</td><td style="color:var(--green);font-weight:700">¥101,580</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>2月</strong></td><td>¥958,965</td><td style="color:var(--green);font-weight:700">¥143,845</td><td style="color:var(--green)">¥671,200</td><td style="color:var(--green);font-weight:700">¥100,680</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>3月</strong></td><td>¥1,160,853</td><td style="color:var(--green);font-weight:700">¥174,128</td><td style="color:var(--green)">¥673,200</td><td style="color:var(--green);font-weight:700">¥100,980</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="row-hit"><td><strong>4月</strong></td><td>¥1,211,324</td><td style="color:var(--green);font-weight:700">¥181,699</td><td style="color:var(--green)">¥682,400</td><td style="color:var(--green);font-weight:700">¥102,360</td><td style="color:var(--green);font-weight:700">15%</td></tr>
-          <tr class="total-row">
-            <td>合計</td>
-            <td></td>
-            <td style="color:var(--green);font-weight:800">¥1,433,401</td>
-            <td></td>
-            <td style="color:var(--green);font-weight:800">¥799,050</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <table style="font-size:12px;margin-bottom:16px">
+    <thead>
+      <tr>
+        <th style="text-align:left" rowspan="2">月</th>
+        <th colspan="3" style="text-align:center;color:var(--red);border-bottom:1px solid var(--border)">大久保のみ（現行）</th>
+        <th colspan="3" style="text-align:center;color:var(--green);border-bottom:1px solid var(--border)">柏原10月参入★（推奨）</th>
+      </tr>
+      <tr>
+        <th style="color:var(--muted)">SSIN ROY</th>
+        <th style="color:var(--green)">LUMISS ROY</th>
+        <th>Rate</th>
+        <th style="color:var(--muted)">SSIN ROY</th>
+        <th style="color:var(--green)">LUMISS ROY</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-miss"><td><strong>7月</strong></td><td>¥111,038</td><td style="color:var(--green)">¥26,700</td><td style="color:var(--muted)">10%</td><td>¥111,038</td><td style="color:var(--green)">¥26,700</td><td style="color:var(--muted)">10%</td></tr>
+      <tr class="row-miss"><td><strong>8月</strong></td><td>¥105,991</td><td style="color:var(--green)">¥35,000</td><td style="color:var(--muted)">10%</td><td>¥105,991</td><td style="color:var(--green)">¥35,000</td><td style="color:var(--muted)">10%</td></tr>
+      <tr class="row-miss"><td><strong>9月</strong></td><td>¥95,896</td><td style="color:var(--green)">¥35,800</td><td style="color:var(--muted)">10%</td><td>¥95,896</td><td style="color:var(--green)">¥35,800</td><td style="color:var(--muted)">10%</td></tr>
+      <tr><td><strong>10月</strong> <span style="font-size:9px;color:var(--green);font-weight:700">◀柏原IN</span></td><td style="color:var(--muted)">¥100,944</td><td style="color:var(--green)">¥33,600</td><td style="color:var(--muted)">10%</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥151,416</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥90,450</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">15%</td></tr>
+      <tr><td><strong>11月</strong></td><td style="color:var(--muted)">¥111,038</td><td style="color:var(--green)">¥33,000</td><td style="color:var(--muted)">10%</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥166,557</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥102,000</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">15%</td></tr>
+      <tr class="row-near"><td><strong>12月</strong></td><td>¥116,085</td><td style="color:var(--green)">¥33,200</td><td style="color:var(--muted)">10%</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥174,128</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥103,500</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">15%</td></tr>
+      <tr class="row-miss"><td><strong>1月</strong> <span class="tag tr" style="font-size:9px">閑散</span></td><td style="color:var(--red)">¥85,802</td><td style="color:var(--green)">¥34,120</td><td style="color:var(--muted)">10%</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥128,703</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥101,580</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">15%</td></tr>
+      <tr class="row-miss"><td><strong>2月</strong></td><td>¥95,896</td><td style="color:var(--green)">¥34,120</td><td style="color:var(--muted)">10%</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥143,845</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">¥100,680</td><td style="color:var(--green);font-weight:700;background:rgba(10,158,106,.06)">15%</td></tr>
+      <tr class="row-hit"><td><strong>3月</strong></td><td style="color:var(--green);font-weight:700">¥174,128</td><td style="color:var(--green);font-weight:700">¥51,180</td><td style="color:var(--green);font-weight:700">15%</td><td style="color:var(--green);font-weight:700">¥174,128</td><td style="color:var(--green);font-weight:700">¥100,980</td><td style="color:var(--green);font-weight:700">15%</td></tr>
+      <tr class="row-hit"><td><strong>4月</strong></td><td style="color:var(--green);font-weight:700">¥181,699</td><td style="color:var(--green);font-weight:700">¥51,180</td><td style="color:var(--green);font-weight:700">15%</td><td style="color:var(--green);font-weight:700">¥181,699</td><td style="color:var(--green);font-weight:700">¥102,360</td><td style="color:var(--green);font-weight:700">15%</td></tr>
+      <tr class="total-row">
+        <td>10ヶ月合計</td>
+        <td style="color:var(--red)">¥1,178,517</td>
+        <td style="color:var(--green)">¥367,900</td>
+        <td style="color:var(--red)">—</td>
+        <td style="color:var(--green)">¥1,433,401</td>
+        <td style="color:var(--green)">¥799,050</td>
+        <td style="color:var(--green)">—</td>
+      </tr>
+    </tbody>
+  </table>
 
   <div class="note blue">
     <strong>読み方：</strong>10月以降はSSIN ROYも15%に切り替わる（例：1月 ¥85,802 → ¥128,703）。LUMISS参入がSSINのROY単価も押し上げるため、<strong>LUMISS ROY増（+¥43.1万）だけでなくSSIN ROY増（+¥25.5万）も本部利益</strong>になる。
@@ -1298,7 +1246,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== キャッシュフロー ===== -->
-<div class="section-divider">月次キャッシュフロー（大久保のみ・現行）</div>
+<div id="cashflow" class="section-divider">月次キャッシュフロー（大久保のみ・現行）</div>
 <div class="section">
   <h2>月次収益キャッシュフロー（SSIN本部受取）</h2>
   <table>
@@ -1399,7 +1347,7 @@ tbody tr:hover{background:var(--s2)}
 </div>
 
 <!-- ===== ACTIONS ===== -->
-<div class="section-divider">アクション</div>
+<div id="actions" class="section-divider">アクション（優先順位付き）</div>
 <div class="section">
   <h2>アクション（優先順位付き）</h2>
   <div class="action-item">
