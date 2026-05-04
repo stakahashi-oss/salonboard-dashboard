@@ -148,6 +148,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <button class="tab active" onclick="switchTab('summary',this)">📊 サマリー</button>
   <button class="tab" onclick="switchTab('review',this)">📝 4月振り返り<span class="tab-dot dot-red"></span></button>
   <button class="tab" onclick="switchTab('action',this)">🎯 5月アクション<span class="tab-dot dot-red"></span></button>
+  <button class="tab" onclick="switchTab('may',this)">📈 5月進捗<span class="tab-dot dot-red"></span></button>
 </div>
 
 <div class="content">
@@ -171,8 +172,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
     </div>
     <div class="sum-card">
       <div class="sum-label">達成 / 未達</div>
-      <div class="sum-val"><span style="color:#10b981">5</span> / <span style="color:#ef4444">3</span></div>
-      <div class="sum-sub">転換中 1店舗（L池袋）</div>
+      <div class="sum-val"><span style="color:#10b981">3</span> / <span style="color:#ef4444">2</span></div>
+      <div class="sum-sub">接近3店・転換中1店（L池袋）</div>
     </div>
     <div class="sum-card">
       <div class="sum-label">施策後 最大改善</div>
@@ -197,9 +198,9 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥2,200,700</div>
-          <div class="store-target">目標 ¥1,650,000</div>
+          <div class="store-target">目標 ¥2,016,000</div>
         </div>
-        <div class="store-rate green">133%</div>
+        <div class="store-rate green">109%</div>
       </div>
       <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
       <div style="display:flex;gap:6px;margin-top:10px;font-size:11px">
@@ -225,9 +226,9 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,463,575</div>
-          <div class="store-target">目標 ¥1,300,000</div>
+          <div class="store-target">目標 ¥1,404,000</div>
         </div>
-        <div class="store-rate green">113%</div>
+        <div class="store-rate green">104%</div>
       </div>
       <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
       <div class="store-stats">
@@ -238,22 +239,22 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
     </div>
 
     <!-- m下北沢 -->
-    <div class="store-card green">
+    <div class="store-card amber">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
           <div class="store-name">m下北沢</div>
           <div class="store-sv">SV: 土田</div>
         </div>
-        <span class="badge bg-green">達成</span>
+        <span class="badge bg-amber">接近</span>
       </div>
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,941,240</div>
-          <div class="store-target">目標 ¥1,000,000</div>
+          <div class="store-target">目標 ¥2,086,700</div>
         </div>
-        <div class="store-rate green">194%</div>
+        <div class="store-rate amber">93%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-amber" style="width:93%"></div></div>
       <div class="store-stats">
         <div class="stat-item"><div class="stat-val" style="color:#ef4444">14</div><div class="stat-lbl">新規 ⚠</div></div>
         <div class="stat-item"><div class="stat-val">224</div><div class="stat-lbl">再来</div></div>
@@ -262,22 +263,22 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
     </div>
 
     <!-- m所沢 -->
-    <div class="store-card green">
+    <div class="store-card amber">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
           <div class="store-name">m所沢</div>
           <div class="store-sv">—</div>
         </div>
-        <span class="badge bg-green">達成</span>
+        <span class="badge bg-amber">接近</span>
       </div>
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,466,040</div>
-          <div class="store-target">目標 ¥700,000</div>
+          <div class="store-target">目標 ¥1,570,000</div>
         </div>
-        <div class="store-rate green">209%</div>
+        <div class="store-rate amber">93%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-amber" style="width:93%"></div></div>
       <div class="store-stats">
         <div class="stat-item"><div class="stat-val">55</div><div class="stat-lbl">新規</div></div>
         <div class="stat-item"><div class="stat-val">100</div><div class="stat-lbl">再来</div></div>
@@ -297,11 +298,11 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,340,263</div>
-          <div class="store-target">目標 ¥1,800,000</div>
+          <div class="store-target">目標 ¥1,701,000</div>
         </div>
-        <div class="store-rate red">74%</div>
+        <div class="store-rate red">79%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:74%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:79%"></div></div>
       <div style="display:flex;gap:6px;margin-top:10px;font-size:11px">
         <span style="background:#eff6ff;color:#2563eb;padding:2px 8px;border-radius:6px">SSIN ¥1,075,463</span>
         <span style="background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:6px">LUMISS ¥264,800</span>
@@ -325,11 +326,11 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥590,870</div>
-          <div class="store-target">目標 ¥1,200,000</div>
+          <div class="store-target">目標 ¥696,000</div>
         </div>
-        <div class="store-rate red">49%</div>
+        <div class="store-rate red">85%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:43%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:85%"></div></div>
       <div class="store-stats">
         <div class="stat-item"><div class="stat-val">35</div><div class="stat-lbl">新規</div></div>
         <div class="stat-item"><div class="stat-val">73</div><div class="stat-lbl">再来</div></div>
@@ -349,11 +350,11 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥301,760</div>
-          <div class="store-target">目標 ¥2,100,000（旧基準）</div>
+          <div class="store-target">目標 ¥600,000（転換初月）</div>
         </div>
-        <div class="store-rate purple">14%</div>
+        <div class="store-rate purple">50%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-purple" style="width:12%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-purple" style="width:50%"></div></div>
       <div class="store-stats">
         <div class="stat-item"><div class="stat-val">81</div><div class="stat-lbl">新規</div></div>
         <div class="stat-item"><div class="stat-val" style="color:#ef4444">0</div><div class="stat-lbl">再来（転換直後）</div></div>
@@ -362,22 +363,22 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
     </div>
 
     <!-- S立川 -->
-    <div class="store-card red">
+    <div class="store-card amber">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
           <div class="store-name">S立川</div>
           <div class="store-sv">—</div>
         </div>
-        <span class="badge bg-red">未達</span>
+        <span class="badge bg-amber">接近</span>
       </div>
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,264,100</div>
-          <div class="store-target">目標 ¥1,500,000</div>
+          <div class="store-target">目標 ¥1,410,000</div>
         </div>
-        <div class="store-rate red">84%</div>
+        <div class="store-rate amber">90%</div>
       </div>
-      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:84%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill bar-amber" style="width:90%"></div></div>
       <div class="store-stats">
         <div class="stat-item"><div class="stat-val">79</div><div class="stat-lbl">新規</div></div>
         <div class="stat-item"><div class="stat-val">133</div><div class="stat-lbl">再来</div></div>
@@ -397,9 +398,9 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <div class="store-rate-row">
         <div>
           <div class="store-actual">¥1,431,300</div>
-          <div class="store-target">目標 ¥1,430,000</div>
+          <div class="store-target">目標 ¥1,199,940</div>
         </div>
-        <div class="store-rate green">100%</div>
+        <div class="store-rate green">119%</div>
       </div>
       <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
       <div class="store-stats">
@@ -431,8 +432,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr>
           <td><b>S/L札幌</b> <span style="font-size:10px;color:#8b97b1">SSIN¥1,926K+LUMISS¥275K</span></td>
           <td class="num">¥2,200,700</td>
-          <td class="num" style="color:#8b97b1">¥1,650,000</td>
-          <td class="ctr"><span class="badge bg-green">133.4%</span></td>
+          <td class="num" style="color:#8b97b1">¥2,016,000</td>
+          <td class="ctr"><span class="badge bg-green">109.2%</span></td>
           <td class="ctr">122</td><td class="ctr">220</td>
           <td class="ctr" style="color:#f59e0b">9.4%</td>
           <td class="num">¥6,200</td>
@@ -440,8 +441,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr>
           <td><b>S熊本</b></td>
           <td class="num">¥1,463,575</td>
-          <td class="num" style="color:#8b97b1">¥1,300,000</td>
-          <td class="ctr"><span class="badge bg-green">112.6%</span></td>
+          <td class="num" style="color:#8b97b1">¥1,404,000</td>
+          <td class="ctr"><span class="badge bg-green">104.2%</span></td>
           <td class="ctr">86</td><td class="ctr">147</td>
           <td class="ctr">10.3%</td>
           <td class="num">¥6,020</td>
@@ -449,8 +450,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr>
           <td><b>m下北沢</b></td>
           <td class="num">¥1,941,240</td>
-          <td class="num" style="color:#8b97b1">¥1,000,000</td>
-          <td class="ctr"><span class="badge bg-green">194.1%</span></td>
+          <td class="num" style="color:#8b97b1">¥2,086,700</td>
+          <td class="ctr"><span class="badge bg-amber">93.0%</span></td>
           <td class="ctr" style="color:#ef4444;font-weight:700">14 ⚠</td><td class="ctr">224</td>
           <td class="ctr">14.2%</td>
           <td class="num">¥8,229</td>
@@ -458,8 +459,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr>
           <td><b>m所沢</b></td>
           <td class="num">¥1,466,040</td>
-          <td class="num" style="color:#8b97b1">¥700,000</td>
-          <td class="ctr"><span class="badge bg-green">209.4%</span></td>
+          <td class="num" style="color:#8b97b1">¥1,570,000</td>
+          <td class="ctr"><span class="badge bg-amber">93.4%</span></td>
           <td class="ctr">55</td><td class="ctr">100</td>
           <td class="ctr" style="color:#ef4444">1.3%</td>
           <td class="num">¥8,594</td>
@@ -467,8 +468,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr style="background:#fff5f5">
           <td><b>S/L二子玉川</b> <span style="font-size:10px;color:#8b97b1">SSIN¥1,075K+LUMISS¥265K</span></td>
           <td class="num">¥1,340,263</td>
-          <td class="num" style="color:#8b97b1">¥1,800,000</td>
-          <td class="ctr"><span class="badge bg-red">74.5%</span></td>
+          <td class="num" style="color:#8b97b1">¥1,701,000</td>
+          <td class="ctr"><span class="badge bg-red">78.8%</span></td>
           <td class="ctr">71</td><td class="ctr">136</td>
           <td class="ctr">6.6%</td>
           <td class="num">¥6,894</td>
@@ -476,8 +477,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr style="background:#fff5f5">
           <td><b>S岐阜</b></td>
           <td class="num">¥590,870</td>
-          <td class="num" style="color:#8b97b1">¥1,200,000</td>
-          <td class="ctr"><span class="badge bg-red">49.2%</span></td>
+          <td class="num" style="color:#8b97b1">¥696,000</td>
+          <td class="ctr"><span class="badge bg-red">84.9%</span></td>
           <td class="ctr">35</td><td class="ctr">73</td>
           <td class="ctr">5.6%</td>
           <td class="num">¥4,847</td>
@@ -485,8 +486,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr style="background:#faf5ff">
           <td><b>L池袋</b> <span style="font-size:10px;color:#8b5cf6">転換</span></td>
           <td class="num">¥301,760</td>
-          <td class="num" style="color:#8b97b1">¥2,100,000</td>
-          <td class="ctr"><span class="badge bg-purple">14.4%</span></td>
+          <td class="num" style="color:#8b97b1">¥600,000</td>
+          <td class="ctr"><span class="badge bg-purple">50.3%</span></td>
           <td class="ctr">81</td><td class="ctr" style="color:#ef4444">0</td>
           <td class="ctr">27.2%</td>
           <td class="num">¥3,225</td>
@@ -494,8 +495,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr style="background:#fff5f5">
           <td><b>S立川</b></td>
           <td class="num">¥1,264,100</td>
-          <td class="num" style="color:#8b97b1">¥1,500,000</td>
-          <td class="ctr"><span class="badge bg-red">84.3%</span></td>
+          <td class="num" style="color:#8b97b1">¥1,410,000</td>
+          <td class="ctr"><span class="badge bg-amber">89.7%</span></td>
           <td class="ctr">79</td><td class="ctr">133</td>
           <td class="ctr">8.1%</td>
           <td class="num">¥5,481</td>
@@ -503,8 +504,8 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr>
           <td><b>S藤沢</b></td>
           <td class="num">¥1,431,300</td>
-          <td class="num" style="color:#8b97b1">¥1,430,000</td>
-          <td class="ctr"><span class="badge bg-green">100.1%</span></td>
+          <td class="num" style="color:#8b97b1">¥1,199,940</td>
+          <td class="ctr"><span class="badge bg-green">119.3%</span></td>
           <td class="ctr" style="color:#10b981;font-weight:600">125</td>
           <td class="ctr" style="color:#10b981;font-weight:600">122</td>
           <td class="ctr">15.9%</td>
@@ -513,7 +514,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         <tr style="background:#f8fafc;font-weight:700">
           <td>合計</td>
           <td class="num">¥11,999,848</td>
-          <td class="num" style="color:#8b97b1">¥12,680,000</td>
+          <td class="num" style="color:#8b97b1">¥12,683,640</td>
           <td class="ctr"><span class="badge bg-amber">94.6%</span></td>
           <td class="ctr">669</td><td class="ctr">1,131</td>
           <td class="ctr">—</td>
@@ -541,7 +542,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
       <tbody>
         <tr>
           <td><b>S/L札幌</b></td>
-          <td class="ctr"><span class="badge bg-green">133.4%</span></td>
+          <td class="ctr"><span class="badge bg-green">109.2%</span></td>
           <td class="ctr">367名<span style="font-size:10px;color:#8b97b1">（再来248）</span></td>
           <td class="num">¥5,996</td>
           <td class="ctr" style="color:#10b981;font-weight:700">37.1%</td>
@@ -550,7 +551,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         </tr>
         <tr>
           <td><b>S熊本</b></td>
-          <td class="ctr"><span class="badge bg-green">112.6%</span></td>
+          <td class="ctr"><span class="badge bg-green">104.2%</span></td>
           <td class="ctr">268名<span style="font-size:10px;color:#8b97b1">（再来179）</span></td>
           <td class="num">¥5,461</td>
           <td class="ctr" style="color:#10b981;font-weight:700">26.5%</td>
@@ -559,25 +560,25 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         </tr>
         <tr>
           <td><b>m下北沢</b></td>
-          <td class="ctr"><span class="badge bg-green">194.1%</span></td>
+          <td class="ctr"><span class="badge bg-amber">93.0%</span></td>
           <td class="ctr">247名<span style="font-size:10px;color:#ef4444">（新規14!）</span></td>
           <td class="num">¥7,859</td>
           <td class="ctr" style="color:#8b97b1">1.6%</td>
           <td class="num">¥65,238</td>
-          <td style="font-size:12px">再来233名×客単価¥7,859で達成。新規14名は構造的危機</td>
+          <td style="font-size:12px">再来233名×客単価¥7,859で93%（目標¥2,086,700）。新規14名は構造的危機で補填に限界</td>
         </tr>
         <tr>
           <td><b>m所沢</b></td>
-          <td class="ctr"><span class="badge bg-green">209.4%</span></td>
+          <td class="ctr"><span class="badge bg-amber">93.4%</span></td>
           <td class="ctr">183名<span style="font-size:10px;color:#8b97b1">（再来121）</span></td>
           <td class="num">¥8,011</td>
           <td class="ctr" style="color:#8b97b1">11.5%</td>
           <td class="num">¥52,310</td>
-          <td style="font-size:12px">客単価¥8,011（9店舗最高）×後半加速。目標設定が低い面も</td>
+          <td style="font-size:12px">客単価¥8,011（9店舗最高）×後半加速で93%接近（目標¥1,570,000）</td>
         </tr>
         <tr>
           <td><b>S藤沢</b></td>
-          <td class="ctr"><span class="badge bg-green">100.1%</span></td>
+          <td class="ctr"><span class="badge bg-green">119.3%</span></td>
           <td class="ctr">261名<span style="font-size:10px;color:#8b97b1">（新規125）</span></td>
           <td class="num">¥5,483</td>
           <td class="ctr" style="color:#10b981;font-weight:700">25.7%</td>
@@ -586,7 +587,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         </tr>
         <tr style="background:#fff5f5">
           <td><b>S/L二子玉川</b></td>
-          <td class="ctr"><span class="badge bg-red">74.5%</span></td>
+          <td class="ctr"><span class="badge bg-red">78.8%</span></td>
           <td class="ctr">229名<span style="font-size:10px;color:#ef4444">（新規65）</span></td>
           <td class="num">¥5,852</td>
           <td class="ctr" style="color:#f59e0b">23.1%</td>
@@ -595,16 +596,16 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
         </tr>
         <tr style="background:#fff5f5">
           <td><b>S岐阜</b></td>
-          <td class="ctr"><span class="badge bg-red">49.2%</span></td>
+          <td class="ctr"><span class="badge bg-red">84.9%</span></td>
           <td class="ctr">105名<span style="font-size:10px;color:#ef4444">（新規31）</span></td>
           <td class="num">¥5,627</td>
           <td class="ctr">17.1%</td>
           <td class="num">¥30,451</td>
-          <td style="font-size:12px">HPB圏外＋スタッフ1名で客数105名が天井。クーポン効果で後半+31%も焼石に水</td>
+          <td style="font-size:12px">HPB圏外＋スタッフ1名で客数105名が天井。クーポン効果で後半+31%も目標¥696,000に対し¥590,870で84.9%</td>
         </tr>
         <tr style="background:#fff5f5">
           <td><b>S立川</b></td>
-          <td class="ctr"><span class="badge bg-red">84.3%</span></td>
+          <td class="ctr"><span class="badge bg-amber">89.7%</span></td>
           <td class="ctr">220名<span style="font-size:10px;color:#ef4444">（新規87）</span></td>
           <td class="num">¥5,745</td>
           <td class="ctr" style="color:#10b981;font-weight:700">40.0%</td>
@@ -651,7 +652,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
           <td class="ctr" style="color:#8b97b1">56.2%</td>
           <td class="ctr"><span style="color:#8b97b1">▼0.9pt</span></td>
           <td class="ctr">23%</td>
-          <td style="font-size:12px">CVRが業界比-7.7ptと低くHPBからの新規集客力が弱い。Lステップ再来力（再来248名）で完全補完して133%達成</td>
+          <td style="font-size:12px">CVRが業界比-7.7ptと低くHPBからの新規集客力が弱い。Lステップ再来力（再来248名）で完全補完して109%達成</td>
         </tr>
         <tr>
           <td><b>S熊本</b></td>
@@ -673,7 +674,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
           <td class="ctr" style="color:#8b97b1">61.2%</td>
           <td class="ctr"><span style="color:#ef4444;font-weight:700">▼5.0pt</span></td>
           <td class="ctr">—</td>
-          <td style="font-size:12px">ACR業界比-5pt。新規14名は<b style="color:#ef4444">構造的危機</b>だが再来233名×客単価¥7,859の力で194%達成。HPB不振は再来チャネルで吸収済み</td>
+          <td style="font-size:12px">ACR業界比-5pt。新規14名は<b style="color:#ef4444">構造的危機</b>。再来233名×客単価¥7,859で93%達成（目標¥2,086,700）。正しい目標対比では未達に近いことを認識し、新規集客を最優先課題として対処必須</td>
         </tr>
         <tr>
           <td><b>m所沢</b></td>
@@ -684,7 +685,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
           <td class="ctr" style="color:#8b97b1">〜16.3%</td>
           <td class="ctr"><span style="color:#ef4444;font-weight:700">▼11.8pt</span></td>
           <td class="ctr">27%</td>
-          <td style="font-size:12px">CVR・ACR共に業界を大幅下回る。スタッフ2名（Emiri 4件+Rena 1件=計5件/月）が根本制約。214%達成は低目標+高単価¥8,011によるもの</td>
+          <td style="font-size:12px">CVR・ACR共に業界を大幅下回る。スタッフ2名（Emiri 4件+Rena 1件=計5件/月）が根本制約。目標¥1,570,000に対し¥1,466,040で93.4%達成。正しい目標比ではほぼ接近水準</td>
         </tr>
         <tr style="background:#fff5f5">
           <td><b>S/L二子玉川</b></td>
@@ -706,7 +707,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
           <td class="ctr" style="color:#8b97b1">16.3%</td>
           <td class="ctr"><span style="color:#ef4444;font-weight:700">▼-7.1pt</span></td>
           <td class="ctr"><span style="color:#f59e0b">26%</span></td>
-          <td style="font-size:12px">CVRは業界超え(+1.7pt)でページ集客力あり。<b style="color:#ef4444">ACR9.2%が業界比-7.1pt</b>で予約完了率が最大課題。スタッフ指名はK.Fina3件+G.sona2件の計5件/月のみ。100.1%達成はLステップ後半集中施策が決め手で、ACR改善が5月最優先</td>
+          <td style="font-size:12px">CVRは業界超え(+1.7pt)でページ集客力あり。<b style="color:#ef4444">ACR9.2%が業界比-7.1pt</b>で予約完了率が最大課題。スタッフ指名はK.Fina3件+G.sona2件の計5件/月のみ。119.3%達成はLステップ後半集中施策が決め手で、ACR改善が5月最優先</td>
         </tr>
         <tr>
           <td><b>S岐阜</b></td>
@@ -812,7 +813,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #ef4444">
     <div class="ref-header">
       <div class="ref-store">S/L二子玉川 <span style="font-size:12px;color:#8b97b1;font-weight:400">内山SV｜SSIN¥1,075K + LUMISS¥265K</span></div>
-      <span class="badge bg-red">74.5% 未達</span>
+      <span class="badge bg-red">78.8% 未達</span>
     </div>
     <div class="ref-body">
       <div>
@@ -839,7 +840,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #ef4444">
     <div class="ref-header">
       <div class="ref-store">S岐阜 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV</span></div>
-      <span class="badge bg-red">49.2% 未達</span>
+      <span class="badge bg-red">84.9% 未達</span>
     </div>
     <div class="ref-body">
       <div>
@@ -863,10 +864,10 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   </div>
 
   <!-- S立川 -->
-  <div class="ref-card" style="border-left:4px solid #ef4444">
+  <div class="ref-card" style="border-left:4px solid #f59e0b">
     <div class="ref-header">
       <div class="ref-store">S立川</div>
-      <span class="badge bg-red">84.3% 未達</span>
+      <span class="badge bg-amber">89.7% 接近</span>
     </div>
     <div class="ref-body">
       <div>
@@ -892,7 +893,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #10b981">
     <div class="ref-header">
       <div class="ref-store">S藤沢 <span style="font-size:12px;color:#8b97b1;font-weight:400">内山SV</span></div>
-      <span class="badge bg-green">100.1% 達成</span>
+      <span class="badge bg-green">119.3% 達成</span>
     </div>
     <div class="ref-body">
       <div>
@@ -918,13 +919,13 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #10b981">
     <div class="ref-header">
       <div class="ref-store">S熊本 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV</span></div>
-      <span class="badge bg-green">112.6% 達成</span>
+      <span class="badge bg-green">104.2% 達成</span>
     </div>
     <div class="ref-body">
       <div>
         <div class="ref-col-label indigo">達成ポイント</div>
         <div class="ref-items-wrap">
-          <div class="ref-item">目標¥1,300,000に対し¥1,323,875（+¥23,875）で達成</div>
+          <div class="ref-item">目標¥1,404,000に対し¥1,463,575（+¥59,575）で達成</div>
           <div class="ref-item">再来147名（目標130名, 113%）— 固定客基盤が最終月を押し上げた</div>
           <div class="ref-item">施策後の客単価+¥505、セット率+0.8ptが最後の積み上げになった</div>
           <div class="ref-item">新規86名（目標100名, 86%）— 来月は新規+14名でさらに伸ばせる余地</div>
@@ -944,7 +945,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #10b981">
     <div class="ref-header">
       <div class="ref-store">S/L札幌 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV｜SSIN¥1,926K + LUMISS¥275K</span></div>
-      <span class="badge bg-green">133.4% 達成</span>
+      <span class="badge bg-green">109.2% 達成</span>
     </div>
     <div class="ref-body">
       <div>
@@ -967,10 +968,10 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   </div>
 
   <!-- m下北沢 -->
-  <div class="ref-card" style="border-left:4px solid #10b981">
+  <div class="ref-card" style="border-left:4px solid #f59e0b">
     <div class="ref-header">
       <div class="ref-store">m下北沢 <span style="font-size:12px;color:#8b97b1;font-weight:400">土田SV</span></div>
-      <span class="badge bg-green">194.1% 達成（構造注意）</span>
+      <span class="badge bg-amber">93.0% 接近（新規危機）</span>
     </div>
     <div class="ref-body">
       <div>
@@ -993,10 +994,10 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   </div>
 
   <!-- m所沢 -->
-  <div class="ref-card" style="border-left:4px solid #10b981">
+  <div class="ref-card" style="border-left:4px solid #f59e0b">
     <div class="ref-header">
       <div class="ref-store">m所沢</div>
-      <span class="badge bg-green">209.4% 達成</span>
+      <span class="badge bg-amber">93.4% 接近</span>
     </div>
     <div class="ref-body">
       <div>
@@ -1022,7 +1023,7 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   <div class="ref-card" style="border-left:4px solid #8b5cf6">
     <div class="ref-header">
       <div class="ref-store">L池袋 <span style="font-size:12px;color:#8b5cf6;font-weight:400">LUMISS転換中</span></div>
-      <span class="badge bg-purple">転換期（旧目標比 14.4%）</span>
+      <span class="badge bg-purple">転換期（目標¥600K比 50.3%）</span>
     </div>
     <div class="ref-body">
       <div>
@@ -1253,6 +1254,346 @@ body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','N
   </div>
 
 </div><!-- /tab-action -->
+
+
+<!-- ════════════════════════════════════════
+  TAB 4: 5月進捗
+════════════════════════════════════════ -->
+<div id="tab-may" class="tab-panel">
+
+  <!-- ヘッダーサマリー -->
+  <div class="summary-strip" style="margin-bottom:20px">
+    <div class="sum-card" style="border-left:4px solid #ef4444">
+      <div class="sum-label">月末着地（直営合計）</div>
+      <div class="sum-val" style="color:#ef4444">1,664名</div>
+      <div class="sum-sub">目標1,645名 → <span style="color:#10b981;font-weight:700">+19名 超過</span></div>
+    </div>
+    <div class="sum-card" style="border-left:4px solid #ef4444">
+      <div class="sum-label">🔴 大幅遅延店舗</div>
+      <div class="sum-val" style="color:#ef4444;font-size:20px">m下北沢 / S岐阜</div>
+      <div class="sum-sub">それぞれ -54名 / -31名 着地</div>
+    </div>
+    <div class="sum-card" style="border-left:4px solid #f59e0b">
+      <div class="sum-label">客単価 全店課題</div>
+      <div class="sum-val" style="color:#f59e0b;font-size:18px">4/7店で目標割れ</div>
+      <div class="sum-sub">m所沢-¥1,943 / m下北沢-¥1,282 / S二子玉-¥1,308</div>
+    </div>
+    <div class="sum-card" style="border-left:4px solid #8b97b1">
+      <div class="sum-label">データ時点</div>
+      <div class="sum-val" style="font-size:16px;color:#4b5563">5月4日（4日経過）</div>
+      <div class="sum-sub">実数値+確定予約からの着地見込</div>
+    </div>
+  </div>
+
+  <!-- KPI着地マトリクス -->
+  <div class="sec-heading">KPI着地見込 マトリクス<span class="sec-note">5/4時点 実績＋確定予約ベース。着地%=着地見込÷月目標</span></div>
+  <div class="full-section" style="padding:0;overflow:hidden">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:90px">店舗</th>
+          <th colspan="3" style="text-align:center;background:#f0f4ff;border-bottom:1px solid #e4e9f2">総客数</th>
+          <th style="width:8px;background:#fff;border:none"></th>
+          <th colspan="3" style="text-align:center;background:#fff5f0;border-bottom:1px solid #e4e9f2">新規数</th>
+          <th style="width:8px;background:#fff;border:none"></th>
+          <th colspan="3" style="text-align:center;background:#f0fff5;border-bottom:1px solid #e4e9f2">再来数</th>
+          <th style="width:8px;background:#fff;border:none"></th>
+          <th colspan="3" style="text-align:center;background:#fefff0;border-bottom:1px solid #e4e9f2">客単価</th>
+        </tr>
+        <tr>
+          <th style="background:#f0f4ff;text-align:center">着地</th>
+          <th style="background:#f0f4ff;text-align:center">目標</th>
+          <th style="background:#f0f4ff;text-align:center">達成率</th>
+          <th style="background:#fff;border:none"></th>
+          <th style="background:#fff5f0;text-align:center">着地</th>
+          <th style="background:#fff5f0;text-align:center">目標</th>
+          <th style="background:#fff5f0;text-align:center">達成率</th>
+          <th style="background:#fff;border:none"></th>
+          <th style="background:#f0fff5;text-align:center">着地</th>
+          <th style="background:#f0fff5;text-align:center">目標</th>
+          <th style="background:#f0fff5;text-align:center">達成率</th>
+          <th style="background:#fff;border:none"></th>
+          <th style="background:#fefff0;text-align:center">実績</th>
+          <th style="background:#fefff0;text-align:center">目標</th>
+          <th style="background:#fefff0;text-align:center">差分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- m下北沢 -->
+        <tr style="background:#fff5f5">
+          <td><b>m下北沢</b><br><span style="font-size:10px;color:#ef4444;font-weight:700">🔴 要注視</span></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">176</span></td>
+          <td class="ctr" style="color:#8b97b1">230</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">76.5%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">0</span></td>
+          <td class="ctr" style="color:#8b97b1">40</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">0%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#f59e0b;font-weight:700">176</span></td>
+          <td class="ctr" style="color:#8b97b1">190</td>
+          <td class="ctr"><span style="background:#fef3c7;color:#b45309;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">92.6%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">¥6,218</span></td>
+          <td class="ctr" style="color:#8b97b1">¥7,500</td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">-¥1,282</span></td>
+        </tr>
+        <!-- m所沢 -->
+        <tr>
+          <td><b>m所沢</b><br><span style="font-size:10px;color:#10b981;font-weight:700">🟢 客数OK</span></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">227</span></td>
+          <td class="ctr" style="color:#8b97b1">205</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">110.7%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">72</span></td>
+          <td class="ctr" style="color:#8b97b1">68</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">105.9%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">155</span></td>
+          <td class="ctr" style="color:#8b97b1">137</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">113.1%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">¥6,557</span></td>
+          <td class="ctr" style="color:#8b97b1">¥8,500</td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">-¥1,943</span></td>
+        </tr>
+        <!-- S二子玉川 -->
+        <tr style="background:#fffbf0">
+          <td><b>S二子玉川</b><br><span style="font-size:10px;color:#f59e0b;font-weight:700">🟡 新規遅れ</span></td>
+          <td class="ctr"><span style="color:#f59e0b;font-weight:700">238</span></td>
+          <td class="ctr" style="color:#8b97b1">250</td>
+          <td class="ctr"><span style="background:#fef3c7;color:#b45309;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">95.2%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">62</span></td>
+          <td class="ctr" style="color:#8b97b1">80</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">77.5%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">176</span></td>
+          <td class="ctr" style="color:#8b97b1">170</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">103.5%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">¥4,892</span></td>
+          <td class="ctr" style="color:#8b97b1">¥6,200</td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">-¥1,308</span></td>
+        </tr>
+        <!-- S札幌 -->
+        <tr>
+          <td><b>S札幌</b><br><span style="font-size:10px;color:#10b981;font-weight:700">🟢 順調</span></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">393</span></td>
+          <td class="ctr" style="color:#8b97b1">350</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">112.3%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#f59e0b;font-weight:700">114</span></td>
+          <td class="ctr" style="color:#8b97b1">120</td>
+          <td class="ctr"><span style="background:#fef3c7;color:#b45309;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">95.0%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">279</span></td>
+          <td class="ctr" style="color:#8b97b1">230</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">121.3%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#f59e0b">¥6,155</span></td>
+          <td class="ctr" style="color:#8b97b1">¥6,400</td>
+          <td class="ctr"><span style="color:#f59e0b">-¥245</span></td>
+        </tr>
+        <!-- S熊本 -->
+        <tr style="background:#fffbf0">
+          <td><b>S熊本</b><br><span style="font-size:10px;color:#f59e0b;font-weight:700">🟡 新規遅れ</span></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">289</span></td>
+          <td class="ctr" style="color:#8b97b1">255</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">113.3%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">62</span></td>
+          <td class="ctr" style="color:#8b97b1">95</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">65.3%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">227</span></td>
+          <td class="ctr" style="color:#8b97b1">160</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">141.9%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">¥6,254</span></td>
+          <td class="ctr" style="color:#8b97b1">¥6,000</td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">+¥254</span></td>
+        </tr>
+        <!-- S藤沢 -->
+        <tr>
+          <td><b>S藤沢</b><br><span style="font-size:10px;color:#f59e0b;font-weight:700">🟡 再来遅れ</span></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">227</span></td>
+          <td class="ctr" style="color:#8b97b1">210</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">108.1%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#10b981;font-weight:700">114</span></td>
+          <td class="ctr" style="color:#8b97b1">70</td>
+          <td class="ctr"><span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">162.9%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">114</span></td>
+          <td class="ctr" style="color:#8b97b1">140</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">81.4%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">¥4,791</span></td>
+          <td class="ctr" style="color:#8b97b1">¥5,900</td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">-¥1,109</span></td>
+        </tr>
+        <!-- S岐阜 -->
+        <tr style="background:#fff5f5">
+          <td><b>S岐阜</b><br><span style="font-size:10px;color:#ef4444;font-weight:700">🔴 要注視</span></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">114</span></td>
+          <td class="ctr" style="color:#8b97b1">145</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">78.6%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#f59e0b;font-weight:700">41</span></td>
+          <td class="ctr" style="color:#8b97b1">45</td>
+          <td class="ctr"><span style="background:#fef3c7;color:#b45309;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">91.1%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#ef4444;font-weight:700">72</span></td>
+          <td class="ctr" style="color:#8b97b1">100</td>
+          <td class="ctr"><span style="background:#fee2e2;color:#ef4444;padding:2px 6px;border-radius:4px;font-weight:700;font-size:12px">72.0%</span></td>
+          <td style="background:#fff"></td>
+          <td class="ctr"><span style="color:#f59e0b">¥5,909</span></td>
+          <td class="ctr" style="color:#8b97b1">¥6,000</td>
+          <td class="ctr"><span style="color:#f59e0b">-¥91</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🔴 m下北沢 深掘り -->
+  <div class="sec-heading" style="margin-top:28px">🔴 m下北沢 — 要因分析<span class="sec-note">着地76.5%（-54名）/ 新規着地0件が最大病巣</span></div>
+  <div class="full-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div style="background:#fff5f5;border-radius:8px;padding:16px;border-left:4px solid #ef4444">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;text-transform:uppercase;margin-bottom:8px">病巣① 新規0件（目標40件）</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">4日間で新規予約が<b style="color:#ef4444">1件も入っていない</b>。GW期間中でまつ毛需要が薄い時期に加え、HPBクーポンの露出不足・期限切れが疑われる。下北沢は競合が多いエリアのため掲載順位が低下している可能性あり。</div>
+        <div style="margin-top:10px;padding:8px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b"><b>即時確認:</b> HPBクーポン有効期限 ＋ 掲載順位を今日中に確認</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:16px;border-left:4px solid #f59e0b">
+        <div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;margin-bottom:8px">病巣② 客単価 ¥6,218（目標¥7,500、-¥1,282）</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">現状は再来客のみで構成。まつ毛パーマ単品での来店が多く、眉毛×まつ毛のセット提案が機能していない。4月実績でもセット率の低さが確認されており、5月に入っても改善されていない。</div>
+        <div style="margin-top:10px;padding:8px;background:#fef3c7;border-radius:6px;font-size:12px;color:#92400e"><b>SV課題:</b> 初回来店時のセット提案トーク確立。目標セット率30%以上</div>
+      </div>
+      <div style="background:#f0f9ff;border-radius:8px;padding:16px;border-left:4px solid #3b82f6">
+        <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:8px">即動アクション</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.8">
+          <b style="color:#ef4444">今日中:</b> HPBクーポン確認（有効期限・掲載種別）<br>
+          <b style="color:#ef4444">5/5〜6:</b> GW限定「まつ毛×眉毛セット割」クーポン設置<br>
+          <b style="color:#f59e0b">5/7:</b> 4月来店客への再来フォローLINE配信<br>
+          <b style="color:#8b97b1">5/8〜:</b> 単価改善のためSVとセット提案ロープレ
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔴 S岐阜 深掘り -->
+  <div class="sec-heading" style="margin-top:20px">🔴 S岐阜 — 要因分析<span class="sec-note">着地78.6%（-31名）/ 再来72%が構造的病巣</span></div>
+  <div class="full-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div style="background:#fff5f5;border-radius:8px;padding:16px;border-left:4px solid #ef4444">
+        <div style="font-size:11px;font-weight:700;color:#ef4444;text-transform:uppercase;margin-bottom:8px">病巣① 再来72件（目標100件、-28件）</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">4月に来店した客が5月に戻ってきていない。Yuki1名体制のため施術後の「次回予約獲得」ができておらず、再来のサイクルが途絶えている。毎月この構造が繰り返されている。</div>
+        <div style="margin-top:10px;padding:8px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b"><b>根本原因:</b> 次回予約獲得率の低さ。1名体制では施術+クロージング両立が困難</div>
+      </div>
+      <div style="background:#fffbf0;border-radius:8px;padding:16px;border-left:4px solid #f59e0b">
+        <div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;margin-bottom:8px">病巣② キャパシティ上限</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">月145名目標に対してYuki1名体制は構造的にキャパ不足。1日5〜6名施術として月20日稼働で100〜120名が上限。目標自体がスタッフ2名前提の設定になっている可能性あり。</div>
+        <div style="margin-top:10px;padding:8px;background:#fef3c7;border-radius:6px;font-size:12px;color:#92400e"><b>LUMISS加盟効果:</b> 6月研修後に2名体制へ → 目標値の見直しも必要</div>
+      </div>
+      <div style="background:#f0f9ff;border-radius:8px;padding:16px;border-left:4px solid #3b82f6">
+        <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:8px">即動アクション</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.8">
+          <b style="color:#ef4444">今週中:</b> Yukiの次回予約獲得トーク確立（SV指導）<br>
+          <b style="color:#ef4444">5/7:</b> 4月来店客へのLINEリマインド配信<br>
+          <b style="color:#f59e0b">5月中:</b> LUMISS新規クーポンで新規底上げ<br>
+          <b style="color:#8b97b1">6月:</b> 大久保研修完了→2名体制で構造問題解消
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🟡 新規遅れ店舗 -->
+  <div class="sec-heading" style="margin-top:20px">🟡 新規遅れ店舗の要因<span class="sec-note">S熊本（65.3%）/ S二子玉川（77.5%）/ S藤沢の再来（81.4%）</span></div>
+  <div class="full-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div style="background:#fffbf0;border-radius:8px;padding:16px;border-left:4px solid #f59e0b">
+        <div style="font-size:12px;font-weight:700;color:#b45309;margin-bottom:8px">S熊本 — 新規65.3%（-33件）</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">再来は<b style="color:#10b981">141.9%超過</b>で既存ファンは強固。新規の着地62件は、GW期間中の熊本エリアで美容需要が一時的に低下している影響が大きい。客単価+¥254と単価維持できているため、<b>GW明け(5/7〜)に新規獲得を集中投下</b>すれば挽回可能。HPBクーポンのGW後版を準備する。</div>
+      </div>
+      <div style="background:#fffbf0;border-radius:8px;padding:16px;border-left:4px solid #f59e0b">
+        <div style="font-size:12px;font-weight:700;color:#b45309;margin-bottom:8px">S二子玉川 — 新規77.5%（-18件）＋客単価-¥1,308</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">新規着地62件（目標80件）で-18件。再来は103.5%と機能している。二子玉川は高単価エリアにも関わらず客単価¥4,892で目標¥6,200比-¥1,308が深刻。HPBの掲載メニュー構成見直し＋高単価セットメニューへの誘導が必要。単価ロスだけで月<b style="color:#ef4444">-¥130,000</b>以上の影響。</div>
+      </div>
+      <div style="background:#fffbf0;border-radius:8px;padding:16px;border-left:4px solid #f59e0b">
+        <div style="font-size:12px;font-weight:700;color:#b45309;margin-bottom:8px">S藤沢 — 再来81.4%（-26件）＋客単価-¥1,109</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.7">新規は<b style="color:#10b981">162.9%超過</b>でHPB施策の効果が出ている。ただし来た新規客が<b style="color:#ef4444">2回目につながっていない</b>。ACR9.2%の課題通り、施術後の次回予約獲得・回数券提案が弱い。5/7の4月来店71名へのLINEフォローが再来数の鍵。客単価-¥1,109はセット提案未実施が原因。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 客単価 横断問題 -->
+  <div class="sec-heading" style="margin-top:20px">💴 客単価 横断問題<span class="sec-note">4/7店で目標割れ — 共通する構造的原因</span></div>
+  <div class="full-section">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+      <div>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>店舗</th>
+              <th class="ctr">実績単価</th>
+              <th class="ctr">目標単価</th>
+              <th class="ctr">差額</th>
+              <th class="ctr">月間損失額（着地客数ベース）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>m所沢</b></td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">¥6,557</td>
+              <td class="ctr" style="color:#8b97b1">¥8,500</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥1,943</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥440,681（227名×¥1,943）</td>
+            </tr>
+            <tr>
+              <td><b>S二子玉川</b></td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">¥4,892</td>
+              <td class="ctr" style="color:#8b97b1">¥6,200</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥1,308</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥311,304（238名×¥1,308）</td>
+            </tr>
+            <tr>
+              <td><b>m下北沢</b></td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">¥6,218</td>
+              <td class="ctr" style="color:#8b97b1">¥7,500</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥1,282</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥225,632（176名×¥1,282）</td>
+            </tr>
+            <tr>
+              <td><b>S藤沢</b></td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">¥4,791</td>
+              <td class="ctr" style="color:#8b97b1">¥5,900</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥1,109</td>
+              <td class="ctr" style="color:#ef4444;font-weight:700">-¥251,343（227名×¥1,109）</td>
+            </tr>
+            <tr style="background:#fff5f5;font-weight:700">
+              <td>合計損失</td>
+              <td class="ctr">—</td>
+              <td class="ctr">—</td>
+              <td class="ctr">—</td>
+              <td class="ctr" style="color:#ef4444;font-size:15px">-¥1,228,960</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:16px;border-left:4px solid #ef4444">
+        <div style="font-size:12px;font-weight:700;color:#ef4444;margin-bottom:8px">4店舗共通の根本原因</div>
+        <div style="font-size:13px;color:#1e293b;line-height:1.8">
+          <b>① セット提案率の低さ</b><br>まつ毛単品 or 眉毛単品での来店をセットに引き上げるトークが機能していない<br><br>
+          <b>② 初回クーポン単価の低さ</b><br>HPB集客クーポンが安すぎる可能性。低単価クーポンで来た客は低単価のまま固定化<br><br>
+          <b>③ オプション提案なし</b><br>トリートメント・ケア用品等の物販提案がゼロ
+        </div>
+        <div style="margin-top:10px;padding:8px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b"><b>5月挽回が鍵:</b> SV向け単価改善ロープレを<br>今週中に全店実施 → 月末+¥300/名で+¥50万</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-may -->
 
 </div><!-- /content -->
 
