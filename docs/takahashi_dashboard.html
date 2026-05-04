@@ -9,8 +9,8 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
-    background: #0f1117;
-    color: #e2e8f0;
+    background: #f1f5f9;
+    color: #1e293b;
     min-height: 100vh;
     padding: 20px;
   }
@@ -26,32 +26,32 @@
   .header-left h1 {
     font-size: 22px;
     font-weight: 700;
-    color: #f8fafc;
+    color: #0f172a;
   }
   .header-left .sub {
     font-size: 13px;
-    color: #94a3b8;
+    color: #64748b;
     margin-top: 4px;
   }
   .progress-pill {
-    background: #1e2535;
-    border: 1px solid #334155;
+    background: #fff;
+    border: 1px solid #cbd5e1;
     border-radius: 20px;
     padding: 8px 18px;
     font-size: 13px;
-    color: #94a3b8;
+    color: #64748b;
   }
-  .progress-pill span { color: #60a5fa; font-weight: 600; }
+  .progress-pill span { color: #2563eb; font-weight: 600; }
 
   .section-title {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #64748b;
+    color: #94a3b8;
     margin-bottom: 12px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #1e2535;
+    border-bottom: 1px solid #e2e8f0;
   }
 
   /* KPI Cards */
@@ -62,12 +62,13 @@
     margin-bottom: 28px;
   }
   .kpi-card {
-    background: #1e2535;
-    border: 1px solid #2d3748;
+    background: #fff;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 16px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   .kpi-card::before {
     content: '';
@@ -85,7 +86,7 @@
   .kpi-card .main-val {
     font-size: 26px;
     font-weight: 700;
-    color: var(--accent, #60a5fa);
+    color: var(--accent, #2563eb);
     line-height: 1;
   }
   .kpi-card .sub-row {
@@ -97,23 +98,23 @@
     color: #94a3b8;
   }
   .kpi-card .sub-row .actual {
-    color: #e2e8f0;
+    color: #334155;
     font-weight: 600;
   }
   .kpi-card .sub-row .target {
-    color: #64748b;
+    color: #94a3b8;
   }
   .badge {
     font-size: 10px;
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 20px;
-    background: rgba(59,130,246,0.2);
-    color: #60a5fa;
+    background: #dbeafe;
+    color: #1d4ed8;
   }
-  .badge.green { background: rgba(34,197,94,0.15); color: #4ade80; }
-  .badge.yellow { background: rgba(234,179,8,0.15); color: #facc15; }
-  .badge.red { background: rgba(239,68,68,0.15); color: #f87171; }
+  .badge.green { background: #dcfce7; color: #16a34a; }
+  .badge.yellow { background: #fef9c3; color: #a16207; }
+  .badge.red { background: #fee2e2; color: #dc2626; }
 
   /* 2-column layout */
   .two-col {
@@ -125,10 +126,11 @@
   @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 
   .panel {
-    background: #1e2535;
-    border: 1px solid #2d3748;
+    background: #fff;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
 
   /* Store table */
@@ -142,14 +144,15 @@
     padding: 8px 10px;
     color: #64748b;
     font-weight: 600;
-    border-bottom: 1px solid #2d3748;
+    border-bottom: 1px solid #e2e8f0;
     white-space: nowrap;
+    background: #f8fafc;
   }
   thead th.right { text-align: right; }
-  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody tr:hover { background: #f8fafc; }
   tbody td {
     padding: 9px 10px;
-    border-bottom: 1px solid #1a2030;
+    border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
   }
   tbody td.right { text-align: right; }
@@ -157,7 +160,7 @@
 
   .store-name {
     font-weight: 600;
-    color: #e2e8f0;
+    color: #1e293b;
     white-space: nowrap;
   }
   .signal { font-size: 14px; margin-right: 4px; }
@@ -170,7 +173,7 @@
   .pct-bar-bg {
     flex: 1;
     height: 6px;
-    background: #2d3748;
+    background: #e2e8f0;
     border-radius: 3px;
     overflow: visible;
     position: relative;
@@ -201,20 +204,21 @@
     margin-bottom: 28px;
   }
   .week-card {
-    background: #1e2535;
-    border: 1px solid #2d3748;
+    background: #fff;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
   .week-card .wlabel { font-size: 11px; color: #64748b; margin-bottom: 4px; }
-  .week-card .wval { font-size: 20px; font-weight: 700; color: #e2e8f0; }
+  .week-card .wval { font-size: 20px; font-weight: 700; color: #0f172a; }
   .week-card .wrate { font-size: 11px; color: #94a3b8; margin-top: 4px; }
   @media (max-width: 700px) { .week-strip { grid-template-columns: 1fr 1fr; } }
 
-  .divider { height: 1px; background: #1e2535; margin: 24px 0; }
+  .divider { height: 1px; background: #e2e8f0; margin: 24px 0; }
 
   .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #2d3748; color: #94a3b8; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #f1f5f9; color: #64748b; }
 </style>
 </head>
 <body>
@@ -390,8 +394,8 @@
       </div>
     </div>
   </div>
-  <div style="margin-top:14px;padding-top:14px;border-top:1px solid #2d3748">
-    <div style="font-size:12px;color:#facc15;font-weight:700;margin-bottom:6px">🟡 要注意（70〜100%）</div>
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid #e2e8f0">
+    <div style="font-size:12px;color:#b45309;font-weight:700;margin-bottom:6px">🟡 要注意（70〜100%）</div>
     <div style="font-size:12px;color:#94a3b8">
       m武蔵小杉 85.6%　S新越谷 94.7%　― どちらも月末着地ギリギリ。今週のROY積み上げが鍵。
     </div>
@@ -440,9 +444,9 @@ function fmt(n) {
 }
 
 function barColor(pct) {
-  if (pct >= 100) return '#4ade80';
-  if (pct >= 70)  return '#facc15';
-  return '#f87171';
+  if (pct >= 100) return '#16a34a';
+  if (pct >= 70)  return '#ca8a04';
+  return '#dc2626';
 }
 
 // Store table
@@ -456,7 +460,7 @@ stores.forEach(s => {
   tr.innerHTML = `
     <td><span class="signal">${icon}</span><span class="store-name">${s.name}</span></td>
     <td class="right" style="color:#64748b;font-size:11px">${fmt(s.target)}</td>
-    <td class="right" style="color:#e2e8f0">${fmt(s.actual)}</td>
+    <td class="right" style="color:#334155">${fmt(s.actual)}</td>
     <td style="min-width:140px">
       <div class="pct-bar-wrap">
         <div class="pct-bar-bg">
