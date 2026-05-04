@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SSIN STUDIO 直営ダッシュボード 2026年4月</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{background:#f0f2f7;color:#1a1f36;font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── TOP HEADER ── */
+.header{background:#1e2235;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-logo{font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px}
+.header-meta{font-size:12px;color:#7480a0}
+.header-badge{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:#fbbf24;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+
+/* ── TABS ── */
+.tab-bar{background:#fff;border-bottom:2px solid #e4e9f2;padding:0 32px;display:flex;gap:4px;position:sticky;top:56px;z-index:99}
+.tab{padding:14px 20px;font-size:13px;font-weight:600;color:#8b97b1;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab:hover{color:#4f46e5}
+.tab.active{color:#4f46e5;border-bottom-color:#4f46e5}
+.tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:6px;vertical-align:middle}
+.dot-red{background:#ef4444}.dot-amber{background:#f59e0b}.dot-green{background:#10b981}
+
+/* ── CONTENT ── */
+.content{max-width:1300px;margin:0 auto;padding:28px 32px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* ── SUMMARY STRIP ── */
+.summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.sum-card{background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#8b97b1;margin-bottom:6px}
+.sum-val{font-size:26px;font-weight:800;color:#1a1f36;letter-spacing:-.5px}
+.sum-sub{font-size:12px;color:#8b97b1;margin-top:4px}
+.sum-card.highlight{background:linear-gradient(135deg,#312e81,#4f46e5);border:none}
+.sum-card.highlight .sum-label{color:rgba(255,255,255,.6)}
+.sum-card.highlight .sum-val{color:#fff}
+.sum-card.highlight .sum-sub{color:rgba(255,255,255,.5)}
+
+/* ── SECTION HEADING ── */
+.sec-heading{font-size:14px;font-weight:700;color:#1a1f36;display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.sec-heading::before{content:'';width:3px;height:18px;border-radius:2px;background:linear-gradient(180deg,#4f46e5,#8b5cf6)}
+.sec-note{font-size:11px;font-weight:400;color:#8b97b1;margin-left:4px}
+
+/* ── STORE GRID ── */
+.store-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px}
+.store-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid #e4e9f2;position:relative;overflow:hidden}
+.store-card.green{border-left-color:#10b981}
+.store-card.amber{border-left-color:#f59e0b}
+.store-card.red{border-left-color:#ef4444}
+.store-card.purple{border-left-color:#8b5cf6}
+.store-name{font-size:15px;font-weight:800;color:#1a1f36;margin-bottom:2px}
+.store-sv{font-size:11px;color:#8b97b1}
+.store-rate-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:12px}
+.store-rate{font-size:30px;font-weight:800;letter-spacing:-1px}
+.store-rate.green{color:#10b981}
+.store-rate.amber{color:#f59e0b}
+.store-rate.red{color:#ef4444}
+.store-rate.purple{color:#8b5cf6}
+.store-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9}
+.stat-item{text-align:center}
+.stat-val{font-size:14px;font-weight:700;color:#1a1f36}
+.stat-lbl{font-size:10px;color:#8b97b1;margin-top:1px}
+.store-actual{font-size:13px;font-weight:600;color:#374151}
+.store-target{font-size:11px;color:#8b97b1}
+.bar-wrap{height:6px;background:#f1f5f9;border-radius:3px;margin-top:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.bar-green{background:#10b981}.bar-amber{background:#f59e0b}.bar-red{background:#ef4444}.bar-purple{background:#8b5cf6}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.bg-green{background:#dcfce7;color:#15803d}
+.bg-amber{background:#fef3c7;color:#b45309}
+.bg-red{background:#fee2e2;color:#dc2626}
+.bg-purple{background:#f3e8ff;color:#7c3aed}
+.bg-gray{background:#f1f5f9;color:#475569}
+
+/* ── TABLE ── */
+.clean-table{width:100%;border-collapse:collapse;font-size:13px}
+.clean-table th{padding:10px 14px;background:#f8fafc;font-size:11px;font-weight:700;color:#8b97b1;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e4e9f2;white-space:nowrap}
+.clean-table td{padding:12px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.clean-table tr:last-child td{border-bottom:none}
+.clean-table tr:hover td{background:#fafbfd}
+.clean-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.clean-table .ctr{text-align:center}
+
+/* ── REFLECTION CARD ── */
+.ref-card{background:#fff;border-radius:12px;padding:22px 24px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+.ref-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ref-store{font-size:16px;font-weight:800;color:#1a1f36}
+.ref-body{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ref-col-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.ref-col-label.red{color:#ef4444}.ref-col-label.indigo{color:#4f46e5}.ref-col-label.amber{color:#f59e0b}
+.ref-item{font-size:13px;color:#374151;padding:5px 0;border-bottom:1px solid #f8fafc;display:flex;gap:8px}
+.ref-item::before{content:'·';color:#8b97b1;flex-shrink:0}
+.ref-items-wrap{background:#f8fafc;border-radius:8px;padding:10px 14px}
+.action-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px;flex-shrink:0}
+.tag-red{background:#fee2e2;color:#dc2626}
+.tag-amber{background:#fef3c7;color:#b45309}
+.tag-blue{background:#eff6ff;color:#2563eb}
+
+/* ──施策前後 ── */
+.施策-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.施策-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.施策-store{font-size:13px;font-weight:800;color:#1a1f36;margin-bottom:12px}
+.施策-metric{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:12px}
+.施策-metric:last-child{border-bottom:none}
+.施策-lbl{color:#8b97b1}
+.施策-diff{font-weight:700}
+.diff-up{color:#10b981}.diff-dn{color:#ef4444}.diff-flat{color:#8b97b1}
+.arrow-up::before{content:'↑ '}.arrow-dn::before{content:'↓ '}
+
+/* ── ACTION TABLE ── */
+.action-table-wrap{background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.priority-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.p-red{background:#ef4444}.p-amber{background:#f59e0b}.p-blue{background:#3b82f6}
+
+/* ── BEFORE/AFTER NOTE ── */
+.insight-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:13px;line-height:1.7;color:#166534}
+.insight-box.warn{background:#fffbeb;border-color:#fde68a;color:#92400e}
+
+/* ── FULL-WIDTH SECTION ── */
+.full-section{background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:24px}
+
+/* responsive */
+@media(max-width:900px){
+  .store-grid{grid-template-columns:repeat(2,1fr)}
+  .施策-grid{grid-template-columns:repeat(2,1fr)}
+  .summary-strip{grid-template-columns:repeat(2,1fr)}
+  .content{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-logo">SSIN STUDIO — 直営ダッシュボード</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="header-badge">2026年4月 確定値</span>
+    <span class="header-meta">CSV最終取得 4/28｜直営9店舗</span>
+  </div>
+</header>
+
+<!-- ── TABS ── -->
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('summary',this)">📊 サマリー</button>
+  <button class="tab" onclick="switchTab('review',this)">📝 4月振り返り<span class="tab-dot dot-red"></span></button>
+  <button class="tab" onclick="switchTab('action',this)">🎯 5月アクション<span class="tab-dot dot-red"></span></button>
+</div>
+
+<div class="content">
+
+<!-- ════════════════════════════════════════
+  TAB 1: サマリー
+════════════════════════════════════════ -->
+<div id="tab-summary" class="tab-panel active">
+
+  <!-- サマリー帯 -->
+  <div class="summary-strip">
+    <div class="sum-card highlight">
+      <div class="sum-label">4月合計売上</div>
+      <div class="sum-val">¥10.97M</div>
+      <div class="sum-sub">目標 ¥12.68M</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">達成率</div>
+      <div class="sum-val" style="color:#f59e0b">86.5%</div>
+      <div class="sum-sub">不足 ¥1.71M</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">達成 / 未達</div>
+      <div class="sum-val"><span style="color:#10b981">4</span> / <span style="color:#ef4444">3</span></div>
+      <div class="sum-sub">要注意 1店舗</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">施策後 最大改善</div>
+      <div class="sum-val" style="color:#10b981">+2.1倍</div>
+      <div class="sum-sub">S岐阜 日売上（4/23以降）</div>
+    </div>
+  </div>
+
+  <!-- 9店舗カード -->
+  <div class="sec-heading">9店舗 達成状況<span class="sec-note">確定実績（4/28時点）</span></div>
+  <div class="store-grid">
+
+    <!-- S/L札幌 -->
+    <div class="store-card green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S/L札幌</div>
+          <div class="store-sv">SV: 梅田｜SSIN + LUMISS 合算</div>
+        </div>
+        <span class="badge bg-green">達成</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,934,620</div>
+          <div class="store-target">目標 ¥1,650,000</div>
+        </div>
+        <div class="store-rate green">117%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div style="display:flex;gap:6px;margin-top:10px;font-size:11px">
+        <span style="background:#eff6ff;color:#2563eb;padding:2px 8px;border-radius:6px">SSIN ¥1,695,010</span>
+        <span style="background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:6px">LUMISS ¥239,610</span>
+      </div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">122</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">220</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#f59e0b">9.4%</div><div class="stat-lbl">セット率</div></div>
+      </div>
+    </div>
+
+    <!-- S熊本 -->
+    <div class="store-card green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S熊本</div>
+          <div class="store-sv">SV: 梅田</div>
+        </div>
+        <span class="badge bg-green">達成</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,323,875</div>
+          <div class="store-target">目標 ¥1,300,000</div>
+        </div>
+        <div class="store-rate green">102%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">86</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">147</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val">10.3%</div><div class="stat-lbl">セット率</div></div>
+      </div>
+    </div>
+
+    <!-- m下北沢 -->
+    <div class="store-card green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">m下北沢</div>
+          <div class="store-sv">SV: 土田</div>
+        </div>
+        <span class="badge bg-green">達成</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,864,600</div>
+          <div class="store-target">目標 ¥1,000,000</div>
+        </div>
+        <div class="store-rate green">186%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val" style="color:#ef4444">14</div><div class="stat-lbl">新規 ⚠</div></div>
+        <div class="stat-item"><div class="stat-val">224</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val">14.2%</div><div class="stat-lbl">セット率</div></div>
+      </div>
+    </div>
+
+    <!-- m所沢 -->
+    <div class="store-card green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">m所沢</div>
+          <div class="store-sv">—</div>
+        </div>
+        <span class="badge bg-green">達成</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,312,240</div>
+          <div class="store-target">目標 ¥700,000</div>
+        </div>
+        <div class="store-rate green">187%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:100%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">55</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">100</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val">¥8,594</div><div class="stat-lbl">客単価</div></div>
+      </div>
+    </div>
+
+    <!-- S/L二子玉川 -->
+    <div class="store-card red">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S/L二子玉川</div>
+          <div class="store-sv">SV: 内山｜SSIN + LUMISS 合算</div>
+        </div>
+        <span class="badge bg-red">未達</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,253,063</div>
+          <div class="store-target">目標 ¥1,800,000</div>
+        </div>
+        <div class="store-rate red">70%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:70%"></div></div>
+      <div style="display:flex;gap:6px;margin-top:10px;font-size:11px">
+        <span style="background:#eff6ff;color:#2563eb;padding:2px 8px;border-radius:6px">SSIN ¥1,002,263</span>
+        <span style="background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:6px">LUMISS ¥250,800</span>
+      </div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">71</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">136</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#ef4444">¥547K不足</div><div class="stat-lbl">乖離額</div></div>
+      </div>
+    </div>
+
+    <!-- S岐阜 -->
+    <div class="store-card red">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S岐阜</div>
+          <div class="store-sv">SV: 梅田</div>
+        </div>
+        <span class="badge bg-red">未達</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥527,270</div>
+          <div class="store-target">目標 ¥1,200,000</div>
+        </div>
+        <div class="store-rate red">44%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:43%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">35</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">73</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#10b981">×2.1↑</div><div class="stat-lbl">施策後日売上</div></div>
+      </div>
+    </div>
+
+    <!-- L池袋 -->
+    <div class="store-card purple">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">L池袋</div>
+          <div class="store-sv">LUMISS転換中</div>
+        </div>
+        <span class="badge bg-purple">転換期</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥263,260</div>
+          <div class="store-target">目標 ¥2,100,000（旧基準）</div>
+        </div>
+        <div class="store-rate purple">13%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-purple" style="width:12%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">81</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#ef4444">0</div><div class="stat-lbl">再来（転換直後）</div></div>
+        <div class="stat-item"><div class="stat-val">27.2%</div><div class="stat-lbl">セット率</div></div>
+      </div>
+    </div>
+
+    <!-- S立川 -->
+    <div class="store-card red">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S立川</div>
+          <div class="store-sv">—</div>
+        </div>
+        <span class="badge bg-red">未達</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,196,300</div>
+          <div class="store-target">目標 ¥1,500,000</div>
+        </div>
+        <div class="store-rate red">80%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-red" style="width:80%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val">79</div><div class="stat-lbl">新規</div></div>
+        <div class="stat-item"><div class="stat-val">133</div><div class="stat-lbl">再来</div></div>
+        <div class="stat-item"><div class="stat-val">HPB圏外</div><div class="stat-lbl">集客ゼロ</div></div>
+      </div>
+    </div>
+
+    <!-- S藤沢 -->
+    <div class="store-card amber">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="store-name">S藤沢</div>
+          <div class="store-sv">SV: 内山</div>
+        </div>
+        <span class="badge bg-amber">90.4%</span>
+      </div>
+      <div class="store-rate-row">
+        <div>
+          <div class="store-actual">¥1,292,600</div>
+          <div class="store-target">目標 ¥1,430,000</div>
+        </div>
+        <div class="store-rate amber">90%</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill bar-amber" style="width:90%"></div></div>
+      <div class="store-stats">
+        <div class="stat-item"><div class="stat-val" style="color:#10b981">125</div><div class="stat-lbl">新規 ✓</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#10b981">122</div><div class="stat-lbl">再来 ✓</div></div>
+        <div class="stat-item"><div class="stat-val" style="color:#10b981">+9.2pt</div><div class="stat-lbl">セット率↑</div></div>
+      </div>
+    </div>
+
+  </div><!-- /store-grid -->
+
+  <!-- 一覧テーブル -->
+  <div class="full-section">
+    <div class="sec-heading" style="margin-bottom:16px">数値一覧</div>
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th>店舗</th>
+          <th class="num">実売上</th>
+          <th class="num">目標</th>
+          <th class="ctr">達成率</th>
+          <th class="ctr">新規</th>
+          <th class="ctr">再来</th>
+          <th class="ctr">セット率</th>
+          <th class="num">客単価</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>S/L札幌</b> <span style="font-size:10px;color:#8b97b1">SSIN¥1,695K+LUMISS¥240K</span></td>
+          <td class="num">¥1,934,620</td>
+          <td class="num" style="color:#8b97b1">¥1,650,000</td>
+          <td class="ctr"><span class="badge bg-green">117.2%</span></td>
+          <td class="ctr">122</td><td class="ctr">220</td>
+          <td class="ctr" style="color:#f59e0b">9.4%</td>
+          <td class="num">¥6,200</td>
+        </tr>
+        <tr>
+          <td><b>S熊本</b></td>
+          <td class="num">¥1,323,875</td>
+          <td class="num" style="color:#8b97b1">¥1,300,000</td>
+          <td class="ctr"><span class="badge bg-green">101.8%</span></td>
+          <td class="ctr">86</td><td class="ctr">147</td>
+          <td class="ctr">10.3%</td>
+          <td class="num">¥6,020</td>
+        </tr>
+        <tr>
+          <td><b>m下北沢</b></td>
+          <td class="num">¥1,864,600</td>
+          <td class="num" style="color:#8b97b1">¥1,000,000</td>
+          <td class="ctr"><span class="badge bg-green">186.5%</span></td>
+          <td class="ctr" style="color:#ef4444;font-weight:700">14 ⚠</td><td class="ctr">224</td>
+          <td class="ctr">14.2%</td>
+          <td class="num">¥8,229</td>
+        </tr>
+        <tr>
+          <td><b>m所沢</b></td>
+          <td class="num">¥1,312,240</td>
+          <td class="num" style="color:#8b97b1">¥700,000</td>
+          <td class="ctr"><span class="badge bg-green">187.5%</span></td>
+          <td class="ctr">55</td><td class="ctr">100</td>
+          <td class="ctr" style="color:#ef4444">1.3%</td>
+          <td class="num">¥8,594</td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td><b>S/L二子玉川</b> <span style="font-size:10px;color:#8b97b1">SSIN¥1,002K+LUMISS¥251K</span></td>
+          <td class="num">¥1,253,063</td>
+          <td class="num" style="color:#8b97b1">¥1,800,000</td>
+          <td class="ctr"><span class="badge bg-red">69.6%</span></td>
+          <td class="ctr">71</td><td class="ctr">136</td>
+          <td class="ctr">6.6%</td>
+          <td class="num">¥6,894</td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td><b>S岐阜</b></td>
+          <td class="num">¥527,270</td>
+          <td class="num" style="color:#8b97b1">¥1,200,000</td>
+          <td class="ctr"><span class="badge bg-red">43.9%</span></td>
+          <td class="ctr">35</td><td class="ctr">73</td>
+          <td class="ctr">5.6%</td>
+          <td class="num">¥4,847</td>
+        </tr>
+        <tr style="background:#faf5ff">
+          <td><b>L池袋</b> <span style="font-size:10px;color:#8b5cf6">転換</span></td>
+          <td class="num">¥263,260</td>
+          <td class="num" style="color:#8b97b1">¥2,100,000</td>
+          <td class="ctr"><span class="badge bg-purple">12.5%</span></td>
+          <td class="ctr">81</td><td class="ctr" style="color:#ef4444">0</td>
+          <td class="ctr">27.2%</td>
+          <td class="num">¥3,225</td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td><b>S立川</b></td>
+          <td class="num">¥1,196,300</td>
+          <td class="num" style="color:#8b97b1">¥1,500,000</td>
+          <td class="ctr"><span class="badge bg-red">79.8%</span></td>
+          <td class="ctr">79</td><td class="ctr">133</td>
+          <td class="ctr">8.1%</td>
+          <td class="num">¥5,481</td>
+        </tr>
+        <tr>
+          <td><b>S藤沢</b></td>
+          <td class="num">¥1,292,600</td>
+          <td class="num" style="color:#8b97b1">¥1,430,000</td>
+          <td class="ctr"><span class="badge bg-amber">90.4%</span></td>
+          <td class="ctr" style="color:#10b981;font-weight:600">125</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">122</td>
+          <td class="ctr">15.9%</td>
+          <td class="num">¥5,555</td>
+        </tr>
+        <tr style="background:#f8fafc;font-weight:700">
+          <td>合計</td>
+          <td class="num">¥10,967,828</td>
+          <td class="num" style="color:#8b97b1">¥12,680,000</td>
+          <td class="ctr"><span class="badge bg-amber">86.5%</span></td>
+          <td class="ctr">669</td><td class="ctr">1,131</td>
+          <td class="ctr">—</td>
+          <td class="num">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /tab-summary -->
+
+
+<!-- ════════════════════════════════════════
+  TAB 2: 振り返り
+════════════════════════════════════════ -->
+<div id="tab-review" class="tab-panel">
+
+  <!-- 施策前後サマリー -->
+  <div class="sec-heading">施策前後比較（4/1〜22 vs 4/23〜30）<span class="sec-note">クーポン設置・LINE配信・Lステップ施策の効果検証</span></div>
+  <div class="施策-grid">
+
+    <div class="施策-card">
+      <div class="施策-store">S岐阜 🏆 最大効果</div>
+      <div class="施策-metric"><span class="施策-lbl">日平均売上</span><span class="施策-diff diff-up arrow-up">+¥18,030</span></div>
+      <div class="施策-metric"><span class="施策-lbl">前→後</span><span style="font-size:11px;color:#374151">¥16,645→¥34,675</span></div>
+      <div class="施策-metric"><span class="施策-lbl">セット率</span><span class="施策-diff diff-up">+2.8pt</span></div>
+      <div class="施策-metric"><span class="施策-lbl">客単価</span><span class="施策-diff diff-up">+¥814</span></div>
+      <div style="margin-top:10px;padding:8px 10px;background:#f0fdf4;border-radius:6px;font-size:11px;color:#166534">平日クーポン3種設置で2.1倍</div>
+    </div>
+
+    <div class="施策-card">
+      <div class="施策-store">S藤沢</div>
+      <div class="施策-metric"><span class="施策-lbl">日平均売上</span><span class="施策-diff diff-up arrow-up">+¥13,900</span></div>
+      <div class="施策-metric"><span class="施策-lbl">前→後</span><span style="font-size:11px;color:#374151">¥34,634→¥48,533</span></div>
+      <div class="施策-metric"><span class="施策-lbl">セット率</span><span class="施策-diff diff-up">+9.2pt</span></div>
+      <div class="施策-metric"><span class="施策-lbl">客単価</span><span class="施策-diff diff-up">+¥79</span></div>
+      <div style="margin-top:10px;padding:8px 10px;background:#f0fdf4;border-radius:6px;font-size:11px;color:#166534">Lステップ×セット誘導が効いた</div>
+    </div>
+
+    <div class="施策-card">
+      <div class="施策-store">S札幌</div>
+      <div class="施策-metric"><span class="施策-lbl">日平均売上</span><span class="施策-diff diff-up arrow-up">+¥11,589</span></div>
+      <div class="施策-metric"><span class="施策-lbl">前→後</span><span style="font-size:11px;color:#374151">¥49,928→¥61,517</span></div>
+      <div class="施策-metric"><span class="施策-lbl">セット率</span><span class="施策-diff diff-dn">−5.4pt ⚠</span></div>
+      <div class="施策-metric"><span class="施策-lbl">客単価</span><span class="施策-diff diff-flat">±¥0</span></div>
+      <div style="margin-top:10px;padding:8px 10px;background:#fffbeb;border-radius:6px;font-size:11px;color:#92400e">売上増だがセット率が悪化</div>
+    </div>
+
+    <div class="施策-card">
+      <div class="施策-store">S二子玉川</div>
+      <div class="施策-metric"><span class="施策-lbl">日平均売上</span><span class="施策-diff diff-up arrow-up">+¥5,252</span></div>
+      <div class="施策-metric"><span class="施策-lbl">前→後</span><span style="font-size:11px;color:#374151">¥31,582→¥36,833</span></div>
+      <div class="施策-metric"><span class="施策-lbl">セット率</span><span class="施策-diff diff-dn">−1.7pt</span></div>
+      <div class="施策-metric"><span class="施策-lbl">客単価</span><span class="施策-diff diff-up">+¥957</span></div>
+      <div style="margin-top:10px;padding:8px 10px;background:#f8fafc;border-radius:6px;font-size:11px;color:#64748b">単価は改善。新規補填が課題</div>
+    </div>
+
+    <div class="施策-card">
+      <div class="施策-store">S熊本</div>
+      <div class="施策-metric"><span class="施策-lbl">日平均売上</span><span class="施策-diff diff-up arrow-up">+¥4,005</span></div>
+      <div class="施策-metric"><span class="施策-lbl">前→後</span><span style="font-size:11px;color:#374151">¥34,545→¥38,550</span></div>
+      <div class="施策-metric"><span class="施策-lbl">セット率</span><span class="施策-diff diff-up">+0.8pt</span></div>
+      <div class="施策-metric"><span class="施策-lbl">客単価</span><span class="施策-diff diff-up">+¥505</span></div>
+      <div style="margin-top:10px;padding:8px 10px;background:#f0fdf4;border-radius:6px;font-size:11px;color:#166534">緩やかに全指標が改善</div>
+    </div>
+
+  </div>
+
+  <!-- 店舗別振り返りカード -->
+  <div class="sec-heading">店舗別 反省・改善点</div>
+
+  <!-- S/L二子玉川 -->
+  <div class="ref-card" style="border-left:4px solid #ef4444">
+    <div class="ref-header">
+      <div class="ref-store">S/L二子玉川 <span style="font-size:12px;color:#8b97b1;font-weight:400">内山SV｜SSIN¥1,002K + LUMISS¥251K</span></div>
+      <span class="badge bg-red">69.6% 未達</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label red">反省点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">Tomoyo退職による再来消失が最後まで回復しなかった（−¥55万規模）</div>
+          <div class="ref-item">新規71名/目標130名（54.6%）— HPB新規補填が追いつかず</div>
+          <div class="ref-item">施策後も日売上+¥5,252にとどまり、不足分への対処として不十分</div>
+          <div class="ref-item">LUMISS転換で客単価¥6,894に上昇。構造は改善方向に向かっている</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-red">即時</span>　LUMISS転換新規クーポンを軸に新規+30名目標</div>
+          <div class="ref-item"><span class="action-tag tag-amber">5/7</span>　4月来店71名への再来フォロー連絡（LINE配信）</div>
+          <div class="ref-item"><span class="action-tag tag-blue">月次</span>　セット率6.6%→15%目標・LUMISSセット設計</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S岐阜 -->
+  <div class="ref-card" style="border-left:4px solid #ef4444">
+    <div class="ref-header">
+      <div class="ref-store">S岐阜 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV</span></div>
+      <span class="badge bg-red">43.9% 未達</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label red">反省点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">HPB圏外 + スタッフ1名体制の天井 = 構造的未達（集客力ゼロ）</div>
+          <div class="ref-item">新規35名/目標110名（31.8%）— 圏外で集客インフラがない</div>
+          <div class="ref-item">4/23クーポン3種設置後、日売上が2.1倍（¥16,645→¥34,675）に改善</div>
+          <div class="ref-item">セット率+2.8pt、単価+¥814と反応あり。施策の方向性は正しい</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-red">即時</span>　4/23設置クーポン継続 + セット前提クーポン新設</div>
+          <div class="ref-item"><span class="action-tag tag-red">MTG</span>　スタッフ1名体制の限界確認・増員可否を決定</div>
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　日売上¥35,000維持を最低ラインに週次モニタリング</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S立川 -->
+  <div class="ref-card" style="border-left:4px solid #ef4444">
+    <div class="ref-header">
+      <div class="ref-store">S立川</div>
+      <span class="badge bg-red">79.8% 未達</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label red">反省点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">HPB圏外 + 新規79名/目標120名（65.8%）= 集客インフラ欠如が直因</div>
+          <div class="ref-item">再来133名（目標130名, 102.3%）は達成。固定客は確保できている</div>
+          <div class="ref-item">客単価¥5,481 + セット率8.1%。単価向上の余地あり</div>
+          <div class="ref-item">HPB外チャネルなし + 圏外 = 新規ダブル無収入状態が継続</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-red">即時</span>　HPBクーポン刷新（セット前提・無料OP付き）で新規+20名</div>
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　セット率8%→15%で客単価¥6,000目標</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S藤沢 -->
+  <div class="ref-card" style="border-left:4px solid #f59e0b">
+    <div class="ref-header">
+      <div class="ref-store">S藤沢 <span style="font-size:12px;color:#8b97b1;font-weight:400">内山SV</span></div>
+      <span class="badge bg-amber">90.4% 要注意</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label amber">改善点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">新規125名（104%）・再来122名（102%）— 集客は両方達成</div>
+          <div class="ref-item">売上90.4%未達の唯一の病巣は客単価¥5,555（目標比不足）</div>
+          <div class="ref-item">Lステップでセット率13.3%→22.6%（+9.2pt）に大幅改善</div>
+          <div class="ref-item">客単価¥6,000に届けば、現状維持で達成できる</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　セット率22.6%維持 + クーポン単価¥5,800以上に設定</div>
+          <div class="ref-item"><span class="action-tag tag-blue">継続</span>　Lステップ配信継続（セット率+9.2ptの立役者）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S熊本 -->
+  <div class="ref-card" style="border-left:4px solid #10b981">
+    <div class="ref-header">
+      <div class="ref-store">S熊本 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV</span></div>
+      <span class="badge bg-green">101.8% 達成</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label indigo">達成ポイント</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">目標¥1,300,000に対し¥1,323,875（+¥23,875）で達成</div>
+          <div class="ref-item">再来147名（目標130名, 113%）— 固定客基盤が最終月を押し上げた</div>
+          <div class="ref-item">施策後の客単価+¥505、セット率+0.8ptが最後の積み上げになった</div>
+          <div class="ref-item">新規86名（目標100名, 86%）— 来月は新規+14名でさらに伸ばせる余地</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　客単価¥6,200 + セット率15%（まつ毛1位の集客力を活かす）</div>
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　新規+14名（100名達成）→ HPBクーポンCVR改善</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S/L札幌 -->
+  <div class="ref-card" style="border-left:4px solid #10b981">
+    <div class="ref-header">
+      <div class="ref-store">S/L札幌 <span style="font-size:12px;color:#8b97b1;font-weight:400">梅田SV｜SSIN¥1,695K + LUMISS¥240K</span></div>
+      <span class="badge bg-green">117.2% 達成</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label amber">改善点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">達成はLステップ・LINE外チャネルの力。HPBは圏外のまま</div>
+          <div class="ref-item">施策後セット率が9.4%→5.3%に悪化。日売上は上がっているが単品比率が増加</div>
+          <div class="ref-item">再来220名（目標150名, 147%）が最大の武器。固定客基盤は盤石</div>
+          <div class="ref-item">新規122名（81.3%）。HPB圏外の中でLステップ補完で集客</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　セット率9%→15%・眉毛単品→セット転換30名目標</div>
+          <div class="ref-item"><span class="action-tag tag-blue">継続</span>　Lステップ・LINE配信継続（HPB外チャネルで新規維持）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- m下北沢 -->
+  <div class="ref-card" style="border-left:4px solid #10b981">
+    <div class="ref-header">
+      <div class="ref-store">m下北沢 <span style="font-size:12px;color:#8b97b1;font-weight:400">土田SV</span></div>
+      <span class="badge bg-green">186.5% 達成（構造注意）</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label amber">改善点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">達成は再来224名の力。再来客が予約枠を占有し新規枠がほぼない</div>
+          <div class="ref-item">新規14名（目標100名！）— HPB眉毛5位/まつ毛8位なのに新規が来ない</div>
+          <div class="ref-item">クーポン設計か写真が新規訴求になっていない可能性が高い</div>
+          <div class="ref-item">客単価¥8,229は9店舗最高。高単価ポジションは確立</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-amber">5/7</span>　HPBクーポンを新規向けに刷新（写真・文言・種別見直し）</div>
+          <div class="ref-item"><span class="action-tag tag-blue">継続</span>　客単価¥8,000・セット率14%維持</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- m所沢 -->
+  <div class="ref-card" style="border-left:4px solid #10b981">
+    <div class="ref-header">
+      <div class="ref-store">m所沢</div>
+      <span class="badge bg-green">187.5% 達成</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label amber">改善点</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">客単価¥8,594は9店舗最高クラス。高単価ポジション確立</div>
+          <div class="ref-item">再来100名（目標70名, 143%）。固定客基盤が非常に強い</div>
+          <div class="ref-item">セット率1.3%は極端に低い（most/Patra構造で回数券主体）</div>
+          <div class="ref-item">新規55名（目標70名, 79%）。クーポン改善で+15名の余地あり</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-blue">継続</span>　客単価¥8,500維持・再来基盤の強化継続</div>
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　新規+15名（70名達成）でHPBクーポン改善</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- L池袋 -->
+  <div class="ref-card" style="border-left:4px solid #8b5cf6">
+    <div class="ref-header">
+      <div class="ref-store">L池袋 <span style="font-size:12px;color:#8b5cf6;font-weight:400">LUMISS転換中</span></div>
+      <span class="badge bg-purple">転換期（旧目標比 12.5%）</span>
+    </div>
+    <div class="ref-body">
+      <div>
+        <div class="ref-col-label" style="color:#8b5cf6">転換期状況</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item">LUMISS転換直後で既存SSIN再来がゼロ（再来0名）</div>
+          <div class="ref-item">新規81名（目標160名, 51%）。転換初月として集客は一定できている</div>
+          <div class="ref-item">セット率27.2%は高い（LUMISS構造）。客単価¥3,225はまだ低い</div>
+          <div class="ref-item">目標¥210万は旧SSIN基準。5月以降LUMISS目標に見直し必要</div>
+        </div>
+      </div>
+      <div>
+        <div class="ref-col-label indigo">5月アクション</div>
+        <div class="ref-items-wrap">
+          <div class="ref-item"><span class="action-tag tag-red">MTG</span>　5月以降のLUMISS目標値設定・SV体制確認</div>
+          <div class="ref-item"><span class="action-tag tag-amber">月次</span>　LUMISS新規クーポン強化・客単価¥4,500目標</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-review -->
+
+
+<!-- ════════════════════════════════════════
+  TAB 3: 5月アクション
+════════════════════════════════════════ -->
+<div id="tab-action" class="tab-panel">
+
+  <!-- 高優先 -->
+  <div class="sec-heading">高優先（今週中に着手）</div>
+  <div class="action-table-wrap" style="margin-bottom:24px">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th style="width:80px">優先度</th>
+          <th style="width:100px">店舗</th>
+          <th>アクション</th>
+          <th style="width:140px">担当</th>
+          <th style="width:80px">期限</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge bg-red">🔴 高</span></td>
+          <td><b>S岐阜</b></td>
+          <td>セット前提クーポン新設 ＋ スタッフ増員検討MTG開催</td>
+          <td style="color:#8b97b1">タカショー×梅田</td>
+          <td style="color:#ef4444;font-weight:600">即時</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-red">🔴 高</span></td>
+          <td><b>S立川</b></td>
+          <td>HPBクーポン刷新（セット前提・無料OP付き）で新規+20名目標</td>
+          <td style="color:#8b97b1">タカショー</td>
+          <td style="color:#ef4444;font-weight:600">5/7</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-red">🔴 高</span></td>
+          <td><b>S二子玉川</b></td>
+          <td>LUMISS新規クーポン強化 ＋ 4月来店71名へのフォロー連絡（LINE）</td>
+          <td style="color:#8b97b1">タカショー×内山</td>
+          <td style="color:#ef4444;font-weight:600">5/7</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-red">🔴 高</span></td>
+          <td><b>L池袋</b></td>
+          <td>5月以降のLUMISS目標値設定MTG ＋ 5月クーポン設計</td>
+          <td style="color:#8b97b1">タカショー</td>
+          <td style="color:#ef4444;font-weight:600">MTG</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-red">🔴 高</span></td>
+          <td><b>m下北沢</b></td>
+          <td>HPBクーポンを新規向けに刷新（写真・文言・クーポン種別見直し）</td>
+          <td style="color:#8b97b1">タカショー×土田</td>
+          <td style="color:#ef4444;font-weight:600">5/7</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 中優先 -->
+  <div class="sec-heading">中優先（5月中に実施）</div>
+  <div class="action-table-wrap" style="margin-bottom:24px">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th style="width:80px">優先度</th>
+          <th style="width:100px">店舗</th>
+          <th>アクション</th>
+          <th style="width:140px">担当</th>
+          <th style="width:80px">期限</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge bg-amber">🟡 中</span></td>
+          <td><b>S藤沢</b></td>
+          <td>Lステップ配信継続 ＋ クーポン単価¥5,800以上に改定</td>
+          <td style="color:#8b97b1">タカショー</td>
+          <td style="color:#b45309;font-weight:600">月次</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-amber">🟡 中</span></td>
+          <td><b>S熊本</b></td>
+          <td>客単価¥6,200目標 ＋ セット率15% ＋ 新規+14名（CVR改善）</td>
+          <td style="color:#8b97b1">梅田SV</td>
+          <td style="color:#b45309;font-weight:600">月次</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-amber">🟡 中</span></td>
+          <td><b>S札幌</b></td>
+          <td>セット率9%→15%目標・眉毛単品→セット転換30名</td>
+          <td style="color:#8b97b1">梅田SV</td>
+          <td style="color:#b45309;font-weight:600">月次</td>
+        </tr>
+        <tr>
+          <td><span class="badge bg-amber">🟡 中</span></td>
+          <td><b>m所沢</b></td>
+          <td>新規+15名（70名達成）→ HPBクーポン改善</td>
+          <td style="color:#8b97b1">タカショー</td>
+          <td style="color:#b45309;font-weight:600">月次</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- KPIチェックリスト -->
+  <div class="sec-heading">5月KPI目標値</div>
+  <div class="full-section">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th>店舗</th>
+          <th class="num">5月売上目標</th>
+          <th class="ctr">新規目標</th>
+          <th class="ctr">再来目標</th>
+          <th class="ctr">セット率目標</th>
+          <th class="ctr">客単価目標</th>
+          <th>重点施策</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#fff5f5">
+          <td><b>S岐阜</b></td>
+          <td class="num">¥700,000+</td>
+          <td class="ctr">60名</td>
+          <td class="ctr">90名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">10%</td>
+          <td class="num">¥5,500</td>
+          <td style="font-size:12px;color:#64748b">セット前提クーポン新設</td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td><b>S立川</b></td>
+          <td class="num">¥1,200,000</td>
+          <td class="ctr">100名</td>
+          <td class="ctr">130名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">15%</td>
+          <td class="num">¥6,000</td>
+          <td style="font-size:12px;color:#64748b">HPBクーポン刷新</td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td><b>S二子玉川</b></td>
+          <td class="num">¥1,400,000</td>
+          <td class="ctr">100名</td>
+          <td class="ctr">150名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">15%</td>
+          <td class="num">¥7,000</td>
+          <td style="font-size:12px;color:#64748b">LUMISS新規クーポン</td>
+        </tr>
+        <tr>
+          <td><b>S藤沢</b></td>
+          <td class="num">¥1,430,000</td>
+          <td class="ctr">120名</td>
+          <td class="ctr">120名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">23%+</td>
+          <td class="num">¥6,000</td>
+          <td style="font-size:12px;color:#64748b">Lステップ継続+単価改善</td>
+        </tr>
+        <tr>
+          <td><b>S熊本</b></td>
+          <td class="num">¥1,300,000</td>
+          <td class="ctr">100名</td>
+          <td class="ctr">130名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">15%</td>
+          <td class="num">¥6,200</td>
+          <td style="font-size:12px;color:#64748b">客単価+セット改善</td>
+        </tr>
+        <tr>
+          <td><b>S札幌</b></td>
+          <td class="num">¥1,650,000</td>
+          <td class="ctr">130名</td>
+          <td class="ctr">200名</td>
+          <td class="ctr" style="color:#10b981;font-weight:600">15%</td>
+          <td class="num">¥6,500</td>
+          <td style="font-size:12px;color:#64748b">眉毛単品→セット転換</td>
+        </tr>
+        <tr>
+          <td><b>m下北沢</b></td>
+          <td class="num">¥1,500,000</td>
+          <td class="ctr">50名+</td>
+          <td class="ctr">200名</td>
+          <td class="ctr">14%+</td>
+          <td class="num">¥8,000</td>
+          <td style="font-size:12px;color:#64748b">HPBクーポン新規向け刷新</td>
+        </tr>
+        <tr>
+          <td><b>m所沢</b></td>
+          <td class="num">¥1,000,000</td>
+          <td class="ctr">70名</td>
+          <td class="ctr">100名</td>
+          <td class="ctr">—</td>
+          <td class="num">¥8,500</td>
+          <td style="font-size:12px;color:#64748b">現状維持+新規改善</td>
+        </tr>
+        <tr style="background:#faf5ff">
+          <td><b>L池袋</b></td>
+          <td class="num">要再設定</td>
+          <td class="ctr">100名</td>
+          <td class="ctr">—</td>
+          <td class="ctr">25%+</td>
+          <td class="num">¥4,500</td>
+          <td style="font-size:12px;color:#64748b">LUMISS目標値MTGで決定</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /tab-action -->
+
+</div><!-- /content -->
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
