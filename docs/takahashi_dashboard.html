@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SV髙橋 着地見込ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f8fafc;
+  }
+  .header-left .sub {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .progress-pill {
+    background: #1e2535;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  .progress-pill span { color: #60a5fa; font-weight: 600; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1e2535;
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: #1e2535;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent, #3b82f6);
+  }
+  .kpi-card .label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .kpi-card .main-val {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent, #60a5fa);
+    line-height: 1;
+  }
+  .kpi-card .sub-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #94a3b8;
+  }
+  .kpi-card .sub-row .actual {
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+  .kpi-card .sub-row .target {
+    color: #64748b;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: rgba(59,130,246,0.2);
+    color: #60a5fa;
+  }
+  .badge.green { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .badge.yellow { background: rgba(234,179,8,0.15); color: #facc15; }
+  .badge.red { background: rgba(239,68,68,0.15); color: #f87171; }
+
+  /* 2-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: #1e2535;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  /* Store table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  thead th {
+    text-align: left;
+    padding: 8px 10px;
+    color: #64748b;
+    font-weight: 600;
+    border-bottom: 1px solid #2d3748;
+    white-space: nowrap;
+  }
+  thead th.right { text-align: right; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #1a2030;
+    vertical-align: middle;
+  }
+  tbody td.right { text-align: right; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .store-name {
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+  }
+  .signal { font-size: 14px; margin-right: 4px; }
+
+  .pct-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pct-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: #2d3748;
+    border-radius: 3px;
+    overflow: visible;
+    position: relative;
+  }
+  .pct-bar-fill {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bar-color, #3b82f6);
+    max-width: 100%;
+    transition: width 0.4s ease;
+  }
+  .pct-label {
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 44px;
+    text-align: right;
+    color: var(--bar-color, #60a5fa);
+  }
+
+  /* Chart */
+  .chart-wrap { position: relative; height: 380px; }
+
+  /* Week progress */
+  .week-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .week-card {
+    background: #1e2535;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .week-card .wlabel { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+  .week-card .wval { font-size: 20px; font-weight: 700; color: #e2e8f0; }
+  .week-card .wrate { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+  @media (max-width: 700px) { .week-strip { grid-template-columns: 1fr 1fr; } }
+
+  .divider { height: 1px; background: #1e2535; margin: 24px 0; }
+
+  .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #2d3748; color: #94a3b8; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>SV髙橋 着地見込ダッシュボード</h1>
+    <div class="sub">担当12店舗 ／ 加盟店舗売上・ROY実績</div>
+  </div>
+  <div class="progress-pill">
+    2026年5月 ／ 経過 <span>2日</span> / 31日（<span>6.5%</span>）
+  </div>
+</div>
+
+<!-- ── SV合計KPI ── -->
+<div class="section-title">SV髙橋 合計 KPI</div>
+<div class="kpi-grid">
+  <div class="kpi-card" style="--accent:#60a5fa">
+    <div class="label">店舗売上 着地達成率</div>
+    <div class="main-val">114.9%</div>
+    <div class="sub-row">
+      <span class="actual">¥14,407,018</span>
+      <span class="target">/ 目標 ¥12,536,000</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge green">+¥1,871,018</span>
+    </div>
+  </div>
+
+  <div class="kpi-card" style="--accent:#a78bfa">
+    <div class="label">SV売上（自社売上）着地達成率</div>
+    <div class="main-val">286.6%</div>
+    <div class="sub-row">
+      <span class="actual">¥5,453,485</span>
+      <span class="target">/ 目標 ¥1,903,000</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge green">+¥3,550,485</span>
+    </div>
+  </div>
+
+  <div class="kpi-card" style="--accent:#34d399">
+    <div class="label">ROY 着地見込</div>
+    <div class="main-val">¥5,453,485</div>
+    <div class="sub-row">
+      <span class="actual">実数 ¥351,838</span>
+      <span class="target">/ 月目標 ¥1,650,500</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge green">進捗 18.5%</span>
+    </div>
+  </div>
+
+  <div class="kpi-card" style="--accent:#fb923c">
+    <div class="label">店舗売上 実数値（今月）</div>
+    <div class="main-val">¥929,485</div>
+    <div class="sub-row">
+      <span class="actual">進捗率 7.4%</span>
+      <span class="target">（経過率 6.5%）</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge">ペース上回り中</span>
+    </div>
+  </div>
+
+  <div class="kpi-card" style="--accent:#f472b6">
+    <div class="label">前月比（SV売上）</div>
+    <div class="main-val">+¥3,153,806</div>
+    <div class="sub-row">
+      <span class="actual">着地 ¥5,453,485</span>
+      <span class="target">vs 前月 ¥2,299,679</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge green">+137%</span>
+    </div>
+  </div>
+
+  <div class="kpi-card" style="--accent:#38bdf8">
+    <div class="label">W1 週次進捗（ROY）</div>
+    <div class="main-val">10.89%</div>
+    <div class="sub-row">
+      <span class="actual">週ROY ¥132,172</span>
+      <span class="target">/ 週目標 ¥1,213,377</span>
+    </div>
+    <div class="sub-row" style="margin-top:4px">
+      <span class="badge red">差分 -¥1,081,205</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 週次 ── -->
+<div class="section-title">W1 週次進捗（4/27〜5/3）</div>
+<div class="week-strip">
+  <div class="week-card">
+    <div class="wlabel">週 店舗売上</div>
+    <div class="wval">¥931,710</div>
+    <div class="wrate">週目標 ¥1,213,377 ／ <span style="color:#f87171">達成率 76.8%</span></div>
+  </div>
+  <div class="week-card">
+    <div class="wlabel">週 ロイヤリティ（ROY）</div>
+    <div class="wval">¥132,172</div>
+    <div class="wrate">達成率 10.89%</div>
+  </div>
+  <div class="week-card">
+    <div class="wlabel">週 新規 / 再来</div>
+    <div class="wval">56 / 78</div>
+    <div class="wrate">目標 92新規 / 107再来</div>
+  </div>
+</div>
+
+<!-- ── 店舗別テーブル + チャート ── -->
+<div class="two-col">
+  <!-- 左：テーブル -->
+  <div class="panel">
+    <div class="section-title" style="margin-bottom:14px">店舗別 着地達成率（店舗売上）</div>
+    <table>
+      <thead>
+        <tr>
+          <th>店舗</th>
+          <th class="right">月目標</th>
+          <th class="right">実数値</th>
+          <th>進捗</th>
+        </tr>
+      </thead>
+      <tbody id="store-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- 右：チャート -->
+  <div class="panel">
+    <div class="section-title" style="margin-bottom:14px">着地達成率 横棒グラフ</div>
+    <div class="chart-wrap">
+      <canvas id="landingChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── SV売上テーブル ── -->
+<div class="panel" style="margin-bottom:28px">
+  <div class="section-title" style="margin-bottom:14px">店舗別 SV売上（ROY）着地達成率</div>
+  <table>
+    <thead>
+      <tr>
+        <th>店舗</th>
+        <th class="right">ROY月目標</th>
+        <th class="right">ROY実数値</th>
+        <th class="right">ROY着地見込</th>
+        <th>ROY着地達成率</th>
+      </tr>
+    </thead>
+    <tbody id="sv-tbody"></tbody>
+  </table>
+</div>
+
+<!-- ── 注目ポイント ── -->
+<div class="panel" style="margin-bottom:20px">
+  <div class="section-title" style="margin-bottom:12px">理事会チェックポイント</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div>
+      <div style="font-size:12px;color:#4ade80;font-weight:700;margin-bottom:6px">🟢 好調店舗（着地110%超）</div>
+      <div style="font-size:12px;color:#94a3b8;line-height:1.8">
+        m東銀座 180.9%　S蒲田 171.3%<br>
+        m郡山 154.9%　S京都 117.6%<br>
+        S松本 123.7%　S亀戸 107.3%
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;color:#f87171;font-weight:700;margin-bottom:6px">🔴 要介入（着地70%未満）</div>
+      <div style="font-size:12px;color:#94a3b8;line-height:1.8">
+        S名駅 47.6%　― 客単価-¥2,356・週新規6名<br>
+        S福津 62.6%　― 新規週1名・極端な送客不足<br>
+        m調布 68.7%　― 再来週0名・緊急対応必要
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid #2d3748">
+    <div style="font-size:12px;color:#facc15;font-weight:700;margin-bottom:6px">🟡 要注意（70〜100%）</div>
+    <div style="font-size:12px;color:#94a3b8">
+      m武蔵小杉 85.6%　S新越谷 94.7%　― どちらも月末着地ギリギリ。今週のROY積み上げが鍵。
+    </div>
+  </div>
+</div>
+
+<div style="font-size:11px;color:#334155;text-align:right">データ取得: 2026-04-30 ／ 着地見込シート gid=1266827695</div>
+
+<script>
+const stores = [
+  { name:'m東銀座',  target:1300000, actual:151700, progress:11.7, landing:2351350, landingPct:180.9,
+    svTarget:265000, svActual:125170, svProgress:47.2, svLanding:1940135, svPct:732.1 },
+  { name:'m武蔵小杉', target:800000, actual:44200, progress:5.5, landing:685100, landingPct:85.6,
+    svTarget:122500, svActual:6630, svProgress:5.4, svLanding:102765, svPct:83.9 },
+  { name:'m調布',    target:1150000, actual:51000, progress:4.4, landing:790500, landingPct:68.7,
+    svTarget:197500, svActual:7650, svProgress:3.9, svLanding:118575, svPct:60.0 },
+  { name:'m郡山',    target:1450000, actual:144900, progress:10.0, landing:2245950, landingPct:154.9,
+    svTarget:170000, svActual:21735, svProgress:12.8, svLanding:336893, svPct:198.2 },
+  { name:'S亀戸',    target:750000, actual:51940, progress:6.9, landing:805070, landingPct:107.3,
+    svTarget:100000, svActual:7791, svProgress:7.8, svLanding:120761, svPct:120.8 },
+  { name:'S京都',    target:1480000, actual:112305, progress:7.6, landing:1740728, landingPct:117.6,
+    svTarget:173000, svActual:16846, svProgress:9.7, svLanding:261109, svPct:150.9 },
+  { name:'S名駅',    target:1100000, actual:33800, progress:3.1, landing:523900, landingPct:47.6,
+    svTarget:135000, svActual:5070, svProgress:3.8, svLanding:78585, svPct:58.2 },
+  { name:'S福津',    target:1200000, actual:48440, progress:4.0, landing:750820, landingPct:62.6,
+    svTarget:205000, svActual:7266, svProgress:3.5, svLanding:112623, svPct:54.9 },
+  { name:'S蒲田',    target:1350000, actual:149200, progress:11.1, landing:2312600, landingPct:171.3,
+    svTarget:160000, svActual:22380, svProgress:14.0, svLanding:346890, svPct:216.8 },
+  { name:'S松本',    target:1200000, actual:95800, progress:8.0, landing:1484900, landingPct:123.7,
+    svTarget:145000, svActual:14370, svProgress:9.9, svLanding:222735, svPct:153.6 },
+  { name:'S新越谷',  target:756000, actual:46200, progress:6.1, landing:716100, landingPct:94.7,
+    svTarget:120000, svActual:6930, svProgress:5.8, svLanding:107415, svPct:89.5 },
+  { name:'S天文館',  target:0, actual:0, progress:0, landing:0, landingPct:0,
+    svTarget:110000, svActual:110000, svProgress:100.0, svLanding:1705000, svPct:1550.0,
+    svOnly: true },
+];
+
+function signal(pct) {
+  if (pct >= 100) return { icon:'🟢', cls:'green' };
+  if (pct >= 70)  return { icon:'🟡', cls:'yellow' };
+  return { icon:'🔴', cls:'red' };
+}
+
+function fmt(n) {
+  return '¥' + Math.round(n).toLocaleString('ja-JP');
+}
+
+function barColor(pct) {
+  if (pct >= 100) return '#4ade80';
+  if (pct >= 70)  return '#facc15';
+  return '#f87171';
+}
+
+// Store table
+const tbody = document.getElementById('store-tbody');
+stores.forEach(s => {
+  if (s.svOnly) return; // S天文館 は SV表示のみ
+  const { icon, cls } = signal(s.landingPct);
+  const fillWidth = Math.min(s.landingPct, 200) / 200 * 100;
+  const color = barColor(s.landingPct);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><span class="signal">${icon}</span><span class="store-name">${s.name}</span></td>
+    <td class="right" style="color:#64748b;font-size:11px">${fmt(s.target)}</td>
+    <td class="right" style="color:#e2e8f0">${fmt(s.actual)}</td>
+    <td style="min-width:140px">
+      <div class="pct-bar-wrap">
+        <div class="pct-bar-bg">
+          <div class="pct-bar-fill" style="width:${fillWidth}%;--bar-color:${color};background:${color}"></div>
+        </div>
+        <span class="pct-label" style="--bar-color:${color};color:${color}">${s.landingPct}%</span>
+      </div>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// SV table
+const svBody = document.getElementById('sv-tbody');
+stores.forEach(s => {
+  const { icon } = signal(s.svPct);
+  const color = barColor(s.svPct);
+  const fillWidth = Math.min(s.svPct, 400) / 400 * 100;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><span class="signal">${icon}</span><span class="store-name">${s.name}${s.svOnly ? ' <span style="font-size:10px;color:#60a5fa">(SV only)</span>' : ''}</span></td>
+    <td class="right" style="color:#64748b;font-size:11px">${fmt(s.svTarget)}</td>
+    <td class="right" style="color:#e2e8f0">${fmt(s.svActual)}</td>
+    <td class="right" style="color:#e2e8f0">${fmt(s.svLanding)}</td>
+    <td style="min-width:130px">
+      <div class="pct-bar-wrap">
+        <div class="pct-bar-bg">
+          <div class="pct-bar-fill" style="width:${fillWidth}%;background:${color}"></div>
+        </div>
+        <span class="pct-label" style="color:${color}">${s.svPct}%</span>
+      </div>
+    </td>
+  `;
+  svBody.appendChild(tr);
+});
+
+// Chart
+const chartStores = stores.filter(s => !s.svOnly);
+const labels = chartStores.map(s => s.name);
+const landingPcts = chartStores.map(s => s.landingPct);
+const colors = landingPcts.map(p => barColor(p));
+
+const ctx = document.getElementById('landingChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: '着地達成率 (%)',
+      data: landingPcts,
+      backgroundColor: colors.map(c => c + 'cc'),
+      borderColor: colors,
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.raw}%`
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        max: 210,
+        grid: { color: '#2d3748' },
+        ticks: { color: '#64748b', callback: v => v + '%' },
+        border: { color: '#334155' }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#e2e8f0', font: { size: 11 } },
+        border: { color: '#334155' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
