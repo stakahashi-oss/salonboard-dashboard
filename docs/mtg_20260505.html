@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>直営マーケMTG 2026-05-05</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:1200px;margin:0 auto;padding:24px 28px}
+
+/* Header */
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:14px;padding:20px 28px;margin-bottom:20px;color:#fff}
+.header-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.header-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.header-meta{font-size:12px;color:rgba(255,255,255,.55);display:flex;flex-wrap:wrap;gap:12px}
+.header-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:2px 10px;font-size:11px}
+
+/* Nav */
+.page-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.nav-link{font-size:11px;font-weight:600;color:#64748b;text-decoration:none;padding:5px 12px;border-radius:6px;background:#fff;border:1px solid #e2e8f0;white-space:nowrap}
+.nav-link:hover{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+
+/* Section */
+.section-divider{display:block;background:linear-gradient(90deg,rgba(37,99,235,.08),transparent);border-left:3px solid #2563eb;border-radius:0 6px 6px 0;padding:8px 14px;margin:26px 0 12px;font-size:11px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:16px}
+
+/* 達成サマリー */
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.result-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.result-card.hit{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.05)}
+.result-card.miss{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04)}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rc-label.hit{color:#059669}.rc-label.miss{color:#dc2626}
+.rc-store{font-size:16px;font-weight:800;margin-bottom:4px}
+.rc-value{font-size:12px;font-weight:600;color:#334155}
+.rc-reason{font-size:11px;color:#64748b;margin-top:4px;line-height:1.5}
+
+/* 店舗テーブル */
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid #e2e8f0;background:#f8fafc}
+thead th:first-child{text-align:left}
+tbody td{padding:9px 10px;text-align:right;border-bottom:1px solid #e2e8f0}
+tbody td:first-child{text-align:left;font-weight:600}
+tbody tr:hover{background:#f8fafc}
+tbody tr:last-child td{border-bottom:none}
+.total-row td{font-weight:700;background:#f1f5f9 !important}
+
+/* タグ */
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-left:4px}
+.tg{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
+.tr{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.ta{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.tb{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
+.tgy{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+
+/* 課題カード */
+.issue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.issue-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.issue-card.critical{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.03)}
+.issue-card.warning{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.03)}
+.ic-store{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ic-store.critical{color:#dc2626}.ic-store.warning{color:#d97706}
+.ic-item{font-size:12px;color:#475569;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);line-height:1.5}
+.ic-item:last-of-type{border-bottom:none}
+.ic-item strong{color:#1e293b}
+
+/* 施策カード */
+.施策-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.施策-card{border-radius:10px;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0}
+.施策-title{font-size:12px;font-weight:700;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.施策-body{font-size:12px;color:#475569;line-height:1.6}
+
+/* アクション */
+.action-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
+.action-item:last-child{border-bottom:none}
+.anum{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.anum.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.anum.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.anum.b{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
+.anum.g{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
+.abody .t{font-weight:700;font-size:13px;margin-bottom:3px}
+.abody .d{font-size:12px;color:#64748b;line-height:1.6}
+.abody .who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:5px;display:inline-block}
+.who.me{background:#eff6ff;color:#1d4ed8}
+.who.team{background:#f0fdf4;color:#15803d}
+.who.other{background:#fafafa;color:#64748b;border:1px solid #e2e8f0}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:4px;margin-left:4px;display:inline-block}
+.dr{background:rgba(239,68,68,.08);color:#dc2626}
+.da{background:rgba(245,158,11,.08);color:#d97706}
+.db{background:#eff6ff;color:#2563eb}
+.dg{background:#f0fdf4;color:#15803d}
+
+/* ポイントメモ */
+.insight-box{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.04));border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:12px;line-height:1.7;color:#334155}
+.insight-box strong{color:#1e293b}
+
+/* note */
+.note{background:#f8fafc;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#64748b;margin-top:12px;line-height:1.6}
+.note.green{border-left-color:#10b981}.note.red{border-left-color:#ef4444}.note.amber{border-left-color:#f59e0b}.note.blue{border-left-color:#3b82f6}
+
+.num-g{color:#059669;font-weight:700}
+.num-r{color:#dc2626;font-weight:700}
+.num-a{color:#d97706;font-weight:700}
+
+@media(max-width:900px){.result-grid,.施策-grid{grid-template-columns:1fr 1fr}.issue-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.result-grid{grid-template-columns:1fr 1fr}.施策-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-badge">直営 ／ マーケティングMTG</div>
+  <div class="header-title">直営マーケMTG ― 4月振り返り & 5月重点施策</div>
+  <div class="header-meta">
+    <span class="header-chip">📅 2026-05-05</span>
+    <span class="header-chip">🏪 直営6店舗</span>
+    <span class="header-chip">⚡ 重点：S二子玉川</span>
+    <span class="header-chip">🎯 4月達成：札幌・熊本・藤沢・下北沢</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="page-nav">
+  <a class="nav-link" href="#apr-result">4月達成/未達</a>
+  <a class="nav-link" href="#store-detail">店舗別詳細</a>
+  <a class="nav-link" href="#issues">重点課題</a>
+  <a class="nav-link" href="#may-施策">5月施策</a>
+  <a class="nav-link" href="#actions">⚡ アクション一覧</a>
+</nav>
+
+<!-- 4月結果サマリー -->
+<div id="apr-result" class="section-divider">4月 達成 / 未達 サマリー</div>
+<div class="result-grid">
+  <div class="result-card hit">
+    <div class="rc-label hit">✅ 達成</div>
+    <div class="rc-store">S札幌</div>
+    <div class="rc-value">¥220万</div>
+    <div class="rc-reason">予約37% + セット22%<br>回数券 3月比 <span class="num-g">+¥10万</span></div>
+  </div>
+  <div class="result-card hit">
+    <div class="rc-label hit">✅ 達成</div>
+    <div class="rc-store">S熊本</div>
+    <div class="rc-value">目標達成</div>
+    <div class="rc-reason">みおさん回数券初回15件<br>3月比 <span class="num-g">+¥9万</span></div>
+  </div>
+  <div class="result-card hit">
+    <div class="rc-label hit">✅ 達成</div>
+    <div class="rc-store">S藤沢</div>
+    <div class="rc-value">¥140万超</div>
+    <div class="rc-reason">ナシ8件・回数券2件<br>大塚さん物販率向上</div>
+  </div>
+  <div class="result-card hit">
+    <div class="rc-label hit">✅ 達成</div>
+    <div class="rc-store">m下北沢</div>
+    <div class="rc-value">目標達成</div>
+    <div class="rc-reason">既存固定客が安定<br>新規入口が課題</div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">❌ 未達</div>
+    <div class="rc-store">S二子玉川</div>
+    <div class="rc-value"><span class="num-a">¥134万 / 78%</span></div>
+    <div class="rc-reason">キャンセル46件<br>PV低 + 0円会計多発</div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">❌ 未達</div>
+    <div class="rc-store">S岐阜</div>
+    <div class="rc-value"><span class="num-r">大幅未達</span></div>
+    <div class="rc-reason">稼働2〜3日のみ<br>施術時間長・枠不足</div>
+  </div>
+</div>
+
+<!-- 店舗別詳細 -->
+<div id="store-detail" class="section-divider">店舗別 4月 達成要因 / 課題詳細</div>
+<div class="section">
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align:left">店舗</th>
+        <th>4月売上</th>
+        <th>次回予約率</th>
+        <th>客単価</th>
+        <th>達成要因 / 課題</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>S札幌 <span class="tag tg">達成</span></td>
+        <td class="num-g">¥220万</td>
+        <td><span class="num-g">↑上昇</span></td>
+        <td>+¥2,000</td>
+        <td style="text-align:left">予約37%・回数券+¥10万。新客15人アップ。3月要因をヒアリング中</td>
+      </tr>
+      <tr>
+        <td>S熊本 <span class="tag tg">達成</span></td>
+        <td class="num-g">達成</td>
+        <td><span class="num-g">↑上昇</span></td>
+        <td>上昇</td>
+        <td style="text-align:left">みおさん回数券15件（初回購入）。再来+3人。2回目33%が課題</td>
+      </tr>
+      <tr>
+        <td>S藤沢 <span class="tag tg">達成</span></td>
+        <td class="num-g">¥140万超</td>
+        <td><span class="num-g">+10%↑</span></td>
+        <td>上昇</td>
+        <td style="text-align:left">ナシ8件・大塚さん物販UP・内山さんの次回予約強化が主因</td>
+      </tr>
+      <tr>
+        <td>m下北沢 <span class="tag tg">達成</span></td>
+        <td class="num-g">達成</td>
+        <td>—</td>
+        <td><span class="num-r">↓低</span></td>
+        <td style="text-align:left">固定客安定。新規枠なし→新規数0。単品・会員割引で客単価低下</td>
+      </tr>
+      <tr>
+        <td>S二子玉川 <span class="tag tr">未達</span></td>
+        <td class="num-r">¥134万</td>
+        <td>要確認</td>
+        <td><span class="num-r">¥3,800〜4,800</span></td>
+        <td style="text-align:left">キャンセル46件・PV平均以下・0円会計多発。アップセル未実施</td>
+      </tr>
+      <tr>
+        <td>S岐阜 <span class="tag tr">未達</span></td>
+        <td class="num-r">大幅未達</td>
+        <td><span class="num-r">↓低</span></td>
+        <td>—</td>
+        <td style="text-align:left">稼働2〜3日・予約5〜6件のみ。施術90分→75分短縮予定（市内原さん退職）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box" style="margin-top:14px">
+    <strong>📊 全体傾向：</strong>次回予約率は3月から全体的に上昇。特に<strong>藤沢+10%</strong>（内山さん主因）。
+    回数券2回目購入率33%→残り67%の動向不明が構造的課題。0円会計削減とアップセル強化が5月の共通テーマ。
+  </div>
+</div>
+
+<!-- 重点課題 -->
+<div id="issues" class="section-divider">重点課題（ニコ玉・下北・岐阜）</div>
+<div class="section">
+  <div class="issue-grid">
+    <div class="issue-card critical">
+      <div class="ic-store critical">🔴 S二子玉川（最重点）</div>
+      <div class="ic-item"><strong>キャンセル46件</strong> ― リマインドハブ未整備。自動配信ができていない</div>
+      <div class="ic-item"><strong>0円会計多発</strong> ― 回数券消化客が多く客単価¥3,800。アップセル指導を内山さんが実施中</div>
+      <div class="ic-item"><strong>PV低（平均以下）</strong> ― エリア検索4位・駅検索1位。流入自体が不足</div>
+      <div class="ic-item"><strong>次回予約率</strong> ― 数値に疑義あり。実態確認が必要</div>
+      <div class="ic-item"><strong>サロンコネクト連携</strong> ― 予約経路が判別できていない。次回予約メニューをサロンボードに作成して対応</div>
+    </div>
+    <div class="issue-card warning">
+      <div class="ic-store warning">🟡 m下北沢</div>
+      <div class="ic-item"><strong>新規枠ゼロ</strong> ― 新規予約は1週間後しか入らない状態。新規数0</div>
+      <div class="ic-item"><strong>客単価低</strong> ― 単品多・会員誕生日割引（半額）・LINE会員割引が重なる</div>
+      <div class="ic-item"><strong>再来率</strong> ― 公式LINEでの掘り起こしが解決策候補</div>
+    </div>
+    <div class="issue-card warning">
+      <div class="ic-store warning">🟡 S岐阜</div>
+      <div class="ic-item"><strong>稼働日数不足</strong> ― 5月1〜3日で稼働は2〜3日のみ</div>
+      <div class="ic-item"><strong>施術時間超過</strong> ― セット枠を潰している。市内原さん退職に伴い75分設定に短縮予定</div>
+      <div class="ic-item"><strong>優先順位</strong> ― ニコ玉対応を最優先。岐阜はプラスアルファで対応</div>
+    </div>
+    <div class="issue-card" style="border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.03)">
+      <div class="ic-store" style="color:#2563eb">🔵 回数券 構造課題（全店共通）</div>
+      <div class="ic-item"><strong>2回目購入率33%</strong>（熊本・全体共通）― 残り67%の動向が完全にブラックボックス</div>
+      <div class="ic-item"><strong>0円会計</strong> ― 回数券消化による収益ロス。コース打ち出しで対策</div>
+      <div class="ic-item"><strong>販売仕組みが不明確</strong> ― 誰がいつ・どう売るかがスタッフ間で共有されていない</div>
+      <div class="ic-item"><strong>対策</strong> ― ヒアリングで成功パターンを明文化。物販アップセルは優先度低（時間非効率）</div>
+    </div>
+  </div>
+
+  <div class="note blue" style="margin-top:14px">
+    <strong>MTG合意：</strong>今後のMTGはニコ玉に時間を多く割く。岐阜は現状維持・スタッフ入替期。札幌・熊本は着地良好につき重点管理外。
+  </div>
+</div>
+
+<!-- 5月施策 -->
+<div id="may-施策" class="section-divider">5月 重点施策</div>
+<div class="section">
+  <div class="施策-grid">
+    <div class="施策-card">
+      <div class="施策-title">🔔 リマインドハブ整備</div>
+      <div class="施策-body">
+        <strong>対象：ニコ玉（最優先）</strong><br>
+        自動リマインド配信ができていない状態を改善。朝出勤時に山さんと手動確認→送付を当面実施。
+        自動化整備がインパクト最大。空ポン配信より先にリマインド整備を優先。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">📋 次回予約メニュー作成</div>
+      <div class="施策-body">
+        <strong>対象：全店（本日対応）</strong><br>
+        サロンボードに「次回予約」専用メニューを作成し予約経路を判別可能にする。
+        サロンコネクト経由とHPB経由を区別。本日中に担当者が設定完了。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">💴 0円会計削減</div>
+      <div class="施策-body">
+        <strong>対象：全店</strong><br>
+        コースの打ち出し強化。施術前にオプション説明を標準化。
+        撮影済み画像をエリマネが共有予定。回数券消化客へのアップセル指導（内山さん主導）。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">🎌 GW特別施策</div>
+      <div class="施策-body">
+        <strong>母の日ペア割り 10%OFF</strong>（5/2〜6）<br>
+        現状まだ使用なし。GW特別感の演出・打ち出し変更で集客。
+        平日再来向け時間限定クーポン（ニコ玉・平日枠埋め）。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">📲 公式LINE強化</div>
+      <div class="施策-body">
+        <strong>対象：下北沢・ニコ玉</strong><br>
+        下北沢：新規再来獲得に公式LINEを活用。
+        ニコ玉：リマインド自動化 + 再来配信整備。
+        LステップとLINEの一致が前提。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">🏪 サロンコネクト整備</div>
+      <div class="施策-body">
+        <strong>対象：ニコ玉・下北</strong><br>
+        重複/ブロック枠をコネクト経由でキャンセル。
+        予約経路の判別（HPB vs コネクト vs 直接）を明確化。
+        Tsumiさんの接続方法を確認。
+      </div>
+    </div>
+  </div>
+
+  <div class="note amber" style="margin-top:14px">
+    <strong>5月方針：</strong>インパクトが大きい順に集中→①リマインド自動化②次回予約率③0円会計削減。物販アップセルは時間対効果が低いため一旦後回し。
+  </div>
+</div>
+
+<!-- アクション一覧 -->
+<div id="actions" class="section-divider">アクション一覧（担当者・期限付き）</div>
+<div class="section">
+
+  <div class="action-item">
+    <div class="anum r">1</div>
+    <div class="abody">
+      <div class="t">次回予約メニュー作成（サロンボード）</div>
+      <div class="d">サロンボードに「次回予約」専用メニューを作成し、予約経路を判別可能にする。本日中対応。</div>
+      <span class="abody who team">チーム</span>
+      <span class="due dr">本日中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum r">2</div>
+    <div class="abody">
+      <div class="t">ニコ玉 次回予約率 数値確認</div>
+      <div class="d">現状の数値に疑義あり。実態を確認し報告。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due dr">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum r">3</div>
+    <div class="abody">
+      <div class="t">リマインド手動チェック開始（山さんと連携）</div>
+      <div class="d">朝出勤時に山さんと連携し、手動でリマインド確認→送付。自動化整備までのつなぎ。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due dr">今週〜即開始</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum r">4</div>
+    <div class="abody">
+      <div class="t">サロンコネクト 重複/ブロック枠キャンセル（ニコ玉）</div>
+      <div class="d">コネクト経由でかぶり枠をキャンセルし予約枠をクリーンにする。</div>
+      <span class="abody who team">チーム</span>
+      <span class="due dr">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">5</div>
+    <div class="abody">
+      <div class="t">0円会計 利用状況確認</div>
+      <div class="d">特典回数券（0円会計）の現状を再確認。資料を使った説明に再指導済み。状況フォロー。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due da">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">6</div>
+    <div class="abody">
+      <div class="t">熊本 売上増加要因ヒアリング（みおさんへ）</div>
+      <div class="d">3月→4月で回数券+¥9万増加。何が変わったか。名さんがみおさんにヒアリング。</div>
+      <span class="abody who other">名さん</span>
+      <span class="due da">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">7</div>
+    <div class="abody">
+      <div class="t">藤沢 次回予約率+10% 要因ヒアリング（内山さんへ）</div>
+      <div class="d">内山さんが何をどう変えたか。成功事例として全店に展開するため具体的施策を確認。メさんが担当。</div>
+      <span class="abody who other">メさん</span>
+      <span class="due da">今週〜来週MTG前</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">8</div>
+    <div class="abody">
+      <div class="t">ヒアリング質問事項まとめ・共有</div>
+      <div class="d">熊本・藤沢のヒアリングで必要な質問を事前に整理し共有する。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due da">今週〜来週</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">9</div>
+    <div class="abody">
+      <div class="t">遅延3店舗（ニコ玉・下北・岐阜）データ分析・チーム共有</div>
+      <div class="d">深刻遅延エリアの現状分析と思考をチームに共有。次回MTGでニコ玉に時間を多く配分。</div>
+      <span class="abody who team">チーム</span>
+      <span class="due da">次回MTGまで</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum a">10</div>
+    <div class="abody">
+      <div class="t">来月目標をスタッフに通達</div>
+      <div class="d">達成必須内容を明確にスタッフへ伝える。岐阜はスタッフ入替時期のため特に注意。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due da">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum b">11</div>
+    <div class="abody">
+      <div class="t">コース画像素材 エリアマネージャーが共有</div>
+      <div class="d">撮影済みのコース関連画像をエリマネが各店舗に共有。0円会計削減のオプション説明に活用。</div>
+      <span class="abody who other">エリマネ</span>
+      <span class="due db">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum b">12</div>
+    <div class="abody">
+      <div class="t">ダッシュボード 予約経路（動線）修正</div>
+      <div class="d">来店・集金後のダッシュボード動線を確認し、変更が生じた経路を修正する。</div>
+      <span class="abody who team">チーム</span>
+      <span class="due db">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum b">13</div>
+    <div class="abody">
+      <div class="t">Tsumiさん サロンコネクト接続方法確認</div>
+      <div class="d">接続方法が不明な状況を確認し、接続できるようにサポート。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due db">今週中</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum b">14</div>
+    <div class="abody">
+      <div class="t">横浜・立川 MTG 対応</div>
+      <div class="d">横浜と立川でのMTGをみさんが担当。両店舗のタスク対応を実施。</div>
+      <span class="abody who other">みさん</span>
+      <span class="due db">今週</span>
+    </div>
+  </div>
+
+  <div class="action-item">
+    <div class="anum b">15</div>
+    <div class="abody">
+      <div class="t">Kyanさんと連携協働計画</div>
+      <div class="d">Kyanさんと連携し協働計画を立てる。</div>
+      <span class="abody who me">タカショー</span>
+      <span class="due db">今週中</span>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:10px">
+  直営マーケMTG 議事録 ｜ 2026-05-05 ｜ SSIN STUDIO 直営
+</div>
+
+</body>
+</html>
