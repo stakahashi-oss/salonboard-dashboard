@@ -71,20 +71,26 @@ tbody tr:last-child td{border-bottom:none}
 .施策-body{font-size:12px;color:#475569;line-height:1.6}
 
 /* アクション */
-.action-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
+.action-item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
 .action-item:last-child{border-bottom:none}
-.anum{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.anum{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
 .anum.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
 .anum.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
 .anum.b{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
 .anum.g{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
-.abody .t{font-weight:700;font-size:13px;margin-bottom:3px}
-.abody .d{font-size:12px;color:#64748b;line-height:1.6}
-.abody .who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:5px;display:inline-block}
+.abody{flex:1}
+.abody .t{font-weight:700;font-size:13px;margin-bottom:6px}
+.af-table{width:100%;border-collapse:collapse}
+.af-table td{padding:3px 0;vertical-align:top;font-size:12px}
+.af-label{color:#94a3b8;font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;padding-right:12px;width:72px;padding-top:3px}
+.af-val{color:#334155;line-height:1.6}
+.af-table tr{border-bottom:1px dotted #f1f5f9}
+.af-table tr:last-child{border-bottom:none}
+.who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
 .who.me{background:#eff6ff;color:#1d4ed8}
 .who.team{background:#f0fdf4;color:#15803d}
 .who.other{background:#fafafa;color:#64748b;border:1px solid #e2e8f0}
-.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:4px;margin-left:4px;display:inline-block}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
 .dr{background:rgba(239,68,68,.08);color:#dc2626}
 .da{background:rgba(245,158,11,.08);color:#d97706}
 .db{background:#eff6ff;color:#2563eb}
@@ -342,9 +348,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum r">1</div>
     <div class="abody">
       <div class="t">次回予約メニュー作成（サロンボード）</div>
-      <div class="d">サロンボードに「次回予約」専用メニューを作成し、予約経路を判別可能にする。本日中対応。</div>
-      <span class="abody who team">チーム</span>
-      <span class="due dr">本日中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">次回予約経路が可視化できていない。HPB経由か店内案内かの区別がつかず施策効果が測れない</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">サロンボードに「次回予約」専用メニューを作成し、予約経路を判別可能にする</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who team">チーム</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due dr">本日中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -352,9 +362,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum r">2</div>
     <div class="abody">
       <div class="t">ニコ玉 次回予約率 数値確認</div>
-      <div class="d">現状の数値に疑義あり。実態を確認し報告。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due dr">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">報告されている数値に疑義あり。実態と乖離している可能性があり、施策判断の根拠が崩れる</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">実際の次回予約獲得率をデータで確認し、正確な数値を報告する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due dr">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -362,9 +376,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum r">3</div>
     <div class="abody">
       <div class="t">リマインド手動チェック開始（山さんと連携）</div>
-      <div class="d">朝出勤時に山さんと連携し、手動でリマインド確認→送付。自動化整備までのつなぎ。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due dr">今週〜即開始</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">無断・直前キャンセルを減らし来店率を上げるため。自動化が整備されるまでの穴埋め</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">朝出勤時に山さんと連携し、手動でリマインド確認→送付フローを回す</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due dr">即開始〜今週</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">自動化整備完了後は廃止</td></tr>
+      </table>
     </div>
   </div>
 
@@ -372,9 +390,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum r">4</div>
     <div class="abody">
       <div class="t">サロンコネクト 重複/ブロック枠キャンセル（ニコ玉）</div>
-      <div class="d">コネクト経由でかぶり枠をキャンセルし予約枠をクリーンにする。</div>
-      <span class="abody who team">チーム</span>
-      <span class="due dr">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">重複・ブロック枠が予約可能枠を圧迫し、新規・再来が入れない状況になっている</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">コネクト経由でかぶり枠をキャンセルし、予約枠をクリーンな状態に整理する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who team">チーム</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due dr">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -382,9 +404,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">5</div>
     <div class="abody">
       <div class="t">0円会計 利用状況確認</div>
-      <div class="d">特典回数券（0円会計）の現状を再確認。資料を使った説明に再指導済み。状況フォロー。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due da">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">特典回数券の0円会計が余剰消化され、売上が計上されないまま枠が埋まっている可能性がある</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">特典回数券（0円会計）の現状利用状況を再確認し、フォローが必要な店舗を特定する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">資料を使った説明に再指導済み</td></tr>
+      </table>
     </div>
   </div>
 
@@ -392,9 +418,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">6</div>
     <div class="abody">
       <div class="t">熊本 売上増加要因ヒアリング（みおさんへ）</div>
-      <div class="d">3月→4月で回数券+¥9万増加。何が変わったか。名さんがみおさんにヒアリング。</div>
-      <span class="abody who other">名さん</span>
-      <span class="due da">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">3月→4月で回数券売上+¥9万増加した要因を特定し、他店舗への横展開につなげるため</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">みおさんへ「何が変わったか」をヒアリングし、再現性のある施策を抽出する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who other">梅田さん</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">成功事例として全店に展開予定</td></tr>
+      </table>
     </div>
   </div>
 
@@ -402,9 +432,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">7</div>
     <div class="abody">
       <div class="t">藤沢 次回予約率+10% 要因ヒアリング（内山さんへ）</div>
-      <div class="d">内山さんが何をどう変えたか。成功事例として全店に展開するため具体的施策を確認。メさんが担当。</div>
-      <span class="abody who other">メさん</span>
-      <span class="due da">今週〜来週MTG前</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">次回予約率が+10%改善した要因を特定し、ニコ玉・下北沢を中心に横展開するため</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">内山さんへ「何をどう変えたか」をヒアリングし、具体的施策を言語化する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who other">メさん</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">今週〜来週MTG前</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">成功事例として全店に展開予定</td></tr>
+      </table>
     </div>
   </div>
 
@@ -412,9 +446,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">8</div>
     <div class="abody">
       <div class="t">ヒアリング質問事項まとめ・共有</div>
-      <div class="d">熊本・藤沢のヒアリングで必要な質問を事前に整理し共有する。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due da">今週〜来週</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">熊本・藤沢のヒアリングを深く効果的に進めるために事前準備が必要</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">ヒアリングで引き出すべき質問を整理し、担当者（梅田さん・メさん）に共有する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">今週〜来週</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -422,9 +460,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">9</div>
     <div class="abody">
       <div class="t">遅延3店舗（ニコ玉・下北・岐阜）データ分析・チーム共有</div>
-      <div class="d">深刻遅延エリアの現状分析と思考をチームに共有。次回MTGでニコ玉に時間を多く配分。</div>
-      <span class="abody who team">チーム</span>
-      <span class="due da">次回MTGまで</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">未達要因を定量的に明確にし、次回MTGで具体的な打ち手を議論できる状態にするため</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">3店舗の遅延要因をデータで分析し、思考・施策案をチームに共有する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who team">チーム</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">次回MTGまで</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">次回MTGはニコ玉に時間を多く配分</td></tr>
+      </table>
     </div>
   </div>
 
@@ -432,9 +474,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum a">10</div>
     <div class="abody">
       <div class="t">来月目標をスタッフに通達</div>
-      <div class="d">達成必須内容を明確にスタッフへ伝える。岐阜はスタッフ入替時期のため特に注意。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due da">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">スタッフが5月の達成必須内容を把握していないと、行動変容が起きない</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">5月目標（売上・客数・客単価）と重点KPIを明確にスタッフへ伝える</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due da">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">岐阜はスタッフ入替時期のため特に注意</td></tr>
+      </table>
     </div>
   </div>
 
@@ -442,9 +488,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum b">11</div>
     <div class="abody">
       <div class="t">コース画像素材 エリアマネージャーが共有</div>
-      <div class="d">撮影済みのコース関連画像をエリマネが各店舗に共有。0円会計削減のオプション説明に活用。</div>
-      <span class="abody who other">エリマネ</span>
-      <span class="due db">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">0円会計削減にはオプション提案が必要。スタッフが提案しやすい素材（画像）がない状態</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">撮影済みのコース関連画像をエリマネが各店舗に共有する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who other">エリマネ</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due db">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -452,9 +502,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum b">12</div>
     <div class="abody">
       <div class="t">ダッシュボード 予約経路（動線）修正</div>
-      <div class="d">来店・集金後のダッシュボード動線を確認し、変更が生じた経路を修正する。</div>
-      <span class="abody who team">チーム</span>
-      <span class="due db">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">来店・集金後の動線に変更が生じており、ダッシュボードの経路データが実態を反映していない可能性がある</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">変更が生じた予約経路を確認し、ダッシュボードの動線定義を修正する</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who team">チーム</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due db">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -462,9 +516,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum b">13</div>
     <div class="abody">
       <div class="t">Tsumiさん サロンコネクト接続方法確認</div>
-      <div class="d">接続方法が不明な状況を確認し、接続できるようにサポート。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due db">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">接続方法が不明な状態が放置されるとサロンコネクト利用開始が遅れ、予約管理に支障をきたす</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">Tsumiさんが接続できるようにサポートし、利用開始できる状態にする</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due db">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -472,9 +530,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum b">14</div>
     <div class="abody">
       <div class="t">横浜・立川 MTG 対応</div>
-      <div class="d">横浜と立川でのMTGをみさんが担当。両店舗のタスク対応を実施。</div>
-      <span class="abody who other">みさん</span>
-      <span class="due db">今週</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">両店舗の現状把握とタスク整理が滞っており、施策実行が遅れている</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">横浜・立川でMTGを実施し、タスクを整理して実行に移す</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who other">みさん</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due db">今週</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
@@ -482,9 +544,13 @@ tbody tr:last-child td{border-bottom:none}
     <div class="anum b">15</div>
     <div class="abody">
       <div class="t">Kyanさんと連携協働計画</div>
-      <div class="d">Kyanさんと連携し協働計画を立てる。</div>
-      <span class="abody who me">タカショー</span>
-      <span class="due db">今週中</span>
+      <table class="af-table">
+        <tr><td class="af-label">なぜ</td><td class="af-val">Kyanさんとの連携体制が整っておらず、協働が必要な施策が進まない状態になっている</td></tr>
+        <tr><td class="af-label">何を</td><td class="af-val">Kyanさんと協働計画を具体化し、役割分担と期限を決める</td></tr>
+        <tr><td class="af-label">誰が</td><td class="af-val"><span class="who me">タカショー</span></td></tr>
+        <tr><td class="af-label">いつまでに</td><td class="af-val"><span class="due db">今週中</span></td></tr>
+        <tr><td class="af-label">備考</td><td class="af-val">—</td></tr>
+      </table>
     </div>
   </div>
 
