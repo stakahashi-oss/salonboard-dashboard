@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新規次回予約率集計 4月</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; background: #fff; padding: 24px; color: #222; }
+  h2 { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #333; }
+  .note { font-size: 11px; color: #888; margin-bottom: 16px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: 7px 10px; text-align: center; white-space: nowrap; }
+  th { background: #f2f2f2; font-weight: 600; font-size: 12px; }
+  .col-label { text-align: left; font-weight: 600; }
+  .row-header { background: #e8e8e8; font-weight: 700; }
+  .row-header td { background: #e8e8e8; }
+  tr:hover td { background: #f8f8f8; }
+  .row-header:hover td { background: #d8d8d8; }
+  .pos { color: #1a7a1a; }
+  .neg { color: #cc2222; }
+  .dash { color: #aaa; }
+  .low { color: #cc2222; }
+  .mid { color: #e67e00; }
+  .high { color: #1a7a1a; }
+  .section-m td { background: #f5f9ff; }
+  .section-s td { background: #fff9f0; }
+  .section-l td { background: #f9fff5; }
+  .section-m:hover td { background: #eaf3ff; }
+  .section-s:hover td { background: #fff3e0; }
+  .section-l:hover td { background: #f0fff5; }
+</style>
+</head>
+<body>
+<h2>新規次回予約率集計 ／ 2026年4月（眉毛）</h2>
+<p class="note">※ 月合計率(0除外)＝スタッフ個別の獲得率が0%超の平均　／　月合計率(全て)＝店舗合計獲得÷合計新規　／　先月比(%)＝対3月の相対変化率<br>
+※ m横浜 澤つぐみのデータに異常値あり（3月 率250%）→ m横浜先月比は参考値</p>
+
+<table>
+  <thead>
+    <tr>
+      <th class="col-label">指標</th>
+      <th>合計新規</th>
+      <th>月合計新規獲得</th>
+      <th>月合計率(0除外)</th>
+      <th>月合計率(全て)</th>
+      <th>先月比(%)0除外</th>
+      <th>先月比(%)全て</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 直営合計 -->
+    <tr class="row-header">
+      <td class="col-label">直営</td>
+      <td>831</td>
+      <td>255</td>
+      <td>35.04%</td>
+      <td>30.69%</td>
+      <td class="neg">-7.5%</td>
+      <td class="pos">+33.3%</td>
+    </tr>
+
+    <!-- most系 -->
+    <tr class="section-m">
+      <td class="col-label">m下北沢</td>
+      <td>10</td>
+      <td>4</td>
+      <td class="mid">45.00%</td>
+      <td class="high">40.00%</td>
+      <td class="neg">-40.0%</td>
+      <td class="neg">-20.0%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m川崎</td>
+      <td>47</td>
+      <td>4</td>
+      <td class="low">28.57%</td>
+      <td class="low">8.51%</td>
+      <td class="neg">-41.1%</td>
+      <td class="neg">-60.3%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m所沢</td>
+      <td>49</td>
+      <td>19</td>
+      <td class="mid">38.70%</td>
+      <td class="mid">38.78%</td>
+      <td class="pos">+154.4%</td>
+      <td class="pos">+155.9%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m横浜</td>
+      <td>61</td>
+      <td>22</td>
+      <td class="mid">33.80%</td>
+      <td class="mid">36.07%</td>
+      <td class="neg">-58.6% ⚠</td>
+      <td class="pos">+0.6%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m立川</td>
+      <td>8</td>
+      <td>0</td>
+      <td class="dash">—</td>
+      <td class="low">0.00%</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+    </tr>
+
+    <!-- SSIN系 -->
+    <tr class="section-s">
+      <td class="col-label">S中野</td>
+      <td>14</td>
+      <td>8</td>
+      <td class="high">57.14%</td>
+      <td class="high">57.14%</td>
+      <td class="dash">— (3月データなし)</td>
+      <td class="dash">—</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S二子玉川</td>
+      <td>44</td>
+      <td>24</td>
+      <td class="high">57.59%</td>
+      <td class="high">54.55%</td>
+      <td class="pos">+73.5%</td>
+      <td class="pos">+48.4%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S川崎</td>
+      <td>100</td>
+      <td>28</td>
+      <td class="low">29.32%</td>
+      <td class="low">28.00%</td>
+      <td class="pos">+14.1%</td>
+      <td class="pos">+23.2%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S札幌</td>
+      <td>94</td>
+      <td>31</td>
+      <td class="low">32.61%</td>
+      <td class="low">32.98%</td>
+      <td class="pos">+31.9%</td>
+      <td class="pos">+33.7%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S熊本</td>
+      <td>88</td>
+      <td>19</td>
+      <td class="low">21.68%</td>
+      <td class="low">21.59%</td>
+      <td class="pos">+1.2%</td>
+      <td class="pos">+11.4%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S立川</td>
+      <td>72</td>
+      <td>37</td>
+      <td class="high">50.61%</td>
+      <td class="high">51.39%</td>
+      <td class="pos">+109.5%</td>
+      <td class="pos">+388.2%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S藤沢</td>
+      <td>100</td>
+      <td>19</td>
+      <td class="low">14.71%</td>
+      <td class="low">19.00%</td>
+      <td class="neg">-16.1%</td>
+      <td class="pos">+82.4%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S高田馬場</td>
+      <td>55</td>
+      <td>21</td>
+      <td class="mid">45.52%</td>
+      <td class="mid">38.18%</td>
+      <td class="pos">+25.6%</td>
+      <td class="pos">+2.3%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S岐阜</td>
+      <td>8</td>
+      <td>1</td>
+      <td class="low">12.50%</td>
+      <td class="low">12.50%</td>
+      <td class="dash">— (3月データなし)</td>
+      <td class="dash">—</td>
+    </tr>
+
+    <!-- LUMISS -->
+    <tr class="section-l">
+      <td class="col-label">L池袋</td>
+      <td>81</td>
+      <td>18</td>
+      <td class="low">22.22%</td>
+      <td class="low">22.22%</td>
+      <td class="dash">— (3月データなし)</td>
+      <td class="dash">—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:16px; font-size:11px; color:#666;">
+<strong>色凡例:</strong>
+<span style="color:#1a7a1a">■ 高(40%+)</span>
+<span style="color:#e67e00; margin-left:8px">■ 中(25-40%)</span>
+<span style="color:#cc2222; margin-left:8px">■ 低(-25%)</span>
+</div>
+
+<div style="margin-top:20px; font-size:11px; color:#888; border-top:1px solid #eee; padding-top:12px;">
+<strong>⚠ 注意:</strong>
+m横浜 澤つぐみ(3月)の新規2件に対し獲得5件(250%)は明らかな入力ミス。3月 m横浜の0除外率81.71%はこの影響で跳ね上がっており、先月比-58.6%は実態を反映していない。<br>
+S立川 大谷萌々香が3月0%→4月43.59%に急改善。先月比全体+388.2%は実際の改善を反映しているが数値が大きく見える。<br>
+S中野・S岐阜・L池袋は3月の記録がなく先月比は算出不可。
+</div>
+</body>
+</html>

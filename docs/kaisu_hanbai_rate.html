@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回数券販売率集計 4月</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; background: #fff; padding: 24px; color: #222; }
+  h2 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #333; }
+  .note { font-size: 11px; color: #888; margin-bottom: 16px; line-height: 1.6; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: 7px 10px; text-align: center; white-space: nowrap; }
+  th { background: #f2f2f2; font-weight: 600; font-size: 12px; }
+  .col-label { text-align: left; font-weight: 600; }
+  .row-header td { background: #e8e8e8; font-weight: 700; }
+  .row-header:hover td { background: #d8d8d8; }
+  tr:hover td { background: #f8f8f8; }
+  .pos  { color: #1a7a1a; }
+  .neg  { color: #cc2222; }
+  .dash { color: #aaa; }
+  .zero { color: #cc2222; font-weight: 600; }
+  .low  { color: #cc2222; }
+  .mid  { color: #e67e00; }
+  .high { color: #1a7a1a; }
+  .section-m td { background: #f5f9ff; }
+  .section-s td { background: #fff9f0; }
+  .section-l td { background: #f9fff5; }
+  .section-m:hover td { background: #eaf3ff; }
+  .section-s:hover td { background: #fff3e0; }
+  .section-l:hover td { background: #f0fff5; }
+</style>
+</head>
+<body>
+<h2>回数券販売率集計 ／ 2026年4月（眉毛）</h2>
+<p class="note">
+  ※ 月合計初回率・月合計継続率 = 店舗合計÷再来数（全て）<br>
+  ※ 回数券販売率(0除外) = スタッフ個別販売率が0%超の平均　／　(全て) = (初回+継続)÷再来<br>
+  ※ 先月比(%) = 対3月の相対変化率
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th class="col-label">指標</th>
+      <th>月合計<br>再来</th>
+      <th>月合計<br>初回回数券</th>
+      <th>月合計<br>継続回数券</th>
+      <th>月合計<br>初回率</th>
+      <th>月合計<br>継続率</th>
+      <th>回数券販売率<br>(0除外)</th>
+      <th>回数券販売率<br>(全て)</th>
+      <th>先月比(%)<br>0除外</th>
+      <th>先月比(%)<br>全て</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 直営合計 -->
+    <tr class="row-header">
+      <td class="col-label">直営</td>
+      <td>2,369</td>
+      <td>84</td>
+      <td>65</td>
+      <td>3.55%</td>
+      <td>2.74%</td>
+      <td>7.57%</td>
+      <td>6.29%</td>
+      <td class="pos">+15.9%</td>
+      <td class="pos">+19.0%</td>
+    </tr>
+
+    <!-- most系 -->
+    <tr class="section-m">
+      <td class="col-label">m下北沢</td>
+      <td>243</td>
+      <td>1</td>
+      <td>3</td>
+      <td class="low">0.41%</td>
+      <td class="low">1.23%</td>
+      <td class="low">2.08%</td>
+      <td class="low">1.65%</td>
+      <td class="pos">+52.9%</td>
+      <td class="pos">+101.6%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m川崎</td>
+      <td>175</td>
+      <td>1</td>
+      <td>0</td>
+      <td class="low">0.57%</td>
+      <td class="zero">0.00%</td>
+      <td class="low">1.41%</td>
+      <td class="low">0.57%</td>
+      <td class="pos">+15.6%</td>
+      <td class="pos">+10.3%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m所沢</td>
+      <td>133</td>
+      <td>6</td>
+      <td>1</td>
+      <td class="low">4.51%</td>
+      <td class="low">0.75%</td>
+      <td class="low">5.32%</td>
+      <td class="low">5.26%</td>
+      <td class="pos">+27.7%</td>
+      <td class="pos">+121.1%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m横浜</td>
+      <td>322</td>
+      <td>2</td>
+      <td>8</td>
+      <td class="low">0.62%</td>
+      <td class="low">2.48%</td>
+      <td class="low">3.10%</td>
+      <td class="low">3.11%</td>
+      <td class="neg">-47.2%</td>
+      <td class="neg">-47.6%</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m立川</td>
+      <td>71</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="zero">0.00%</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="neg">-100.0%</td>
+    </tr>
+
+    <!-- SSIN系 -->
+    <tr class="section-s">
+      <td class="col-label">S中野</td>
+      <td>13</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="zero">0.00%</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">— (3月なし)</td>
+      <td class="dash">—</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S二子玉川</td>
+      <td>160</td>
+      <td>16</td>
+      <td>5</td>
+      <td class="mid">10.00%</td>
+      <td class="low">3.12%</td>
+      <td class="mid">14.29%</td>
+      <td class="mid">13.12%</td>
+      <td class="pos">+119.6%</td>
+      <td class="pos">+96.9%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S川崎</td>
+      <td>383</td>
+      <td>25</td>
+      <td>27</td>
+      <td class="low">6.53%</td>
+      <td class="low">7.05%</td>
+      <td class="mid">12.56%</td>
+      <td class="mid">13.58%</td>
+      <td class="pos">+2.7%</td>
+      <td class="pos">+7.5%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S札幌</td>
+      <td>237</td>
+      <td>10</td>
+      <td>14</td>
+      <td class="low">4.22%</td>
+      <td class="low">5.91%</td>
+      <td class="mid">9.92%</td>
+      <td class="mid">10.13%</td>
+      <td class="pos">+36.6%</td>
+      <td class="pos">+39.9%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S熊本</td>
+      <td>178</td>
+      <td>15</td>
+      <td>4</td>
+      <td class="mid">8.43%</td>
+      <td class="low">2.25%</td>
+      <td class="mid">10.53%</td>
+      <td class="mid">10.67%</td>
+      <td class="pos">+38.6%</td>
+      <td class="pos">+38.8%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S立川</td>
+      <td>124</td>
+      <td>2</td>
+      <td>0</td>
+      <td class="low">1.61%</td>
+      <td class="zero">0.00%</td>
+      <td class="low">5.58%</td>
+      <td class="low">1.61%</td>
+      <td class="pos">+207.2%</td>
+      <td class="pos">+87.1%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S藤沢</td>
+      <td>137</td>
+      <td>5</td>
+      <td>3</td>
+      <td class="low">3.65%</td>
+      <td class="low">2.19%</td>
+      <td class="low">6.32%</td>
+      <td class="low">5.84%</td>
+      <td class="neg">-6.4%</td>
+      <td class="neg">-10.7%</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S高田馬場</td>
+      <td>172</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="zero">0.00%</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S岐阜</td>
+      <td>21</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="zero">0.00%</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">—</td>
+      <td class="zero">0.00%</td>
+      <td class="dash">— (3月なし)</td>
+      <td class="dash">—</td>
+    </tr>
+
+    <!-- LUMISS -->
+    <tr class="section-l">
+      <td class="col-label">L池袋</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+      <td class="dash">— (再来0)</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:16px; font-size:11px; color:#666;">
+  <strong>色凡例:</strong>
+  <span style="color:#1a7a1a">■ 高(10%+)</span>
+  <span style="color:#e67e00; margin-left:8px">■ 中(5-10%)</span>
+  <span style="color:#cc2222; margin-left:8px">■ 低(-5%)</span>
+</div>
+
+<div style="margin-top:20px; font-size:11px; color:#888; border-top:1px solid #eee; padding-top:12px;">
+  <strong>注目点:</strong><br>
+  ・<strong>S高田馬場</strong>: 172再来で初回・継続ともに0件。3月も0件。猪口・林の2名が全く販売できていない。<br>
+  ・<strong>m川崎</strong>: 継続回数券0件、初回も1件のみ(0.57%)。赤石沢は103再来で0件。<br>
+  ・<strong>m立川</strong>: 3月1.43%→4月0.00%に後退。小川優花71再来で0件。<br>
+  ・<strong>S二子玉川</strong>: 初回率10.00%でトップ。桐ヶ谷涼が22.06%で牽引。継続率3.12%は改善余地あり。<br>
+  ・<strong>S熊本</strong>: 初回率8.43%は高水準だが、継続率2.25%が低い。既存客へのリピート訴求が課題。
+</div>
+</body>
+</html>
