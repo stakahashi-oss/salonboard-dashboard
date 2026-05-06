@@ -74,6 +74,53 @@
 
   /* コミットシート */
   .commit-box { border: 1px dashed #aaa; border-radius: 3px; padding: 5px; min-height: 30px; background: #fafafa; }
+  .action-pre { font-size: 11px; color: #444; background: #f5f9ff; border: 1px solid #c8ddf5; border-radius: 3px; padding: 4px 7px; line-height: 1.7; }
+
+  /* 付録: 店舗アクションカード */
+  .appendix-title { font-size: 16px; font-weight: 700; border-bottom: 2px solid #222; padding-bottom: 8px; margin: 32px 0 20px; }
+  .store-group-label { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 3px; margin: 16px 0 10px; display: inline-block; }
+  .sg-done  { background: #d4edda; color: #1a4a1a; }
+  .sg-close { background: #fff3cd; color: #7a5a00; }
+  .sg-need  { background: #fde8e8; color: #7a1a1a; }
+  .sg-pri   { background: #cc2222; color: #fff; }
+  .store-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .store-card { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+  .store-card.card-done  { border-color: #8dc896; }
+  .store-card.card-close { border-color: #f0c060; }
+  .store-card.card-need  { border-color: #e08080; }
+  .store-card.card-pri   { border-color: #cc2222; }
+  .sc-head { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; }
+  .card-done  .sc-head { background: #f0fdf0; }
+  .card-close .sc-head { background: #fffbee; }
+  .card-need  .sc-head { background: #fff5f5; }
+  .card-pri   .sc-head { background: #fff0f0; }
+  .sc-name { font-weight: 700; font-size: 13px; }
+  .sc-badges { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .sc-badge { font-size: 10px; padding: 1px 6px; border-radius: 8px; white-space: nowrap; font-weight: 600; }
+  .scb-yoyaku-good  { background: #d4edda; color: #1a5a1a; }
+  .scb-yoyaku-mid   { background: #fff3cd; color: #7a5a00; }
+  .scb-yoyaku-bad   { background: #fde8e8; color: #7a1a1a; }
+  .scb-kaisu-good   { background: #cce5ff; color: #1a3a7a; }
+  .scb-kaisu-bad    { background: #e8e8e8; color: #555; }
+  .sc-body { padding: 10px 12px; font-size: 11.5px; line-height: 1.75; }
+  .sc-issue { color: #7a1a1a; font-weight: 600; margin-bottom: 6px; }
+  .sc-issue::before { content: "⚠ 最大課題："; }
+  .sc-actions { margin: 0; padding-left: 0; list-style: none; }
+  .sc-actions li { padding: 2px 0 2px 14px; position: relative; }
+  .sc-actions li::before { content: "→"; position: absolute; left: 0; color: #888; }
+  .sc-who { margin-top: 6px; font-size: 11px; color: #888; }
+  .sc-who strong { color: #333; }
+
+  /* ネクストアクション */
+  .next-table { border-collapse: collapse; width: 100%; }
+  .next-table th, .next-table td { border: 1px solid #ddd; padding: 7px 10px; font-size: 12px; vertical-align: top; }
+  .next-table th { background: #f2f2f2; font-weight: 600; text-align: center; white-space: nowrap; }
+  .next-table td.date-col { white-space: nowrap; font-weight: 700; text-align: center; color: #1a4a8a; width: 100px; }
+  .next-table td.who-col  { white-space: nowrap; text-align: center; font-size: 11px; color: #555; width: 90px; }
+  .chk { list-style: none; padding: 0; margin: 0; }
+  .chk li { padding: 2px 0 2px 18px; position: relative; }
+  .chk li::before { content: "☐"; position: absolute; left: 0; color: #aaa; }
+  .urgent { color: #cc2222; font-weight: 600; }
 
   .divider { border: none; border-top: 1px solid #e0e0e0; margin: 24px 0; }
   .footer { font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 12px; margin-top: 32px; }
@@ -411,21 +458,21 @@
           <th>5月<br>2回目回数券目標</th>
           <th>達成に向けた<br>具体的アクション</th>
         </tr>
-        <tr><td>m下北沢</td><td>4件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>m川崎</td><td>4件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>m所沢</td><td>19件</td><td><div class="commit-box"></div></td><td>2件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>m横浜</td><td>22件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>m立川</td><td>0件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S中野</td><td>8件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S二子玉川</td><td>24件</td><td><div class="commit-box"></div></td><td>7件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S川崎</td><td>28件</td><td><div class="commit-box"></div></td><td>12件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S札幌</td><td>31件</td><td><div class="commit-box"></div></td><td>6件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S熊本</td><td>19件</td><td><div class="commit-box"></div></td><td>5件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S立川</td><td>37件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S藤沢</td><td>19件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S高田馬場</td><td>21件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>S岐阜</td><td>1件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr><td>L池袋</td><td>18件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
+        <tr><td>m下北沢</td><td>4件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+1件で45%達成。回数券は毎来店時に必ず提案</div></td></tr>
+        <tr><td>m川崎</td><td>4件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre urgent">③トーク型を翌週即導入。案内しているか確認（エリマネ現場確認）</div></td></tr>
+        <tr><td>m所沢</td><td>19件</td><td><div class="commit-box"></div></td><td>2件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+3件。EmiriへRenaのトーク共有。回数券は2回目全件提案</div></td></tr>
+        <tr><td>m横浜</td><td>22件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+5件。2回目来店者への回数券提案を翌週から開始</div></td></tr>
+        <tr><td>m立川</td><td>0件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre urgent">エリマネが来週中に現場確認。次回予約の案内から再スタート</div></td></tr>
+        <tr><td>S中野</td><td>8件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約は維持。2回目来店者全員への回数券提案を即スタート</div></td></tr>
+        <tr><td>S二子玉川</td><td>24件</td><td><div class="commit-box"></div></td><td>7件</td><td><div class="commit-box"></div></td><td><div class="action-pre">③で発表役。K.SuzuのトークをNenehaへ移植（5月中に同行1回）</div></td></tr>
+        <tr><td>S川崎</td><td>28件</td><td><div class="commit-box"></div></td><td>12件</td><td><div class="commit-box"></div></td><td><div class="action-pre">回数券は強い。次回予約+17件が最大課題。I.Karinが牽引役</div></td></tr>
+        <tr><td>S札幌</td><td>31件</td><td><div class="commit-box"></div></td><td>6件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+11件。Mizuki依存→Suzukaへ回数券トーク横展開</div></td></tr>
+        <tr><td>S熊本</td><td>19件</td><td><div class="commit-box"></div></td><td>5件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+21件。提案タイミングを施術中に前倒し。Y.mio→T.Ran共有</div></td></tr>
+        <tr><td>S立川</td><td>37件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="action-pre">③で発表役（次回予約）。2回目37人来訪で1件は機会損失→回数券提案必須化</div></td></tr>
+        <tr><td>S藤沢</td><td>19件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="action-pre urgent">全店最大ギャップ。エリマネが5月中に同行訪問。O.senaトーク横展開</div></td></tr>
+        <tr><td>S高田馬場</td><td>21件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+4件。猪口・林への個別指導。回数券は翌週から全2回目客に提案</div></td></tr>
+        <tr><td>S岐阜</td><td>1件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre">③のトーク型を即導入。Yukiへエリマネ個別フォロー</div></td></tr>
+        <tr><td>L池袋</td><td>18件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="action-pre">次回予約+18件・回数券ゼロの両方を同時強化。エリマネ優先サポート</div></td></tr>
         <tr class="hl">
           <td><strong>直営合計</strong></td>
           <td><strong>255件</strong></td>
@@ -452,6 +499,378 @@
   <div class="output-box">全店舗コミットシート完成。次回MTG（6月）で必ず数字を照合する。</div>
   <div class="facilitator">ファシリ：タカショー ／ 事業責任者が締め</div>
 </div>
+
+<!-- ===== 付録A: 店舗別アクションプラン ===== -->
+<div class="appendix-title">付録A：店舗別 5月アクションプラン</div>
+
+<span class="store-group-label sg-done">✅ 達成済み（次回予約45%以上）</span>
+<div class="store-cards">
+  <div class="store-card card-done">
+    <div class="sc-head">
+      <span class="sc-name">S中野</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-good">次回予約 57.1%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約は完璧だが2回目回数券が全員0件</div>
+      <ul class="sc-actions">
+        <li>③で次回予約トークの発表役として参加</li>
+        <li>2回目来店者全員への回数券提案を翌週から必須化</li>
+        <li>5月目標：回数券 3件以上</li>
+      </ul>
+      <div class="sc-who">担当SV ／ <strong>エリマネが回数券導入を確認（5/14）</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-done">
+    <div class="sc-head">
+      <span class="sc-name">S二子玉川</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-good">次回予約 54.5%</span>
+        <span class="sc-badge scb-kaisu-good">回数券成約 15.9%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">K.Suzu1名依存。Nenehaが回数券0件</div>
+      <ul class="sc-actions">
+        <li>③で次回予約・回数券の発表役（2役）</li>
+        <li>K.SuzuのトークをNenehaへ移植（5月中に同行施術1回）</li>
+        <li>5月目標：次回予約 維持・回数券 10件以上</li>
+      </ul>
+      <div class="sc-who">K.Suzu → Neneha育成 ／ <strong>エリマネが同行設定（5/8まで）</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-done">
+    <div class="sc-head">
+      <span class="sc-name">S立川</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-good">次回予約 51.4%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 1.4%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">2回目37人来訪で回数券1件。最大の機会損失店舗</div>
+      <ul class="sc-actions">
+        <li>③で次回予約トークの発表役として参加</li>
+        <li>2回目来店者全員への回数券提案を翌週から必須化</li>
+        <li>N.yuriaが1件成約→彼女のトークを他スタッフへ共有</li>
+        <li>5月目標：回数券 8件以上</li>
+      </ul>
+      <div class="sc-who">N.yuria ／ <strong>エリマネが週次確認</strong></div>
+    </div>
+  </div>
+</div>
+
+<span class="store-group-label sg-close">🟡 あと少し（次回予約35〜44%）</span>
+<div class="store-cards">
+  <div class="store-card card-close">
+    <div class="sc-head">
+      <span class="sc-name">m下北沢</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-mid">次回予約 40.0%</span>
+        <span class="sc-badge scb-kaisu-good">回数券成約 10.0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約あと+1件で45%達成</div>
+      <ul class="sc-actions">
+        <li>次回予約+1件（毎新規に必ず提案）</li>
+        <li>回数券10%は継続。Makoのトークを言語化して維持</li>
+        <li>5月目標：次回予約 5件・回数券 2件以上</li>
+      </ul>
+      <div class="sc-who">Mako</div>
+    </div>
+  </div>
+  <div class="store-card card-close">
+    <div class="sc-head">
+      <span class="sc-name">m所沢</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-mid">次回予約 38.8%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 4.1%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約あと+3件。回数券がRena1名依存</div>
+      <ul class="sc-actions">
+        <li>次回予約+3件（Rena・Emiri両名で分担）</li>
+        <li>EmiriへRenaの回数券トーク共有（5/10まで）</li>
+        <li>5月目標：次回予約 22件・回数券 4件以上</li>
+      </ul>
+      <div class="sc-who">Rena → Emiri育成</div>
+    </div>
+  </div>
+  <div class="store-card card-close">
+    <div class="sc-head">
+      <span class="sc-name">S高田馬場</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-mid">次回予約 38.2%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">172再来でも回数券ゼロ。猪口・林の両名が3月から0件</div>
+      <ul class="sc-actions">
+        <li>次回予約+4件で45%達成</li>
+        <li>猪口・林への個別指導（③の型を即導入）</li>
+        <li>翌週から2回目来店者全員に回数券提案を必須化</li>
+        <li>5月目標：次回予約 25件・回数券 5件以上</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネが猪口・林へ個別面談（5/12まで）</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-close">
+    <div class="sc-head">
+      <span class="sc-name">m横浜</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-mid">次回予約 36.1%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約あと+5件。回数券提案が完全ゼロ</div>
+      <ul class="sc-actions">
+        <li>次回予約+5件（全新規に必ず提案）</li>
+        <li>2回目来店者への回数券提案を翌週から開始</li>
+        <li>5月目標：次回予約 27件・回数券 3件以上</li>
+      </ul>
+      <div class="sc-who">担当SV ／ エリマネが週次確認</div>
+    </div>
+  </div>
+</div>
+
+<span class="store-group-label sg-need">🔴 要強化（次回予約20〜34%）</span>
+<div class="store-cards">
+  <div class="store-card card-need">
+    <div class="sc-head">
+      <span class="sc-name">S札幌</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 33.0%</span>
+        <span class="sc-badge scb-kaisu-good">回数券成約 6.4%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約+11件必要。Mizukiが回数券5件を独占</div>
+      <ul class="sc-actions">
+        <li>スタッフ別に次回予約目標件数を設定（分担）</li>
+        <li>MizukiのトークをSuzukaへ共有（5月中に同行1回）</li>
+        <li>5月目標：次回予約 42件・回数券 10件以上</li>
+      </ul>
+      <div class="sc-who">Mizuki → Suzuka育成 ／ <strong>エリマネが同行設定（5/8まで）</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-need">
+    <div class="sc-head">
+      <span class="sc-name">S川崎</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 28.0%</span>
+        <span class="sc-badge scb-kaisu-good">回数券成約 12.0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">回数券は直営トップ。次回予約28%が最大の弱点</div>
+      <ul class="sc-actions">
+        <li>次回予約+17件に特化（I.Karin・O.mifuが牽引）</li>
+        <li>回数券強みを次回予約にも転用（「次回も来てください」をルーティン化）</li>
+        <li>5月目標：次回予約 45件・回数券 15件以上</li>
+      </ul>
+      <div class="sc-who">I.Karin（リーダー役） ／ エリマネが週次確認</div>
+    </div>
+  </div>
+  <div class="store-card card-need">
+    <div class="sc-head">
+      <span class="sc-name">L池袋</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 22.2%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約+18件・回数券ゼロの両方を同時強化</div>
+      <ul class="sc-actions">
+        <li>③のトーク型を翌週から全施術に導入</li>
+        <li>2回目来店者全員への回数券提案を開始</li>
+        <li>5月目標：次回予約 36件・回数券 5件以上</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネ優先サポート（5/12までに現状確認）</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-need">
+    <div class="sc-head">
+      <span class="sc-name">S熊本</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 21.6%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 5.7%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">次回予約+21件が最大課題。88人の新規に19件は低水準</div>
+      <ul class="sc-actions">
+        <li>次回予約の提案タイミングを施術中盤に前倒し</li>
+        <li>Y.mioの回数券トーク（3件）をT.Ranへ共有</li>
+        <li>5月目標：次回予約 40件・回数券 8件以上</li>
+      </ul>
+      <div class="sc-who">Y.mio → T.Ran育成 ／ <strong>エリマネが提案タイミングを確認</strong></div>
+    </div>
+  </div>
+</div>
+
+<span class="store-group-label sg-pri">🔴🔴 最優先（次回予約20%未満）</span>
+<div class="store-cards">
+  <div class="store-card card-pri">
+    <div class="sc-head">
+      <span class="sc-name">S藤沢</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 19.0%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 1.0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">全店最大ギャップ（+26件）。両指標とも最低水準</div>
+      <ul class="sc-actions">
+        <li><strong>エリマネが5月中に同行訪問（必須）</strong></li>
+        <li>O.senaが1件成約→トークを全員に横展開</li>
+        <li>③のトーク型を翌週から全施術に即導入</li>
+        <li>5月目標：次回予約 30件・回数券 5件以上</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネ最優先対応 ／ 5/9（木）までに訪問日確定</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-pri">
+    <div class="sc-head">
+      <span class="sc-name">m川崎</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 8.5%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">全店最低次回予約率。47人に4件（案内していない可能性大）</div>
+      <ul class="sc-actions">
+        <li><strong>エリマネが翌週中に現場確認（案内しているか）</strong></li>
+        <li>③のトーク型を即日導入</li>
+        <li>5月目標：次回予約 15件・回数券 2件以上（現実的な第一ステップ）</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネ緊急対応 ／ 5/8（水）に確認</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-pri">
+    <div class="sc-head">
+      <span class="sc-name">S岐阜</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 12.5%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">新規8人・1件のみ。Yukiへの個別指導が必要</div>
+      <ul class="sc-actions">
+        <li>③のトーク型を即導入</li>
+        <li>エリマネからYukiへ個別フォロー（5/10まで）</li>
+        <li>5月目標：次回予約 4件・回数券 1件以上</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネ個別対応 ／ Yuki</strong></div>
+    </div>
+  </div>
+  <div class="store-card card-pri">
+    <div class="sc-head">
+      <span class="sc-name">m立川</span>
+      <div class="sc-badges">
+        <span class="sc-badge scb-yoyaku-bad">次回予約 0%</span>
+        <span class="sc-badge scb-kaisu-bad">回数券成約 0%</span>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-issue">新規8人に0件。完全に機能停止状態</div>
+      <ul class="sc-actions">
+        <li><strong>エリマネが来週中に現場確認（緊急）</strong></li>
+        <li>まず次回予約の案内から再スタート</li>
+        <li>5月目標：次回予約 3件（案内を始めることが目標）</li>
+      </ul>
+      <div class="sc-who"><strong>エリマネ緊急対応 ／ 5/8（水）に確認</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 付録B: ネクストアクション ===== -->
+<div class="appendix-title">付録B：MTG後 ネクストアクション</div>
+
+<table class="next-table">
+  <tr>
+    <th>日程</th>
+    <th>アクション</th>
+    <th>担当</th>
+  </tr>
+  <tr>
+    <td class="date-col">5/7（水）<br>MTG当日</td>
+    <td>
+      <ul class="chk">
+        <li>③で合意した「次回予約トーク型」「回数券提案型」をその場で文字化</li>
+        <li>コミットシートに全店の目標件数・アクションを記入・確定</li>
+        <li>エリマネがm立川・m川崎・S藤沢への対応日程を即決</li>
+        <li>文字化したトーク型をLINEグループ等で全店に当日共有</li>
+      </ul>
+    </td>
+    <td class="who-col">タカショー<br>エリマネ</td>
+  </tr>
+  <tr>
+    <td class="date-col">5/8（木）<br>翌日</td>
+    <td>
+      <ul class="chk">
+        <li class="urgent">エリマネ：m川崎・m立川に現場確認連絡（案内しているか）</li>
+        <li>S二子玉川・S札幌：K.Suzu→NenehaへMizuki→Suzukaへ同行日程確定</li>
+        <li>S藤沢：エリマネ同行訪問の日程確定</li>
+        <li>全SVへ：トーク型の確認と翌週からの実施宣言</li>
+      </ul>
+    </td>
+    <td class="who-col">エリマネ<br>各SV</td>
+  </tr>
+  <tr>
+    <td class="date-col">5/12（月）<br>1週間後</td>
+    <td>
+      <ul class="chk">
+        <li>各SV：1週目の次回予約獲得件数をエリマネへ報告</li>
+        <li class="urgent">エリマネ：S高田馬場（猪口・林）個別面談完了確認</li>
+        <li>エリマネ：L池袋・S熊本の現状確認</li>
+        <li>タカショー：1週目速報を事業責任者へ共有</li>
+      </ul>
+    </td>
+    <td class="who-col">各SV<br>エリマネ<br>タカショー</td>
+  </tr>
+  <tr>
+    <td class="date-col">5/14（水）<br>2週間後</td>
+    <td>
+      <ul class="chk">
+        <li>エリマネ：S藤沢・m川崎への同行訪問完了</li>
+        <li>S二子玉川・S立川・S中野：回数券提案の定着確認（2回目来店者への提案件数）</li>
+        <li>要強化4店舗（S川崎・S札幌・L池袋・S熊本）の中間数値確認</li>
+      </ul>
+    </td>
+    <td class="who-col">エリマネ<br>タカショー</td>
+  </tr>
+  <tr>
+    <td class="date-col">5/19（月）<br>3週間後</td>
+    <td>
+      <ul class="chk">
+        <li>全店：月間の次回予約獲得数が目標ペースか確認</li>
+        <li>遅れている店舗にエリマネが追加介入</li>
+        <li>タカショー：中間レポートを作成・事業責任者へ共有</li>
+      </ul>
+    </td>
+    <td class="who-col">タカショー<br>エリマネ</td>
+  </tr>
+  <tr>
+    <td class="date-col">5/31（土）<br>月末</td>
+    <td>
+      <ul class="chk">
+        <li>5月の全店次回予約獲得件数・回数券成約件数を集計</li>
+        <li>今日のコミットシートと照合（達成・未達を可視化）</li>
+        <li>6月MTGのアジェンダ作成（目標45%達成状況・次フェーズへの移行判断）</li>
+      </ul>
+    </td>
+    <td class="who-col">タカショー<br>エリマネ</td>
+  </tr>
+</table>
 
 <div class="footer">
   作成：2026-05-06 ／ 直営店MTG 5月7日用 ／ 次回予約率 5月45% → 最終60% 目標版
