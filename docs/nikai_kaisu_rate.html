@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2回目来店時 回数券販売率 4月</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; background: #fff; padding: 24px; color: #222; }
+  h2 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #333; }
+  .note { font-size: 11px; color: #888; margin-bottom: 16px; line-height: 1.6; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: 7px 10px; text-align: center; white-space: nowrap; }
+  th { background: #f2f2f2; font-weight: 600; font-size: 12px; }
+  .col-label { text-align: left; font-weight: 600; }
+  .row-header td { background: #e8e8e8; font-weight: 700; }
+  .row-header:hover td { background: #d8d8d8; }
+  tr:hover td { background: #f8f8f8; }
+  .pos  { color: #1a7a1a; }
+  .neg  { color: #cc2222; }
+  .dash { color: #aaa; }
+  .zero { color: #cc2222; font-weight: 600; }
+  .low  { color: #cc2222; }
+  .mid  { color: #e67e00; }
+  .high { color: #1a7a1a; }
+  .section-m td { background: #f5f9ff; }
+  .section-s td { background: #fff9f0; }
+  .section-l td { background: #f9fff5; }
+  .section-m:hover td { background: #eaf3ff; }
+  .section-s:hover td { background: #fff3e0; }
+  .section-l:hover td { background: #f0fff5; }
+  .target-line { border-top: 2px solid #e67e00; }
+</style>
+</head>
+<body>
+<h2>2回目来店時 回数券販売率 ／ 2026年4月（眉毛）</h2>
+<p class="note">
+  ※ 2回目来店者 = 全期間の来店履歴から「初来店日の次の来店日」が4月のお客様<br>
+  ※ 回数券購入 = 2回目来店日に「回数券」を含むメニューを金額 &gt; 0 で会計したお客様<br>
+  ※ 販売率 = 回数券購入÷2回目来店者　／　先月比(%) = 対3月の相対変化率<br>
+  ※ シミュレーション目標値 50%（最終目標）
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th class="col-label">指標</th>
+      <th>2回目<br>来店者</th>
+      <th>回数券<br>購入者</th>
+      <th>販売率<br>(4月)</th>
+      <th>販売率<br>(3月)</th>
+      <th>先月比(%)</th>
+      <th>目標50%<br>との差</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 直営合計 -->
+    <tr class="row-header">
+      <td class="col-label">直営</td>
+      <td>529</td>
+      <td>35</td>
+      <td class="mid">6.6%</td>
+      <td>4.8%</td>
+      <td class="pos">+37.2%</td>
+      <td class="neg">-43.4pt</td>
+    </tr>
+
+    <!-- most系 -->
+    <tr class="section-m">
+      <td class="col-label">m下北沢</td>
+      <td>25</td>
+      <td>1</td>
+      <td class="low">4.0%</td>
+      <td class="low">2.5%</td>
+      <td class="pos">+60.0%</td>
+      <td class="neg">-46.0pt</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m川崎</td>
+      <td>21</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="low">3.6%</td>
+      <td class="neg">-100.0%</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m所沢</td>
+      <td>22</td>
+      <td>2</td>
+      <td class="low">9.1%</td>
+      <td class="zero">0.0%</td>
+      <td class="pos">NEW</td>
+      <td class="neg">-40.9pt</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m横浜</td>
+      <td>42</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="low">1.7%</td>
+      <td class="neg">-100.0%</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+    <tr class="section-m">
+      <td class="col-label">m立川</td>
+      <td>17</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="low">4.2%</td>
+      <td class="neg">-100.0%</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+
+    <!-- SSIN系 -->
+    <tr class="section-s">
+      <td class="col-label">S中野</td>
+      <td>5</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="zero">0.0%</td>
+      <td class="dash">—</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S二子玉川</td>
+      <td>57</td>
+      <td>7</td>
+      <td class="mid">12.3%</td>
+      <td class="low">2.6%</td>
+      <td class="pos">+366.7%</td>
+      <td class="neg">-37.7pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S川崎</td>
+      <td>107</td>
+      <td>12</td>
+      <td class="mid">11.2%</td>
+      <td class="mid">10.9%</td>
+      <td class="pos">+2.8%</td>
+      <td class="neg">-38.8pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S札幌</td>
+      <td>66</td>
+      <td>6</td>
+      <td class="mid">9.1%</td>
+      <td class="low">7.1%</td>
+      <td class="pos">+27.3%</td>
+      <td class="neg">-40.9pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S熊本</td>
+      <td>46</td>
+      <td>5</td>
+      <td class="mid">10.9%</td>
+      <td class="low">7.9%</td>
+      <td class="pos">+37.7%</td>
+      <td class="neg">-39.1pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S立川</td>
+      <td>50</td>
+      <td>1</td>
+      <td class="low">2.0%</td>
+      <td class="zero">0.0%</td>
+      <td class="pos">NEW</td>
+      <td class="neg">-48.0pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S藤沢</td>
+      <td>36</td>
+      <td>1</td>
+      <td class="low">2.8%</td>
+      <td class="low">6.1%</td>
+      <td class="neg">-54.2%</td>
+      <td class="neg">-47.2pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S高田馬場</td>
+      <td>21</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="zero">0.0%</td>
+      <td class="dash">—</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+    <tr class="section-s">
+      <td class="col-label">S岐阜</td>
+      <td>14</td>
+      <td>0</td>
+      <td class="zero">0.0%</td>
+      <td class="zero">0.0%</td>
+      <td class="dash">—</td>
+      <td class="neg">-50.0pt</td>
+    </tr>
+
+    <!-- LUMISS -->
+    <tr class="section-l">
+      <td class="col-label">L池袋</td>
+      <td>0</td>
+      <td>0</td>
+      <td class="dash">— (再来0)</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+      <td class="dash">—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:16px; font-size:11px; color:#666;">
+  <strong>色凡例:</strong>
+  <span style="color:#1a7a1a">■ 高(10%+)</span>
+  <span style="color:#e67e00; margin-left:8px">■ 中(5-10%)</span>
+  <span style="color:#cc2222; margin-left:8px">■ 低(〜5%)</span>
+  &nbsp;|&nbsp;
+  <strong>目標:</strong> <span style="color:#e67e00">50%（シミュレーション値）</span>
+</div>
+
+<div style="margin-top:20px; font-size:11px; color:#888; border-top:1px solid #eee; padding-top:12px;">
+  <strong>注目点:</strong><br>
+  ・<strong>直営平均 6.6%</strong>：目標50%に対して-43.4pt。2回目来店者の約14人に1人しか購入していない。<br>
+  ・<strong>S川崎</strong>: 107名と最多母数で11.2%。3月(10.9%)からも微改善。唯一2ヶ月連続2桁の安定店。<br>
+  ・<strong>S二子玉川</strong>: 3月2.6%→4月12.3%に急改善(+366.7%)。桐ヶ谷涼の牽引が2回目にも波及。<br>
+  ・<strong>m川崎/m横浜/m立川</strong>: 3月にわずかに存在した購入が4月は完全消滅(-100%)。2回目来店者はいるのに販売ゼロ。<br>
+  ・<strong>S高田馬場/S岐阜</strong>: 2ヶ月連続0件。次回予約率は高い(45.52%/12.50%)のに回数券に繋がっていない。
+</div>
+
+<div style="margin-top:12px; font-size:11px; color:#888;">
+  <strong>シミュレーション目標との乖離（現状→50%時の月次インパクト試算）:</strong><br>
+  直営529名 × (50%-6.6%) × ¥14,100 = 月間 <strong style="color:#cc2222">+¥3,247,530</strong> の回数券売上増加余地
+</div>
+</body>
+</html>
