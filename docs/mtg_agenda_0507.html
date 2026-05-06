@@ -6,55 +6,82 @@
 <title>直営店MTG アジェンダ 5月7日</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; background: #fff; padding: 32px; color: #222; max-width: 860px; margin: 0 auto; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; background: #fff; padding: 32px; color: #222; max-width: 900px; margin: 0 auto; }
 
+  /* ヘッダー */
   .header { border-bottom: 3px solid #222; padding-bottom: 16px; margin-bottom: 28px; }
   .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
-  .header .meta { margin-top: 8px; font-size: 12px; color: #555; display: flex; gap: 32px; }
+  .header .meta { margin-top: 8px; font-size: 12px; color: #555; display: flex; gap: 32px; flex-wrap: wrap; }
   .header .purpose { margin-top: 12px; font-size: 13px; background: #f5f5f5; padding: 10px 14px; border-left: 4px solid #222; font-weight: 600; }
 
+  /* ロードマップ */
+  .roadmap { display: flex; align-items: center; justify-content: center; gap: 0; margin: 20px 0 28px; }
+  .roadmap-node { text-align: center; padding: 12px 20px; border: 2px solid #bbb; border-radius: 8px; min-width: 130px; }
+  .roadmap-node.current { border-color: #999; background: #f5f5f5; }
+  .roadmap-node.step1   { border-color: #e67e00; background: #fff8ee; }
+  .roadmap-node.step2   { border-color: #1a7a1a; background: #f0fff0; }
+  .roadmap-node .rn-label { font-size: 10px; color: #888; margin-bottom: 2px; }
+  .roadmap-node .rn-rate  { font-size: 22px; font-weight: 700; }
+  .roadmap-node.current .rn-rate { color: #555; }
+  .roadmap-node.step1   .rn-rate { color: #e67e00; }
+  .roadmap-node.step2   .rn-rate { color: #1a7a1a; }
+  .roadmap-node .rn-sub  { font-size: 10px; color: #777; margin-top: 2px; }
+  .roadmap-arrow { font-size: 22px; color: #aaa; padding: 0 8px; }
+
+  /* セクション */
   .section { margin-bottom: 28px; }
-  .section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
-  .section-num { font-size: 11px; font-weight: 700; color: #fff; background: #222; padding: 2px 8px; border-radius: 2px; white-space: nowrap; }
-  .section-time { font-size: 11px; color: #888; white-space: nowrap; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .section-num   { font-size: 11px; font-weight: 700; color: #fff; background: #222; padding: 3px 9px; border-radius: 3px; white-space: nowrap; }
+  .section-time  { font-size: 11px; color: #888; white-space: nowrap; }
   .section-title { font-size: 15px; font-weight: 700; }
-  .section-goal { font-size: 11px; color: #555; margin-bottom: 10px; padding: 6px 10px; background: #fafafa; border-left: 3px solid #bbb; }
-  .section-goal strong { color: #222; }
+  .section-goal  { font-size: 12px; color: #444; margin-bottom: 10px; padding: 7px 12px; background: #fafafa; border-left: 3px solid #bbb; line-height: 1.6; }
+  .section-goal strong { color: #111; }
 
-  .agenda-block { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
-  .agenda-block-title { background: #f2f2f2; padding: 6px 12px; font-weight: 600; font-size: 12px; }
-  .agenda-block-body { padding: 10px 12px; font-size: 12px; line-height: 1.8; }
+  /* 議論ブロック */
+  .disc-block { border: 1px solid #ddd; border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+  .disc-header { display: flex; justify-content: space-between; align-items: center; background: #f2f2f2; padding: 6px 12px; }
+  .disc-title  { font-weight: 600; font-size: 12px; }
+  .disc-time-badge { font-size: 11px; font-weight: 700; color: #fff; background: #555; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .disc-time-badge.discuss { background: #1a5a8a; }
+  .disc-time-badge.share   { background: #555; }
+  .disc-body { padding: 10px 14px; font-size: 12px; line-height: 1.85; }
+  .disc-body ol, .disc-body ul { padding-left: 16px; }
 
+  /* テーブル */
   table { border-collapse: collapse; width: 100%; margin: 8px 0; }
   th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; font-size: 12px; }
   th { background: #f2f2f2; font-weight: 600; }
   .col-label { text-align: left; }
-  .highlight { background: #fff8e1; font-weight: 700; }
+  .hl  { background: #fff8e1; font-weight: 700; }
+  .hl2 { background: #f0fff0; font-weight: 700; }
   .good { color: #1a7a1a; font-weight: 600; }
   .mid  { color: #e67e00; font-weight: 600; }
   .bad  { color: #cc2222; font-weight: 600; }
 
-  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-right: 4px; }
-  .badge-done  { background: #d4edda; color: #1a7a1a; }
-  .badge-close { background: #fff3cd; color: #856404; }
-  .badge-need  { background: #f8d7da; color: #721c24; }
-  .badge-pri   { background: #cc2222; color: #fff; }
+  /* バッジ */
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+  .b-done  { background: #d4edda; color: #1a7a1a; }
+  .b-close { background: #fff3cd; color: #856404; }
+  .b-need  { background: #f8d7da; color: #721c24; }
+  .b-pri   { background: #cc2222; color: #fff; }
 
-  .commit-table td { padding: 10px; }
-  .commit-box { border: 1px dashed #aaa; border-radius: 4px; padding: 8px; min-height: 36px; background: #fafafa; }
-
+  /* アウトプット */
   .output-box { background: #e8f4e8; border: 1px solid #b8d8b8; border-radius: 4px; padding: 8px 12px; font-size: 12px; font-weight: 600; color: #1a4a1a; margin-top: 8px; }
-  .output-box::before { content: "▶ アウトプット："; }
+  .output-box::before { content: "▶ このセクションのアウトプット："; display: block; font-size: 10px; color: #4a7a4a; margin-bottom: 2px; }
 
+  /* ファシリ */
   .facilitator { font-size: 11px; color: #888; text-align: right; margin-top: 6px; }
 
-  .sim-box { background: #f0f7ff; border: 1px solid #b0ccee; border-radius: 4px; padding: 12px 16px; margin: 8px 0; }
-  .sim-box .num { font-size: 20px; font-weight: 700; color: #1a4a8a; }
-  .sim-box .label { font-size: 11px; color: #556; }
+  /* コミットシート */
+  .commit-box { border: 1px dashed #aaa; border-radius: 3px; padding: 5px; min-height: 30px; background: #fafafa; }
 
   .divider { border: none; border-top: 1px solid #e0e0e0; margin: 24px 0; }
-
   .footer { font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 12px; margin-top: 32px; }
+
+  /* 時間凡例 */
+  .legend { display: flex; gap: 16px; font-size: 11px; color: #555; margin-bottom: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -67,12 +94,41 @@
     <span>👥 SV・エリマネ・事業責任者</span>
   </div>
   <div class="purpose">
-    目的：「次回予約率 45%」「2回目来店で回数券成約」を5月から全直営店が実行する合意を取る
+    目的：「次回予約率 最終60%（5月目標45%）」「2回目来店で回数券成約50%」を全直営店が実行するための合意を取る
   </div>
 </div>
 
+<!-- ロードマップ -->
+<div class="roadmap">
+  <div class="roadmap-node current">
+    <div class="rn-label">現状（4月）</div>
+    <div class="rn-rate">30.7%</div>
+    <div class="rn-sub">255件/月</div>
+  </div>
+  <div class="roadmap-arrow">→</div>
+  <div class="roadmap-node step1">
+    <div class="rn-label">5月 目標</div>
+    <div class="rn-rate">45%</div>
+    <div class="rn-sub">374件/月 ／ 年間+¥1,006万</div>
+  </div>
+  <div class="roadmap-arrow">→</div>
+  <div class="roadmap-node step2">
+    <div class="rn-label">最終 目標</div>
+    <div class="rn-rate">60%</div>
+    <div class="rn-sub">499件/月 ／ 年間+¥2,061万</div>
+  </div>
+</div>
 
-<!-- ① -->
+<!-- 時間凡例 -->
+<div class="legend">
+  <span style="font-weight:600; font-size:11px;">時間バッジの見方：</span>
+  <div class="legend-item"><span class="disc-time-badge share" style="font-size:10px;">共有 ●分</span> 一方向の情報共有</div>
+  <div class="legend-item"><span class="disc-time-badge discuss" style="font-size:10px;">議論 ●分</span> 全員で話し合う時間</div>
+</div>
+
+<hr class="divider">
+
+<!-- ① 現状数値の共有 -->
 <div class="section">
   <div class="section-header">
     <span class="section-num">① 0:00〜0:15</span>
@@ -80,122 +136,152 @@
     <span class="section-time">15分</span>
   </div>
   <div class="section-goal">
-    <strong>ゴール：</strong>「次回予約率はほぼ計画通り。2回目の回数券成約率13.7%が最大のボトルネック」を全員が認識する
+    <strong>ゴール：</strong>「次回予約率はほぼ計画通り。2回目の回数券成約率13.7%が最大のボトルネック」を全員が同じ数字で認識する
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">4月 直営全体サマリー</div>
-    <div class="agenda-block-body">
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">4月 直営全体サマリー</span>
+      <span class="disc-time-badge share">共有 5分</span>
+    </div>
+    <div class="disc-body">
       <table>
-        <tr>
-          <th class="col-label">指標</th>
-          <th>4月実績</th>
-          <th>シミュレーション設定</th>
-          <th>5月目標</th>
-          <th>判定</th>
-        </tr>
+        <tr><th class="col-label">指標</th><th>4月実績</th><th>シミュレーション設定</th><th>5月目標</th><th>最終目標</th></tr>
         <tr>
           <td class="col-label">新規次回予約率</td>
-          <td>30.69%</td>
-          <td>30%</td>
-          <td class="highlight">45%</td>
-          <td class="mid">▲ 要改善</td>
+          <td class="mid">30.69%</td><td>30%</td>
+          <td class="hl">45%</td>
+          <td class="hl2">60%</td>
         </tr>
         <tr>
           <td class="col-label">2回目 回数券成約率</td>
-          <td class="bad">13.7%</td>
-          <td>50%</td>
-          <td class="highlight">50%</td>
-          <td class="bad">✕ 最優先課題</td>
+          <td class="bad">13.7%</td><td>50%</td>
+          <td class="hl">50%</td>
+          <td class="hl2">50%</td>
         </tr>
         <tr>
           <td class="col-label">回数券販売率（全体）</td>
-          <td>6.29%</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
+          <td>6.29%</td><td>—</td><td>—</td><td>—</td>
         </tr>
       </table>
     </div>
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">店舗別 次回予約率（4月）</div>
-    <div class="agenda-block-body">
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">店舗別 次回予約率（4月）</span>
+      <span class="disc-time-badge share">共有 5分</span>
+    </div>
+    <div class="disc-body">
       <table>
         <tr>
-          <th class="col-label">店舗</th><th>新規数</th><th>獲得数</th><th>現状率</th><th>45%目標件数</th><th>必要増加</th><th>ステータス</th>
+          <th class="col-label">店舗</th><th>新規数</th><th>獲得数</th><th>現状率</th>
+          <th>45%目標<br>件数</th><th>60%目標<br>件数</th><th>ステータス</th>
         </tr>
-        <tr><td class="col-label">S中野</td><td>14</td><td>8</td><td class="good">57.1%</td><td>6</td><td class="good">—</td><td><span class="badge badge-done">✅ 達成済</span></td></tr>
-        <tr><td class="col-label">S二子玉川</td><td>44</td><td>24</td><td class="good">54.5%</td><td>20</td><td class="good">—</td><td><span class="badge badge-done">✅ 達成済</span></td></tr>
-        <tr><td class="col-label">S立川</td><td>72</td><td>37</td><td class="good">51.4%</td><td>32</td><td class="good">—</td><td><span class="badge badge-done">✅ 達成済</span></td></tr>
-        <tr><td class="col-label">m下北沢</td><td>10</td><td>4</td><td class="mid">40.0%</td><td>5</td><td>+1</td><td><span class="badge badge-close">🟡 あと少し</span></td></tr>
-        <tr><td class="col-label">m所沢</td><td>49</td><td>19</td><td class="mid">38.8%</td><td>22</td><td>+3</td><td><span class="badge badge-close">🟡 あと少し</span></td></tr>
-        <tr><td class="col-label">S高田馬場</td><td>55</td><td>21</td><td class="mid">38.2%</td><td>25</td><td>+4</td><td><span class="badge badge-close">🟡 あと少し</span></td></tr>
-        <tr><td class="col-label">m横浜</td><td>61</td><td>22</td><td class="mid">36.1%</td><td>27</td><td>+5</td><td><span class="badge badge-close">🟡 あと少し</span></td></tr>
-        <tr><td class="col-label">S札幌</td><td>94</td><td>31</td><td class="bad">33.0%</td><td>42</td><td>+11</td><td><span class="badge badge-need">🔴 要強化</span></td></tr>
-        <tr><td class="col-label">S川崎</td><td>100</td><td>28</td><td class="bad">28.0%</td><td>45</td><td>+17</td><td><span class="badge badge-need">🔴 要強化</span></td></tr>
-        <tr><td class="col-label">L池袋</td><td>81</td><td>18</td><td class="bad">22.2%</td><td>36</td><td>+18</td><td><span class="badge badge-need">🔴 要強化</span></td></tr>
-        <tr><td class="col-label">S熊本</td><td>88</td><td>19</td><td class="bad">21.6%</td><td>40</td><td>+21</td><td><span class="badge badge-need">🔴 要強化</span></td></tr>
-        <tr><td class="col-label">S藤沢</td><td>100</td><td>19</td><td class="bad">19.0%</td><td>45</td><td>+26</td><td><span class="badge badge-pri">🔴🔴 最優先</span></td></tr>
-        <tr><td class="col-label">m川崎</td><td>47</td><td>4</td><td class="bad">8.5%</td><td>21</td><td>+17</td><td><span class="badge badge-pri">🔴🔴 最優先</span></td></tr>
-        <tr><td class="col-label">S岐阜</td><td>8</td><td>1</td><td class="bad">12.5%</td><td>4</td><td>+3</td><td><span class="badge badge-pri">🔴🔴 最優先</span></td></tr>
-        <tr><td class="col-label">m立川</td><td>8</td><td>0</td><td class="bad">0.0%</td><td>4</td><td>+4</td><td><span class="badge badge-pri">🔴🔴 最優先</span></td></tr>
-        <tr class="highlight"><td class="col-label"><strong>直営合計</strong></td><td><strong>831</strong></td><td><strong>255</strong></td><td><strong>30.69%</strong></td><td><strong>374</strong></td><td><strong>+119</strong></td><td>—</td></tr>
+        <tr><td class="col-label">S中野</td><td>14</td><td>8</td><td class="good">57.1%</td><td class="good">6</td><td class="hl2">8</td><td><span class="badge b-done">✅ 45%達成済</span></td></tr>
+        <tr><td class="col-label">S二子玉川</td><td>44</td><td>24</td><td class="good">54.5%</td><td class="good">20</td><td class="hl2">26</td><td><span class="badge b-done">✅ 45%達成済</span></td></tr>
+        <tr><td class="col-label">S立川</td><td>72</td><td>37</td><td class="good">51.4%</td><td class="good">32</td><td class="hl2">43</td><td><span class="badge b-done">✅ 45%達成済</span></td></tr>
+        <tr><td class="col-label">m下北沢</td><td>10</td><td>4</td><td class="mid">40.0%</td><td>5</td><td>6</td><td><span class="badge b-close">🟡 あと少し</span></td></tr>
+        <tr><td class="col-label">m所沢</td><td>49</td><td>19</td><td class="mid">38.8%</td><td>22</td><td>29</td><td><span class="badge b-close">🟡 あと少し</span></td></tr>
+        <tr><td class="col-label">S高田馬場</td><td>55</td><td>21</td><td class="mid">38.2%</td><td>25</td><td>33</td><td><span class="badge b-close">🟡 あと少し</span></td></tr>
+        <tr><td class="col-label">m横浜</td><td>61</td><td>22</td><td class="mid">36.1%</td><td>27</td><td>36</td><td><span class="badge b-close">🟡 あと少し</span></td></tr>
+        <tr><td class="col-label">S札幌</td><td>94</td><td>31</td><td class="bad">33.0%</td><td>42</td><td>56</td><td><span class="badge b-need">🔴 要強化</span></td></tr>
+        <tr><td class="col-label">S川崎</td><td>100</td><td>28</td><td class="bad">28.0%</td><td>45</td><td>60</td><td><span class="badge b-need">🔴 要強化</span></td></tr>
+        <tr><td class="col-label">L池袋</td><td>81</td><td>18</td><td class="bad">22.2%</td><td>36</td><td>48</td><td><span class="badge b-need">🔴 要強化</span></td></tr>
+        <tr><td class="col-label">S熊本</td><td>88</td><td>19</td><td class="bad">21.6%</td><td>40</td><td>52</td><td><span class="badge b-need">🔴 要強化</span></td></tr>
+        <tr><td class="col-label">S藤沢</td><td>100</td><td>19</td><td class="bad">19.0%</td><td>45</td><td>60</td><td><span class="badge b-pri">🔴🔴 最優先</span></td></tr>
+        <tr><td class="col-label">m川崎</td><td>47</td><td>4</td><td class="bad">8.5%</td><td>21</td><td>28</td><td><span class="badge b-pri">🔴🔴 最優先</span></td></tr>
+        <tr><td class="col-label">S岐阜</td><td>8</td><td>1</td><td class="bad">12.5%</td><td>4</td><td>4</td><td><span class="badge b-pri">🔴🔴 最優先</span></td></tr>
+        <tr><td class="col-label">m立川</td><td>8</td><td>0</td><td class="bad">0.0%</td><td>4</td><td>4</td><td><span class="badge b-pri">🔴🔴 最優先</span></td></tr>
+        <tr class="hl"><td class="col-label"><strong>直営合計</strong></td><td><strong>831</strong></td><td><strong>255</strong></td><td><strong>30.69%</strong></td><td><strong>374件</strong></td><td><strong>499件</strong></td><td>—</td></tr>
       </table>
     </div>
   </div>
+
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">数字を見た上での初期反応・認識合わせ</span>
+      <span class="disc-time-badge discuss">議論 5分</span>
+    </div>
+    <div class="disc-body">
+      全員に一言ずつ聞く。「この数字を見てどう感じるか」「自分の店舗で気になる点はあるか」
+    </div>
+  </div>
+
   <div class="facilitator">ファシリ：タカショー</div>
 </div>
 
 <hr class="divider">
 
-<!-- ② -->
+<!-- ② なぜこの目標か -->
 <div class="section">
   <div class="section-header">
     <span class="section-num">② 0:15〜0:25</span>
-    <span class="section-title">なぜこの2つの数字を目標にするのか</span>
+    <span class="section-title">なぜ「次回予約60%」「2回目成約50%」が目標なのか</span>
     <span class="section-time">10分</span>
   </div>
   <div class="section-goal">
-    <strong>ゴール：</strong>「45%×50%成約」の掛け算で年間+1,000万円が生まれる構造を全員が腹落ちする
+    <strong>ゴール：</strong>「この2つが掛け算で効く」「最終60%達成で年間+2,000万」の根拠を全員が腹落ちする
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">シミュレーション構造</div>
-    <div class="agenda-block-body">
-      <div style="font-size:13px; line-height:2.2; padding: 4px 0;">
-        新規来店
-        &nbsp;→&nbsp; <strong>次回予約獲得（目標45%）</strong> ← 2回目来店の母数を決める<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp; 2回目来店
-        &nbsp;→&nbsp; <strong>回数券購入（目標50%成約）</strong> ← 収益化レバー<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp; 45日サイクルで3回消化
-        &nbsp;→&nbsp; <strong>80%が継続購入 → ループ</strong>
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">シミュレーション構造（事業責任者が説明）</span>
+      <span class="disc-time-badge share">共有 5分</span>
+    </div>
+    <div class="disc-body">
+      <div style="font-size:13px; line-height:2.4; padding: 4px 0; text-align:center;">
+        新規来店 &nbsp;→&nbsp;
+        <strong style="color:#e67e00;">次回予約獲得（5月45% → 最終60%）</strong>
+        &nbsp;← 2回目来店の母数を決める<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        2回目来店 &nbsp;→&nbsp;
+        <strong style="color:#cc2222;">回数券購入（目標50%成約）</strong>
+        &nbsp;← 収益化レバー<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        45日サイクルで3回消化 &nbsp;→&nbsp;
+        <strong style="color:#1a7a1a;">80%が継続購入 → ループ</strong>
       </div>
     </div>
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">目標達成時の売上インパクト（直営・月間）</div>
-    <div class="agenda-block-body">
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">目標達成時の売上インパクト（直営・月間）</span>
+      <span class="disc-time-badge share">共有 3分</span>
+    </div>
+    <div class="disc-body">
       <table>
-        <tr><th></th><th>現状(30.7%)</th><th>旧目標(35%)</th><th class="highlight">新目標(45%)</th></tr>
-        <tr><td class="col-label">直営 2回目来店者/月</td><td>255人</td><td>291人</td><td class="highlight"><strong>374人</strong></td></tr>
-        <tr><td class="col-label">回数券購入者/月（成約50%時）</td><td>128人</td><td>145人</td><td class="highlight"><strong>187人</strong></td></tr>
-        <tr><td class="col-label">回数券売上(新規)/月</td><td>¥1,798K</td><td>¥2,050K</td><td class="highlight"><strong>¥2,636K</strong></td></tr>
-        <tr><td class="col-label">現状比 年間増加</td><td>—</td><td>+¥303万</td><td class="highlight"><strong>+¥1,006万</strong></td></tr>
+        <tr><th></th><th>現状(30.7%)</th><th class="hl">5月目標(45%)</th><th class="hl2">最終目標(60%)</th></tr>
+        <tr><td class="col-label">直営 2回目来店者/月</td><td>255人</td><td class="hl">374人</td><td class="hl2">499人</td></tr>
+        <tr><td class="col-label">回数券購入者/月（成約50%時）</td><td>128人</td><td class="hl">187人</td><td class="hl2">249人</td></tr>
+        <tr><td class="col-label">回数券売上(新規)/月</td><td>¥1,798K</td><td class="hl">¥2,636K</td><td class="hl2">¥3,515K</td></tr>
+        <tr><td class="col-label"><strong>現状比 年間増加</strong></td><td>—</td><td class="hl"><strong>+¥1,006万</strong></td><td class="hl2"><strong>+¥2,061万</strong></td></tr>
       </table>
-      <div style="margin-top:8px; font-size:11px; color:#888;">※継続購入プールも比例拡大するため、半年後には継続売上がさらに積み上がる</div>
+      <div style="margin-top:8px; font-size:11px; color:#888;">
+        ※継続購入プールも比例拡大するため、半年後には継続売上がさらに積み上がる<br>
+        ※2回目成約率が現状13.7%のままでは、次回予約率を上げても効果は1/4以下
+      </div>
     </div>
   </div>
 
-  <div class="output-box">「年間+1,000万の根拠」を全員が共通理解として持つ</div>
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">目標に対する疑問・懸念を出し切る</span>
+      <span class="disc-time-badge discuss">議論 2分</span>
+    </div>
+    <div class="disc-body">
+      「この目標は無理では？」という疑問をここで出してもらう。③の成功事例でその答えを返す。
+    </div>
+  </div>
+
+  <div class="output-box">「年間+2,000万の根拠」を全員が共通理解として持つ。「入口×出口の掛け算」で動かすと宣言する。</div>
   <div class="facilitator">ファシリ：事業責任者</div>
 </div>
 
 <hr class="divider">
 
-<!-- ③ -->
+<!-- ③ 成功事例の解剖 -->
 <div class="section">
   <div class="section-header">
     <span class="section-num">③ 0:25〜0:55</span>
@@ -203,38 +289,48 @@
     <span class="section-time">30分</span>
   </div>
   <div class="section-goal">
-    <strong>ゴール：</strong>S中野・S二子玉川・S立川のSVが「来週から全店で使える」トーク骨格を言語化する
+    <strong>ゴール：</strong>S中野・S二子玉川・S立川のSVが「来週から全店で使える」トーク骨格を言語化する。「できる」ではなく「こう言えばいい」まで具体化する。
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">各店発表（各10分）― 引き出す質問</div>
-    <div class="agenda-block-body">
-      <ol style="padding-left:16px; line-height:2.0;">
-        <li>新規のお客様に、次回予約を<strong>いつ・どの言葉で</strong>提案しているか</li>
-        <li>断られたときどう返しているか（NG対応）</li>
-        <li>2回目来店時に、回数券を<strong>いつ・どのタイミングで</strong>提案しているか</li>
-        <li>見せているもの・使っているツールはあるか</li>
-        <li>購入を迷っているお客様への最後の一押しは何か</li>
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">達成店舗 発表（各店10分）</span>
+      <span class="disc-time-badge share">発表 20分</span>
+    </div>
+    <div class="disc-body">
+      <strong>引き出す質問（事前にSVへ送付）</strong>
+      <ol style="margin-top:6px;">
+        <li>新規のお客様に、次回予約を <strong>いつ・どの言葉で</strong> 提案しているか</li>
+        <li>断られたとき、どう返しているか</li>
+        <li>2回目来店のお客様に、回数券を <strong>いつ・どのタイミング</strong> で提案しているか</li>
+        <li>回数券を説明するとき、見せているものや使っているツールはあるか</li>
+        <li>迷っているお客様への「最後の一押し」は何か</li>
       </ol>
     </div>
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">全員でトーク骨格を合意（10分）</div>
-    <div class="agenda-block-body" style="line-height:2.0;">
-      発表内容をもとに、以下2つの「型」を全員で言語化して合意する。<br>
-      <strong>型①</strong>：新規 → 次回予約を取るための「最後の一言」<br>
-      <strong>型②</strong>：2回目来店 → 回数券提案の「切り出しトーク」
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">全員でトーク骨格を言語化・合意</span>
+      <span class="disc-time-badge discuss">議論 10分</span>
+    </div>
+    <div class="disc-body">
+      発表をもとに、以下2つを全員でその場で文字にする。<br><br>
+      <strong>型①：次回予約トーク（新規 → 予約確定）</strong><br>
+      「_______________________________________________」<br><br>
+      <strong>型②：回数券提案トーク（2回目 → 購入決定）</strong><br>
+      「_______________________________________________」<br><br>
+      <span style="color:#888; font-size:11px;">※ここで決まった型をMTG後に全店へ展開する</span>
     </div>
   </div>
 
-  <div class="output-box">全店共通「次回予約トーク型」「回数券提案型」の2本を合意・文字化</div>
+  <div class="output-box">全店共通「次回予約トーク型」「回数券提案型」の2本を合意・文字化。このMTG最大の成果物。</div>
   <div class="facilitator">ファシリ：エリマネ</div>
 </div>
 
 <hr class="divider">
 
-<!-- ④ -->
+<!-- ④ 要強化店舗の診断 -->
 <div class="section">
   <div class="section-header">
     <span class="section-num">④ 0:55〜1:10</span>
@@ -242,40 +338,54 @@
     <span class="section-time">15分</span>
   </div>
   <div class="section-goal">
-    <strong>ゴール：</strong>S藤沢・m川崎・S熊本・L池袋などの「何が③と違うか」を構造で特定し、エリマネが支援方針を即決する
+    <strong>ゴール：</strong>S藤沢・m川崎・S熊本・L池袋の「③と何が違うか」を構造で特定し、エリマネが支援方針を即決する
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">原因タイプの分類</div>
-    <div class="agenda-block-body">
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">原因タイプの分類（エリマネが主導）</span>
+      <span class="disc-time-badge discuss">議論 10分</span>
+    </div>
+    <div class="disc-body">
       <table>
-        <tr><th>タイプ</th><th>内容</th><th>打ち手</th></tr>
+        <tr><th style="width:100px">タイプ</th><th>内容</th><th>打ち手</th></tr>
         <tr>
           <td><strong>A：未提案</strong></td>
           <td>そもそも次回予約・回数券を案内していない</td>
-          <td>③のトーク型を即導入</td>
+          <td>③の型を翌週から即導入</td>
         </tr>
         <tr>
-          <td><strong>B：タイミングずれ</strong></td>
+          <td><strong>B：ズレ</strong></td>
           <td>提案しているが場面・言葉が効いていない</td>
-          <td>施術中・会計前のどこで話すかを再設計</td>
+          <td>どのタイミングで話すかを再設計</td>
         </tr>
         <tr>
           <td><strong>C：心理ブロック</strong></td>
           <td>「断られるのが怖い」「売り込みたくない」</td>
-          <td>SVのマインドセットをエリマネが個別フォロー</td>
+          <td>エリマネが個別面談でフォロー</td>
         </tr>
       </table>
     </div>
   </div>
 
-  <div class="output-box">店舗ごとの原因タイプとエリマネの支援方針を決定</div>
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">エリマネ支援方針の即決</span>
+      <span class="disc-time-badge discuss">議論 5分</span>
+    </div>
+    <div class="disc-body">
+      各店の原因タイプを確認したうえで、エリマネが「いつ・何をするか」を即決する。<br>
+      <span style="color:#888; font-size:11px;">「持ち帰って考えます」で終わらせない</span>
+    </div>
+  </div>
+
+  <div class="output-box">店舗ごとの原因タイプ（A/B/C）とエリマネの支援方針・期限を決定</div>
   <div class="facilitator">ファシリ：エリマネ ／ 事業責任者がコメント</div>
 </div>
 
 <hr class="divider">
 
-<!-- ⑤ -->
+<!-- ⑤ 5月コミット -->
 <div class="section">
   <div class="section-header">
     <span class="section-num">⑤ 1:10〜1:30</span>
@@ -283,12 +393,15 @@
     <span class="section-time">20分</span>
   </div>
   <div class="section-goal">
-    <strong>ゴール：</strong>全SVが「次回予約目標件数」「2回目回数券目標件数」を口頭+シートで確約する
+    <strong>ゴール：</strong>全SVが「次回予約獲得目標件数」「2回目回数券目標件数」を口頭＋シートで確約する。「頑張ります」で終わらせない。
   </div>
 
-  <div class="agenda-block">
-    <div class="agenda-block-title">コミットシート（その場で記入）</div>
-    <div class="agenda-block-body">
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">各SVが宣言（一人1〜2分）</span>
+      <span class="disc-time-badge discuss">宣言 15分</span>
+    </div>
+    <div class="disc-body">
       <table class="commit-table">
         <tr>
           <th class="col-label">店舗</th>
@@ -296,7 +409,7 @@
           <th>5月<br>次回予約目標</th>
           <th>4月<br>2回目回数券</th>
           <th>5月<br>2回目回数券目標</th>
-          <th>SVコメント</th>
+          <th>達成に向けた<br>具体的アクション</th>
         </tr>
         <tr><td>m下北沢</td><td>4件</td><td><div class="commit-box"></div></td><td>1件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
         <tr><td>m川崎</td><td>4件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
@@ -313,10 +426,10 @@
         <tr><td>S高田馬場</td><td>21件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
         <tr><td>S岐阜</td><td>1件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
         <tr><td>L池袋</td><td>18件</td><td><div class="commit-box"></div></td><td>0件</td><td><div class="commit-box"></div></td><td><div class="commit-box"></div></td></tr>
-        <tr class="highlight">
+        <tr class="hl">
           <td><strong>直営合計</strong></td>
           <td><strong>255件</strong></td>
-          <td><strong>目標374件</strong></td>
+          <td><strong>目標 374件</strong></td>
           <td><strong>35件</strong></td>
           <td><strong>—</strong></td>
           <td>—</td>
@@ -325,12 +438,23 @@
     </div>
   </div>
 
-  <div class="output-box">全店舗の5月コミットシート完成。事業責任者が受け取り締める。</div>
+  <div class="disc-block">
+    <div class="disc-header">
+      <span class="disc-title">事業責任者による締め</span>
+      <span class="disc-time-badge share">締め 5分</span>
+    </div>
+    <div class="disc-body">
+      各SVのコミットを受け取り、必要な支援リソースを即決する。<br>
+      「次回予約60%達成が年間+2,000万につながる」ことを最後に全員へ確認する。
+    </div>
+  </div>
+
+  <div class="output-box">全店舗コミットシート完成。次回MTG（6月）で必ず数字を照合する。</div>
   <div class="facilitator">ファシリ：タカショー ／ 事業責任者が締め</div>
 </div>
 
 <div class="footer">
-  作成：2026-05-06 ／ 直営店MTG 5月7日用
+  作成：2026-05-06 ／ 直営店MTG 5月7日用 ／ 次回予約率 5月45% → 最終60% 目標版
 </div>
 
 </body>
