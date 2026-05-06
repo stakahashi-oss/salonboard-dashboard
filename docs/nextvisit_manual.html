@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>次回予約 サロンコネクト運用マニュアル</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;background:#f8fafc;color:#1a1f36;font-size:15px;line-height:1.7}
+  .page{max-width:800px;margin:0 auto;padding:24px 20px 60px}
+
+  /* Header */
+  .hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:16px;padding:32px;color:#fff;margin-bottom:32px}
+  .hero h1{font-size:22px;font-weight:800;margin-bottom:8px}
+  .hero p{font-size:14px;opacity:.85}
+  .hero .badge-wrap{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .hero .hbadge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600}
+
+  /* Section */
+  .sec{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+  .sec-title{font-size:16px;font-weight:800;color:#1a1f36;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .sec-title .num{width:28px;height:28px;background:#4f46e5;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+
+  /* Purpose box */
+  .why-box{background:#f0f0ff;border-radius:10px;padding:16px;margin-bottom:16px;font-size:14px;color:#3730a3}
+  .why-box strong{display:block;margin-bottom:6px;font-size:13px}
+
+  /* Steps */
+  .steps{display:flex;flex-direction:column;gap:12px}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .step-num{width:32px;height:32px;background:#e0e7ff;color:#4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;margin-top:2px}
+  .step-body{}
+  .step-title{font-weight:700;font-size:14px;color:#1a1f36;margin-bottom:4px}
+  .step-desc{font-size:13px;color:#4b5563;line-height:1.6}
+  .step-tip{margin-top:6px;background:#fef9c3;border-radius:6px;padding:8px 10px;font-size:12px;color:#92400e}
+  .step-tip::before{content:"💡 ";font-size:13px}
+  .step-warn{margin-top:6px;background:#fee2e2;border-radius:6px;padding:8px 10px;font-size:12px;color:#991b1b}
+  .step-warn::before{content:"⚠️ "}
+
+  /* Script box */
+  .script-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px}
+  .script-box .script-label{font-size:11px;font-weight:700;color:#15803d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+  .script-box p{font-size:14px;color:#166534;line-height:1.8}
+  .script-box em{color:#15803d;font-style:normal;font-weight:700}
+
+  /* NG box */
+  .ng-list{display:flex;flex-direction:column;gap:10px}
+  .ng-item{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:8px;background:#fff5f5;border:1px solid #fecaca}
+  .ng-icon{font-size:20px;flex-shrink:0}
+  .ng-body{}
+  .ng-title{font-weight:700;font-size:13px;color:#dc2626;margin-bottom:3px}
+  .ng-desc{font-size:12px;color:#6b7280}
+  .ok-item{background:#f0fdf4;border:1px solid #bbf7d0}
+  .ok-title{color:#15803d}
+
+  /* Store status */
+  .store-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .store-card{border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .store-card.done{background:#f0fdf4;border:1px solid #bbf7d0}
+  .store-card.wip{background:#fffbeb;border:1px solid #fde68a}
+  .store-icon{font-size:18px}
+  .store-name{font-weight:700;font-size:14px}
+  .store-status{font-size:11px;color:#6b7280;margin-top:2px}
+
+  /* Flow diagram */
+  .flow{display:flex;flex-direction:column;gap:0}
+  .flow-item{display:flex;gap:0;align-items:stretch}
+  .flow-line{display:flex;flex-direction:column;align-items:center;margin-right:14px;flex-shrink:0}
+  .flow-dot{width:16px;height:16px;border-radius:50%;background:#4f46e5;margin-top:4px;flex-shrink:0}
+  .flow-bar{width:2px;background:#c7d2fe;flex:1;margin:4px 0}
+  .flow-content{padding:0 0 20px;flex:1}
+  .flow-title{font-weight:700;font-size:14px;color:#1a1f36}
+  .flow-desc{font-size:13px;color:#6b7280;margin-top:3px}
+  .flow-tag{display:inline-block;background:#e0e7ff;color:#3730a3;font-size:11px;font-weight:700;border-radius:4px;padding:2px 8px;margin-top:4px}
+  .flow-tag.green{background:#dcfce7;color:#15803d}
+  .flow-tag.red{background:#fee2e2;color:#dc2626}
+
+  /* Footer */
+  .footer{text-align:center;margin-top:40px;font-size:12px;color:#9ca3af}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>次回予約 サロンコネクト<br>スタッフ運用マニュアル</h1>
+    <p>予約経路を正しく記録し、次回予約の効果を可視化するための運用ガイド</p>
+    <div class="badge-wrap">
+      <span class="hbadge">📅 2026年5月 制定</span>
+      <span class="hbadge">対象：全スタッフ</span>
+      <span class="hbadge">作成：髙橋将太</span>
+    </div>
+  </div>
+
+  <!-- なぜやるのか -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">①</div>なぜ「次回予約」メニューを使うのか</div>
+    <div class="why-box">
+      <strong>🎯 目的</strong>
+      今の予約データだけでは「HPBから来た新規」と「スタッフが店内で次回予約を押さえた再来」の区別ができていません。<br>
+      「次回予約」専用メニュー＋経路を正しく設定することで、<b>スタッフの次回予約獲得力が数字として見える</b>ようになります。
+    </div>
+    <div style="font-size:14px;color:#374151">
+      <b>これが見えると何が変わるか：</b>
+      <ul style="margin-top:8px;padding-left:20px;line-height:2">
+        <li>次回予約獲得率が店舗・スタッフ単位でわかる</li>
+        <li>「次回予約を取れているスタッフ」と「取れていないスタッフ」が一目でわかる</li>
+        <li>施策（LINEフォロー等）の効果と次回予約の貢献を分離して評価できる</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 店舗設定状況 -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">②</div>「次回予約」メニュー 設定状況</div>
+    <div class="store-grid">
+      <div class="store-card done"><span class="store-icon">✅</span><div><div class="store-name">most eyes 下北沢</div><div class="store-status">設定済み</div></div></div>
+      <div class="store-card done"><span class="store-icon">✅</span><div><div class="store-name">SSIN STUDIO 二子玉川</div><div class="store-status">設定済み</div></div></div>
+      <div class="store-card done"><span class="store-icon">✅</span><div><div class="store-name">SSIN STUDIO 藤沢</div><div class="store-status">設定済み</div></div></div>
+      <div class="store-card done"><span class="store-icon">✅</span><div><div class="store-name">most eyes 所沢</div><div class="store-status">設定済み</div></div></div>
+      <div class="store-card wip"><span class="store-icon">🔄</span><div><div class="store-name">most eyes 横浜</div><div class="store-status">今週設定予定</div></div></div>
+      <div class="store-card wip"><span class="store-icon">🔄</span><div><div class="store-name">most eyes 川崎</div><div class="store-status">今週設定予定</div></div></div>
+    </div>
+  </div>
+
+  <!-- 会計時のフロー -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">③</div>会計時の正しいフロー</div>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+        <div class="flow-content">
+          <div class="flow-title">施術終了・お会計</div>
+          <div class="flow-desc">通常通りサロンボードで会計処理を行う</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+        <div class="flow-content">
+          <div class="flow-title">次回予約のご提案</div>
+          <div class="flow-desc">お見送り前に下のトークスクリプトで次回を提案する</div>
+          <div class="flow-tag green">ここが最重要ステップ</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+        <div class="flow-content">
+          <div class="flow-title">承諾いただけた場合 → 予約入力</div>
+          <div class="flow-desc">サロンコネクト（サロンボード）を開き、以下の手順で予約を入力する</div>
+          <div class="flow-tag">①「次回予約」メニューを選択</div>
+          <div style="margin-top:6px"></div>
+          <div class="flow-tag">②予約経路を「次回予約（店内）」に変更</div>
+          <div style="margin-top:6px"></div>
+          <div class="flow-tag green">③予約確定・完了</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-line"><div class="flow-dot"></div><div style="flex:0"></div></div>
+        <div class="flow-content">
+          <div class="flow-title">お断りされた場合</div>
+          <div class="flow-desc">予約は入れない。LINEフォローに委ねる</div>
+          <div class="flow-tag red">無理に入れない</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- トークスクリプト -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">④</div>トークスクリプト（提案の声がけ）</div>
+    <div class="script-box">
+      <div class="script-label">推奨トーク例</div>
+      <p>
+        「本日はありがとうございました！<br>
+        まつ毛パーマは<em>だいたい5〜6週間後</em>が次のメンテナンスのタイミングです。<br>
+        今日のうちに押さえておくと、<em>ご希望のお日にちが取りやすいですよ</em>。<br>
+        よろしければ、今ここでご予約いただけますか？」
+      </p>
+    </div>
+    <div style="margin-top:14px;font-size:13px;color:#6b7280">
+      ※眉毛ワックスの場合は「4〜5週間後」、セット施術の場合は施術内容に合わせて調整してください。
+    </div>
+  </div>
+
+  <!-- サロンコネクト操作手順 -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">⑤</div>サロンコネクト 予約入力手順</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">サロンコネクト（サロンボード）を開く</div>
+          <div class="step-desc">会計画面から「予約登録」または「予約一覧」へ移動する</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">お客様を選択して新規予約を作成</div>
+          <div class="step-desc">今日来店したお客様の顧客情報を選択し、新しい予約を作成する</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">メニューで「次回予約」を選択する</div>
+          <div class="step-desc">メニュー一覧から「次回予約」専用メニューを選ぶ（通常のメニューではなく必ずこちら）</div>
+          <div class="step-warn">通常の施術メニューで予約を入れると、データ上で区別できなくなります</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">予約経路を「次回予約（店内）」に変更する</div>
+          <div class="step-desc">予約経路のプルダウンから「次回予約（店内）」を選択する。デフォルトのままにしない</div>
+          <div class="step-tip">この経路設定がデータ集計のキーになります。必ず変更してください</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">日時を確定して予約完了</div>
+          <div class="step-desc">お客様と日時を確認し、予約を確定する。完了後、お客様のスマホでも確認できるよう案内する</div>
+          <div class="step-tip">「ご予約の確認メールが届きます」と一言添えると安心していただけます</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NG行動 -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">⑥</div>やってはいけないこと / やるべきこと</div>
+    <div class="ng-list">
+      <div class="ng-item">
+        <div class="ng-icon">❌</div>
+        <div class="ng-body">
+          <div class="ng-title">「次回予約」メニュー以外で予約を入れる</div>
+          <div class="ng-desc">通常の施術メニューで入力すると、HPBからの予約と区別できなくなりデータが崩れます</div>
+        </div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-icon">❌</div>
+        <div class="ng-body">
+          <div class="ng-title">予約経路をデフォルトのまま確定する</div>
+          <div class="ng-desc">経路が「HP」「その他」のままになると、次回予約の集計に含まれません</div>
+        </div>
+      </div>
+      <div class="ng-item">
+        <div class="ng-icon">❌</div>
+        <div class="ng-body">
+          <div class="ng-title">「LINEで送っておきます」でその場を終わらせる</div>
+          <div class="ng-desc">LINEフォローは補完手段。次回予約はその場での獲得が圧倒的に成功率が高い</div>
+        </div>
+      </div>
+      <div class="ng-item ok-item">
+        <div class="ng-icon">✅</div>
+        <div class="ng-body">
+          <div class="ng-title ok-title">施術終了直後（お会計のタイミング）に提案する</div>
+          <div class="ng-desc">仕上がりへの満足感が最も高いこのタイミングが、次回予約承諾率が最も高い</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- データ確認 -->
+  <div class="sec">
+    <div class="sec-title"><div class="num">⑦</div>データ確認方法（SVの方向け）</div>
+    <div style="font-size:14px;color:#374151;line-height:1.8">
+      毎週月曜日に、以下を確認してください：<br><br>
+      <b>サロンボード → 予約一覧 → 経路フィルター「次回予約（店内）」</b><br>
+      → 先週の「次回予約」件数を確認<br>
+      → スタッフ別の件数を確認<br><br>
+      <span style="background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:13px">目標：新規来店数の30%以上を次回予約で押さえる</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    最終更新: 2026年5月 ｜ 作成: 髙橋将太<br>
+    不明点は髙橋まで
+  </div>
+
+</div>
+</body>
+</html>
