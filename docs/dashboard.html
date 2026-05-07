@@ -1359,9 +1359,14 @@ function refreshAll() { loadDashboard(); }
 
 // ── ホーム: 40日離脱ゾーン カウント ───────────
 function updateChurnKpi() {
+  const today = new Date(); today.setHours(0,0,0,0);
   const list = (allFriends || []).filter(f => {
-    const tags = (f['タグ']||'').split(',').map(t=>t.trim());
-    return tags.includes('離脱予兆_40-60日') || tags.includes('要注意_40日以内');
+    const raw = (f['最終来店日'] || '').slice(0,10);
+    if (!raw) return false;
+    const d = new Date(raw);
+    if (isNaN(d)) return false;
+    const days = Math.floor((today - d) / 86400000);
+    return days >= 40 && days <= 60;
   });
   const el = document.getElementById('kpi-churn-40');
   if (el) el.textContent = list.length;
