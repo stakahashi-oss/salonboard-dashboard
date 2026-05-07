@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面談FB｜蒲田 山本麻都理 2026-05-07</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.7;max-width:760px;margin:0 auto;padding:28px 20px}
+
+.page-header{background:linear-gradient(135deg,#0f172a,#1a3a5c);border-radius:14px;padding:20px 24px;margin-bottom:22px;color:#fff}
+.header-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
+.header-title{font-size:20px;font-weight:800;margin-bottom:8px}
+.header-meta{display:flex;gap:10px;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 11px;font-size:11px;color:rgba(255,255,255,.75)}
+
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.section-title{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:14px}
+
+/* 総評 */
+.overall{display:flex;gap:16px;align-items:flex-start}
+.score-box{flex-shrink:0;text-align:center;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;min-width:90px}
+.score-num{font-size:36px;font-weight:900;color:#1d4ed8;line-height:1}
+.score-label{font-size:10px;font-weight:700;color:#3b82f6;margin-top:4px}
+.overall-text{flex:1;font-size:13.5px;color:#334155;line-height:1.75}
+
+/* 数値カード */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px}
+.kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;text-align:center}
+.kpi-val{font-size:20px;font-weight:800;color:#1e293b}
+.kpi-val.green{color:#15803d}
+.kpi-val.red{color:#dc2626}
+.kpi-val.blue{color:#2563eb}
+.kpi-label{font-size:10px;color:#64748b;margin-top:3px;font-weight:600}
+.kpi-note{font-size:10px;color:#94a3b8;margin-top:2px}
+
+/* 褒めポイント */
+.praise-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.praise-item:last-child{border-bottom:none;padding-bottom:0}
+.praise-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.praise-body{}
+.praise-title{font-weight:700;font-size:13px;color:#15803d}
+.praise-desc{font-size:12px;color:#64748b;margin-top:2px}
+
+/* 課題 */
+.issue-item{border-left:3px solid #e2e8f0;padding:10px 14px;margin-bottom:10px;border-radius:0 8px 8px 0;background:#fafafa}
+.issue-item.high{border-color:#dc2626;background:#fff8f8}
+.issue-item.mid{border-color:#f59e0b;background:#fffbeb}
+.issue-item.low{border-color:#3b82f6;background:#eff6ff}
+.issue-tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin-bottom:5px}
+.issue-tag.high{background:#fee2e2;color:#dc2626}
+.issue-tag.mid{background:#fef3c7;color:#d97706}
+.issue-tag.low{background:#dbeafe;color:#2563eb}
+.issue-title{font-weight:700;font-size:13px;color:#1e293b;margin-bottom:3px}
+.issue-why{font-size:12px;color:#64748b;margin-bottom:6px}
+.issue-action{font-size:12px;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px}
+.issue-action strong{color:#1d4ed8}
+
+/* フォーカス */
+.focus-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.focus-row:last-child{border-bottom:none}
+.focus-num{width:26px;height:26px;border-radius:8px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.focus-title{font-weight:700;font-size:13px;color:#1e293b}
+.focus-sub{font-size:12px;color:#64748b;margin-top:2px}
+.focus-target{font-size:11px;font-weight:700;color:#2563eb;margin-top:4px}
+
+/* メッセージ */
+.message-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:16px 20px;font-size:13.5px;color:#1e3a8a;line-height:1.8}
+.message-box .from{font-size:11px;font-weight:700;color:#3b82f6;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+
+footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-badge">面談フィードバック</div>
+  <div class="header-title">山本麻都理 さん ― 蒲田店</div>
+  <div class="header-meta">
+    <span class="chip">📅 2026-05-07</span>
+    <span class="chip">デビュー約4ヶ月</span>
+    <span class="chip">4月売上 ¥700,000</span>
+  </div>
+</div>
+
+<!-- 総評 -->
+<div class="section">
+  <div class="section-title">総評</div>
+  <div class="overall">
+    <div class="score-box">
+      <div class="score-num">A</div>
+      <div class="score-label">4月評価</div>
+    </div>
+    <div class="overall-text">
+      デビューから4ヶ月で売上¥700,000は、正直かなり優秀なスタートです。3月面談の時と比べて声のトーン・自信が全然違っていて、技術も精神面も確実に上がってきているのが伝わりました。<br><br>
+      今月の最優先事項は <strong>次回予約率を上げること</strong> 、ただこれ1点です。ここが固まれば売上は自然についてきます。「7月に¥800,000」は現実的な数字です。
+    </div>
+  </div>
+</div>
+
+<!-- 4月数値 -->
+<div class="section">
+  <div class="section-title">4月 実績スナップショット</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val green">¥70万</div>
+      <div class="kpi-label">4月売上</div>
+      <div class="kpi-note">デビュー4ヶ月で達成</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val red">8%</div>
+      <div class="kpi-label">次回予約率（現状）</div>
+      <div class="kpi-note">目標 45%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val blue">80点</div>
+      <div class="kpi-label">自己評価</div>
+      <div class="kpi-note">技術・手応えとも好調</div>
+    </div>
+  </div>
+</div>
+
+<!-- 褒めポイント -->
+<div class="section">
+  <div class="section-title">良かったこと</div>
+  <div class="praise-item">
+    <div class="praise-icon">✅</div>
+    <div class="praise-body">
+      <div class="praise-title">4ヶ月で¥70万は本物の数字</div>
+      <div class="praise-desc">まだデビューして研修込みで4ヶ月。同じ時期に¥70万出せるスタッフはそう多くありません。しかも自信がついたタイミングで数字も付いてきた、という順番が正しい。</div>
+    </div>
+  </div>
+  <div class="praise-item">
+    <div class="praise-icon">✅</div>
+    <div class="praise-body">
+      <div class="praise-title">「目元を見てロット設定が分かる」感覚がついた</div>
+      <div class="praise-desc">3月時点では「正規料金をもらえるレベルか自信がない」とのことでしたが、4月で目元を見て判断できるようになったのは技術士として大きなステップです。</div>
+    </div>
+  </div>
+  <div class="praise-item">
+    <div class="praise-icon">✅</div>
+    <div class="praise-body">
+      <div class="praise-title">ミニモからリピーターが生まれている</div>
+      <div class="praise-desc">「また来たいです」と言ってもらえるお客様が出始めているのは、技術と接客が安定してきた証拠。ここを5月はもっと伸ばしていきましょう。</div>
+    </div>
+  </div>
+  <div class="praise-item">
+    <div class="praise-icon">✅</div>
+    <div class="praise-body">
+      <div class="praise-title">4月の次回予約シートを完走した</div>
+      <div class="praise-desc">「4月から絶対つけよう」と決めて全部記入できた。小さいようで、習慣化の第一歩として一番大事なことをやり切っています。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 課題 -->
+<div class="section">
+  <div class="section-title">成長ポイント（今後の課題）</div>
+
+  <div class="issue-item high">
+    <span class="issue-tag high">最重要</span>
+    <div class="issue-title">次回予約率 8% → 45%</div>
+    <div class="issue-why">現状8%は「10人に1人未満しか次回を取れていない」状態。ここを上げるだけで売上の天井が変わります。再来客が増えると新規への依存が下がり、精神的にも楽になります。</div>
+    <div class="issue-action">
+      <strong>やること：</strong>施術が終わって「仕上がり良いですね」の流れが一番取りやすいタイミング。「次いつ頃来られますか？今日ここで取っておくとこの価格のままなんですよ」のワンフレーズを必ず言う。平日の枠が空いているうちに、その場で固定しに行く意識を持つ。
+    </div>
+  </div>
+
+  <div class="issue-item mid">
+    <span class="issue-tag mid">今月中</span>
+    <div class="issue-title">ミニモ集客の見直し（限定感・キーワード）</div>
+    <div class="issue-why">現状のミニモクーポンには「限定感」と「検索に引っかかるワード」が不足している。ミニモユーザーはお得さ・限定感で動くので、それが出ていないと埋まりません。</div>
+    <div class="issue-action">
+      <strong>やること：</strong>①「先着〇名」「学生限定」などの絞り込みを入れる ②「パリジェンヌ・ラッシュリフト・トリートメント・コーティング」のワードをフリーワードとメニュー名に追加 ③絵文字を積極的に使う（送付したサンプルを参考に） ④蒲田駅・蒲田エリアなど地名も入れる
+    </div>
+  </div>
+
+  <div class="issue-item mid">
+    <span class="issue-tag mid">今月中</span>
+    <div class="issue-title">相澤さん前担当客への対応</div>
+    <div class="issue-why">相澤さんの元担当客を受ける際に手が震えるほど緊張している。これは慣れの問題ですが、放置すると仕上がりに影響します。</div>
+    <div class="issue-action">
+      <strong>やること：</strong>施術前に相澤さんへ「このお客様、以前どんな仕上がりにしてましたか？ロット何番でした？」と一言確認するだけで大きく違います。事前情報があると緊張が「準備」に変わる。
+    </div>
+  </div>
+
+  <div class="issue-item low">
+    <span class="issue-tag low">中期</span>
+    <div class="issue-title">オプション提案・コース案内を自分の言葉で言えるようにする</div>
+    <div class="issue-why">「言葉が下手すぎて言えない」は今の段階では正直なことです。ただ2回目来店のお客様には話しかけやすいタイミングがある。「苦手だから売らない」ではなく、まず1人に試してみることが先決。</div>
+    <div class="issue-action">
+      <strong>やること：</strong>2回目来店のお客様に「実はこういうのもあるんですが…」と一言話しかけるロープレを空き時間にやる。買ってもらうかどうかより「言えた」がゴール。5月中に1件トライを目標にする。
+    </div>
+  </div>
+</div>
+
+<!-- 今月フォーカス -->
+<div class="section">
+  <div class="section-title">5月 フォーカス 3点</div>
+  <div class="focus-row">
+    <div class="focus-num">1</div>
+    <div>
+      <div class="focus-title">その場次回予約を毎施術後に必ず声がけ</div>
+      <div class="focus-sub">「仕上がり確認 → 次いつ来られますか？」の流れを体に染み込ませる。特に平日枠を埋めることを意識する。</div>
+      <div class="focus-target">目標：次回予約率 8% → 20%（まず倍にする）</div>
+    </div>
+  </div>
+  <div class="focus-row">
+    <div class="focus-num">2</div>
+    <div>
+      <div class="focus-title">ミニモを学生・限定コンセプトに刷新</div>
+      <div class="focus-sub">送ったマニュアルを参考に、絵文字・ターゲット限定・検索ワードを全部入れて作り直す。今週中に更新する。</div>
+      <div class="focus-target">目標：ミニモ経由新規 月4件以上</div>
+    </div>
+  </div>
+  <div class="focus-row">
+    <div class="focus-num">3</div>
+    <div>
+      <div class="focus-title">5月シート記入を4月同様に完走する</div>
+      <div class="focus-sub">次回予約取れた・取れなかった、どちらも記録する。分析できるデータを残すことが来月の改善につながる。変更点があれば日報グループで報告する。</div>
+      <div class="focus-target">目標：全施術分を漏れなく記入</div>
+    </div>
+  </div>
+</div>
+
+<!-- メッセージ -->
+<div class="message-box">
+  <div class="from">タカショーより</div>
+  3月の面談と比べて、今日の麻都理さんは声のトーンが全然違った。自分で気づいてないかもしれないけど、ちゃんと成長してます。<br><br>
+  ¥70万はデビュー4ヶ月の数字じゃないし、技術への手応えが出てきたのもすごく大事なこと。スランプが来た時に落ち込んで止まるんじゃなくて、「次どうする」だけを考えてほしい。今の調子でやってたら7月に¥80万は普通に見えてくる。<br><br>
+  分からないこと・うまくいかないことはLINEで聞いてください。ロープレも全然やるので声かけて。
+</div>
+
+<footer>面談FB ｜ 蒲田 山本麻都理 ｜ 2026-05-07 ｜ 高橋</footer>
+
+</body>
+</html>
