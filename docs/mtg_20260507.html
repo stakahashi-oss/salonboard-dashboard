@@ -6,48 +6,58 @@
 <title>眉毛直営店MTG｜2026-05-07</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:960px;margin:0 auto;padding:24px 20px}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:980px;margin:0 auto;padding:0 0 40px}
 
 /* ヘッダー */
-.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:14px;padding:20px 26px;margin-bottom:6px;color:#fff}
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:20px 26px 18px;color:#fff}
 .header-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
 .header-title{font-size:22px;font-weight:900;margin-bottom:10px}
 .header-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 11px;font-size:11px;color:rgba(255,255,255,.7)}
-.chip.green{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:#86efac}
-.na-link{margin-left:auto;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 11px}
-.na-link:hover{background:rgba(255,255,255,.1)}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 11px;font-size:11px;color:rgba(255,255,255,.75)}
+.chip.green{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.35);color:#86efac}
+.chip.red{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.3);color:#fca5a5}
 
-/* 目的・ゴール */
-.goal-bar{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 18px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap}
-.goal-item{}
-.goal-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:3px}
-.goal-text{font-size:13px;font-weight:600;color:#1e293b}
+/* スティッキーナビ */
+.nav{position:sticky;top:0;z-index:100;background:#1e293b;padding:0 24px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{color:rgba(255,255,255,.55);font-size:11px;font-weight:600;padding:10px 14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s}
+.nav a:hover,.nav a.active{color:#fff;border-bottom-color:#3b82f6}
+
+/* 目的ゴールバー */
+.goal-bar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 26px;display:flex;gap:32px;flex-wrap:wrap}
+.goal-item .gl{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.goal-item .gv{font-size:12.5px;font-weight:600;color:#1e293b}
+
+/* メインレイアウト */
+.body-wrap{padding:20px 26px}
 
 /* セクション */
-.section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin-bottom:16px}
-.sec-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.sec-num{width:28px;height:28px;border-radius:8px;background:#0f172a;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sec-title{font-size:15px;font-weight:800;color:#1e293b;flex:1}
-.sec-time{font-size:11px;color:#94a3b8;background:#f1f5f9;border-radius:4px;padding:2px 8px}
-.sec-goal{font-size:11px;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 10px}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-num{width:26px;height:26px;border-radius:7px;background:#0f172a;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-size:14px;font-weight:800;color:#1e293b;flex:1}
+.sec-time{font-size:10px;color:#94a3b8;background:#f1f5f9;border-radius:4px;padding:2px 7px;flex-shrink:0}
+.sec-goal{font-size:10.5px;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 9px;flex-shrink:0}
 
-/* 前回N/A */
-.sva-block{margin-bottom:14px}
-.sva-header{font-size:11px;font-weight:700;color:#1d4ed8;background:#eff6ff;border-radius:6px;padding:5px 10px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.sva-stores{font-size:10px;color:#64748b;font-weight:500}
-.na-prev-item{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #f8fafc}
-.na-prev-item:last-child{border-bottom:none}
-.na-dot{width:6px;height:6px;border-radius:50%;background:#cbd5e1;flex-shrink:0;margin-top:6px}
-.na-prev-text{font-size:12.5px;color:#334155;flex:1}
-.na-prev-store{font-size:10px;font-weight:600;color:#64748b;white-space:nowrap}
+/* 2カラムグリッド */
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:640px){.col2,.col3{grid-template-columns:1fr}}
 
-/* サマリーテーブル */
+/* KPIカード */
+.kpi-card{border-radius:10px;border:1px solid #e2e8f0;padding:11px 14px;text-align:center;background:#fafafa}
+.kpi-val{font-size:20px;font-weight:900}
+.kpi-label{font-size:10px;color:#64748b;font-weight:600;margin-top:2px}
+.kpi-sub{font-size:10px;color:#94a3b8;margin-top:1px}
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:580px){.kpi4{grid-template-columns:repeat(2,1fr)}}
+
+/* テーブル */
 .tbl-wrap{overflow-x:auto}
-table.data{width:100%;border-collapse:collapse;font-size:12px}
-table.data th{background:#f8fafc;font-size:10px;font-weight:700;color:#64748b;text-align:right;padding:6px 10px;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+table.data{width:100%;border-collapse:collapse;font-size:11.5px}
+table.data th{background:#f8fafc;font-size:10px;font-weight:700;color:#64748b;text-align:right;padding:5px 9px;border-bottom:2px solid #e2e8f0;white-space:nowrap}
 table.data th:first-child{text-align:left}
-table.data td{padding:6px 10px;border-bottom:1px solid #f1f5f9;text-align:right;white-space:nowrap}
+table.data td{padding:5px 9px;border-bottom:1px solid #f1f5f9;text-align:right;white-space:nowrap}
 table.data td:first-child{text-align:left;font-weight:600}
 table.data tr.total td{background:#f8fafc;font-weight:700;border-top:2px solid #e2e8f0}
 table.data tr:hover td{background:#fafcff}
@@ -59,190 +69,176 @@ table.data tr:hover td{background:#fafcff}
 .badge.r{background:#fee2e2;color:#dc2626}
 .badge.y{background:#fef3c7;color:#d97706}
 
-/* KPIカードグリッド */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-.kpi-card{border-radius:10px;border:1px solid #e2e8f0;padding:12px 14px;text-align:center}
-.kpi-val{font-size:20px;font-weight:900}
-.kpi-label{font-size:10px;color:#64748b;font-weight:600;margin-top:3px}
-.kpi-sub{font-size:10px;color:#94a3b8;margin-top:2px}
+/* 前回N/A */
+.sva-block{margin-bottom:10px}
+.sva-head{font-size:11px;font-weight:700;color:#1d4ed8;background:#eff6ff;border-radius:6px;padding:4px 10px;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.sva-stores{font-size:10px;color:#64748b;font-weight:500}
+.nap{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid #f8fafc}
+.nap:last-child{border-bottom:none}
+.nap-dot{width:5px;height:5px;border-radius:50%;background:#cbd5e1;flex-shrink:0;margin-top:7px}
+.nap-text{font-size:12px;color:#334155;flex:1}
+.nap-store{font-size:10px;font-weight:600;color:#64748b;white-space:nowrap;min-width:52px}
 
-/* 成功店解剖 */
-.store-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:640px){.store-cards{grid-template-columns:1fr}}
+/* 成功店舗カード */
 .store-card{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
-.store-card-head{padding:10px 14px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px}
-.store-card-head.blue{background:#eff6ff;color:#1d4ed8;border-bottom:1px solid #bfdbfe}
-.store-card-head.green{background:#f0fdf4;color:#15803d;border-bottom:1px solid #bbf7d0}
-.store-card-head.purple{background:#faf5ff;color:#7c3aed;border-bottom:1px solid #ddd6fe}
-.store-card-body{padding:12px 14px}
-.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.sc-head{padding:9px 13px;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:6px}
+.sc-head.blue{background:#eff6ff;color:#1d4ed8;border-bottom:1px solid #bfdbfe}
+.sc-head.green{background:#f0fdf4;color:#15803d;border-bottom:1px solid #bbf7d0}
+.sc-head.purple{background:#faf5ff;color:#7c3aed;border-bottom:1px solid #ddd6fe}
+.sc-body{padding:10px 13px}
+.tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
 .tag.hot{background:#fef3c7;color:#d97706;border-color:#fde68a}
-.point-item{font-size:12px;color:#334155;padding:3px 0;border-bottom:1px solid #f8fafc;display:flex;gap:6px}
-.point-item:last-child{border-bottom:none}
-.point-item::before{content:'›';color:#94a3b8;flex-shrink:0}
-.point-item.ng::before{content:'✕';color:#f87171}
-.subsec{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase;margin:8px 0 4px}
+.pt{font-size:11.5px;color:#334155;padding:2px 0;border-bottom:1px solid #f8fafc;display:flex;gap:5px}
+.pt:last-child{border-bottom:none;padding-bottom:0}
+.pt::before{content:'›';color:#94a3b8;flex-shrink:0}
+.pt.ng::before{content:'✕';color:#f87171}
+.sub{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase;margin:7px 0 3px}
 
 /* 運用ルール */
-.rule-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media(max-width:580px){.rule-grid{grid-template-columns:1fr}}
-.rule-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
-.rule-num{display:inline-flex;width:20px;height:20px;border-radius:6px;background:#0f172a;color:#fff;font-size:10px;font-weight:800;align-items:center;justify-content:center;margin-bottom:6px;flex-shrink:0}
-.rule-title{font-weight:700;font-size:13px;color:#1e293b;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.rule-card{border:1px solid #e2e8f0;border-radius:9px;padding:11px 13px}
+.rule-num{display:inline-flex;width:19px;height:19px;border-radius:5px;background:#0f172a;color:#fff;font-size:10px;font-weight:800;align-items:center;justify-content:center;margin-bottom:5px}
+.rule-title{font-weight:700;font-size:12.5px;color:#1e293b;margin-bottom:3px;display:flex;align-items:center;gap:6px}
 .rule-desc{font-size:11.5px;color:#64748b;line-height:1.6}
-.rule-why{font-size:10.5px;color:#2563eb;margin-top:5px;background:#eff6ff;border-radius:4px;padding:4px 8px}
+.rule-why{font-size:10px;color:#2563eb;margin-top:4px;background:#eff6ff;border-radius:4px;padding:3px 7px}
 
-/* PL表 */
-.pl-cycle{display:flex;flex-direction:column;gap:6px}
-.pl-row{display:flex;gap:12px;align-items:flex-start;padding:8px 10px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0}
-.pl-date{font-size:11px;font-weight:700;color:#2563eb;white-space:nowrap;min-width:80px}
-.pl-content{font-size:12px;color:#334155;flex:1}
+/* PLサイクル */
+.pl-row{display:flex;gap:12px;align-items:flex-start;padding:7px 10px;border-radius:7px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:5px}
+.pl-date{font-size:10.5px;font-weight:700;color:#2563eb;white-space:nowrap;min-width:76px}
+.pl-content{font-size:11.5px;color:#334155;flex:1}
 .pl-who{font-size:10px;font-weight:600;color:#64748b;white-space:nowrap}
 
-/* N/A最終 */
-.action-group{margin-bottom:10px}
-.action-item{display:flex;gap:10px;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:6px;align-items:flex-start}
-.action-item:hover{border-color:#bfdbfe}
-.anum{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
+/* N/Aセクション */
+.na-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;padding:14px 0 6px}
+.na-item{display:flex;gap:10px;padding:10px 13px;background:#fff;border:1px solid #e2e8f0;border-radius:9px;margin-bottom:5px;align-items:flex-start}
+.na-item:hover{border-color:#bfdbfe;background:#fafcff}
+.anum{width:21px;height:21px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
 .anum.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
 .anum.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
 .anum.b{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
 .abody{flex:1}
-.t{font-weight:700;font-size:13px}
-.who{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.at{font-weight:700;font-size:12.5px}
+.aw{font-size:11px;color:#64748b;margin-top:2px;line-height:1.5}
+.ameta{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.who{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:4px}
 .who.me{background:#eff6ff;color:#1d4ed8}
 .who.team{background:#f0fdf4;color:#15803d}
 .who.other{background:#f8fafc;color:#64748b;border:1px solid #e2e8f0}
-.due{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.due{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:4px}
 .dr{background:rgba(239,68,68,.08);color:#dc2626}
 .da{background:rgba(245,158,11,.08);color:#d97706}
 .db{background:#eff6ff;color:#2563eb}
-.sub-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;padding:14px 0 6px}
 
-footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px}
+/* N/Aサマリーバー */
+.na-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.na-count{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
+.na-count.r{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.15)}
+.na-count.a{background:rgba(245,158,11,.08);color:#d97706;border:1px solid rgba(245,158,11,.2)}
+.na-count.b{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe}
+
+footer{text-align:right;font-size:11px;color:#94a3b8;margin:20px 26px 0;border-top:1px solid #e2e8f0;padding-top:10px}
 </style>
 </head>
 <body>
 
 <!-- ヘッダー -->
 <div class="page-header">
-  <div class="header-badge">眉毛直営店MTG ／ 議事録</div>
+  <div class="header-badge">眉毛直営店MTG ／ 議事録 ＋ N/A</div>
   <div class="header-title">直営店MTG ― 2026-05-07</div>
   <div class="header-row">
     <span class="chip">📅 2026-05-07</span>
-    <span class="chip">参加：タカショー / 土田 / 澤 / 内山 / 梅田 / 林</span>
+    <span class="chip">土田 / 澤 / 内山 / 梅田 / 林</span>
     <span class="chip green">直営96.97%着地</span>
-    <a class="na-link" href="/mtg_20260507_na">N/A一覧 →</a>
+    <span class="chip red">次回予約率35% → 目標45%</span>
   </div>
 </div>
+
+<!-- スティッキーナビ -->
+<nav class="nav">
+  <a href="#prev">前回N/A</a>
+  <a href="#summary">売上サマリー</a>
+  <a href="#yoyaku">次回予約率</a>
+  <a href="#success">成功店舗</a>
+  <a href="#sc">SC運用ルール</a>
+  <a href="#kuchikomi">口コミ</a>
+  <a href="#pl">PL</a>
+  <a href="#na">N/A一覧</a>
+</nav>
 
 <!-- 目的・ゴール -->
 <div class="goal-bar">
   <div class="goal-item">
-    <div class="goal-label">目的</div>
-    <div class="goal-text">再来率向上のため、全直営店がアクションを翌日から動ける状態にする</div>
+    <div class="gl">目的</div>
+    <div class="gv">再来率向上のため、全直営店がアクションを翌日から動ける状態にする</div>
   </div>
   <div class="goal-item">
-    <div class="goal-label">ゴール</div>
-    <div class="goal-text">次回予約率の向上 ＋ 取った予約のキャンセルを減らす仕組みが明確になっている</div>
+    <div class="gl">ゴール</div>
+    <div class="gv">次回予約率の向上 ＋ 取った予約のキャンセルを減らす仕組みが明確になっている</div>
   </div>
 </div>
 
+<div class="body-wrap">
+
 <!-- 前回N/A -->
-<div class="section">
-  <div class="sec-header">
+<div id="prev" class="section">
+  <div class="sec-head">
     <div class="sec-num">0</div>
     <div class="sec-title">前回N/A 確認</div>
     <span class="sec-time">5分</span>
   </div>
-
-  <div class="sva-block">
-    <div class="sva-header">🔵 タカショー</div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text">岐阜の導線共有〆4/21</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text">直営MTGのアジェンダN/A共有（期日は決めてもらう）〆4/21</div></div>
-  </div>
-
-  <div class="sva-block">
-    <div class="sva-header">🟡 土田 <span class="sva-stores">m所沢 / m立川 / S中野 / S川崎 / S立川 / L池袋 / L川崎</span></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">m所沢</span>　再来向けアクション実施（OP販売弱い）</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S中野</span>　要因特定と改善計画確認</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S川崎</span>　再来配信 / 平日客数を埋めていく</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S立川</span>　新規クーポン改善（呼び込める再来少ない）</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">L池袋</span>　導線改善</div></div>
-  </div>
-
-  <div class="sva-block">
-    <div class="sva-header">🟡 澤 <span class="sva-stores">m川崎 / m横浜</span></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">m横浜</span>　期間限定クーポン発行（季節系・コース訴求） ← 要確認</div></div>
-  </div>
-
-  <div class="sva-block">
-    <div class="sva-header">🟡 内山 <span class="sva-stores">S二子玉川 / S藤沢 / L二子玉川 / L藤沢</span></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S二子玉川</span>　物販ランキングをスタッフに見せる（少ない自覚を促す）</div></div>
-  </div>
-
-  <div class="sva-block">
-    <div class="sva-header">🟡 梅田 <span class="sva-stores">m下北沢 / S札幌 / S熊本 / S岐阜 / L札幌</span></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">m下北沢</span>　もあさんと面談（先月より大きく低下）/ 退職者対応 → 別日5/8面談</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S熊本</span>　スタッフがPOP作成→促し / GW前駆け込み施策</div></div>
-    <div class="na-prev-item"><div class="na-dot"></div><div class="na-prev-text"><span class="na-prev-store">S岐阜</span>　次回予約 / アップセルヒアリング / 促しPOP作成</div></div>
+  <div class="col2">
+    <div>
+      <div class="sva-block">
+        <div class="sva-head">🔵 タカショー</div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text">岐阜の導線共有 〆4/21</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text">直営MTGのアジェンダN/A共有（期日は決めてもらう）〆4/21</div></div>
+      </div>
+      <div class="sva-block">
+        <div class="sva-head">🟡 澤 <span class="sva-stores">m川崎 / m横浜</span></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">m横浜</span>期間限定クーポン発行（季節系・コース訴求）← 要確認</div></div>
+      </div>
+      <div class="sva-block">
+        <div class="sva-head">🟡 内山 <span class="sva-stores">S二子玉川 / S藤沢 / L二子玉川 / L藤沢</span></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S二子玉川</span>物販ランキングをスタッフに見せる（少ない自覚を促す）</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sva-block">
+        <div class="sva-head">🟡 土田 <span class="sva-stores">m所沢 / m立川 / S中野 / S川崎 / S立川 / L池袋 / L川崎</span></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">m所沢</span>再来向けアクション実施（OP販売弱い）</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S中野</span>要因特定と改善計画確認</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S川崎</span>再来配信 / 平日客数を埋めていく</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S立川</span>新規クーポン改善（呼び込める再来少ない）</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">L池袋</span>導線改善</div></div>
+      </div>
+      <div class="sva-block">
+        <div class="sva-head">🟡 梅田 <span class="sva-stores">m下北沢 / S札幌 / S熊本 / S岐阜 / L札幌</span></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">m下北沢</span>もあさんと面談（先月より大きく低下）/ 退職者対応 → 別日5/8</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S熊本</span>スタッフがPOP作成→促し / GW前駆け込み施策</div></div>
+        <div class="nap"><div class="nap-dot"></div><div class="nap-text"><span class="nap-store">S岐阜</span>次回予約 / アップセルヒアリング / 促しPOP作成</div></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- 先月サマリー -->
-<div class="section">
-  <div class="sec-header">
+<!-- 売上サマリー -->
+<div id="summary" class="section">
+  <div class="sec-head">
     <div class="sec-num">—</div>
     <div class="sec-title">4月 売上サマリー</div>
     <span class="sec-time">1分</span>
   </div>
-
-  <div class="kpi-grid">
-    <div class="kpi-card" style="border-color:#bbf7d0">
-      <div class="kpi-val pos">96.97%</div>
-      <div class="kpi-label">直営全体 達成率</div>
-      <div class="kpi-sub">¥24,391,212 / 目標¥25,152,165</div>
-    </div>
-    <div class="kpi-card" style="border-color:#fecaca">
-      <div class="kpi-val neg">-¥760,953</div>
-      <div class="kpi-label">目標比</div>
-      <div class="kpi-sub">先月比 -¥591,335</div>
-    </div>
-    <div class="kpi-card" style="border-color:#bfdbfe">
-      <div class="kpi-val" style="color:#2563eb">4店舗</div>
-      <div class="kpi-label">100%超え達成</div>
-      <div class="kpi-sub">m川崎・S札幌・S熊本・S藤沢・S高田馬場</div>
-    </div>
-    <div class="kpi-card" style="border-color:#fecaca">
-      <div class="kpi-val neg">50.3%</div>
-      <div class="kpi-label">L池袋（最大未達）</div>
-      <div class="kpi-sub">S二子玉川78.8%・S岐阜84.9%</div>
-    </div>
+  <div class="kpi4" style="margin-bottom:12px">
+    <div class="kpi-card" style="border-color:#bbf7d0"><div class="kpi-val pos">96.97%</div><div class="kpi-label">直営全体達成率</div><div class="kpi-sub">¥24,391,212 / 目標¥25,152,165</div></div>
+    <div class="kpi-card" style="border-color:#fecaca"><div class="kpi-val neg">-¥761K</div><div class="kpi-label">目標比</div><div class="kpi-sub">先月比 -¥591K</div></div>
+    <div class="kpi-card" style="border-color:#bfdbfe"><div class="kpi-val" style="color:#2563eb">5店舗</div><div class="kpi-label">100%超え</div><div class="kpi-sub">m川崎・S札幌・S熊本・S藤沢・S高田馬場</div></div>
+    <div class="kpi-card" style="border-color:#fecaca"><div class="kpi-val neg">50.3%</div><div class="kpi-label">L池袋（最大未達）</div><div class="kpi-sub">S二子玉川78.8% / S岐阜84.9%</div></div>
   </div>
-
   <div class="tbl-wrap">
     <table class="data">
-      <thead>
-        <tr>
-          <th style="text-align:left">店舗</th>
-          <th>目標</th>
-          <th>着地</th>
-          <th>達成率</th>
-          <th>目標比</th>
-          <th>先月比</th>
-        </tr>
-      </thead>
+      <thead><tr><th style="text-align:left">店舗</th><th>目標</th><th>着地</th><th>達成率</th><th>目標比</th><th>先月比</th></tr></thead>
       <tbody>
-        <tr class="total">
-          <td>直営合計</td>
-          <td>¥25,152,165</td>
-          <td>¥24,391,212</td>
-          <td><span class="badge g">96.97%</span></td>
-          <td class="neg">-¥760,953</td>
-          <td class="neg">-¥591,335</td>
-        </tr>
+        <tr class="total"><td>直営合計</td><td>¥25,152,165</td><td>¥24,391,212</td><td><span class="badge g">96.97%</span></td><td class="neg">-¥760,953</td><td class="neg">-¥591,335</td></tr>
         <tr><td>m下北沢</td><td>¥2,086,700</td><td>¥1,941,240</td><td><span class="badge y">93.0%</span></td><td class="neg">-¥145,460</td><td class="neg">-¥132,840</td></tr>
         <tr><td>m川崎</td><td>¥1,600,000</td><td>¥1,760,410</td><td><span class="badge g">110.0%</span></td><td class="pos">+¥160,410</td><td class="neg">-¥83,755</td></tr>
         <tr><td>m所沢</td><td>¥1,570,000</td><td>¥1,466,040</td><td><span class="badge y">93.4%</span></td><td class="neg">-¥103,960</td><td class="neg">-¥33,940</td></tr>
@@ -264,57 +260,23 @@ footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;border-top:
 </div>
 
 <!-- ①新規次回予約率 -->
-<div class="section">
-  <div class="sec-header">
+<div id="yoyaku" class="section">
+  <div class="sec-head">
     <div class="sec-num">①</div>
-    <div class="sec-title">先月数値の共有 ― 4月 新規次回予約率</div>
+    <div class="sec-title">先月数値共有 ― 4月 新規次回予約率</div>
     <span class="sec-time">15分</span>
   </div>
-
-  <div class="kpi-grid">
-    <div class="kpi-card" style="border-color:#fde68a">
-      <div class="kpi-val warn">35.04%</div>
-      <div class="kpi-label">直営全体（0除外）</div>
-      <div class="kpi-sub">先月比 -7.5pt</div>
-    </div>
-    <div class="kpi-card" style="border-color:#bfdbfe">
-      <div class="kpi-val" style="color:#2563eb">45%</div>
-      <div class="kpi-label">5月目標</div>
-      <div class="kpi-sub">最終目標 60%</div>
-    </div>
-    <div class="kpi-card" style="border-color:#bbf7d0">
-      <div class="kpi-val pos">57.6%</div>
-      <div class="kpi-label">最高 S二子玉川</div>
-      <div class="kpi-sub">S中野57.1% / S立川50.6%</div>
-    </div>
-    <div class="kpi-card" style="border-color:#fecaca">
-      <div class="kpi-val neg">0.0%</div>
-      <div class="kpi-label">最低 m立川</div>
-      <div class="kpi-sub">S岐阜12.5% / S藤沢14.7%</div>
-    </div>
+  <div class="kpi4" style="margin-bottom:12px">
+    <div class="kpi-card" style="border-color:#fde68a"><div class="kpi-val warn">35.04%</div><div class="kpi-label">直営全体（0除外）</div><div class="kpi-sub">先月比 -7.5pt</div></div>
+    <div class="kpi-card" style="border-color:#bfdbfe"><div class="kpi-val" style="color:#2563eb">45%</div><div class="kpi-label">5月目標</div><div class="kpi-sub">最終目標 60%</div></div>
+    <div class="kpi-card" style="border-color:#bbf7d0"><div class="kpi-val pos">57.6%</div><div class="kpi-label">最高 S二子玉川</div><div class="kpi-sub">S中野57.1% / S立川50.6%</div></div>
+    <div class="kpi-card" style="border-color:#fecaca"><div class="kpi-val neg">0.0%</div><div class="kpi-label">最低 m立川</div><div class="kpi-sub">S岐阜12.5% / S藤沢14.7%</div></div>
   </div>
-
   <div class="tbl-wrap">
     <table class="data">
-      <thead>
-        <tr>
-          <th style="text-align:left">店舗</th>
-          <th>合計新規</th>
-          <th>次回獲得数</th>
-          <th>率（0除外）</th>
-          <th>率（全て）</th>
-          <th>先月比 0除外</th>
-          <th>先月比 全て</th>
-        </tr>
-      </thead>
+      <thead><tr><th style="text-align:left">店舗</th><th>合計新規</th><th>次回獲得数</th><th>率（0除外）</th><th>率（全て）</th><th>先月比 0除外</th><th>先月比 全て</th></tr></thead>
       <tbody>
-        <tr class="total">
-          <td>直営合計</td><td>831</td><td>255</td>
-          <td><span class="badge y">35.04%</span></td>
-          <td>30.69%</td>
-          <td class="neg">-7.5%</td>
-          <td class="pos">+33.0%</td>
-        </tr>
+        <tr class="total"><td>直営合計</td><td>831</td><td>255</td><td><span class="badge y">35.04%</span></td><td>30.69%</td><td class="neg">-7.5%</td><td class="pos">+33.0%</td></tr>
         <tr><td>m下北沢</td><td>10</td><td>4</td><td>45.0%</td><td>40.0%</td><td class="neg">-40.0%</td><td class="neg">-20.0%</td></tr>
         <tr><td>m川崎</td><td>47</td><td>4</td><td class="warn">28.6%</td><td class="neg">8.5%</td><td class="neg">-41.1%</td><td class="neg">-60.3%</td></tr>
         <tr><td>m所沢</td><td>49</td><td>19</td><td>38.7%</td><td>38.8%</td><td class="pos">+154.4%</td><td class="pos">+155.9%</td></tr>
@@ -333,119 +295,85 @@ footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;border-top:
       </tbody>
     </table>
   </div>
-  <div style="margin-top:10px;font-size:11px;color:#2563eb">
-    📊 詳細ダッシュボード：<a href="/shinki_yoyaku_rate" style="color:#2563eb">https://salonboard-dashboard.vercel.app/shinki_yoyaku_rate</a>
-  </div>
+  <div style="margin-top:8px;font-size:11px;color:#2563eb">📊 <a href="/shinki_yoyaku_rate" style="color:#2563eb">詳細ダッシュボード</a></div>
 </div>
 
 <!-- ②成功店舗の解剖 -->
-<div class="section">
-  <div class="sec-header">
+<div id="success" class="section">
+  <div class="sec-head">
     <div class="sec-num">②</div>
     <div class="sec-title">成功店舗の解剖 ― 何をやっているか</div>
     <span class="sec-time">30分</span>
     <span class="sec-goal">ゴール：来週から全店で使えるトーク骨格を言語化</span>
   </div>
-
-  <div class="store-cards">
-
-    <!-- 中野/高田馬場 -->
+  <div class="col3">
     <div class="store-card">
-      <div class="store-card-head blue">S中野 / S高田馬場<span style="font-size:11px;font-weight:500;margin-left:4px">57%達成</span></div>
-      <div class="store-card-body">
-        <div class="tag-row">
-          <span class="tag hot">2回目まで新規同価格</span>
-          <span class="tag hot">OP無料</span>
-          <span class="tag">学割定価消し</span>
-        </div>
-
-        <div class="subsec">特典設計</div>
-        <div class="point-item">2回目まで新規と同価格で来れる</div>
-        <div class="point-item">オプション無料（アイシャンプー無料）</div>
-        <div class="point-item">学割は「取って帰ったら使えるよ」で促す</div>
-        <div class="point-item">定価¥7,000以下 + アイシャンプーBTXセラム</div>
-        <div class="point-item">5月は再来も新規価格で来れる</div>
-
-        <div class="subsec">提案タイミング・トーク</div>
-        <div class="point-item">提案はお会計のあと</div>
-        <div class="point-item">時間カツカツの時：起こしながらでも伝える</div>
-        <div class="point-item">10分前を徹底したら結果が良くなった</div>
-        <div class="point-item">POPで新規と再来の価格を比較して並べる</div>
-
-        <div class="subsec">取れないパターン対応</div>
-        <div class="point-item ng">予定がわからない → 「仮で抑えていいですよ」</div>
-        <div class="point-item ng">満足いかなかった → 「次回よかったら取りませんか？」</div>
-        <div class="point-item ng">「大丈夫ですか？」は使わない</div>
+      <div class="sc-head blue">S中野 / S高田馬場 <span style="font-size:10px;font-weight:500;margin-left:2px">57%</span></div>
+      <div class="sc-body">
+        <div class="tag-row"><span class="tag hot">2回目まで新規同価格</span><span class="tag hot">OP無料</span><span class="tag">学割定価消し</span></div>
+        <div class="sub">特典設計</div>
+        <div class="pt">2回目まで新規と同価格で来れる</div>
+        <div class="pt">アイシャンプー無料 / BTXセラム</div>
+        <div class="pt">学割は「取って帰ったら使えるよ」で促す</div>
+        <div class="pt">5月は再来も新規価格で来れる</div>
+        <div class="sub">提案タイミング</div>
+        <div class="pt">提案はお会計のあと</div>
+        <div class="pt">時間カツカツでも起こしながら伝える</div>
+        <div class="pt">10分前を徹底したら結果が上がった</div>
+        <div class="pt">POPで新規と再来の価格を比較して並べる</div>
+        <div class="sub">取れないパターン対応</div>
+        <div class="pt ng">予定わからない → 「仮で抑えていいですよ」</div>
+        <div class="pt ng">満足いかなかった → 「よかったら取りませんか？」</div>
+        <div class="pt ng">「大丈夫ですか？」は使わない</div>
       </div>
     </div>
-
-    <!-- 二子玉川 -->
     <div class="store-card">
-      <div class="store-card-head green">S二子玉川<span style="font-size:11px;font-weight:500;margin-left:4px">57.6%達成</span></div>
-      <div class="store-card-body">
-        <div class="tag-row">
-          <span class="tag hot">全員必ず伝える</span>
-          <span class="tag">300円引きのみ</span>
-          <span class="tag">余裕を持って施術</span>
-        </div>
-
-        <div class="subsec">特典設計</div>
-        <div class="point-item">特典は300円引きのみ（シンプル設計）</div>
-        <div class="point-item">LUMISS再来の学割は出していない</div>
-        <div class="point-item">SSIN再来の学割あり</div>
-
-        <div class="subsec">提案トーク・工夫</div>
-        <div class="point-item">「特典」というワードを明示して伝える</div>
-        <div class="point-item">「お知らせがありまして〜」の入り方で工夫</div>
-        <div class="point-item">余裕を持って施術を終わらせてから伝える</div>
-        <div class="point-item">別部屋会計でも取れている</div>
-
-        <div class="subsec">悩んだ人への対応</div>
-        <div class="point-item ng">「日時変更も可能です」を2段階で伝える</div>
-        <div class="point-item ng">必ず全員に話しかける（選ばない）</div>
+      <div class="sc-head green">S二子玉川 <span style="font-size:10px;font-weight:500;margin-left:2px">57.6%</span></div>
+      <div class="sc-body">
+        <div class="tag-row"><span class="tag hot">全員必ず伝える</span><span class="tag">300円引きのみ</span><span class="tag">余裕を持って施術</span></div>
+        <div class="sub">特典設計</div>
+        <div class="pt">特典は300円引きのみ（シンプル設計）</div>
+        <div class="pt">LUMISS再来の学割は出していない</div>
+        <div class="pt">SSIN再来の学割あり</div>
+        <div class="sub">提案トーク・工夫</div>
+        <div class="pt">「特典」というワードを明示して伝える</div>
+        <div class="pt">「お知らせがありまして〜」の入り方で工夫</div>
+        <div class="pt">余裕を持って施術を終わらせてから伝える</div>
+        <div class="pt">別部屋会計でも取れている</div>
+        <div class="sub">悩んだ人への対応</div>
+        <div class="pt ng">「日時変更も可能です」を2段階で伝える</div>
+        <div class="pt ng">全員に話しかける（選ばない）</div>
       </div>
     </div>
-
-    <!-- 立川 -->
     <div class="store-card">
-      <div class="store-card-head purple">S立川<span style="font-size:11px;font-weight:500;margin-left:4px">50.6%達成</span></div>
-      <div class="store-card-body">
-        <div class="tag-row">
-          <span class="tag hot">POP活用</span>
-          <span class="tag hot">料金表で説明</span>
-          <span class="tag">全員に言う</span>
-        </div>
-
-        <div class="subsec">特典設計・ツール</div>
-        <div class="point-item">POPを使って話すことで説明しやすくなった</div>
-        <div class="point-item">料金表を使って次回予約の必要性を説明</div>
-        <div class="point-item">料金がわかりやすくなって案内が上がった</div>
-
-        <div class="subsec">マインドセット</div>
-        <div class="point-item">全員に言う（選ばない）</div>
-        <div class="point-item ng">全員に言えていなければマインドセットが必要</div>
-        <div class="point-item">本人たちが仕組みを把握していることが前提</div>
-
-        <div class="subsec">2回目以降の対応</div>
-        <div class="point-item">2回目で継続コースを促す</div>
-        <div class="point-item ng">断られた場合でも再来として続けてもらう</div>
+      <div class="sc-head purple">S立川 <span style="font-size:10px;font-weight:500;margin-left:2px">50.6%</span></div>
+      <div class="sc-body">
+        <div class="tag-row"><span class="tag hot">POP活用</span><span class="tag hot">料金表で説明</span><span class="tag">全員に言う</span></div>
+        <div class="sub">特典設計・ツール</div>
+        <div class="pt">POPを使って話すことで説明しやすくなった</div>
+        <div class="pt">料金表を使って次回予約の必要性を説明</div>
+        <div class="pt">料金がわかりやすくなって案内が上がった</div>
+        <div class="sub">マインドセット</div>
+        <div class="pt">全員に言う（選ばない）</div>
+        <div class="pt ng">全員に言えていなければマインドセット必要</div>
+        <div class="pt">仕組みを本人たちが把握していることが前提</div>
+        <div class="sub">2回目以降</div>
+        <div class="pt">2回目で継続コースを促す</div>
+        <div class="pt ng">断られた場合でも再来として続けてもらう</div>
       </div>
     </div>
-
   </div>
 </div>
 
 <!-- ③サロンコネクト運用ルール -->
-<div class="section">
-  <div class="sec-header">
+<div id="sc" class="section">
+  <div class="sec-head">
     <div class="sec-num">③</div>
     <div class="sec-title">サロンコネクト 運用ルール確定</div>
     <span class="sec-time">20分</span>
     <span class="sec-goal">ゴール：翌日から全店で即運用。「知らなかった」をなくす</span>
   </div>
-
-  <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#94a3b8;text-transform:uppercase;margin-bottom:10px">📋 予約設定ルール</div>
-  <div class="rule-grid" style="margin-bottom:16px">
+  <div class="col2" style="margin-bottom:12px">
     <div class="rule-card">
       <div class="rule-title"><span class="rule-num" style="background:#3b82f6">SC</span>サロンコネクト</div>
       <div class="rule-desc">次回予約時に<strong>名前と枠を締める</strong>（メモ欄に「次回予約」を記入）</div>
@@ -455,200 +383,186 @@ footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;border-top:
       <div class="rule-desc"><strong>自動キャンセル処理</strong>を設定 / 顧客統合必須（画面録画共有対応）<br>予約経路を「新規次回」「再来次回」に変更</div>
     </div>
   </div>
-
-  <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#94a3b8;text-transform:uppercase;margin-bottom:10px">🛡️ キャンセル防止ルール（5ステップ）</div>
-  <div class="rule-grid">
+  <div style="font-size:10px;font-weight:800;letter-spacing:.06em;color:#94a3b8;text-transform:uppercase;margin-bottom:8px">🛡️ キャンセル防止 5ステップ</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
     <div class="rule-card">
-      <div class="rule-title"><span class="rule-num">①</span>予約確認LINE（即日）</div>
-      <div class="rule-desc">予約設定当日に「◯月◯日◯時のご予約を承りました」をLINEで送る</div>
-      <div class="rule-why">「予約した覚えがない」→キャンセルを防ぐ</div>
+      <div class="rule-num">①</div>
+      <div class="rule-title" style="font-size:12px">予約確認LINE（即日）</div>
+      <div class="rule-desc">予約設定当日に「◯月◯日◯時のご予約を承りました」を送る</div>
+      <div class="rule-why">「予約した覚えがない」→キャンセル防止</div>
     </div>
     <div class="rule-card">
-      <div class="rule-title"><span class="rule-num">②</span>口頭ポリシー周知</div>
+      <div class="rule-num">②</div>
+      <div class="rule-title" style="font-size:12px">口頭ポリシー周知</div>
       <div class="rule-desc">会計時に「前日までにご連絡いただければ幸いです」を一言添える</div>
       <div class="rule-why">無断キャンセルの心理的抑止</div>
     </div>
     <div class="rule-card">
-      <div class="rule-title"><span class="rule-num">③</span>前日リマインドLINE（18時）</div>
-      <div class="rule-desc">予約日前日18時にリマインドを送る</div>
-      <div class="rule-why">HPBリマインドが届かないサロンコネクト予約に特に必須</div>
+      <div class="rule-num">③</div>
+      <div class="rule-title" style="font-size:12px">前日リマインド（18時）</div>
+      <div class="rule-desc">予約日前日18時にリマインドLINEを送る</div>
+      <div class="rule-why">SC予約はHPBリマインドが届かないため必須</div>
     </div>
     <div class="rule-card">
-      <div class="rule-title"><span class="rule-num">④</span>予約間隔の上限（6週間）</div>
-      <div class="rule-desc">次回予約は最長6週間以内。それ以上先は「決まったらご連絡ください」に留める</div>
+      <div class="rule-num">④</div>
+      <div class="rule-title" style="font-size:12px">予約間隔の上限（6週間）</div>
+      <div class="rule-desc">次回予約は最長6週間以内。それ以上先は「決まったらご連絡ください」</div>
       <div class="rule-why">遠すぎる予約はキャンセル率が上がる</div>
     </div>
     <div class="rule-card">
-      <div class="rule-title"><span class="rule-num">⑤</span>無断キャンセル対応</div>
-      <div class="rule-desc">当日無断キャンセルは<strong>電話1回（優先）→ LINE再予約誘導</strong>。キャンセル翌日24時間以内に実施</div>
-      <div class="rule-why">放置すると離脱確定。当日アクションが再来率を守る</div>
+      <div class="rule-num">⑤</div>
+      <div class="rule-title" style="font-size:12px">無断キャンセル対応</div>
+      <div class="rule-desc">当日無断：<strong>電話1回→LINE</strong>。キャンセル翌日24時間以内に実施</div>
+      <div class="rule-why">当日アクションが再来率を守る</div>
     </div>
   </div>
 </div>
 
-<!-- ④口コミ獲得 -->
-<div class="section">
-  <div class="sec-header">
-    <div class="sec-num">④</div>
-    <div class="sec-title">口コミ獲得</div>
-    <span class="sec-time">10分</span>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:8px">
-    <div style="padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#334155">
-      店舗スタッフに口コミ投稿を依頼する（サクラ口コミ）
+<!-- ④口コミ + ⑤PL 横並び -->
+<div class="col2">
+
+  <div id="kuchikomi" class="section" style="margin-bottom:0">
+    <div class="sec-head">
+      <div class="sec-num">④</div>
+      <div class="sec-title">口コミ獲得</div>
+      <span class="sec-time">10分</span>
     </div>
-    <div style="padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;color:#334155">
-      眉毛の周期に合わせて月1回のペースで投稿する
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="padding:9px 12px;background:#fafafa;border:1px solid #e2e8f0;border-radius:7px;font-size:12.5px;color:#334155">スタッフに口コミ投稿を依頼（サクラ口コミ）</div>
+      <div style="padding:9px 12px;background:#fafafa;border:1px solid #e2e8f0;border-radius:7px;font-size:12.5px;color:#334155">眉毛の周期（約4〜6週）に合わせて月1回のペースで投稿</div>
     </div>
   </div>
+
+  <div id="pl" class="section" style="margin-bottom:0">
+    <div class="sec-head">
+      <div class="sec-num">⑤</div>
+      <div class="sec-title">PL管理</div>
+      <span class="sec-time">20分</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">新規数</span>
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">再来数</span>
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">客単価</span>
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">消耗品</span>
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">売上（税込）</span>
+      <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600">給料（20日）</span>
+    </div>
+    <div class="pl-row"><div class="pl-date">翌月3日まで</div><div class="pl-content">全数値の仮版を記入（人件費は仮）― 眉毛_事業計画10期SSに記入</div><div class="pl-who">エリマネ</div></div>
+    <div class="pl-row"><div class="pl-date">翌月10日まで</div><div class="pl-content">インセンティブ確定</div><div class="pl-who">労務担当</div></div>
+    <div class="pl-row"><div class="pl-date">翌月18日まで</div><div class="pl-content">人件費を確定</div><div class="pl-who">経理部</div></div>
+    <div class="pl-row"><div class="pl-date">翌月20日まで</div><div class="pl-content">確定数値を反映 → 当月利益・累計営業利益を算出</div><div class="pl-who">エリマネ</div></div>
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div style="padding:7px 10px;background:#fff8f8;border:1px solid #fecaca;border-radius:7px;font-size:12px"><strong style="color:#dc2626">内山</strong>　5/9までに入力</div>
+      <div style="padding:7px 10px;background:#fff8f8;border:1px solid #fecaca;border-radius:7px;font-size:12px"><strong style="color:#dc2626">梅田</strong>　5/9までに入力</div>
+      <div style="padding:7px 10px;background:#fafafa;border:1px solid #e2e8f0;border-radius:7px;font-size:12px"><strong>林</strong>　→ 子龍へ</div>
+      <div style="padding:7px 10px;background:#fafafa;border:1px solid #e2e8f0;border-radius:7px;font-size:12px"><strong>澤</strong>　→ 髙橋へ</div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#64748b;padding:6px 10px;background:#f8fafc;border-radius:6px">📅 6/2 より開始（初回は朝中さんと共同作成）</div>
+  </div>
+
 </div>
 
-<!-- ⑤PL -->
-<div class="section">
-  <div class="sec-header">
-    <div class="sec-num">⑤</div>
-    <div class="sec-title">PL（損益計算書）管理</div>
-    <span class="sec-time">20分</span>
-  </div>
-
-  <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#94a3b8;text-transform:uppercase;margin-bottom:10px">管理項目</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">新規数</span>
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">再来数</span>
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">客単価</span>
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">消耗品</span>
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">売上（税込）</span>
-    <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">給料（20日）</span>
-  </div>
-
-  <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#94a3b8;text-transform:uppercase;margin-bottom:10px">月次サイクル（6/2 開始）</div>
-  <div class="pl-cycle">
-    <div class="pl-row">
-      <div class="pl-date">翌月3日まで</div>
-      <div class="pl-content">全数値の仮版を記入（人件費は仮）― 眉毛_事業計画10期SSに記入</div>
-      <div class="pl-who">エリマネ</div>
-    </div>
-    <div class="pl-row">
-      <div class="pl-date">翌月10日まで</div>
-      <div class="pl-content">自社雇用スタッフのインセンティブ確定</div>
-      <div class="pl-who">労務担当</div>
-    </div>
-    <div class="pl-row">
-      <div class="pl-date">翌月18日まで</div>
-      <div class="pl-content">人件費を確定</div>
-      <div class="pl-who">経理部</div>
-    </div>
-    <div class="pl-row">
-      <div class="pl-date">翌月20日まで</div>
-      <div class="pl-content">確定数値を反映 → 当月利益・累計営業利益を算出</div>
-      <div class="pl-who">エリマネ</div>
-    </div>
-  </div>
-
-  <div style="margin-top:14px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#94a3b8;text-transform:uppercase;margin-bottom:10px">4月実績入力 期限</div>
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
-    <div style="padding:10px 14px;background:#fff8f8;border:1px solid #fecaca;border-radius:8px;font-size:12.5px"><strong style="color:#dc2626">内山</strong>　5/9までに入力</div>
-    <div style="padding:10px 14px;background:#fff8f8;border:1px solid #fecaca;border-radius:8px;font-size:12.5px"><strong style="color:#dc2626">梅田</strong>　5/9までに入力</div>
-    <div style="padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px"><strong>林</strong>　→ 子龍へ</div>
-    <div style="padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px"><strong>澤</strong>　→ 髙橋へ</div>
-  </div>
-</div>
-
-<!-- N/A -->
-<div class="section">
-  <div class="sec-header">
+<!-- N/A一覧 -->
+<div id="na" class="section" style="margin-top:14px">
+  <div class="sec-head">
     <div class="sec-num">N/A</div>
     <div class="sec-title">ネクストアクション</div>
-    <a href="/mtg_20260507_na" style="font-size:11px;color:#2563eb;text-decoration:none;margin-left:auto;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:4px 12px">全件表示 →</a>
+  </div>
+  <div class="na-summary">
+    <span class="na-count r">🔴 今週中 2件</span>
+    <span class="na-count a">🟡 今月中 5件</span>
+    <span class="na-count b">🔵 継続対応 2件</span>
   </div>
 
-  <div class="sub-label">🔴 今週中</div>
+  <div class="na-label">🔴 今週中</div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum r">1</div>
     <div class="abody">
-      <div class="t">4月PL 数値入力（内山・梅田）</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">インセンティブ確定（10日）に間に合わせるため翌月3日締めルールに従い即入力</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who other">内山 / 梅田</span><span class="due dr">5/9まで</span></div>
+      <div class="at">4月PL 数値入力（内山・梅田）</div>
+      <div class="aw">インセンティブ確定（10日）に間に合わせるため即入力。翌月3日締めのルール上すでに遅延</div>
+      <div class="ameta"><span class="who other">内山 / 梅田</span><span class="due dr">5/9まで</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum r">2</div>
     <div class="abody">
-      <div class="t">サロンコネクト関連データ タカショーへ共有</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">キャンセル管理・運用ルール設計に必要。土曜日までに提出</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who team">チーム</span><span class="due dr">土曜日まで</span></div>
+      <div class="at">サロンコネクト関連データ タカショーへ共有</div>
+      <div class="aw">キャンセル管理・運用ルール設計に必要なデータを提出。来週の設計に入れる状態にする</div>
+      <div class="ameta"><span class="who team">チーム</span><span class="due dr">土曜日まで</span></div>
     </div>
   </div>
 
-  <div class="sub-label">🟡 今月中</div>
+  <div class="na-label">🟡 今月中</div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum a">3</div>
     <div class="abody">
-      <div class="t">中野・立川の成功要因を全店に横展開（トーク骨格をSlack共有）</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">今日言語化した内容を文書化してSV全員に配布。来週から全店で使える状態にする</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who me">タカショー</span><span class="due da">今月中</span></div>
+      <div class="at">中野・立川の成功要因を全店に横展開（トーク骨格をSlack共有）</div>
+      <div class="aw">今日言語化した内容を文書化してSV全員に配布。来週から全店で使える状態にする</div>
+      <div class="ameta"><span class="who me">タカショー</span><span class="due da">今月中</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum a">4</div>
     <div class="abody">
-      <div class="t">次回予約率45%達成に向けた各店施策の実行</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">今日の成功事例を参考に、特典設計・POP設置・トーク統一を各店で即実施</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who team">エリマネ全員</span><span class="due da">今月中</span></div>
+      <div class="at">次回予約率45%達成に向けた各店施策の実行</div>
+      <div class="aw">今日の成功事例を参考に、特典設計・POP設置・トーク統一を各店で即実施</div>
+      <div class="ameta"><span class="who team">エリマネ全員</span><span class="due da">今月中</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum a">5</div>
     <div class="abody">
-      <div class="t">LINEリマインド設定（予約当日 + 前日18時）</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">サロンコネクト予約はHPBリマインドが届かない。ダッシュボードのリマインド機能と連携</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who me">タカショー</span><span class="due da">今月中</span></div>
+      <div class="at">LINEリマインド設定（予約当日 + 前日18時）</div>
+      <div class="aw">サロンコネクト予約はHPBリマインドが届かない。ダッシュボードのリマインド機能と連携予定</div>
+      <div class="ameta"><span class="who me">タカショー</span><span class="due da">今月中</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum a">6</div>
     <div class="abody">
-      <div class="t">サロンコネクト運用ルール全店への周知・即運用開始</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">今日決定した5ステップのキャンセル防止ルールを各店スタッフに落とし込む</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who team">エリマネ全員</span><span class="due da">明日から</span></div>
+      <div class="at">サロンコネクト運用ルール（5ステップ）全店への周知・即運用開始</div>
+      <div class="aw">今日決定した内容を各店スタッフに落とし込む。「知らなかった」をなくす</div>
+      <div class="ameta"><span class="who team">エリマネ全員</span><span class="due da">明日から</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum a">7</div>
     <div class="abody">
-      <div class="t">口コミ投稿 月1依頼ルール化（眉毛周期）</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">スタッフに月1回の口コミ投稿を依頼。眉毛周期（約4〜6週）に合わせてタイミングを設計</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who team">エリマネ</span><span class="due da">今月中</span></div>
+      <div class="at">口コミ投稿 月1依頼ルール化（眉毛周期）</div>
+      <div class="aw">スタッフに月1回の口コミ投稿を依頼。眉毛周期（約4〜6週）に合わせてタイミングを設計</div>
+      <div class="ameta"><span class="who team">エリマネ</span><span class="due da">今月中</span></div>
     </div>
   </div>
 
-  <div class="sub-label">🔵 継続・来月以降</div>
+  <div class="na-label">🔵 継続対応</div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum b">8</div>
     <div class="abody">
-      <div class="t">月次PL管理 6/2 開始（朝中さんと初回共同作成）</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">マニュアルv1.0に沿って初回は一緒に入力。翌月から自走できる状態にする</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who team">エリマネ + 朝中さん</span><span class="due db">6/2〜</span></div>
+      <div class="at">月次PL管理 6/2 開始（朝中さんと初回共同作成）</div>
+      <div class="aw">マニュアルv1.0に沿って初回は一緒に入力。翌月から自走できる状態にする</div>
+      <div class="ameta"><span class="who team">エリマネ + 朝中さん</span><span class="due db">6/2〜</span></div>
     </div>
   </div>
 
-  <div class="action-item">
+  <div class="na-item">
     <div class="anum b">9</div>
     <div class="abody">
-      <div class="t">次回予約率 60%（最終目標）に向けた継続施策</div>
-      <div style="font-size:12px;color:#64748b;margin-top:3px">5月45%達成後、成功パターンを毎月のMTGで言語化・横展開するサイクルをつくる</div>
-      <div style="display:flex;gap:6px;margin-top:7px"><span class="who me">タカショー</span><span class="due db">毎月更新</span></div>
+      <div class="at">次回予約率 60%（最終目標）に向けた継続施策</div>
+      <div class="aw">5月45%達成後、成功パターンを毎月のMTGで言語化・横展開するサイクルをつくる</div>
+      <div class="ameta"><span class="who me">タカショー</span><span class="due db">毎月更新</span></div>
     </div>
   </div>
 </div>
+
+</div><!-- /body-wrap -->
 
 <footer>眉毛直営店MTG ｜ 2026-05-07 ｜ SSIN STUDIO 直営</footer>
 
