@@ -381,11 +381,11 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
     <div class="card" style="margin-top:16px;border:2px solid #f59e0b;background:linear-gradient(135deg,#fff7ed,#fef3c7);">
       <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-size:13px;color:#92400e;font-weight:600;margin-bottom:4px">🔥 要連絡: 40日離脱ゾーン</div>
+          <div style="font-size:13px;color:#92400e;font-weight:600;margin-bottom:4px">🔥 要アプローチ: 30日以上未来店・予約なし</div>
           <div style="font-size:24px;font-weight:700;color:#0f172a"><span id="kpi-churn-40">-</span> 名</div>
-          <div style="font-size:11px;color:#64748b;margin-top:4px">前回来店から40〜60日経過 ・離脱手前のお客様</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px">前回来店から30日以上経過 ・今後の予約なし（クーポン対象）</div>
         </div>
-        <button class="btn btn-green" onclick="showTab('line-friends-mgmt',document.querySelectorAll('.nav-item')[1]);if(!isLoaded('friends'))loadLineFriendsMgmt();setTimeout(()=>{const t=document.getElementById('friendsTagFilter');if(t){t.value='離脱予兆_40-60日';filterFriendsMgmt();}},800)">対象を一覧で見る →</button>
+        <button class="btn btn-green" onclick="showTab('line-friends-mgmt',document.querySelectorAll('.nav-item')[1]);if(!isLoaded('friends'))loadLineFriendsMgmt();setTimeout(()=>{const t=document.getElementById('friendsTagFilter');if(t){t.value='次回予約なし';filterFriendsMgmt();}},800)">対象を一覧で見る →</button>
       </div>
     </div>
 
@@ -1357,7 +1357,7 @@ async function loadDashboard() {
 
 function refreshAll() { loadDashboard(); }
 
-// ── ホーム: 40日離脱ゾーン カウント ───────────
+// ── ホーム: 30日以上未来店・予約なし カウント ───────────
 function updateChurnKpi() {
   const today = new Date(); today.setHours(0,0,0,0);
   const list = (allFriends || []).filter(f => {
@@ -1366,7 +1366,9 @@ function updateChurnKpi() {
     const d = new Date(raw);
     if (isNaN(d)) return false;
     const days = Math.floor((today - d) / 86400000);
-    return days >= 40 && days <= 60;
+    if (days < 30) return false;
+    const tags = (f['タグ'] || '').split(',').map(t => t.trim());
+    return tags.includes('次回予約なし');
   });
   const el = document.getElementById('kpi-churn-40');
   if (el) el.textContent = list.length;
