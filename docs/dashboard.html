@@ -3945,9 +3945,44 @@ async function openCustomerProfile(lineUid) {
   modal.style.display = 'flex';
   body.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
-    const data = await gasGet('get_customer_profile', {line_uid: lineUid});
+    // Phase 1: 売上CSVスキップで高速ロード（予約・カウンセリング・友だち情報）
+    const data = await gasGet('get_customer_profile', {line_uid: lineUid, skip_billing: '1'});
     if (data.error) throw new Error(data.error);
+
+    // フロントキャッシュから visit_count / last_visit / total_amount を補完
+    const f = (allFriends || []).find(x => (x['LINE_UID']||'').replace(/'/g,'') === lineUid);
+    if (f) {
+      const cached = getSalesMatch(f);
+      if (cached) {
+        if (!data.visit_count) data.visit_count = cached.visit_count;
+        if (!data.last_visit)  data.last_visit  = (cached.last_visit||'').substring(0,10);
+        if (!data.avg_amount)  data.avg_amount  = cached.total_amount && cached.visit_count
+          ? Math.round(cached.total_amount / cached.visit_count) : 0;
+      }
+    }
+
     renderCustomerProfile(data);
+
+    // Phase 2: 来店履歴（売上CSV）をバックグラウンドで取得して補完
+    const name = (data.friend||{}).name || (data.friend||{}).display_name || '';
+    const store = (data.friend||{}).store || '';
+    if (name && !data.billing_visits?.length) {
+      gasGet('get_sales_by_customer', {name, store}).then(sd => {
+        if (sd.error || !sd.records?.length) return;
+        const bv = sd.records.map(rec => {
+          const menus = rec.menu ? rec.menu.split(' / ') : [''];
+          const items = menus.map((m, i) => ({menu: m, amount: i === 0 ? rec.amount : 0}));
+          return {visit_date: rec.date, store: rec.store, items, total_amount: rec.amount, menus};
+        });
+        data.billing_visits = bv;
+        if (!data.visit_count) data.visit_count = sd.visit_count || 0;
+        if (!data.last_visit)  data.last_visit  = (sd.last_visit||'').substring(0,10);
+        if (!data.avg_amount && sd.total_amount && sd.visit_count)
+          data.avg_amount = Math.round(sd.total_amount / sd.visit_count);
+        if (document.getElementById('customerProfileModal').style.display !== 'none')
+          renderCustomerProfile(data);
+      }).catch(() => {});
+    }
   } catch(e) {
     body.innerHTML = `<div class="notice-red">❌ ${e.message}</div>`;
   }

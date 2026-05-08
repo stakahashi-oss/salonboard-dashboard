@@ -108,7 +108,7 @@ function doGet(e) {
   if (act === "get_scheduled")        return resp(getScheduledBroadcasts());
   if (act === "get_talks_list")       return resp(getTalksList());
   if (act === "get_talks")            return resp(getTalks(e.parameter.line_uid));
-  if (act === "get_customer_profile") return resp(getCustomerProfile(e.parameter.line_uid));
+  if (act === "get_customer_profile") return resp(getCustomerProfile(e.parameter.line_uid, e.parameter.skip_billing === "1"));
   if (act === "get_customer_profile_ext") return resp(getCustomerProfileExt(e.parameter.line_uid));
   if (act === "get_visits_by_phone")  return resp(getVisitsByPhone(e.parameter.phone));
   if (act === "get_sales_by_customer") return resp(getSalesByCustomer(e.parameter.name, e.parameter.store));
@@ -1581,7 +1581,7 @@ function getVisitsByPhone(phone) {
   };
 }
 
-function getCustomerProfile(lineUid) {
+function getCustomerProfile(lineUid, skipBilling) {
   if (!lineUid) return {error: "line_uid required"};
   lineUid = String(lineUid).trim().replace(/^'+|'+$/g, "");
 
@@ -1732,12 +1732,13 @@ function getCustomerProfile(lineUid) {
   }
   var avgAmount = amountCount > 0 ? Math.round(totalAmount / amountCount) : 0;
 
-  // 売上CSV照合（名前マッチング）
+  // 売上CSV照合（名前マッチング）skip_billing=1 の場合はスキップして高速化
   var salesRecords = [];
   var salesVisitCount = 0;
   var salesLastVisit = "";
   var salesTotalAmount = 0;
-  if (name) {
+  var billingVisits = [];
+  if (!skipBilling && name) {
     var sd = getSalesByCustomer(name, friend.store || "");
     if (!sd.error && sd.records) {
       salesRecords = sd.records;
@@ -1745,6 +1746,15 @@ function getCustomerProfile(lineUid) {
       salesLastVisit = sd.last_visit || "";
       salesTotalAmount = sd.total_amount || 0;
       if (!favoriteMenu && sd.favorite_menu) favoriteMenu = sd.favorite_menu;
+      // billing_visits に変換（来店履歴テーブル用）
+      billingVisits = sd.records.map(function(rec) {
+        var menus = rec.menu ? rec.menu.split(" / ") : [""];
+        var items = menus.map(function(m, idx) {
+          return {menu: m, amount: idx === 0 ? rec.amount : 0};
+        });
+        return {visit_date: rec.date, store: rec.store, items: items,
+                total_amount: rec.amount, menus: menus};
+      });
     }
   }
 
@@ -1766,6 +1776,7 @@ function getCustomerProfile(lineUid) {
     friend:         friend,
     reservations:   reservations.length ? reservations : salesRecords,
     counseling:     counseling,
+    billing_visits: billingVisits,
     visit_count:    visitCount,
     last_visit:     lastVisit,
     avg_cycle:      avgCycle,
