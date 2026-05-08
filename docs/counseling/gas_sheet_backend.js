@@ -2532,15 +2532,17 @@ function runDailyAutoTag() {
   var cColPhone    = cHeaders.indexOf("電話番号");
   var cColHomecare = cHeaders.indexOf("初回物販商品");
   var cColInterest = cHeaders.indexOf("興味メニュー");
+  var cColMenu     = cHeaders.indexOf("メニュー");
 
-  // 電話番号→カウンセリングデータのマップ
+  // 電話番号→カウンセリングデータのマップ（menuは常に上書きして最新を保持）
   var counselMap = {};
   for (var ci = 1; ci < counselData.length; ci++) {
     var cp = normalizePhone(String(counselData[ci][cColPhone] || ""));
     if (!cp) continue;
-    if (!counselMap[cp]) counselMap[cp] = {homecare: "", interest: ""};
+    if (!counselMap[cp]) counselMap[cp] = {homecare: "", interest: "", menu: ""};
     if (!counselMap[cp].homecare && cColHomecare >= 0) counselMap[cp].homecare = String(counselData[ci][cColHomecare] || "");
     if (!counselMap[cp].interest && cColInterest >= 0) counselMap[cp].interest = String(counselData[ci][cColInterest] || "");
+    if (cColMenu >= 0) counselMap[cp].menu = String(counselData[ci][cColMenu] || ""); // 最新上書き
   }
 
   var rdata = getReservationData();
@@ -2609,6 +2611,19 @@ function runDailyAutoTag() {
     if (counsel.homecare && counsel.homecare !== "今回は購入しない" && counsel.homecare !== "") tags.push("物販購入済み");
     else if (visitCount >= 1 && (!counsel.homecare || counsel.homecare === "今回は購入しない")) tags.push("未物販");
 
+    // カウンセリング記録の最新メニューからタグ付け（配信絞り込み用）
+    if (counsel.menu) {
+      var cm = counsel.menu;
+      var hasEyebrow = cm.indexOf("眉") !== -1;
+      var hasLash    = cm.indexOf("まつ") !== -1 || cm.indexOf("エクステ") !== -1 ||
+                       cm.indexOf("ラッシュ") !== -1 || cm.indexOf("パリジェンヌ") !== -1;
+      var hasLed     = cm.indexOf("LED") !== -1 || cm.indexOf("led") !== -1;
+      if (hasEyebrow && hasLash) { tags.push("セット"); }
+      else if (hasEyebrow)       { tags.push("眉毛メイン"); }
+      else if (hasLash)          { tags.push("まつ毛メイン"); }
+      if (hasLed) tags.push("LEDエクステ");
+    }
+
     // 最終来店日をシートに書き戻し
     if (colLastVis >= 0 && lastVisitDate) {
       var formattedLast = lastVisitDate.length === 8
@@ -2622,8 +2637,8 @@ function runDailyAutoTag() {
     // 既存タグに追記（重複除去）
     var existing = String(friends[fi][colTag] || "");
     var existingArr = existing ? existing.split(",").map(function(t){ return t.trim(); }).filter(function(t){ return t; }) : [];
-    // 来店ステータス系タグは上書き
-    var statusTags = ["新規","リピーター","VIP"];
+    // 来店ステータス系・メニュー系タグは毎回上書き
+    var statusTags = ["新規","リピーター","VIP","眉毛メイン","まつ毛メイン","セット","LEDエクステ"];
     existingArr = existingArr.filter(function(t){ return statusTags.indexOf(t) === -1; });
     tags.forEach(function(t) {
       if (existingArr.indexOf(t) === -1) existingArr.push(t);
