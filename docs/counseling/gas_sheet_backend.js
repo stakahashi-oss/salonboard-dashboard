@@ -104,6 +104,7 @@ function doGet(e) {
   if (act === "get_stats")            return resp(getStats());
   if (act === "search_phone")         return resp(searchByPhone(e.parameter.phone));
   if (act === "get_line_friends")     return resp(getLineFriends());
+  if (act === "get_friends_filtered") return resp(getFriendsFiltered(e.parameter.tag_filter, e.parameter.min_visits, e.parameter.max_visits, e.parameter.min_last_days, e.parameter.max_last_days));
   if (act === "get_settings")         return resp(getSettings());
   if (act === "get_scheduled")        return resp(getScheduledBroadcasts());
   if (act === "get_talks_list")       return resp(getTalksList());
@@ -1021,6 +1022,39 @@ function getLineFriends() {
     friends.push(obj);
   }
   return {friends: friends};
+}
+
+function getFriendsFiltered(tagFilter, minVisits, maxVisits, minLastDays, maxLastDays) {
+  var sheet = getSheet("LINE友だち");
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return {count: 0, uids: []};
+  var headers = data[0];
+  var colTag     = headers.indexOf("タグ");       if (colTag     < 0) colTag     = 4;
+  var colVisits  = headers.indexOf("来店回数");
+  var colLastVis = headers.indexOf("最終来店日");
+  var colUid     = headers.indexOf("LINE_UID");   if (colUid     < 0) colUid     = 0;
+  var now = new Date();
+  var uids = [];
+  for (var i = 1; i < data.length; i++) {
+    var tags = String(data[i][colTag] || "").split(",").map(function(t){ return t.trim(); });
+    if (tagFilter && tags.indexOf(tagFilter) === -1) continue;
+    if (colVisits >= 0 && (minVisits || maxVisits)) {
+      var visits = parseInt(data[i][colVisits] || 0);
+      if (minVisits && visits < parseInt(minVisits)) continue;
+      if (maxVisits && visits > parseInt(maxVisits)) continue;
+    }
+    if (colLastVis >= 0 && (minLastDays || maxLastDays)) {
+      var lvStr = String(data[i][colLastVis] || "");
+      if (lvStr) {
+        var days = Math.floor((now - new Date(lvStr)) / 86400000);
+        if (minLastDays && days < parseInt(minLastDays)) continue;
+        if (maxLastDays && days > parseInt(maxLastDays)) continue;
+      }
+    }
+    var uid = String(data[i][colUid] || "");
+    if (uid) uids.push(uid);
+  }
+  return {count: uids.length, uids: uids};
 }
 
 function registerFriend(data) {
@@ -2535,16 +2569,26 @@ function runDailyAutoTag() {
   var cColHomecare = cHeaders.indexOf("初回物販商品");
   var cColInterest = cHeaders.indexOf("興味メニュー");
   var cColMenu     = cHeaders.indexOf("メニュー");
+  var cColCounselName = cHeaders.indexOf("お名前");
 
   // 電話番号→カウンセリングデータのマップ（menuは常に上書きして最新を保持）
   var counselMap = {};
+  var counselMapByName = {};
   for (var ci = 1; ci < counselData.length; ci++) {
     var cp = normalizePhone(String(counselData[ci][cColPhone] || ""));
-    if (!cp) continue;
-    if (!counselMap[cp]) counselMap[cp] = {homecare: "", interest: "", menu: ""};
-    if (!counselMap[cp].homecare && cColHomecare >= 0) counselMap[cp].homecare = String(counselData[ci][cColHomecare] || "");
-    if (!counselMap[cp].interest && cColInterest >= 0) counselMap[cp].interest = String(counselData[ci][cColInterest] || "");
-    if (cColMenu >= 0) counselMap[cp].menu = String(counselData[ci][cColMenu] || ""); // 最新上書き
+    var cn = cColCounselName >= 0 ? String(counselData[ci][cColCounselName] || "").trim() : "";
+    if (cp) {
+      if (!counselMap[cp]) counselMap[cp] = {homecare: "", interest: "", menu: ""};
+      if (!counselMap[cp].homecare && cColHomecare >= 0) counselMap[cp].homecare = String(counselData[ci][cColHomecare] || "");
+      if (!counselMap[cp].interest && cColInterest >= 0) counselMap[cp].interest = String(counselData[ci][cColInterest] || "");
+      if (cColMenu >= 0) counselMap[cp].menu = String(counselData[ci][cColMenu] || "");
+    }
+    if (cn) {
+      if (!counselMapByName[cn]) counselMapByName[cn] = {homecare: "", interest: "", menu: ""};
+      if (!counselMapByName[cn].homecare && cColHomecare >= 0) counselMapByName[cn].homecare = String(counselData[ci][cColHomecare] || "");
+      if (!counselMapByName[cn].interest && cColInterest >= 0) counselMapByName[cn].interest = String(counselData[ci][cColInterest] || "");
+      if (cColMenu >= 0) counselMapByName[cn].menu = String(counselData[ci][cColMenu] || ""); // 最新上書き
+    }
   }
 
   var rdata = getReservationData();
@@ -2552,13 +2596,16 @@ function runDailyAutoTag() {
 
   for (var fi = 1; fi < friends.length; fi++) {
     var phone = normalizePhone(String(friends[fi][colPhone] || ""));
-    if (!phone) continue;
+    var fname = String(friends[fi][colName] || "").trim();
+    if (!phone && !fname) continue;
 
-    // 予約データから来店履歴を集計
+    // 予約データから来店履歴を集計（電話番号→名前の順でフォールバック）
     var visits = [];
     for (var ri = 1; ri < rdata.length; ri++) {
       var rPhone = normalizePhone(String(rdata[ri][14] || ""));
-      if (rPhone !== phone) continue;
+      var rName  = String(rdata[ri][13] || "").trim();
+      var matched = (phone && rPhone && rPhone === phone) || (!phone && fname && rName === fname);
+      if (!matched) continue;
       var status = String(rdata[ri][1] || "");
       if (status === "キャンセル（顧客）" || status === "キャンセル（サロン）" || status === "無断キャンセル") continue;
       visits.push({date: String(rdata[ri][6] || ""), menu: String(rdata[ri][11] || ""), amount: Number(rdata[ri][19] || 0)});
@@ -2585,8 +2632,8 @@ function runDailyAutoTag() {
       if (m.indexOf("まつ") !== -1 || m.indexOf("パリジェンヌ") !== -1 || m.indexOf("エクステ") !== -1 || m.indexOf("ラッシュ") !== -1) lashCount++;
     });
 
-    // カウンセリングデータ
-    var counsel = counselMap[phone] || {};
+    // カウンセリングデータ（電話番号→名前の順でフォールバック）
+    var counsel = (phone && counselMap[phone]) || (fname && counselMapByName[fname]) || {};
 
     // タグ判定
     var tags = [];
@@ -2605,8 +2652,8 @@ function runDailyAutoTag() {
     if (visitCount > 0) {
       var eyebrowRatio = eyebrowCount / visitCount;
       var lashRatio    = lashCount    / visitCount;
-      if (eyebrowRatio >= 0.7) tags.push("眉毛メイン");
-      if (lashRatio    >= 0.7) tags.push("まつ毛メイン");
+      if (eyebrowRatio >= 0.7) tags.push("眉毛ワックス");
+      if (lashRatio    >= 0.7) tags.push("まつ毛パーマ");
     }
 
     if (counsel.interest && counsel.interest.indexOf("、") !== -1) tags.push("セット狙い");
@@ -2621,8 +2668,8 @@ function runDailyAutoTag() {
                        cm.indexOf("ラッシュ") !== -1 || cm.indexOf("パリジェンヌ") !== -1;
       var hasLed     = cm.indexOf("LED") !== -1 || cm.indexOf("led") !== -1;
       if (hasEyebrow && hasLash) { tags.push("セット"); }
-      else if (hasEyebrow)       { tags.push("眉毛メイン"); }
-      else if (hasLash)          { tags.push("まつ毛メイン"); }
+      else if (hasEyebrow)       { tags.push("眉毛ワックス"); }
+      else if (hasLash)          { tags.push("まつ毛パーマ"); }
       if (hasLed) tags.push("LEDエクステ");
     }
 
@@ -2645,7 +2692,7 @@ function runDailyAutoTag() {
     var existing = String(friends[fi][colTag] || "");
     var existingArr = existing ? existing.split(",").map(function(t){ return t.trim(); }).filter(function(t){ return t; }) : [];
     // 来店ステータス系・メニュー系タグは毎回上書き
-    var statusTags = ["新規","リピーター","VIP","眉毛メイン","まつ毛メイン","セット","LEDエクステ"];
+    var statusTags = ["新規","リピーター","VIP","眉毛ワックス","まつ毛パーマ","セット","LEDエクステ","眉毛メイン","まつ毛メイン"];
     existingArr = existingArr.filter(function(t){ return statusTags.indexOf(t) === -1; });
     tags.forEach(function(t) {
       if (existingArr.indexOf(t) === -1) existingArr.push(t);
