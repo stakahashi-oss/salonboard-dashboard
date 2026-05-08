@@ -706,17 +706,17 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
     </div>
     <div class="kpi-grid">
       <div class="kpi-card orange" style="cursor:pointer" onclick="showRepeatersModal()" title="クリックでリピーター一覧を表示"><div class="kpi-label">🔁 リピーター率</div><div class="kpi-value" id="kpi-repeat-rate">-</div><div class="kpi-sub">2回以上来店 ▶ 一覧を見る</div></div>
-      <div class="kpi-card red"><div class="kpi-label">⚠️ 失客リスク</div><div class="kpi-value" id="kpi-churn-risk">-</div><div class="kpi-sub">60日以上来店なし</div></div>
+      <div class="kpi-card red"><div class="kpi-label">⚠️ 失客リスク</div><div class="kpi-value" id="kpi-churn-risk">-</div><div class="kpi-sub">45日以上来店なし</div></div>
       <div class="kpi-card blue"><div class="kpi-label">📅 平均来店サイクル</div><div class="kpi-value" id="kpi-avg-cycle">-</div></div>
       <div class="kpi-card purple"><div class="kpi-label">👥 ユニーク顧客数</div><div class="kpi-value" id="kpi-unique-customers">-</div></div>
     </div>
     <!-- 失客リスク一覧 -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">⚠️ 失客リスク顧客（60日以上来店なし）</div>
+        <div class="card-title">⚠️ 失客リスク顧客（45日以上来店なし）</div>
         <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
       </div>
-      <div style="font-size:12px;color:#e67e22;margin-bottom:12px">🚨 高リスク＝120日以上　⚠️ 中リスク＝90日以上　要注意＝60日以上</div>
+      <div style="font-size:12px;color:#e67e22;margin-bottom:12px">🚨 高リスク＝120日以上　⚠️ 中リスク＝90日以上　要注意＝45日以上</div>
       <div id="churnRiskTable"><div style="text-align:center;padding:20px;color:#999">読込中...</div></div>
     </div>
     <!-- チャート2列 -->
@@ -1737,13 +1737,21 @@ function renderAnalysis() {
   });
   const avgCycle = cycleCount > 0 ? Math.round(totalDays / cycleCount) : null;
 
-  // 失客リスク（60日以上）
-  const withRisk = customers.map(c => {
-    const lastVisit = c.visits.length ? c.visits.reduce((a, b) => a > b ? a : b) : null;
-    const daysSince = lastVisit ? Math.floor((today - lastVisit) / 86400000) : null;
-    return { ...c, lastVisit, daysSince };
-  }).filter(c => c.daysSince !== null && c.daysSince >= 60)
-    .sort((a, b) => b.daysSince - a.daysSince);
+  // 失客リスク（45日以上・LINE友だちタグベース・先予約ありは除外）
+  const _today45 = new Date(); _today45.setHours(0,0,0,0);
+  const _reservedRisk = (allFriends||[]).filter(f => {
+    const t = (f['タグ']||'').split(',').map(x=>x.trim());
+    return t.includes('失客リスク') && t.includes('先予約あり');
+  });
+  const withRisk = (allFriends||[]).filter(f => {
+    const t = (f['タグ']||'').split(',').map(x=>x.trim());
+    return t.includes('失客リスク') && !t.includes('先予約あり');
+  }).map(f => {
+    const raw = (f['最終来店日']||'').slice(0,10);
+    const d = raw ? new Date(raw) : null;
+    const daysSince = d && !isNaN(d) ? Math.floor((_today45 - d) / 86400000) : null;
+    return { name: f['お名前']||f['LINE表示名']||'未設定', phone: f['電話番号']||'', lastVisit: d, daysSince, tags: f['タグ']||'' };
+  }).sort((a, b) => (b.daysSince||0) - (a.daysSince||0));
 
   // リピーター一覧をグローバル保存（モーダル用）
   _repeaters = repeaters.map(c => {
@@ -1765,25 +1773,30 @@ function renderAnalysis() {
   document.getElementById('kpi-churn-risk').textContent = withRisk.length;
   document.getElementById('kpi-avg-cycle').textContent = avgCycle ? avgCycle + '日' : '-';
 
-  // 失客リスクテーブル
+  // 失客リスクテーブル（45日以上・先予約なし）
   if (!withRisk.length) {
-    document.getElementById('churnRiskTable').innerHTML = '<div style="text-align:center;padding:20px;color:#999">失客リスクのお客様はいません</div>';
+    document.getElementById('churnRiskTable').innerHTML =
+      '<div style="text-align:center;padding:20px;color:#999">失客リスクのお客様はいません</div>'
+      + (_reservedRisk.length ? `<div style="text-align:center;font-size:12px;color:#64748b;padding-bottom:12px">※先予約ありで除外: ${_reservedRisk.length}名</div>` : '');
   } else {
     document.getElementById('churnRiskTable').innerHTML =
       '<div class="tbl-scroll"><table class="tbl"><thead><tr>'
-      + '<th>お名前</th><th>電話番号</th><th>最終来店</th><th>経過日数</th><th>来店回数</th><th>リスク</th>'
+      + '<th>お名前</th><th>電話番号</th><th>最終来店</th><th>経過日数</th><th>タグ</th><th>リスク</th>'
       + '</tr></thead><tbody>'
       + withRisk.slice(0, 50).map(c => {
-          const lastStr = c.lastVisit ? c.lastVisit.toISOString().split('T')[0] : '-';
-          const cnt = c.visits.length;
+          const lastStr = c.lastVisit ? c.lastVisit.toISOString().split('T')[0] : '―';
+          const days = c.daysSince != null ? c.daysSince + '日' : '―';
           const risk = c.daysSince >= 120
             ? '<span class="badge-red">🚨 高リスク</span>'
             : c.daysSince >= 90
             ? '<span class="badge-orange">⚠️ 中リスク</span>'
             : '<span class="badge-gray">要注意</span>';
-          return `<tr><td><strong>${safeEsc(c.name||'-')}</strong></td><td>${safeEsc(c.phone||'-')}</td><td>${lastStr}</td><td>${c.daysSince}日</td><td>${cnt}回</td><td>${risk}</td></tr>`;
+          const tagBadges = c.tags.split(',').map(t=>t.trim()).filter(t=>t&&t!=='失客リスク')
+            .map(t=>`<span style="background:#f1f5f9;color:#475569;border-radius:8px;padding:1px 6px;font-size:10px;margin:1px">${t}</span>`).join('');
+          return `<tr><td><strong>${safeEsc(c.name)}</strong></td><td style="font-size:12px">${safeEsc(c.phone)||'―'}</td><td style="font-size:12px">${lastStr}</td><td>${days}</td><td>${tagBadges||'―'}</td><td>${risk}</td></tr>`;
         }).join('')
-      + '</tbody></table></div>';
+      + '</tbody></table></div>'
+      + (_reservedRisk.length ? `<div style="padding:8px 12px;font-size:12px;color:#64748b">💡 先予約ありで除外: ${_reservedRisk.length}名（予約確認済み）</div>` : '');
   }
 
   // 来店サイクル別一覧
