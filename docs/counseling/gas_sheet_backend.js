@@ -206,7 +206,7 @@ function fixAllHeaders() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","初回物販商品","眉_施術歴","眉_セルフケア","眉_手術歴","眉_アレルギー","眉_肌状態","眉_カラー","眉_デザイン","眉_印象","眉_メイク","眉_SNS同意","まつ_施術歴","まつ_グルーアレルギー","まつ_手術歴","まつ_アレルギー","まつ_肌状態","まつ_目の見え方","まつ_デザイン","まつ_ホームケア","まつ_SNS同意","エクステ_グルーアレルギー","エクステ_目元トラブル","エクステ_体調","エクステ_手術歴","エクステ_アレルギー","エクステ_目の見え方","エクステ_デザイン","エクステ_カール","エクステ_SNS同意"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗","来店回数","累計金額"],
     "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"]
   };
   var results = [];
@@ -238,7 +238,7 @@ function setupSheet(sheet, name) {
   var headerMap = {
     "カウンセリング記録": ["記録ID","記録日時","店舗名","来店日","予約番号","電話番号","お名前","メニュー","担当スタッフ","施術メモ","次回提案","次回提案時期","LINE_UID","LINE送信フラグ","最終更新","住所","生年月日","職業","知ったきっかけ","選んだ理由","転店理由","転店不満内容","施術頻度","興味メニュー","初回物販商品","眉_施術歴","眉_セルフケア","眉_手術歴","眉_アレルギー","眉_肌状態","眉_カラー","眉_デザイン","眉_印象","眉_メイク","眉_SNS同意","まつ_施術歴","まつ_グルーアレルギー","まつ_手術歴","まつ_アレルギー","まつ_肌状態","まつ_目の見え方","まつ_デザイン","まつ_ホームケア","まつ_SNS同意","エクステ_グルーアレルギー","エクステ_目元トラブル","エクステ_体調","エクステ_手術歴","エクステ_アレルギー","エクステ_目の見え方","エクステ_デザイン","エクステ_カール","エクステ_SNS同意"],
     "LINE配信ログ": ["ログID","送信日時","電話番号","お名前","LINE_UID","種別","内容","ステータス","エラー"],
-    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗"],
+    "LINE友だち": ["LINE_UID","電話番号","お名前","LINE表示名","タグ","メモ","登録日時","最終来店日","登録店舗","来店回数","累計金額"],
     "トーク履歴": ["ログID","日時","LINE_UID","お名前","方向","内容"],
     "設定": ["キー","値"],
     "配信スケジュール": ["配信ID","作成日時","配信予定日時","種別","タグ","メッセージ","FlexJSON","ステータス","配信数","クリック数","画像URL"],
@@ -2520,11 +2520,13 @@ function runDailyAutoTag() {
   var friendSheet = getSheet("LINE友だち");
   var friends = friendSheet.getDataRange().getValues();
   var fHeaders = friends[0];
-  var colPhone   = fHeaders.indexOf("電話番号");   if (colPhone   < 0) colPhone   = 1;
-  var colName    = fHeaders.indexOf("お名前");     if (colName    < 0) colName    = 2;
-  var colTag     = fHeaders.indexOf("タグ");       if (colTag     < 0) colTag     = 4;
-  var colStore   = fHeaders.indexOf("登録店舗");   if (colStore   < 0) colStore   = 8;
-  var colLastVis = fHeaders.indexOf("最終来店日"); // -1なら書き戻しスキップ
+  var colPhone      = fHeaders.indexOf("電話番号");   if (colPhone   < 0) colPhone   = 1;
+  var colName       = fHeaders.indexOf("お名前");     if (colName    < 0) colName    = 2;
+  var colTag        = fHeaders.indexOf("タグ");       if (colTag     < 0) colTag     = 4;
+  var colStore      = fHeaders.indexOf("登録店舗");   if (colStore   < 0) colStore   = 8;
+  var colLastVis    = fHeaders.indexOf("最終来店日");
+  var colVisitCount = fHeaders.indexOf("来店回数");
+  var colTotalAmt   = fHeaders.indexOf("累計金額");
 
   var counselSheet = getSheet("カウンセリング記録");
   var counselData  = counselSheet.getDataRange().getValues();
@@ -2559,7 +2561,7 @@ function runDailyAutoTag() {
       if (rPhone !== phone) continue;
       var status = String(rdata[ri][1] || "");
       if (status === "キャンセル（顧客）" || status === "キャンセル（サロン）" || status === "無断キャンセル") continue;
-      visits.push({date: String(rdata[ri][6] || ""), menu: String(rdata[ri][11] || "")});
+      visits.push({date: String(rdata[ri][6] || ""), menu: String(rdata[ri][11] || ""), amount: Number(rdata[ri][19] || 0)});
     }
     visits.sort(function(a, b) { return b.date.localeCompare(a.date); });
 
@@ -2630,6 +2632,11 @@ function runDailyAutoTag() {
         ? lastVisitDate.slice(0,4)+"/"+lastVisitDate.slice(4,6)+"/"+lastVisitDate.slice(6,8)
         : lastVisitDate;
       friendSheet.getRange(fi + 1, colLastVis + 1).setValue(formattedLast);
+    }
+    if (colVisitCount >= 0) friendSheet.getRange(fi + 1, colVisitCount + 1).setValue(visitCount || 0);
+    if (colTotalAmt >= 0) {
+      var totalAmt = visits.reduce(function(s, v) { return s + (v.amount || 0); }, 0);
+      friendSheet.getRange(fi + 1, colTotalAmt + 1).setValue(totalAmt);
     }
 
     if (tags.length === 0) continue;

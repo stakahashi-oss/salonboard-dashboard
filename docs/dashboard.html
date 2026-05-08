@@ -2812,11 +2812,13 @@ function renderFriendsMgmt(friends) {
             const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
 
-            // 売上データ照合
+            // 売上データ照合（_salesByPhoneが読込済みなら優先、なければLINE友だちシートの値を即時表示）
             const sales = getSalesMatch(f);
-            const visitCount  = sales ? sales.visit_count : null;
+            const sheetVisit  = f['来店回数'] != null && f['来店回数'] !== '' ? parseInt(f['来店回数']) : null;
+            const sheetAmt    = f['累計金額']  != null && f['累計金額']  !== '' ? parseInt(f['累計金額'])  : null;
+            const visitCount  = sales ? sales.visit_count : sheetVisit;
             const lastVisit   = sales ? (sales.last_visit||'').substring(0,10) : (f['最終来店日']||'').substring(0,10) || null;
-            const totalAmount = sales ? sales.total_amount : null;
+            const totalAmount = sales ? sales.total_amount : sheetAmt;
 
             const matchDot = sales
               ? `<span title="売上データと照合済み" style="display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-left:5px;vertical-align:middle"></span>`
@@ -2824,7 +2826,7 @@ function renderFriendsMgmt(friends) {
 
             const visitBadge = visitCount != null
               ? `<span style="font-weight:700;color:var(--primary)">${visitCount}</span><span style="font-size:11px;color:#888">回</span>`
-              : salesLoaded ? `<span style="color:#ccc">―</span>` : `<span style="color:#ccc">…</span>`;
+              : `<span style="color:#ccc">―</span>`;
 
             const lastStr = lastVisit || '―';
             const amountStr = totalAmount != null
