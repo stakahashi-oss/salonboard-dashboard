@@ -119,6 +119,7 @@ function doGet(e) {
   if (act === "get_auto_tag_rules")   return resp(getAutoTagRules());
   if (act === "get_store_line_tokens") return resp(getStoreLineTokens());
   if (act === "get_sales")            return resp(getSalesData());
+  if (act === "get_sales_customers")  return resp(getSalesCustomers());
   if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || "", name: e.parameter.name || "", phone: e.parameter.phone || ""}));
   if (act === "link_uid_to_phone")    return resp(linkUidToPhone(e.parameter.line_uid, e.parameter.phone));
   if (act === "delete_friend")        return resp(deleteFriend(e.parameter.line_uid));
@@ -2432,6 +2433,71 @@ function getSalesByCustomer(customerName, storeName) {
     };
   } catch(e) {
     return {error: String(e)};
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  全顧客の来店集計（ダッシュボードLINE友だち一覧用）
+//  売上CSVを全件読み込み、客名→{visit_count, last_visit, total_amount} を返す
+//  予約データと突合して電話番号→同エントリのマップも構築
+// ══════════════════════════════════════════════════════════
+function getSalesCustomers() {
+  try {
+    // 予約データから 客名→電話番号 のマップを構築（by_phone用）
+    var rdata = getReservationData();
+    var nameToPhone = {};
+    for (var ri = 1; ri < rdata.length; ri++) {
+      var rName = String(rdata[ri][13] || "").replace(/\s/g, "");
+      var rPhone = normalizePhone(String(rdata[ri][14] || ""));
+      if (rName && rPhone && !nameToPhone[rName]) nameToPhone[rName] = rPhone;
+    }
+
+    // 売上CSVを読み込み
+    var ss = SpreadsheetApp.openById(SALES_SS_ID);
+    var sheets = ss.getSheets();
+    var sheet = null;
+    for (var i = 0; i < sheets.length; i++) {
+      if (sheets[i].getSheetId() === SALES_SHEET_GID) { sheet = sheets[i]; break; }
+    }
+    if (!sheet) sheet = sheets[0];
+    var data = sheet.getDataRange().getValues();
+
+    // 客名ごとに集計
+    var byNorm = {};
+    for (var r = 0; r < data.length; r++) {
+      var row = data[r];
+      var rawName = String(row[16] || "").trim();
+      if (!rawName) continue;
+      var normName = rawName.replace(/\s/g, "");
+      var dateVal  = String(row[2] || "").replace(/[-\/]| .*/g, "");
+      var amount   = Number(row[13]) || 0;
+      if (!byNorm[normName]) byNorm[normName] = {dates: {}, total: 0, lastDate: ""};
+      if (dateVal) {
+        byNorm[normName].dates[dateVal] = true;
+        if (dateVal > byNorm[normName].lastDate) byNorm[normName].lastDate = dateVal;
+      }
+      byNorm[normName].total += amount;
+    }
+
+    var byName  = {};
+    var byPhone = {};
+    for (var nm in byNorm) {
+      var d = byNorm[nm];
+      var ld = d.lastDate;
+      var lastVisit = ld.length === 8 ? ld.slice(0,4)+"-"+ld.slice(4,6)+"-"+ld.slice(6,8) : ld;
+      var entry = {
+        visit_count:  Object.keys(d.dates).length,
+        last_visit:   lastVisit,
+        total_amount: d.total
+      };
+      byName[nm] = entry;
+      var phone = nameToPhone[nm];
+      if (phone) byPhone[phone] = entry;
+    }
+
+    return {by_name: byName, by_phone: byPhone};
+  } catch(e) {
+    return {error: String(e), by_name: {}, by_phone: {}};
   }
 }
 
