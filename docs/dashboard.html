@@ -2632,7 +2632,7 @@ async function loadHomeScheduledList() {
 function refreshHomeTestSelect() {
   const sel = document.getElementById('homeTestTargetUid');
   if (!sel || !allFriends.length) return;
-  const testTargets = allFriends.filter(f => f['LINE_UID']);
+  const testTargets = allFriends.filter(f => f['LINE_UID'] === 'Ud203d4c10f151e2fec2579464756ccaa');
   sel.innerHTML = '<option value="">送信先を選択...</option>' +
     testTargets.map(f => {
       const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
@@ -3073,7 +3073,7 @@ function loadBroadcastTab() {
   // 友だちリストをテスト配信プルダウンに反映
   const sel = document.getElementById('testTargetUid');
   if (sel && allFriends.length) {
-    const testTargets = allFriends.filter(f => f['LINE_UID']);
+    const testTargets = allFriends.filter(f => f['LINE_UID'] === 'Ud203d4c10f151e2fec2579464756ccaa');
     sel.innerHTML = '<option value="">送信先を選択...</option>' +
       testTargets.map(f => {
         const name = f['お名前'] || f['LINE表示名'] || '名前未設定';
