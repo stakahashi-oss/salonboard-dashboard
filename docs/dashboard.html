@@ -2707,44 +2707,53 @@ async function importFollowers() {
   }
 }
 
+const FRIENDS_CACHE_KEY = 'lineFriendsCache_v2';
+const FRIENDS_CACHE_TTL = 30 * 60 * 1000; // 30分
+
+function loadFriendsFromCache() {
+  try {
+    const raw = localStorage.getItem(FRIENDS_CACHE_KEY);
+    if (!raw) return null;
+    const c = JSON.parse(raw);
+    if (Date.now() - c.ts > FRIENDS_CACHE_TTL) return null;
+    return c.friends;
+  } catch(e) { return null; }
+}
+
+function saveFriendsToCache(friends) {
+  try { localStorage.setItem(FRIENDS_CACHE_KEY, JSON.stringify({ts: Date.now(), friends})); } catch(e) {}
+}
+
 async function loadLineFriendsMgmt() {
+  // キャッシュがあれば即時表示してからバックグラウンドで更新
+  const cached = loadFriendsFromCache();
+  if (cached && cached.length > 0) {
+    allFriends = cached;
+    _applyFriendsToUI(cached);
+    markLoaded('friends');
+    // バックグラウンドで最新データ取得（更新があれば差し替え）
+    gasGet('get_line_friends', {}, 5).then(data => {
+      allFriends = data.friends || [];
+      saveFriendsToCache(allFriends);
+      _applyFriendsToUI(allFriends);
+    }).catch(() => {});
+    gasGet('get_sales_customers').then(res => {
+      window._salesByPhone = res.by_phone || {};
+      window._salesByName  = res.by_name  || {};
+      renderFriendsMgmt(allFriends);
+    }).catch(() => {});
+    return;
+  }
+
   document.getElementById('friendsMgmtResult').innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
   try {
     const data = await gasGet('get_line_friends', {}, 5);
     allFriends = data.friends || [];
+    saveFriendsToCache(allFriends);
 
-    // KPI
-    const now = new Date();
-    const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    const monthCount  = allFriends.filter(f => (f['登録日時']||'').startsWith(thisMonth)).length;
-    const linkedCount = allFriends.filter(f => f['電話番号']).length;
-    document.getElementById('kpi-friends-total').textContent  = allFriends.length.toLocaleString();
-    document.getElementById('kpi-friends-month').textContent  = monthCount;
-    document.getElementById('kpi-friends-linked').textContent = linkedCount;
-
-    // 店舗・タグ一覧を作成してフィルターに反映
-    const storeSet = new Set();
-    const tagSet = new Set();
-    allFriends.forEach(f => {
-      if (f['登録店舗']) storeSet.add(f['登録店舗'].trim());
-      if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
-    });
-    const storeOptions = ['<option value="">🏪 全店舗</option>',
-      ...[...storeSet].sort().map(s => `<option value="${s}">🏪 ${s}</option>`)].join('');
-    document.getElementById('friendsStoreFilter').innerHTML = storeOptions;
-    const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>',
-      ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
-    document.getElementById('friendsTagFilter').innerHTML  = tagOptions;
-    const broadcastTagHtml = ['<option value="">👥 全員</option>',
-      ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
-    document.getElementById('broadcastTagFilter').innerHTML = broadcastTagHtml;
-    updateBroadcastCount();
-
-    renderFriendsMgmt(allFriends);
-    refreshHomeTestSelect();
+    _applyFriendsToUI(allFriends);
     markLoaded('friends');
 
-    // 売上データと並行取得して来店回数・最終来店・累計金額を照合
     gasGet('get_sales_customers').then(res => {
       window._salesByPhone = res.by_phone || {};
       window._salesByName  = res.by_name  || {};
@@ -2754,6 +2763,32 @@ async function loadLineFriendsMgmt() {
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
+}
+
+function _applyFriendsToUI(friends) {
+  const now = new Date();
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const monthCount  = friends.filter(f => (f['登録日時']||'').startsWith(thisMonth)).length;
+  const linkedCount = friends.filter(f => f['電話番号']).length;
+  document.getElementById('kpi-friends-total').textContent  = friends.length.toLocaleString();
+  document.getElementById('kpi-friends-month').textContent  = monthCount;
+  document.getElementById('kpi-friends-linked').textContent = linkedCount;
+
+  const storeSet = new Set();
+  const tagSet = new Set();
+  friends.forEach(f => {
+    if (f['登録店舗']) storeSet.add(f['登録店舗'].trim());
+    if (f['タグ']) f['タグ'].split(',').forEach(t => { if (t.trim()) tagSet.add(t.trim()); });
+  });
+  document.getElementById('friendsStoreFilter').innerHTML =
+    ['<option value="">🏪 全店舗</option>', ...[...storeSet].sort().map(s => `<option value="${s}">🏪 ${s}</option>`)].join('');
+  const tagOptions = ['<option value="">🏷️ タグ絞り込み</option>', ...[...tagSet].map(t => `<option value="${t}">${t}</option>`)].join('');
+  document.getElementById('friendsTagFilter').innerHTML = tagOptions;
+  document.getElementById('broadcastTagFilter').innerHTML =
+    ['<option value="">👥 全員</option>', ...[...tagSet].map(t => `<option value="${t}">🏷️ ${t}</option>`)].join('');
+  updateBroadcastCount();
+  renderFriendsMgmt(friends);
+  refreshHomeTestSelect();
 }
 
 function filterFriendsMgmt() {
