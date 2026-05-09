@@ -3277,16 +3277,17 @@ let scenarioSettings = {};
 async function loadScenarioSettings() {
   document.getElementById('scenarioSteps').innerHTML = '<div class="loading"><span class="spinner"></span>設定を読込中...</div>';
   try {
-    const [data, tagsData] = await Promise.all([
-      gasGet('get_settings', {}, 10),
-      gasGet('get_tags', {}, 5)
-    ]);
+    const data = await gasGet('get_settings', {}, 10);
     scenarioSettings = data.settings || {};
-    tagMaster = tagsData.tags || [];
     // 送信時間セレクトに反映
     const hour = scenarioSettings['送信時間'] || '9';
     const sel = document.getElementById('sendHourSelect');
     if (sel) sel.value = hour;
+    // タグ取得は失敗してもシナリオ表示を止めない
+    try {
+      const tagsData = await gasGet('get_tags', {}, 5);
+      tagMaster = tagsData.tags || [];
+    } catch(_) {}
     renderScenarioSteps();
     markLoaded('scenario');
   } catch(e) {
