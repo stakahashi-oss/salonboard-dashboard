@@ -5,1153 +5,1505 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SSIN STUDIO スタッフマニュアル</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: #f5f6fa; color: #222; font-size: 15px; }
+:root {
+  --teal: #2AABB0;
+  --teal-dark: #1a7a7e;
+  --teal-light: #e6f9fa;
+  --orange: #FF8C42;
+  --red: #EF4444;
+  --green: #22C55E;
+  --purple: #8B5CF6;
+  --pink: #EC4899;
+  --yellow: #F59E0B;
+  --navy: #1e293b;
+  --gray-bg: #F0F4F8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif; background: var(--gray-bg); color: #1e293b; line-height: 1.5; }
 
-/* ========== HEADER ========== */
-header {
-  background: linear-gradient(135deg, #2d9fa3 0%, #1a6e72 100%);
-  color: white;
-  padding: 20px 20px 16px;
-  text-align: center;
+/* ===== HEADER ===== */
+.app-header {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+  color: #fff;
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   position: sticky;
   top: 0;
-  z-index: 200;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  z-index: 300;
+  box-shadow: 0 3px 16px rgba(0,0,0,0.25);
 }
-header h1 { font-size: 17px; font-weight: 800; letter-spacing: 0.05em; }
-header p { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+.app-header .logo { font-size: 26px; line-height: 1; }
+.app-header h1 { font-size: 15px; font-weight: 800; letter-spacing: 0.03em; }
+.app-header p { font-size: 10px; opacity: 0.8; margin-top: 1px; }
 
-/* ========== TABS ========== */
-.tabs {
-  display: flex;
+/* ===== TABS ===== */
+.tab-bar {
   background: #fff;
-  border-bottom: 2px solid #e0e4ea;
-  position: sticky;
-  top: 62px;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  position: sticky;
+  top: 56px;
+  z-index: 200;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.tabs::-webkit-scrollbar { display: none; }
-.tab-btn {
+.tab-bar::-webkit-scrollbar { display: none; }
+.tbtn {
   flex: 0 0 auto;
-  padding: 10px 13px 9px;
+  padding: 8px 12px 7px;
   border: none;
   background: none;
-  font-size: 11px;
-  font-weight: 700;
-  color: #999;
   cursor: pointer;
+  text-align: center;
   border-bottom: 3px solid transparent;
-  transition: all 0.2s;
-  white-space: nowrap;
-  text-align: center;
-  line-height: 1.3;
+  transition: all 0.18s;
+  min-width: 64px;
 }
-.tab-btn.active { color: #2d9fa3; border-bottom-color: #2d9fa3; background: #f0fafa; }
-.tab-btn .icon { display: block; font-size: 18px; margin-bottom: 2px; }
+.tbtn .t-icon { font-size: 22px; display: block; line-height: 1; margin-bottom: 2px; }
+.tbtn .t-label { font-size: 10px; font-weight: 700; color: #94a3b8; display: block; white-space: nowrap; }
+.tbtn.active { border-bottom-color: var(--teal); background: #f0fdfe; }
+.tbtn.active .t-label { color: var(--teal-dark); }
 
-/* ========== CONTENT ========== */
-.tab-content { display: none; padding: 16px 14px 80px; max-width: 720px; margin: 0 auto; }
-.tab-content.active { display: block; }
+/* ===== CONTENT AREA ===== */
+.tab-pane { display: none; padding: 0 0 80px; }
+.tab-pane.active { display: block; }
 
-/* ========== SECTION TITLE ========== */
-.sec-title {
-  font-size: 20px;
-  font-weight: 900;
-  color: #1a6e72;
-  margin: 24px 0 12px;
-  padding-left: 12px;
-  border-left: 5px solid #2d9fa3;
-  line-height: 1.3;
-}
-.sec-title:first-child { margin-top: 4px; }
-
-.sec-label {
-  display: inline-block;
-  background: #2d9fa3;
+/* ===== HERO BANNER ===== */
+.hero {
+  margin: 0;
+  padding: 28px 20px 24px;
   color: white;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
-  margin-bottom: 6px;
-}
-
-/* ========== CARDS ========== */
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-}
-.card-teal { border-left: 5px solid #2d9fa3; }
-.card-orange { border-left: 5px solid #f59e0b; }
-.card-red { border-left: 5px solid #ef4444; }
-.card-green { border-left: 5px solid #22c55e; }
-.card-purple { border-left: 5px solid #a855f7; }
-.card-pink { border-left: 5px solid #ec4899; }
-
-/* ========== FLOW STEPS ========== */
-.flow-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.flow-item {
-  background: white;
-  border-radius: 12px;
-  padding: 14px 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   position: relative;
+  overflow: hidden;
 }
-.flow-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: #2d9fa3;
-  color: white;
-  font-size: 14px;
-  font-weight: 800;
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
   border-radius: 50%;
-  margin-bottom: 6px;
+  background: rgba(255,255,255,0.08);
 }
-.flow-item h3 { font-size: 13px; font-weight: 800; color: #222; margin-bottom: 4px; }
-.flow-item p { font-size: 12px; color: #666; line-height: 1.5; }
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -30px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.hero-icon { font-size: 52px; line-height: 1; margin-bottom: 10px; }
+.hero h2 { font-size: 24px; font-weight: 900; line-height: 1.3; margin-bottom: 6px; }
+.hero p { font-size: 13px; opacity: 0.9; line-height: 1.6; }
+.hero-teal { background: linear-gradient(135deg, #2AABB0 0%, #155e63 100%); }
+.hero-orange { background: linear-gradient(135deg, #FF8C42 0%, #c85a0a 100%); }
+.hero-dark { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+.hero-green { background: linear-gradient(135deg, #16a34a 0%, #14532d 100%); }
+.hero-purple { background: linear-gradient(135deg, #8B5CF6 0%, #4c1d95 100%); }
+.hero-pink { background: linear-gradient(135deg, #EC4899 0%, #831843 100%); }
+.hero-red { background: linear-gradient(135deg, #EF4444 0%, #991b1b 100%); }
 
-/* ========== STEP LIST ========== */
-.step-list { list-style: none; }
-.step-list li {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-.step-list li:last-child { border-bottom: none; }
-.step-num {
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  background: #1a6e72;
-  color: white;
-  font-weight: 800;
-  font-size: 13px;
-  border-radius: 50%;
+/* ===== BODY SECTION ===== */
+.body-section { padding: 16px 14px; }
+
+/* ===== SECTION HEADING ===== */
+.s-head {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 12px;
 }
-.step-text { font-size: 14px; line-height: 1.6; }
-.step-text strong { color: #1a6e72; }
-
-/* ========== HIGHLIGHT BOX ========== */
-.highlight-box {
-  background: linear-gradient(135deg, #e6fafa 0%, #f0fff4 100%);
-  border: 2px solid #2d9fa3;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  text-align: center;
-}
-.highlight-box .big-text {
-  font-size: 18px;
-  font-weight: 900;
-  color: #1a6e72;
-  line-height: 1.5;
-}
-.highlight-box .sub-text { font-size: 13px; color: #555; margin-top: 6px; }
-
-/* ========== WARN BOX ========== */
-.warn-box {
-  background: #fff7ed;
-  border: 2px solid #f59e0b;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 14px;
-}
-.warn-box .warn-title { font-size: 14px; font-weight: 800; color: #d97706; margin-bottom: 6px; }
-
-/* ========== TALK BUBBLE ========== */
-.talk-scene { margin-bottom: 18px; }
-.talk-scene-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #444;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 6px 12px;
-  margin-bottom: 10px;
-}
-.bubble-wrap { display: flex; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
-.bubble-wrap.right { flex-direction: row-reverse; }
-.avatar {
+.s-head-icon {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--teal);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  flex-shrink: 0;
 }
-.avatar.customer { background: #fce7f3; }
-.avatar.staff { background: #dbeafe; }
-.bubble {
-  max-width: 80%;
-  padding: 10px 14px;
+.s-head h3 { font-size: 17px; font-weight: 900; color: var(--navy); }
+.s-head:first-child { margin-top: 0; }
+
+/* ===== STEP FLOW ===== */
+.step-flow { margin-bottom: 16px; }
+.step-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 0 0 16px;
+  position: relative;
+}
+.step-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal), rgba(44,171,176,0.1));
+}
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(44,171,176,0.4);
+}
+.step-body {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 14px;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.step-body h4 { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 3px; }
+.step-body p, .step-body ul { font-size: 13px; color: #475569; line-height: 1.6; }
+.step-body ul { padding-left: 16px; }
+
+/* ===== GRID ===== */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+
+/* ===== INFO CARD ===== */
+.icard {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+.icard-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.icard-head .ci { font-size: 22px; }
+.icard-head h4 { font-size: 14px; font-weight: 800; }
+
+/* ===== VISUAL STAT ===== */
+.stat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.stat-box {
+  flex: 1;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  color: white;
+}
+.stat-box .stat-num { font-size: 28px; font-weight: 900; line-height: 1; }
+.stat-box .stat-unit { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+.stat-box .stat-label { font-size: 11px; font-weight: 700; margin-top: 6px; }
+
+/* ===== CHECKLIST ===== */
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-check {
+  width: 22px;
+  height: 22px;
+  background: var(--teal);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ===== BUBBLE CHAT ===== */
+.chat-label {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 10px;
+}
+.chat-wrap { margin-bottom: 18px; }
+.chat-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: flex-end; }
+.chat-row.right { flex-direction: row-reverse; }
+.chat-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.av-customer { background: #fce7f3; }
+.av-staff { background: var(--teal-light); }
+.chat-bubble {
+  max-width: 78%;
+  padding: 10px 13px;
   border-radius: 16px;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
-.bubble.customer {
-  background: #fce7f3;
-  border-top-left-radius: 4px;
-  color: #333;
+.bubble-customer {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-bottom-left-radius: 4px;
+  color: #334155;
 }
-.bubble.staff {
-  background: #dbeafe;
-  border-top-right-radius: 4px;
-  color: #1e40af;
+.bubble-staff {
+  background: var(--teal);
+  border-bottom-right-radius: 4px;
+  color: white;
   font-weight: 600;
 }
 
-/* ========== PRODUCT CARD ========== */
-.product-card {
-  background: white;
-  border-radius: 16px;
+/* ===== PRODUCT HERO ===== */
+.prod-hero {
+  border-radius: 18px;
   overflow: hidden;
-  margin-bottom: 16px;
-  box-shadow: 0 3px 14px rgba(0,0,0,0.09);
-}
-.product-header {
-  padding: 16px;
-  color: white;
-  font-weight: 800;
-}
-.product-header.dark { background: #1a1a2e; }
-.product-header.teal { background: linear-gradient(135deg, #2d9fa3, #1a6e72); }
-.product-header h2 { font-size: 18px; margin-bottom: 2px; }
-.product-header .price { font-size: 22px; font-weight: 900; }
-.product-body { padding: 14px 16px; }
-.product-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-}
-.product-col {
-  background: #f8fafc;
-  border-radius: 10px;
-  padding: 12px;
-}
-.product-col h4 { font-size: 12px; font-weight: 800; color: #1a6e72; margin-bottom: 6px; }
-.product-col ul { list-style: none; }
-.product-col ul li { font-size: 12px; color: #444; padding: 2px 0; line-height: 1.5; }
-.product-col ul li::before { content: "・"; color: #2d9fa3; }
-
-/* ========== COMPARISON TABLE ========== */
-.compare-table {
-  width: 100%;
-  border-collapse: collapse;
   margin-bottom: 14px;
-  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.prod-hero-top {
+  padding: 20px 18px 16px;
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
-.compare-table th {
-  background: #1a6e72;
-  color: white;
-  padding: 10px 12px;
-  font-size: 13px;
-  text-align: left;
+.prod-hero-top::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
 }
-.compare-table td {
-  padding: 10px 12px;
-  font-size: 13px;
-  border-bottom: 1px solid #f0f0f0;
-  background: white;
-}
-.compare-table tr:last-child td { border-bottom: none; }
-.compare-table .ok { color: #22c55e; font-weight: 800; }
-.compare-table .ng { color: #ef4444; font-weight: 800; }
+.prod-hero-top .prod-emoji { font-size: 56px; display: block; margin-bottom: 10px; }
+.prod-hero-top h2 { font-size: 22px; font-weight: 900; color: white; }
+.prod-hero-top .prod-price { font-size: 28px; font-weight: 900; color: white; margin-top: 2px; }
+.prod-hero-top .prod-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+.prod-hero-body { background: white; padding: 16px; }
+.prod-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.prod-col { background: #f8fafc; border-radius: 10px; padding: 12px; }
+.prod-col h5 { font-size: 11px; font-weight: 800; color: var(--teal-dark); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 7px; }
+.prod-col li { font-size: 12px; color: #475569; padding: 2px 0; line-height: 1.5; list-style: none; }
+.prod-col li::before { content: "▸ "; color: var(--teal); font-size: 10px; }
 
-/* ========== BADGE ========== */
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-right: 4px;
-}
-.badge-ok { background: #dcfce7; color: #16a34a; }
-.badge-ng { background: #fee2e2; color: #dc2626; }
+/* ===== OK/NG PANEL ===== */
+.okng-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.panel-ok { background: #f0fdf4; border: 2px solid var(--green); border-radius: 14px; padding: 14px; }
+.panel-ng { background: #fff1f2; border: 2px solid var(--red); border-radius: 14px; padding: 14px; }
+.panel-ok h4 { color: #15803d; font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.panel-ng h4 { color: #b91c1c; font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.panel-ok p, .panel-ng p { font-size: 12px; line-height: 1.6; color: #374151; }
 
-/* ========== POINT BOX ========== */
-.point-box {
-  background: #fefce8;
-  border: 2px solid #fbbf24;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 14px;
-}
-.point-box .point-title { font-size: 14px; font-weight: 800; color: #b45309; margin-bottom: 8px; }
-.point-box p, .point-box li { font-size: 13px; color: #555; line-height: 1.7; }
-
-/* ========== CHECKLIST ========== */
-.checklist { list-style: none; }
-.checklist li {
-  padding: 8px 0;
-  font-size: 14px;
-  border-bottom: 1px solid #f5f5f5;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  line-height: 1.5;
-}
-.checklist li:last-child { border-bottom: none; }
-.checklist li::before {
-  content: "✅";
-  flex-shrink: 0;
-  font-size: 15px;
-}
-
-/* ========== PATTERN CARDS ========== */
-.pattern-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.pattern-card {
-  border-radius: 12px;
-  padding: 14px;
-}
-.pattern-ok { background: #eff6ff; border: 2px solid #3b82f6; }
-.pattern-ng { background: #fff1f2; border: 2px solid #f87171; }
-.pattern-card h3 { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
-.pattern-ok h3 { color: #1d4ed8; }
-.pattern-ng h3 { color: #dc2626; }
-.pattern-card p, .pattern-card li { font-size: 12px; line-height: 1.6; color: #444; }
-
-/* ========== MISSION BANNER ========== */
-.mission-banner {
-  background: linear-gradient(135deg, #1a1a2e 0%, #2d9fa3 100%);
-  border-radius: 16px;
+/* ===== BANNER STRIP ===== */
+.banner-strip {
+  border-radius: 14px;
   padding: 20px;
+  margin-bottom: 14px;
   color: white;
   text-align: center;
-  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
 }
-.mission-banner .mission-main {
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1.5;
-  margin-bottom: 8px;
+.banner-strip::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
 }
-.mission-banner .mission-sub { font-size: 13px; opacity: 0.85; line-height: 1.6; }
+.banner-strip .bs-icon { font-size: 40px; display: block; margin-bottom: 8px; }
+.banner-strip .bs-title { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+.banner-strip .bs-sub { font-size: 12px; opacity: 0.88; line-height: 1.6; }
 
-/* ========== FLOW ARROW ========== */
-.flow-arrow {
+/* ===== WARN / NOTICE ===== */
+.notice-box {
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.notice-box .n-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+.notice-box .n-body h5 { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+.notice-box .n-body p { font-size: 13px; line-height: 1.6; }
+.notice-warn { background: #fff7ed; border: 2px solid #fb923c; }
+.notice-warn .n-body h5 { color: #c2410c; }
+.notice-info { background: #eff6ff; border: 2px solid #60a5fa; }
+.notice-info .n-body h5 { color: #1e40af; }
+
+/* ===== TIMELINE REPORT ===== */
+.timeline { padding-left: 4px; }
+.tl-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0;
+}
+.tl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36px;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--teal);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
+  font-size: 18px;
+  flex-shrink: 0;
 }
-.flow-arrow-item {
-  background: #2d9fa3;
-  color: white;
-  font-size: 13px;
+.tl-line {
+  flex: 1;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal), rgba(44,171,176,0.15));
+  min-height: 20px;
+  margin: 4px 0;
+}
+.tl-body {
+  flex: 1;
+  padding-bottom: 20px;
+}
+.tl-time {
+  font-size: 10px;
   font-weight: 700;
-  padding: 8px 14px;
-  border-radius: 8px;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
-.flow-arrow-sep { font-size: 18px; color: #999; }
+.tl-card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.tl-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.tl-card p { font-size: 13px; color: #475569; line-height: 1.6; }
+.tl-card ul { font-size: 13px; color: #475569; line-height: 1.8; padding-left: 16px; }
 
-/* ========== UTIL ========== */
+/* ===== HIGHLIGHT NUMBER ===== */
+.hl-num-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.hl-num {
+  flex: 1;
+  background: white;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.hl-num .hnum { font-size: 32px; font-weight: 900; line-height: 1; }
+.hl-num .hunit { font-size: 12px; font-weight: 700; color: #64748b; margin-top: 4px; }
+.hl-num .hdesc { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+/* ===== COMPARISON ===== */
+.diff-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+.diff-row:last-child { border-bottom: none; }
+.diff-label { font-weight: 700; color: #334155; min-width: 80px; flex-shrink: 0; }
+.diff-ok { background: #dcfce7; color: #16a34a; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+.diff-ng { background: #fee2e2; color: #dc2626; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+
+/* ===== TIMING CARD ===== */
+.timing-card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+.timing-head {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.timing-tag {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.timing-head h4 { font-size: 15px; font-weight: 800; }
+.timing-body { padding: 0 16px 14px; }
+.timing-script {
+  background: #f0fdfe;
+  border-left: 4px solid var(--teal);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--teal-dark);
+  font-weight: 600;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+/* ===== UTILS ===== */
+.mt0 { margin-top: 0; }
 .mt8 { margin-top: 8px; }
 .mt12 { margin-top: 12px; }
 .mt16 { margin-top: 16px; }
-.mb4 { margin-bottom: 4px; }
+.mb0 { margin-bottom: 0; }
 .mb8 { margin-bottom: 8px; }
-.small { font-size: 12px; color: #666; }
-.bold { font-weight: 800; }
-.teal { color: #2d9fa3; }
-.text-center { text-align: center; }
-hr.divider { border: none; border-top: 2px dashed #e5e7eb; margin: 18px 0; }
+.mb12 { margin-bottom: 12px; }
+.divider { border: none; border-top: 2px dashed #e2e8f0; margin: 20px 0; }
+.badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-ok { background: #dcfce7; color: #16a34a; }
+.badge-ng { background: #fee2e2; color: #dc2626; }
+.badge-tip { background: #fef9c3; color: #854d0e; }
+.fs13 { font-size: 13px; }
+.fs12 { font-size: 12px; }
+.lh16 { line-height: 1.6; }
+.color-teal { color: var(--teal-dark); }
+.color-gray { color: #64748b; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>SSIN STUDIO / most eyes スタッフマニュアル</h1>
-  <p>店舗デビュー後も定期的に見直して、不明点を解消しよう</p>
-</header>
+<!-- ===== HEADER ===== -->
+<div class="app-header">
+  <div class="logo">💎</div>
+  <div>
+    <h1>SSIN STUDIO / most eyes</h1>
+    <p>スタッフマニュアル — 定期的に確認して不明点ゼロにしよう</p>
+  </div>
+</div>
 
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('tab-flow')">
-    <span class="icon">🔄</span>業務フロー
+<!-- ===== TAB BAR ===== -->
+<div class="tab-bar">
+  <button class="tbtn active" onclick="go('flow',this)">
+    <span class="t-icon">🔄</span>
+    <span class="t-label">業務フロー</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-nippo')">
-    <span class="icon">📋</span>日報
+  <button class="tbtn" onclick="go('nippo',this)">
+    <span class="t-icon">📋</span>
+    <span class="t-label">日報</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-cracall')">
-    <span class="icon">📞</span>クラコール
+  <button class="tbtn" onclick="go('cracall',this)">
+    <span class="t-icon">📞</span>
+    <span class="t-label">クラコール</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-square')">
-    <span class="icon">💳</span>スクエア
+  <button class="tbtn" onclick="go('square',this)">
+    <span class="t-icon">💳</span>
+    <span class="t-label">スクエア</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-sb')">
-    <span class="icon">🖥️</span>SB操作
+  <button class="tbtn" onclick="go('sb',this)">
+    <span class="t-icon">🖥️</span>
+    <span class="t-label">SB操作</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-butsuhan')">
-    <span class="icon">🛍️</span>物販・提案
+  <button class="tbtn" onclick="go('bussi',this)">
+    <span class="t-icon">🛍️</span>
+    <span class="t-label">物販・提案</span>
   </button>
-  <button class="tab-btn" onclick="showTab('tab-yoyaku')">
-    <span class="icon">📅</span>次回予約
+  <button class="tbtn" onclick="go('yoyaku',this)">
+    <span class="t-icon">📅</span>
+    <span class="t-label">次回予約</span>
   </button>
 </div>
 
-<!-- ==================== 業務フロー ==================== -->
-<div id="tab-flow" class="tab-content active">
 
-  <div class="highlight-box" style="margin-top:8px;">
-    <div class="big-text">1日の流れをマスターしよう</div>
-    <div class="sub-text">①〜⑧の順番で動けば完璧。慣れるまで毎日確認すること。</div>
+<!-- ============================================================ -->
+<!--  業務フロー                                                   -->
+<!-- ============================================================ -->
+<div class="tab-pane active" id="pane-flow">
+  <div class="hero hero-teal">
+    <div class="hero-icon">🔄</div>
+    <h2>1日の業務フロー</h2>
+    <p>①〜⑧の流れで動けば完璧。<br>慣れるまで毎日このページで確認しよう。</p>
   </div>
 
-  <div class="flow-grid">
-    <div class="flow-item">
-      <div class="flow-num">①</div>
-      <h3>出勤・タイムカード</h3>
-      <p>タイムカード打刻<br>LINEグループに日報送信</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">②</div>
-      <h3>開店準備</h3>
-      <p>掃除・レジの現金確認<br>全体チェック</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">③</div>
-      <h3>ブース整理・確認</h3>
-      <p>施術スペースを整え、備品の在庫確認</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">④</div>
-      <h3>接客・施術</h3>
-      <p>カウンセリング→施術→物販・次回予約</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">⑤</div>
-      <h3>休憩</h3>
-      <p>シフト通りに取得<br>店内確認後に離席</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">⑥</div>
-      <h3>空き時間タスク</h3>
-      <p>清掃・SNS更新・HPB更新・ブログ・口コミ返信</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">⑦</div>
-      <h3>レジ締め・記録</h3>
-      <p>レジ締め作業<br>売上受取管理表に日別売上内訳記入<br>次回予約ダッシュボード記入</p>
-    </div>
-    <div class="flow-item">
-      <div class="flow-num">⑧</div>
-      <h3>退勤</h3>
-      <p>日報送信・店舗を閉める・タイムカード打刻</p>
-    </div>
-  </div>
+  <div class="body-section">
 
-  <div class="sec-title">空き時間タスク一覧</div>
-  <div class="card card-teal">
-    <ul class="checklist">
-      <li>ブログの更新（サロンボード）</li>
-      <li>口コミ返信（HPB・Googleマップ）</li>
-      <li>キャッチ・クーポン名の更新</li>
-      <li>物販/オプションの店内POPiS改善</li>
-      <li>SNS投稿（ビフォアフ写真の配信）</li>
-      <li>店舗インスタで空き情報をストーリーへ配信</li>
-      <li>LINEメッセージ配信</li>
-      <li>HPBメッセージ配信</li>
-      <li>ダッシュボード/カルテを詳細に記入</li>
-    </ul>
-  </div>
-
-  <div class="sec-title">SVについて</div>
-  <div class="card card-orange">
-    <p style="font-size:14px;line-height:1.7;">各店舗には本部でサポートを行う<strong>SV</strong>という役職のスタッフがいます。落とし込みの終了後、店舗についてアナウンスや注意事項をお伝えする時間があるため、<strong>挨拶含めご認識ください。</strong></p>
-  </div>
-
-</div>
-
-<!-- ==================== 日報 ==================== -->
-<div id="tab-nippo" class="tab-content">
-
-  <div class="highlight-box" style="margin-top:8px;">
-    <div class="big-text">📱 LINEグループで送信</div>
-    <div class="sub-text">出勤・退勤の2回送る。ノートにサロンボード/Gmailアドレス等の情報が記載されているので必ず確認。</div>
-  </div>
-
-  <div class="sec-title">出勤時に送るもの</div>
-  <div class="card card-teal">
-    <div style="font-size:32px;text-align:center;margin-bottom:10px;">🌅</div>
-    <div style="background:#f0fafa;border-radius:10px;padding:14px;font-size:14px;line-height:2;">
-      <strong>✅ 日報（出勤報告）</strong>
-    </div>
-    <div class="mt8 small">例：「〇/〇 おはようございます。【今月の目標】総売り60万円 物販6万円 OP3万円 ☆今月の日割り 28,571円/日 【今日1日の目標】オプション3 次回予約2 物販1」</div>
-  </div>
-
-  <div class="sec-title">退勤時に送るもの</div>
-  <div class="card card-orange">
-    <div style="font-size:32px;text-align:center;margin-bottom:10px;">🌙</div>
-    <ul class="checklist">
-      <li><strong>日報（退勤報告）</strong></li>
-      <li><strong>サロンボード売上報告のスクリーンショット</strong>（受け取った現金と合わせて確認）</li>
-      <li><strong>ToDoリストのスクリーンショット</strong></li>
-    </ul>
-  </div>
-
-  <div class="sec-title">退勤時のToDoリスト</div>
-  <div class="card card-green">
-    <div class="sec-label">退勤時にやること</div>
-    <ul class="checklist mt8">
-      <li>グループに日報を送る</li>
-      <li>HPB日付変更（キャッチ・クーポン）</li>
-      <li>空気清浄の水を替える</li>
-      <li>レジ金・売上金管理（レジ締め・売上受取管理表）</li>
-      <li>ワゴン片付け・ゴミ出し</li>
-      <li>使用している電子機器の充電/店舗内の詳細に記入</li>
-    </ul>
-  </div>
-
-</div>
-
-<!-- ==================== クラコール ==================== -->
-<div id="tab-cracall" class="tab-content">
-
-  <div class="highlight-box" style="margin-top:8px;">
-    <div class="big-text">📞 クラコール通電確認</div>
-    <div class="sub-text">毎日出勤時に電話が繋がるか確認しよう</div>
-  </div>
-
-  <div class="sec-title">確認手順</div>
-  <div class="card card-teal">
-    <ul class="step-list">
-      <li>
-        <div class="step-num">1</div>
-        <div class="step-text">店舗の電話番号を確認する</div>
-      </li>
-      <li>
-        <div class="step-num">2</div>
-        <div class="step-text">実際に店舗の電話番号に電話をかけてみる</div>
-      </li>
-      <li>
-        <div class="step-num">3</div>
-        <div class="step-text"><strong>「Softphoneオーディオ通話」</strong>の着信画面が表示されればOK！</div>
-      </li>
-    </ul>
-  </div>
-
-  <div class="card card-green" style="text-align:center;padding:20px;">
-    <div style="font-size:48px;margin-bottom:10px;">✅</div>
-    <div style="font-size:18px;font-weight:800;color:#16a34a;">この画面が出ればOK!</div>
-    <div style="margin-top:8px;background:#1a1a1a;border-radius:10px;padding:14px;color:white;font-size:13px;max-width:220px;margin:12px auto 0;">
-      <div style="background:#e53e3e;border-radius:6px;padding:6px;margin-bottom:8px;font-size:11px;">Softphoneオーディオ...</div>
-      <div style="display:flex;justify-content:space-between;margin-top:20px;">
-        <div style="text-align:center;">
-          <div style="background:#e53e3e;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;">✕</div>
-          <div style="font-size:10px;margin-top:4px;">拒否</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">🌅</div>
+          <div class="tl-line"></div>
         </div>
-        <div style="text-align:center;">
-          <div style="background:#3182ce;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto;">📞</div>
-          <div style="font-size:10px;margin-top:4px;">終了して応答</div>
+        <div class="tl-body">
+          <div class="tl-time">① 出勤</div>
+          <div class="tl-card">
+            <h4>タイムカード打刻 ＋ 日報送信</h4>
+            <p>出勤したらまずタイムカードを打刻し、LINEグループに出勤日報を送信する。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">🧹</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">② 開店準備</div>
+          <div class="tl-card">
+            <h4>掃除 ／ レジの現金確認</h4>
+            <ul>
+              <li>トイレ清掃・床清掃・空気清浄機確認</li>
+              <li>レジの現金残高確認（釣り銭準備）</li>
+              <li>ウォーマーをつける</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">🪑</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">③ ブース整理・確認</div>
+          <div class="tl-card">
+            <h4>施術スペースを整える</h4>
+            <ul>
+              <li>ベッド・ブースの整理整頓</li>
+              <li>サロンボードのキャッチ・クーポン名の日付確認</li>
+              <li>当日のお客様情報の確認</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">✨</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">④ 接客・施術</div>
+          <div class="tl-card">
+            <h4>カウンセリング → 施術 → 物販 → 次回予約</h4>
+            <p>施術後に<strong>物販提案</strong>と<strong>次回予約</strong>を必ずセットで行うこと。これがアイリストの仕事。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">☕</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">⑤ 休憩</div>
+          <div class="tl-card">
+            <h4>シフト通りに取得</h4>
+            <p>店内の状況を確認してから離席。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">📱</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">⑥ 空き時間タスク</div>
+          <div class="tl-card">
+            <h4>手を止めない。すべてが集客につながる。</h4>
+            <ul>
+              <li>ブログ更新（サロンボード）</li>
+              <li>口コミ返信（HPB・Googleマップ）</li>
+              <li>キャッチ・クーポン名の更新</li>
+              <li>SNS投稿（ビフォアフ写真）</li>
+              <li>インスタストーリーで空き枠配信</li>
+              <li>LINEメッセージ配信</li>
+              <li>店舗内POPや物販棚の整備</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">🧾</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">⑦ レジ締め・記録</div>
+          <div class="tl-card">
+            <h4>3つの記入を忘れずに</h4>
+            <ul>
+              <li>レジ締め（現金合わせ）</li>
+              <li>売上受取管理表に日別売上内訳を記入</li>
+              <li>次回予約ダッシュボードに記入</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot">🌙</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-time">⑧ 退勤</div>
+          <div class="tl-card">
+            <h4>退勤日報送信 → 店舗を閉める → タイムカード打刻</h4>
+            <p>退勤時はグループに日報＋売上報告SS＋ToDoリストSSを送信してから帰ること。</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="warn-box">
-    <div class="warn-title">⚠️ 繋がらない場合は？</div>
-    <p style="font-size:13px;color:#555;">日報グループにすぐ報告する。クラコールアプリの再起動、Wi-Fi確認を試してから報告しよう。</p>
-  </div>
+    <div class="divider"></div>
 
+    <div class="s-head">
+      <div class="s-head-icon">👔</div>
+      <h3>SVについて</h3>
+    </div>
+    <div class="icard">
+      <div style="font-size:14px;line-height:1.8;color:#334155;">
+        各店舗には本部でサポートを行う<strong>SV（スーパーバイザー）</strong>がいます。落とし込み後にアナウンスや注意事項をお伝えする時間があります。<br>
+        <strong style="color:var(--teal-dark);">挨拶含めご認識ください。</strong>
+      </div>
+      <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="badge badge-tip">林治希</span>
+        <span class="badge badge-tip">宮脇天龍</span>
+        <span class="badge badge-tip">竹部翔</span>
+        <span class="badge badge-tip">高橋将太</span>
+        <span class="badge badge-tip">山田雅也</span>
+        <span class="badge badge-tip">氏家大樹</span>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<!-- ==================== スクエア ==================== -->
-<div id="tab-square" class="tab-content">
 
-  <div class="highlight-box" style="margin-top:8px;">
-    <div class="big-text">💳 スクエア緊急対応</div>
-    <div class="sub-text">決済できない！と焦らず、この手順通りに動けば解決できる</div>
+<!-- ============================================================ -->
+<!--  日報                                                        -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-nippo">
+  <div class="hero hero-orange">
+    <div class="hero-icon">📋</div>
+    <h2>日報グループ</h2>
+    <p>出勤・退勤の2回送る。<br>ノートにサロンボード/Gmailアドレス等の情報があるので必ず確認。</p>
   </div>
 
-  <div class="sec-title">復旧手順（9ステップ）</div>
-  <div class="card card-teal">
-    <ul class="step-list">
-      <li>
-        <div class="step-num">1</div>
-        <div class="step-text"><strong>まずiPadの電源を落とし、再起動する</strong></div>
-      </li>
-      <li>
-        <div class="step-num">2</div>
-        <div class="step-text">スクエアの<strong>電源ボタンを長押し</strong>→赤の点滅が消えるまで押し続ける</div>
-      </li>
-      <li>
-        <div class="step-num">3</div>
-        <div class="step-text">電源ボタンを<strong>1度押し</strong>→<strong>緑のランプ点灯</strong>を確認</div>
-      </li>
-      <li>
-        <div class="step-num">4</div>
-        <div class="step-text">再び<strong>赤の点滅が消えるまで長押し</strong></div>
-      </li>
-      <li>
-        <div class="step-num">5</div>
-        <div class="step-text">電源ボタンを1度押すと<strong>緑に光り、[左右・左右]に点滅</strong>することを確認</div>
-      </li>
-      <li>
-        <div class="step-num">6</div>
-        <div class="step-text">iPadの<strong>スクエアアプリを開く</strong><br>三本線（その他）→設定→ハードウェア→スクエアリーダー→接続</div>
-      </li>
-      <li>
-        <div class="step-num">7</div>
-        <div class="step-text"><strong>オレンジの点滅まで長押し</strong></div>
-      </li>
-      <li>
-        <div class="step-num">8</div>
-        <div class="step-text">画面に「<strong>接続</strong>」と表示されるのでタップ</div>
-      </li>
-      <li>
-        <div class="step-num">9</div>
-        <div class="step-text">🎉 <strong>接続完了！</strong></div>
-      </li>
-    </ul>
-  </div>
+  <div class="body-section">
 
-  <div class="card" style="text-align:center;padding:16px;">
-    <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:10px;">スクエアリーダーの各部位</div>
-    <div style="background:#f8fafc;border-radius:12px;padding:16px;display:inline-block;min-width:200px;">
-      <div style="background:#e2e8f0;border-radius:50%;width:80px;height:50px;margin:0 auto 12px;position:relative;">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:8px;background:#94a3b8;border-radius:4px;"></div>
-        <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;">
-          <div style="width:8px;height:8px;background:#22c55e;border-radius:50%;"></div>
-          <div style="width:8px;height:8px;background:#22c55e;border-radius:50%;"></div>
-          <div style="width:8px;height:8px;background:#22c55e;border-radius:50%;"></div>
+    <div class="banner-strip" style="background:linear-gradient(135deg,#1e293b,#334155);">
+      <span class="bs-icon">💡</span>
+      <div class="bs-title">グループのノートを必ず確認！</div>
+      <div class="bs-sub">サロンボードID・Gmailアドレス・その他重要情報が全て記載されている</div>
+    </div>
+
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--green);">🌅</div>
+      <h3>出勤時に送るもの</h3>
+    </div>
+
+    <div class="icard">
+      <div class="icard-head">
+        <span class="ci">📤</span>
+        <h4>出勤日報（LINEグループへ）</h4>
+      </div>
+      <div style="background:#f8fafc;border-radius:10px;padding:14px;font-size:13px;line-height:2;color:#334155;border-left:4px solid var(--green);">
+        <strong>6/20 おはようございます。</strong><br>
+        【今月の目標】<br>
+        総売り 60万円 ／ 物販 6万円 ／ OP 3万円<br>
+        <br>
+        ⭐ 今月の日割り：28,571円/日<br>
+        <br>
+        【今日1日の目標】<br>
+        オプション 3 ／ 次回予約 2 ／ 物販 1
+      </div>
+    </div>
+
+    <div class="s-head" style="margin-top:20px;">
+      <div class="s-head-icon" style="background:var(--purple);">🌙</div>
+      <h3>退勤時に送るもの</h3>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">1</div>
+        <div class="step-body">
+          <h4>退勤日報</h4>
+          <p>本日の実績・所感をグループに送信</p>
         </div>
       </div>
-      <div style="font-size:11px;color:#666;margin-top:14px;">⬆ LEDライト（上）</div>
-      <div style="font-size:11px;color:#666;">⬇ USB-Cポート・電源ボタン（下）</div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">2</div>
+        <div class="step-body">
+          <h4>サロンボード売上報告のスクリーンショット</h4>
+          <p>売上画面SS ＋ 受け取った現金の写真を添付</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">3</div>
+        <div class="step-body">
+          <h4>ToDoリストのスクリーンショット</h4>
+          <p>完了チェック済みのToDoリスト画面をSS</p>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="warn-box">
-    <div class="warn-title">🆘 それでも解決しない場合</div>
-    <p style="font-size:14px;color:#444;font-weight:700;">スクエアサポートに直接問い合わせ</p>
-    <p style="font-size:18px;font-weight:900;color:#d97706;margin-top:6px;">TEL: 0120-117-042</p>
-    <p class="small mt8">参考動画: youtube.com/watch?v=8mS4OKqnrKc</p>
-  </div>
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--teal);">✅</div>
+      <h3>退勤時のToDoリスト</h3>
+    </div>
+    <div class="icard">
+      <div class="cl-item"><div class="cl-check">✓</div><div>グループに日報を送る</div></div>
+      <div class="cl-item"><div class="cl-check">✓</div><div>HPB日付変更（キャッチ・クーポン）</div></div>
+      <div class="cl-item"><div class="cl-check">✓</div><div>空気清浄の水を替える</div></div>
+      <div class="cl-item"><div class="cl-check">✓</div><div>レジ金・売上金管理（レジ締め・売上受取管理表記入）</div></div>
+      <div class="cl-item"><div class="cl-check">✓</div><div>ワゴン片付け・ゴミ出し</div></div>
+      <div class="cl-item"><div class="cl-check">✓</div><div>使用電子機器の充電・店舗内の詳細にダッシュボード記入</div></div>
+    </div>
 
+  </div>
 </div>
 
-<!-- ==================== SB操作 ==================== -->
-<div id="tab-sb" class="tab-content">
 
-  <div class="highlight-box" style="margin-top:8px;">
-    <div class="big-text">🖥️ サロンボード操作</div>
-    <div class="sub-text">ブログ投稿・キャッチ変更の2つをマスターしよう</div>
+<!-- ============================================================ -->
+<!--  クラコール                                                   -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-cracall">
+  <div class="hero hero-green">
+    <div class="hero-icon">📞</div>
+    <h2>クラコール 通電確認</h2>
+    <p>毎日出勤時に電話が繋がるかチェック！<br>繋がらない場合はすぐグループへ報告。</p>
   </div>
 
-  <!-- ブログ -->
-  <div class="sec-title">ブログ投稿の手順</div>
-  <div class="card card-teal">
-    <ul class="step-list">
-      <li>
-        <div class="step-num">1</div>
-        <div class="step-text">メニューの <strong>「掲載管理」</strong> を選択</div>
-      </li>
-      <li>
-        <div class="step-num">2</div>
-        <div class="step-text">サブメニューから <strong>「ブログ」</strong> を選択</div>
-      </li>
-      <li>
-        <div class="step-num">3</div>
-        <div class="step-text"><strong>「新規投稿」</strong> ボタンをクリック</div>
-      </li>
-      <li>
-        <div class="step-num">4</div>
-        <div class="step-text">以下を入力する
-          <ul style="margin-top:6px;padding-left:16px;font-size:13px;color:#444;line-height:2;">
+  <div class="body-section">
+
+    <div class="s-head">
+      <div class="s-head-icon">🔍</div>
+      <h3>確認手順</h3>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-item">
+        <div class="step-circle">1</div>
+        <div class="step-body">
+          <h4>店舗の電話番号を確認する</h4>
+          <p>日報グループのノートに記載されている。</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <div class="step-body">
+          <h4>その番号に実際に電話をかける</h4>
+          <p>自分のスマホから発信してOK。</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <div class="step-body">
+          <h4>この画面が出ればOK ✅</h4>
+          <p>「Softphoneオーディオ通話」の着信画面が出ればクラコール通電確認完了。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 疑似スクリーン -->
+    <div style="max-width:240px;margin:0 auto 16px;">
+      <div style="background:#1c1c1e;border-radius:24px;padding:20px 20px 24px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        <div style="background:#c0392b;border-radius:8px;padding:8px;margin-bottom:24px;font-size:12px;color:white;font-weight:700;">
+          📞 Softphoneオーディオ通話中
+        </div>
+        <div style="font-size:14px;color:white;font-weight:700;margin-bottom:6px;">店舗電話</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:28px;">着信中...</div>
+        <div style="display:flex;justify-content:space-around;">
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;background:#e74c3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 6px;">✕</div>
+            <div style="font-size:10px;color:#aaa;">拒否</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;background:#27ae60;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 6px;">📞</div>
+            <div style="font-size:10px;color:#aaa;">終了して応答</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:13px;font-weight:800;color:var(--green);">↑ この画面が出ればOK！</div>
+    </div>
+
+    <div class="notice-box notice-warn">
+      <div class="n-icon">⚠️</div>
+      <div class="n-body">
+        <h5>繋がらない場合</h5>
+        <p>①クラコールアプリを再起動<br>②Wi-Fi/モバイル回線を切り替える<br>③それでも繋がらない場合はすぐグループへ報告</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  スクエア緊急対応                                             -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-square">
+  <div class="hero hero-red">
+    <div class="hero-icon">🚨</div>
+    <h2>スクエア 緊急対応</h2>
+    <p>決済できない！と焦らず、<br>この手順通りに動けば必ず解決できる。</p>
+  </div>
+
+  <div class="body-section">
+
+    <!-- スクエア図解 -->
+    <div style="background:white;border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+      <div style="font-size:13px;font-weight:700;color:#64748b;text-align:center;margin-bottom:12px;">スクエアリーダー 各部位</div>
+      <div style="display:flex;justify-content:space-around;text-align:center;">
+        <div>
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;margin:0 auto 4px;box-shadow:0 0 8px rgba(16,185,129,0.5);"></div>
+          <div style="font-size:11px;font-weight:700;color:#475569;">LEDライト</div>
+          <div style="font-size:10px;color:#94a3b8;">緑＝正常</div>
+        </div>
+        <div>
+          <div style="font-size:36px;line-height:1;">⬜</div>
+          <div style="font-size:11px;font-weight:700;color:#475569;">本体</div>
+        </div>
+        <div>
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:6px;margin:0 auto 4px;"></div>
+          <div style="font-size:11px;font-weight:700;color:#475569;">電源ボタン</div>
+          <div style="font-size:10px;color:#94a3b8;">右下</div>
+        </div>
+        <div>
+          <div style="width:28px;height:10px;background:#94a3b8;border-radius:4px;margin:9px auto 4px;"></div>
+          <div style="font-size:11px;font-weight:700;color:#475569;">USB-C</div>
+          <div style="font-size:10px;color:#94a3b8;">充電口</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--red);">🔧</div>
+      <h3>復旧手順（全9ステップ）</h3>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">1</div>
+        <div class="step-body"><h4>iPadの電源を落として再起動</h4><p>まずiPadを完全に再起動する。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">2</div>
+        <div class="step-body"><h4>スクエア電源ボタンを長押し</h4><p>赤の点滅が消えるまで押し続ける。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">3</div>
+        <div class="step-body"><h4>電源ボタンを1度押す</h4><p>緑のランプが点灯することを確認。</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">4</div>
+        <div class="step-body"><h4>再び赤の点滅が消えるまで長押し</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">5</div>
+        <div class="step-body"><h4>電源を1度押す → 緑点灯 ＋ [左右・左右] 点滅確認</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">6</div>
+        <div class="step-body">
+          <h4>iPadのスクエアアプリを開く</h4>
+          <p>三本線（その他）→ 設定 → ハードウェア → スクエアリーダー → 接続</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">7</div>
+        <div class="step-body"><h4>オレンジの点滅まで長押し</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#ef4444,#991b1b);">8</div>
+        <div class="step-body"><h4>「接続」と表示されたらタップ</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,#22c55e,#15803d);">✓</div>
+        <div class="step-body"><h4>🎉 接続完了！</h4><p>決済できるかテストする。</p></div>
+      </div>
+    </div>
+
+    <div class="notice-box notice-warn" style="margin-top:4px;">
+      <div class="n-icon">🆘</div>
+      <div class="n-body">
+        <h5>それでも解決しない場合</h5>
+        <p>スクエアサポートへ直接問い合わせ</p>
+        <div style="font-size:22px;font-weight:900;color:#c2410c;margin-top:6px;">0120-117-042</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  SB操作                                                      -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-sb">
+  <div class="hero hero-purple">
+    <div class="hero-icon">🖥️</div>
+    <h2>サロンボード操作</h2>
+    <p>ブログ投稿・キャッチ変更の2つを<br>スラスラできるようになろう。</p>
+  </div>
+
+  <div class="body-section">
+
+    <!-- サロンボードナビ図 -->
+    <div style="background:white;border-radius:16px;padding:14px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+      <div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:10px;">サロンボード トップメニュー</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span style="background:#3b82f6;color:white;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;">予約管理</span>
+        <span style="background:#10b981;color:white;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;border:2px solid #059669;">掲載管理 ←使う</span>
+        <span style="background:#94a3b8;color:white;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;">お客様管理</span>
+        <span style="background:#94a3b8;color:white;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;">売上管理</span>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--teal-dark);font-weight:700;">掲載管理 の中：サロン ／ スタッフ ／ クーポン ／ ブログ ／ 口コミ</div>
+    </div>
+
+    <!-- ブログ投稿 -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--purple);">✏️</div>
+      <h3>ブログ投稿 — 手順</h3>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">1</div>
+        <div class="step-body"><h4>掲載管理 → ブログ → 新規投稿</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">2</div>
+        <div class="step-body">
+          <h4>必要事項を入力する</h4>
+          <ul>
             <li>投稿者：自分を選択</li>
             <li>カテゴリ：内容に合わせて選択</li>
             <li>タイトル：全角25文字以内</li>
-            <li>本文：全角1000文字・改行80回以内・画像4枚以内</li>
-            <li>クーポン：内容に合わせて選択（プライベート投稿でもOK）</li>
-            <li style="color:#dc2626;font-weight:700;">末尾に店名・住所・アクセス・電話番号を必ず入れる</li>
+            <li>本文：1000文字・画像4枚・改行80回以内</li>
+            <li>クーポン：内容に合わせて選択</li>
+            <li style="color:var(--red);font-weight:700;">末尾に必ず「店名・住所・アクセス・TEL」を入れる</li>
           </ul>
         </div>
-      </li>
-      <li>
-        <div class="step-num">5</div>
-        <div class="step-text"><strong>「確認する」</strong> → <strong>「登録・反映する」</strong> で掲載完了<br><span class="small">「登録・未反映にする」でストックにも保存可</span></div>
-      </li>
-    </ul>
-  </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--purple),#4c1d95);">3</div>
+        <div class="step-body"><h4>「確認する」→「登録・反映する」</h4><p>これだけでHPBに掲載完了（掲載管理TOPの「掲載変更を反映」は不要）</p></div>
+      </div>
+    </div>
 
-  <div class="point-box">
-    <div class="point-title">💡 ブログ投稿のコツ</div>
-    <p>フリーワードも本文に入れること。「登録・反映する」を押すとそのままHPBに掲載される（掲載管理TOPで反映ボタンは不要）。ブログを投稿したスタッフが非掲載になると、ブログも一緒に非掲載になるので注意。</p>
-  </div>
+    <div class="notice-box notice-info">
+      <div class="n-icon">💡</div>
+      <div class="n-body">
+        <h5>ストックとして保存したい場合</h5>
+        <p>「登録・未反映にする」で下書き保存できる。後から反映可能。</p>
+      </div>
+    </div>
 
-  <!-- キャッチ変更 -->
-  <hr class="divider">
-  <div class="sec-title">キャッチ変更の手順</div>
-  <div class="card card-purple">
-    <ul class="step-list">
-      <li>
-        <div class="step-num">1</div>
-        <div class="step-text">メニューの <strong>「掲載管理」</strong> を選択</div>
-      </li>
-      <li>
-        <div class="step-num">2</div>
-        <div class="step-text"><strong>「サロン」</strong> を選択</div>
-      </li>
-      <li>
-        <div class="step-num">3</div>
-        <div class="step-text"><strong>「サロン情報」</strong> の項目までスクロール</div>
-      </li>
-      <li>
-        <div class="step-num">4</div>
-        <div class="step-text"><strong>「キャッチ」の日付を今日の日付に変更</strong><br><span class="small">例：★4/26空あり★口コミ高評!!高技術専門サロン 眉毛¥3500/パリジェンヌ¥3800/set¥6500〜</span></div>
-      </li>
-      <li>
-        <div class="step-num">5</div>
-        <div class="step-text">下までスクロールして <strong>「登録」</strong> をクリック</div>
-      </li>
-      <li>
-        <div class="step-num">6</div>
-        <div class="step-text">変更後：<strong>「掲載管理TOP」</strong> を選択</div>
-      </li>
-      <li>
-        <div class="step-num">7</div>
-        <div class="step-text">下までスクロールして <strong>「掲載変更を反映する」</strong> をクリック → 完了！</div>
-      </li>
-    </ul>
-  </div>
+    <hr class="divider">
 
-  <div class="warn-box">
-    <div class="warn-title">⚠️ 注意</div>
-    <p style="font-size:13px;color:#555;">ブログ投稿の場合は「登録・反映する」だけでOK（掲載管理TOPで「掲載変更を反映する」は不要）。<br>キャッチ変更の場合は<strong>必ず最後に「掲載変更を反映する」が必要</strong>。</p>
-  </div>
+    <!-- キャッチ変更 -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--orange);">📅</div>
+      <h3>キャッチ変更 — 手順</h3>
+    </div>
 
+    <div class="step-flow">
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--orange),#c2410c);">1</div>
+        <div class="step-body"><h4>掲載管理 → サロン</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--orange),#c2410c);">2</div>
+        <div class="step-body"><h4>「サロン情報」までスクロール</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--orange),#c2410c);">3</div>
+        <div class="step-body">
+          <h4>「キャッチ」の日付を今日の日付に変更</h4>
+          <div style="background:#fff7ed;border-radius:8px;padding:10px;margin-top:6px;font-size:12px;color:#92400e;line-height:1.5;">
+            例：★5/9空あり★口コミ高評!!高技術専門サロン 眉毛¥3500/パリジェンヌ¥3800/set¥6500〜
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--orange),#c2410c);">4</div>
+        <div class="step-body"><h4>下までスクロールして「登録」</h4></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:linear-gradient(135deg,var(--orange),#c2410c);">5</div>
+        <div class="step-body"><h4>掲載管理TOP → 「掲載変更を反映する」をクリック</h4><p style="color:var(--red);font-weight:700;">⚠️ このボタンを押さないとHPBに反映されない！</p></div>
+      </div>
+    </div>
+
+    <div style="background:#fef2f2;border:2px solid var(--red);border-radius:12px;padding:14px;margin-bottom:4px;">
+      <div style="font-size:13px;font-weight:800;color:var(--red);margin-bottom:6px;">ブログとキャッチの違い</div>
+      <div style="font-size:13px;line-height:1.7;">
+        <span class="badge badge-ok">ブログ</span>「登録・反映する」だけでOK<br>
+        <span class="badge badge-ng">キャッチ</span>登録後に「掲載変更を反映する」が必須
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<!-- ==================== 物販・提案 ==================== -->
-<div id="tab-butsuhan" class="tab-content">
 
-  <!-- ミッションバナー -->
-  <div class="mission-banner" style="margin-top:8px;">
-    <div class="mission-main">"売る"ではなく<br>"必要なケアを届ける"</div>
-    <div class="mission-sub">「販売」ではなく「施術の続き」<br>技術だけのアイリストで終わらない。<br>「施術 × 物販」で価値を提供できるアイリストになろう。</div>
+<!-- ============================================================ -->
+<!--  物販・提案                                                   -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-bussi">
+  <div class="hero hero-dark">
+    <div class="hero-icon">🛍️</div>
+    <h2>"売る"ではなく<br>"処方"する</h2>
+    <p>物販は販売ではない。施術の続き。<br>「施術 × 物販」で価値を提供するアイリストになろう。</p>
   </div>
 
-  <!-- なぜ物販が必要？ -->
-  <div class="sec-title">お客様の本音</div>
-  <div class="pattern-grid">
-    <div class="pattern-card pattern-ng">
-      <h3>😟 家では再現できない</h3>
-      <p>施術後は綺麗だけど自分で再現できない。1ヶ月間綺麗な状態が続きにくい。</p>
-    </div>
-    <div class="pattern-card pattern-ng">
-      <h3>😕 何を使えばいいか分からない</h3>
-      <p>商品がたくさんありすぎる。自分に合うものが分からない。</p>
-    </div>
-  </div>
-  <div class="highlight-box">
-    <div class="big-text">だから、お客様一人一人に合った<br>"処方"が必要</div>
-  </div>
+  <div class="body-section">
 
-  <!-- お医者さんの例え -->
-  <div class="sec-title">お医者さんに行ったとき…</div>
-  <div class="card card-teal">
-    <div class="flow-arrow">
-      <div class="flow-arrow-item">① 悩みを伝える</div>
-      <div class="flow-arrow-sep">→</div>
-      <div class="flow-arrow-item">② 診察を受ける</div>
-      <div class="flow-arrow-sep">→</div>
-      <div class="flow-arrow-item">③ 処方箋の提案</div>
-      <div class="flow-arrow-sep">→</div>
-      <div class="flow-arrow-item">④ 処方箋を受け取る</div>
+    <!-- お客様の本音 -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--pink);">💭</div>
+      <h3>お客様の本音</h3>
     </div>
-    <div class="highlight-box" style="margin-bottom:0;">
-      <div class="big-text">アイリストも同じ！</div>
-      <div class="sub-text">悩み → 施術 → 必要なケアの提案（処方）<br>ここまでがアイリストの仕事</div>
-    </div>
-  </div>
 
-  <div class="card card-orange">
-    <p style="font-size:15px;font-weight:700;margin-bottom:10px;">アイリストに置き換えると…</p>
-    <ul class="step-list">
-      <li>
-        <div class="step-num">①</div>
-        <div class="step-text">お客様が悩みを伝える<br><span class="small">例：眉が薄い／まつ毛が上がらない／持ちが悪い</span></div>
-      </li>
-      <li>
-        <div class="step-num">②</div>
-        <div class="step-text">施術で状態を整える<br><span class="small">プロとして"悩みの原因"にアプローチ</span></div>
-      </li>
-      <li>
-        <div class="step-num">③</div>
-        <div class="step-text">"今後に必要なケア"を伝える<br><span class="small">綺麗を長持ちさせるための商品 ＝ お客様の"処方箋"</span></div>
-      </li>
-    </ul>
-  </div>
-
-  <!-- 身につけてほしい3つ -->
-  <div class="sec-title">身につけてほしい3つの力</div>
-  <div class="flow-grid">
-    <div class="flow-item" style="grid-column:1/-1;">
-      <div class="flow-num" style="background:#ec4899;">1</div>
-      <h3>お客様の悩みを正しく把握する力</h3>
-      <p>カウンセリングで本当の悩みを引き出す</p>
+    <div class="grid2">
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);text-align:center;">
+        <div style="font-size:36px;margin-bottom:8px;">😢</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:4px;">家では再現できない</div>
+        <div style="font-size:12px;color:#64748b;line-height:1.5;">施術後は綺麗だけど1ヶ月間綺麗な状態が続きにくい</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);text-align:center;">
+        <div style="font-size:36px;margin-bottom:8px;">😕</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:4px;">何を使えばいいか分からない</div>
+        <div style="font-size:12px;color:#64748b;line-height:1.5;">商品がたくさんありすぎて自分に合うものが分からない</div>
+      </div>
     </div>
-    <div class="flow-item" style="grid-column:1/-1;">
-      <div class="flow-num" style="background:#a855f7;">2</div>
-      <h3>悩みに合わせて最適な施術を選ぶ力</h3>
-      <p>プロとして根拠のある施術提案をする</p>
-    </div>
-    <div class="flow-item" style="grid-column:1/-1;">
-      <div class="flow-num" style="background:#2d9fa3;">3</div>
-      <h3>施術後の"処方"を自信をもって伝える力</h3>
-      <p>商品を売るのではなく「なぜ必要か」を伝える</p>
-    </div>
-  </div>
 
-  <!-- 何が？なぜ？ -->
-  <div class="sec-title">【何が？なぜ？】の考え方</div>
-  <div class="card card-teal">
-    <p class="bold mb8">何が必要？ → お客様の悩みに合わせて選ぶ</p>
-    <table class="compare-table">
-      <tr><th>悩み</th><th>商品</th></tr>
-      <tr><td>まつ毛の持ちを良くしたい</td><td class="bold teal">コーティング剤</td></tr>
-      <tr><td>まつ毛を育てたい</td><td class="bold teal">美容液（ラッシュアディクト）</td></tr>
-      <tr><td>眉毛の毛が足りない</td><td class="bold teal">ペンシル</td></tr>
-    </table>
+    <div class="banner-strip" style="background:linear-gradient(135deg,var(--pink),#9d174d);">
+      <span class="bs-icon">💊</span>
+      <div class="bs-title">だからお客様一人一人に合った<br>"処方"が必要</div>
+    </div>
 
-    <p class="bold mb8 mt12">なぜ必要？ → 商品が施術の効果をサポートする理由を説明</p>
-    <div class="card card-orange" style="margin-bottom:0;">
-      <p style="font-size:13px;line-height:1.8;">
+    <!-- お医者さんの例え -->
+    <div class="s-head">
+      <div class="s-head-icon">🏥</div>
+      <h3>お医者さんと同じ考え方</h3>
+    </div>
+
+    <div style="background:white;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.07);margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;text-align:center;">
+        <div style="background:var(--teal-light);border-radius:10px;padding:10px;flex:1;min-width:70px;">
+          <div style="font-size:24px;">😖</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal-dark);">悩みを<br>伝える</div>
+        </div>
+        <div style="font-size:20px;color:#cbd5e1;">→</div>
+        <div style="background:var(--teal-light);border-radius:10px;padding:10px;flex:1;min-width:70px;">
+          <div style="font-size:24px;">🔍</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal-dark);">診察<br>（施術）</div>
+        </div>
+        <div style="font-size:20px;color:#cbd5e1;">→</div>
+        <div style="background:linear-gradient(135deg,var(--teal),var(--teal-dark));border-radius:10px;padding:10px;flex:1;min-width:70px;">
+          <div style="font-size:24px;">📋</div>
+          <div style="font-size:11px;font-weight:700;color:white;">処方箋<br>（物販）</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--teal-dark);text-align:center;">ここまでがアイリストの仕事</div>
+    </div>
+
+    <!-- 何が？なぜ？ -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--yellow);">❓</div>
+      <h3>「何が？」「なぜ？」の公式</h3>
+    </div>
+
+    <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+      <div style="background:var(--teal);color:white;padding:10px 14px;font-size:13px;font-weight:800;">何が必要？→ 悩みに合わせて選ぶ</div>
+      <div style="padding:12px 14px;">
+        <div class="diff-row"><div class="diff-label">まつ毛の持ち</div><span class="diff-ok">コーティング剤</span></div>
+        <div class="diff-row"><div class="diff-label">まつ毛を育てたい</div><span class="diff-ok">美容液（ラッシュアディクト）</span></div>
+        <div class="diff-row"><div class="diff-label">眉毛の毛が薄い</div><span class="diff-ok">ペンシル</span></div>
+      </div>
+      <div style="background:#f59e0b;color:white;padding:10px 14px;font-size:13px;font-weight:800;">なぜ必要？→ 商品が施術の効果をサポートする理由を言葉にする</div>
+      <div style="padding:12px 14px;font-size:13px;color:#334155;line-height:1.8;">
         「施術だけではカールがすぐ取れやすい」<br>
-        「美容液で地まつ毛を補強すると、次回の施術もきれいに仕上がる」<br>
+        「美容液で地まつ毛を補強すると次回の施術も綺麗に仕上がる」<br>
         「日々メイクをするのはお客様自身だから」
-      </p>
-    </div>
-  </div>
-
-  <!-- 会話例 -->
-  <div class="sec-title">実際の会話例</div>
-
-  <div class="talk-scene">
-    <div class="talk-scene-title">💬 ケース1：コーティング剤を提案する</div>
-    <div class="bubble-wrap">
-      <div class="avatar customer">👤</div>
-      <div class="bubble customer">「上がりたては綺麗だけど、すぐバラつくのが気になる。美容液は毎日使っています。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「今日の仕上がりを長く保つために、ご自宅で使ってほしいものがあります。パーマをかけた後、何も付けないままだとバラつきやすいんです。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「このコーティングを使うと、今日みたいな束感（綺麗な状態）がキープしやすくなります。1日1回メイクの時で大丈夫なので、マスカラを塗る前に使ってもらえればOKです。」</div>
-    </div>
-  </div>
-
-  <div class="talk-scene">
-    <div class="talk-scene-title">💬 ケース2：美容液（ラッシュアディクト）を提案する</div>
-    <div class="bubble-wrap">
-      <div class="avatar customer">👤</div>
-      <div class="bubble customer">「エクステに変えようかな？もっと華やかな印象にしたい。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「今日まつげの状態を見させていただいて、美容液でのケアがあると安心だなと思いました。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「ラッシュアディクトを使っていただくと、まつげがしっかり育ってくれるので、印象がはっきりしてきます。パーマのもちも良くなって、次回来店まで綺麗な状態を保ちやすくなります。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「1日1回、夜のスキンケアのタイミングで塗るだけです。」</div>
-    </div>
-  </div>
-
-  <div class="talk-scene">
-    <div class="talk-scene-title">💬 ケース3：ペンシルを提案する</div>
-    <div class="bubble-wrap">
-      <div class="avatar customer">👤</div>
-      <div class="bubble customer">「毎日のメイクが難しい。形が決まらない」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「眉毛の形のベースは、きれいに整えさせていただきました。ただ、お家では何も足さないと形がぼやけやすいので、ペンシルがあると安心です。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「ペンシルは、眉毛の中で"毛を足す役割"になります。特に毛が少ないところは、1本ずつ毛を書き足すイメージで使っていただくと、今日の形が再現できます。このくらい細いペン先だと、失敗もしにくいのでおすすめです。」</div>
-    </div>
-  </div>
-
-  <div class="talk-scene">
-    <div class="talk-scene-title">💬 ケース4：「高いな…」と迷っているとき</div>
-    <div class="bubble-wrap">
-      <div class="avatar customer">👤</div>
-      <div class="bubble customer">「ちょっと高いな…」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「毎日使うものなので、1回あたりにするとコスパは良いと思います。」<br>または<br>「次のご来店までの"サポート代"と思ってもらえると◎です。」</div>
-    </div>
-    <div class="bubble-wrap right">
-      <div class="avatar staff">💁</div>
-      <div class="bubble staff">「今日は知ってもらえただけで大丈夫です。気になったら次回でも全然大丈夫ですよ。」</div>
-    </div>
-  </div>
-
-  <!-- まとめ -->
-  <div class="sec-title">物販の心得まとめ</div>
-  <div class="mission-banner">
-    <div style="font-size:16px;font-weight:800;margin-bottom:12px;">3つの鉄則</div>
-    <div style="display:flex;flex-direction:column;gap:10px;text-align:left;">
-      <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:12px;">
-        <span style="font-weight:900;">① 物販 ＝ 施術の一部</span><br>
-        <span style="font-size:12px;opacity:0.9;">「別売り」ではなく、施術を完成させる「仕上げ」</span>
-      </div>
-      <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:12px;">
-        <span style="font-weight:900;">② 売るのは商品ではなく「理由」</span><br>
-        <span style="font-size:12px;opacity:0.9;">「なぜこのまつ毛にコーティングが必要か」を説明すること</span>
-      </div>
-      <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:12px;">
-        <span style="font-weight:900;">③ 売れなくてもOK。伝えたかどうかが合格ライン</span><br>
-        <span style="font-size:12px;opacity:0.9;">お客様も安心 → リービートしやすくなる</span>
       </div>
     </div>
-  </div>
 
-  <!-- 商品知識 -->
-  <div class="sec-title">商品知識</div>
-
-  <!-- ラッシュアディクト -->
-  <div class="product-card">
-    <div class="product-header dark">
-      <h2>ラッシュアディクト</h2>
-      <div class="price">¥11,000</div>
-      <div style="font-size:12px;opacity:0.8;margin-top:4px;">まつ毛編 ／ 長さ特化タイプ</div>
+    <!-- 会話例 -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--purple);">💬</div>
+      <h3>実際の会話例</h3>
     </div>
-    <div class="product-body">
-      <div class="product-grid">
-        <div class="product-col" style="grid-column:1/-1;">
-          <h4>基本情報</h4>
-          <ul>
-            <li>長さ特化タイプ・3週間で効果を実感</li>
-            <li>5ML（5〜6ヶ月の持ち）</li>
-            <li>サロン専売で高濃度・市販品より美容成分濃度約40%高い</li>
-            <li>半年リペアがおすすめ（防腐剤入りで最大1年使用可能）</li>
-          </ul>
-        </div>
-        <div class="product-col">
-          <h4>なぜ必要？</h4>
-          <ul>
-            <li>長さ＝デザインの土台</li>
-            <li>パーマの満足度UP</li>
-            <li>カール映えUP</li>
-            <li>成長期まつ毛を"最大まで伸ばす"設計</li>
-            <li>ダメージ補修＋毛周期サポート</li>
-          </ul>
-        </div>
-        <div class="product-col">
-          <h4>使い方（必須）</h4>
-          <ul>
-            <li>夜1回のみ</li>
-            <li>二度塗りNG</li>
-            <li>しごいて極少量</li>
-            <li>両目片方ずつ</li>
-          </ul>
-        </div>
-        <div class="product-col">
-          <h4>向いてる人</h4>
-          <ul>
-            <li>まつ毛が短い</li>
-            <li>まつ毛が傷んでいる</li>
-            <li>本気で変えたい</li>
-            <li>アイメイク減らしたい</li>
-            <li>持ちを良くしたい</li>
-          </ul>
-        </div>
+
+    <div class="chat-label">Case 1｜コーティング剤を提案</div>
+    <div class="chat-wrap">
+      <div class="chat-row">
+        <div class="chat-avatar av-customer">👤</div>
+        <div class="chat-bubble bubble-customer">「上がりたては綺麗だけど、すぐバラつくのが気になる。美容液は毎日使っています。」</div>
       </div>
-      <div class="warn-box mt12">
-        <div class="warn-title">⚠️ よくある誤解：色素沈着について</div>
-        <p style="font-size:13px;color:#555;">色素沈着成分はゼロ。まつ毛を伸ばす成分が【血行促進成分】のため赤みが出やすく、色素沈着と勘違いされやすいが問題なし。自信を持って説明しよう。</p>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「今日の仕上がりを長く保つために、ご自宅で使ってほしいものがあります。パーマをかけた後、何も付けないままだとバラつきやすいんです。」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「このコーティングを使うと、今日みたいな束感がキープしやすくなります。1日1回、マスカラを塗る前に使ってもらえればOKです。」</div>
       </div>
     </div>
-  </div>
 
-  <!-- エグータム -->
-  <div class="product-card">
-    <div class="product-header teal">
-      <h2>エグータム</h2>
-      <div class="price">¥6,000</div>
-      <div style="font-size:12px;opacity:0.8;margin-top:4px;">まつ毛編 ／ 太さ・密度特化タイプ</div>
+    <div class="chat-label">Case 2｜美容液（ラッシュアディクト）を提案</div>
+    <div class="chat-wrap">
+      <div class="chat-row">
+        <div class="chat-avatar av-customer">👤</div>
+        <div class="chat-bubble bubble-customer">「エクステに変えようかな？もっと華やかな印象にしたい。」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「今日まつげの状態を見て、美容液でのケアがあると安心だなと思いました。ラッシュアディクトを使っていただくと、まつげがしっかり育ってくれるので印象がはっきりしてきます。パーマのもちも良くなりますよ。」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「1日1回、夜のスキンケアのタイミングで塗るだけです。」</div>
+      </div>
     </div>
-    <div class="product-body">
-      <div class="product-grid">
-        <div class="product-col" style="grid-column:1/-1;">
-          <h4>基本情報</h4>
-          <ul>
-            <li>太さ・密度特化型</li>
-            <li>60日で変化を実感</li>
-            <li>2ML（2〜3ヶ月の持ち）</li>
-            <li>3ヶ月リペアがおすすめ（防腐剤入りで最大半年使用可能）</li>
-          </ul>
+
+    <div class="chat-label">Case 3｜ペンシルを提案</div>
+    <div class="chat-wrap">
+      <div class="chat-row">
+        <div class="chat-avatar av-customer">👤</div>
+        <div class="chat-bubble bubble-customer">「毎日のメイクが難しい。形が決まらない…」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「眉毛の形のベースはきれいに整えました。ただお家では何も足さないと形がぼやけやすいので、ペンシルがあると安心です。」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「ペンシルは毛を足す役割です。特に毛が少ないところは1本ずつ書き足すイメージで。この細いペン先だと失敗もしにくくておすすめです。」</div>
+      </div>
+    </div>
+
+    <div class="chat-label">Case 4｜「高いな…」と迷っているとき</div>
+    <div class="chat-wrap">
+      <div class="chat-row">
+        <div class="chat-avatar av-customer">👤</div>
+        <div class="chat-bubble bubble-customer">「ちょっと高いな…」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「毎日使うものなので、1回あたりにするとコスパは良いと思います。次のご来店までの"サポート代"と思っていただければ◎です。」</div>
+      </div>
+      <div class="chat-row right">
+        <div class="chat-avatar av-staff">💁</div>
+        <div class="chat-bubble bubble-staff">「今日は知ってもらえただけで大丈夫ですよ。気になったら次回でも全然OKです。」</div>
+      </div>
+    </div>
+
+    <!-- 鉄則 -->
+    <div class="banner-strip" style="background:linear-gradient(135deg,#1e293b,#334155);">
+      <span class="bs-icon">⭐</span>
+      <div class="bs-title">物販の3鉄則</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;">
+          <strong>① 物販 ＝ 施術の一部</strong><br>
+          <span style="opacity:0.85;">「別売り」ではなく施術を完成させる仕上げ</span>
         </div>
-        <div class="product-col">
-          <h4>+A知識</h4>
-          <ul>
-            <li>メラニン微量配合＝濃さ演出</li>
-            <li>植物性成分中心→肌への害がない</li>
-            <li>眉毛にも併用可</li>
-          </ul>
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;">
+          <strong>② 売るのは商品ではなく「理由」</strong><br>
+          <span style="opacity:0.85;">なぜこのまつ毛に必要かを説明する</span>
         </div>
-        <div class="product-col">
-          <h4>ラッシュアディクトとの違い</h4>
-          <ul>
-            <li>ラッシュ→長さ特化</li>
-            <li>エグータム→太さ・密度特化</li>
-            <li>悩みで使い分ける</li>
-          </ul>
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;">
+          <strong>③ 売れなくてもOK。伝えたかどうかが合格ライン</strong><br>
+          <span style="opacity:0.85;">伝えるだけでリービートにつながる</span>
         </div>
       </div>
     </div>
-  </div>
 
+    <!-- 商品知識 -->
+    <div class="s-head">
+      <div class="s-head-icon">💊</div>
+      <h3>商品知識 — まつ毛編</h3>
+    </div>
+
+    <!-- ラッシュアディクト -->
+    <div class="prod-hero">
+      <div class="prod-hero-top" style="background:linear-gradient(135deg,#1e293b,#475569);">
+        <span class="prod-emoji">🖋️</span>
+        <h2>ラッシュアディクト</h2>
+        <div class="prod-price">¥11,000</div>
+        <div class="prod-sub">5ML ／ 長さ特化 ／ サロン専売 ／ 5〜6ヶ月の持ち</div>
+      </div>
+      <div class="prod-hero-body">
+        <div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:800;color:#64748b;margin-bottom:8px;">基本情報</div>
+          <div style="font-size:13px;color:#334155;line-height:1.7;">
+            長さ特化タイプ・<strong>3週間で効果</strong>を実感<br>
+            市販品より美容成分濃度<strong>約40%高い</strong><br>
+            半年リペアがおすすめ（防腐剤入りで最大1年使用可能）
+          </div>
+        </div>
+        <div class="prod-cols">
+          <div class="prod-col">
+            <h5>なぜ必要？</h5>
+            <ul>
+              <li>長さ＝デザインの土台</li>
+              <li>パーマ満足度UP</li>
+              <li>カール映えUP</li>
+              <li>ダメージ補修＋毛周期サポート</li>
+            </ul>
+          </div>
+          <div class="prod-col">
+            <h5>使い方（必須）</h5>
+            <ul>
+              <li>夜1回のみ</li>
+              <li>二度塗りNG</li>
+              <li>しごいて極少量</li>
+              <li>両目片方ずつ</li>
+            </ul>
+          </div>
+          <div class="prod-col">
+            <h5>向いてる人</h5>
+            <ul>
+              <li>まつ毛が短い</li>
+              <li>まつ毛が傷んでいる</li>
+              <li>アイメイク減らしたい</li>
+              <li>持ちを良くしたい</li>
+            </ul>
+          </div>
+          <div class="prod-col" style="background:#fef2f2;border:1.5px solid #fca5a5;">
+            <h5 style="color:#b91c1c;">よくある誤解</h5>
+            <ul>
+              <li style="color:#7f1d1d;">色素沈着？→ 成分はゼロ</li>
+              <li style="color:#7f1d1d;">赤み→血行促進成分のため</li>
+              <li style="color:#7f1d1d;">自信を持って説明しよう</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- エグータム -->
+    <div class="prod-hero">
+      <div class="prod-hero-top" style="background:linear-gradient(135deg,#2AABB0,#155e63);">
+        <span class="prod-emoji">✨</span>
+        <h2>エグータム</h2>
+        <div class="prod-price">¥6,000</div>
+        <div class="prod-sub">2ML ／ 太さ・密度特化 ／ 2〜3ヶ月の持ち</div>
+      </div>
+      <div class="prod-hero-body">
+        <div class="prod-cols">
+          <div class="prod-col">
+            <h5>基本情報</h5>
+            <ul>
+              <li>太さ・密度特化</li>
+              <li>60日で変化を実感</li>
+              <li>3ヶ月リペアがおすすめ</li>
+              <li>最大半年使用可能</li>
+            </ul>
+          </div>
+          <div class="prod-col">
+            <h5>+A知識</h5>
+            <ul>
+              <li>メラニン微量配合＝濃さ演出</li>
+              <li>植物性成分中心→肌に優しい</li>
+              <li>眉毛にも併用可</li>
+            </ul>
+          </div>
+        </div>
+        <div style="background:#f0fdfe;border-radius:10px;padding:10px 12px;margin-top:4px;font-size:13px;color:var(--teal-dark);font-weight:600;">
+          ラッシュアディクト＝長さ、エグータム＝太さ。お客様の悩みで使い分けよう。
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<!-- ==================== 次回予約 ==================== -->
-<div id="tab-yoyaku" class="tab-content">
 
-  <div class="mission-banner" style="margin-top:8px;">
-    <div class="mission-main">次回予約 ＝<br>お客様のキレイを守る仕事</div>
-    <div class="mission-sub">施術の一部として、必ず案内しよう</div>
+<!-- ============================================================ -->
+<!--  次回予約                                                     -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-yoyaku">
+  <div class="hero" style="background:linear-gradient(135deg,#f59e0b 0%,#92400e 100%);">
+    <div class="hero-icon">📅</div>
+    <h2>次回予約は<br>施術の一部</h2>
+    <p>「ついで」ではなく、<br>プロとしての提案として必ず行おう。</p>
   </div>
 
-  <!-- お客様メリット -->
-  <div class="sec-title">お客様へのメリット</div>
-  <div class="card card-teal">
-    <p style="font-weight:800;font-size:14px;margin-bottom:10px;">眉毛・まつ毛パーマは周期管理が超重要</p>
+  <div class="body-section">
 
-    <div style="background:#f0fafa;border-radius:10px;padding:12px;margin-bottom:10px;">
-      <p class="bold mb4">👁️ 眉毛の場合</p>
-      <ul style="list-style:none;padding-left:0;">
-        <li style="font-size:13px;padding:3px 0;">・約<strong>3〜4週間</strong>で形が崩れ始める</li>
-        <li style="font-size:13px;padding:3px 0;">・産毛や生えグセが戻り、ラインがぼやける</li>
-        <li style="font-size:13px;padding:3px 0;color:#1a6e72;font-weight:700;">▶ 定期来店で「常に整った綺麗な眉」を保てる</li>
-      </ul>
+    <!-- メリット数値 -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--yellow);">📊</div>
+      <h3>次回予約が大切な理由</h3>
     </div>
 
-    <div style="background:#f0fafa;border-radius:10px;padding:12px;">
-      <p class="bold mb4">✨ まつ毛の場合</p>
-      <ul style="list-style:none;padding-left:0;">
-        <li style="font-size:13px;padding:3px 0;">・生え変わりによりばらつきが出る</li>
-        <li style="font-size:13px;padding:3px 0;">・新生毛が伸びるとカールに差が出やすい</li>
-        <li style="font-size:13px;padding:3px 0;color:#1a6e72;font-weight:700;">▶ 目安：新生毛にかけた場合3〜4週間、周期的な方4〜6週間</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- サロンメリット -->
-  <div class="sec-title">サロン側のメリット</div>
-  <div class="pattern-grid">
-    <div class="pattern-card pattern-ok">
-      <h3>⭐ リピート率の安定</h3>
-      <p>・満足度が高い"施術直後"が一番響きやすい<br>・その場で次回日時を決めると来店習慣がつく<br>・次回予約＝継続につながる</p>
-    </div>
-    <div class="pattern-card pattern-ok">
-      <h3>⭐ 売上の安定</h3>
-      <p>・未来の売上が確定する<br>・予約枠が埋まりやすくなる<br>・平日に来店された方は平日予約の可能性あり<br>・暇になりやすい平日を埋められる</p>
-    </div>
-  </div>
-
-  <!-- おすすめタイミング -->
-  <div class="sec-title">おすすめのタイミング</div>
-
-  <div class="card card-teal">
-    <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:12px;border:2px solid #3b82f6;">
-      <p style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:8px;">Pattern 1 ✅ 仕上がりの鏡チェック時</p>
-      <p style="font-size:12px;color:#666;margin-bottom:8px;">最も満足度が高い瞬間 ＝ 感動が残っているうちに"保つ方法"として提案</p>
-      <div style="background:white;border-radius:8px;padding:10px;font-size:13px;color:#1d4ed8;font-weight:600;line-height:1.8;">
-        「この状態をキープするなら、次回は○週間後がおすすめです」<br>
-        「ご予定がお分かりでしたら、本日そのままお取りできます」
+    <div class="stat-row">
+      <div class="stat-box" style="background:linear-gradient(135deg,#2AABB0,#155e63);">
+        <div class="stat-num">3〜4</div>
+        <div class="stat-unit">週間</div>
+        <div class="stat-label">眉毛が崩れ始める</div>
+      </div>
+      <div class="stat-box" style="background:linear-gradient(135deg,#8B5CF6,#4c1d95);">
+        <div class="stat-num">4〜6</div>
+        <div class="stat-unit">週間</div>
+        <div class="stat-label">まつ毛パーマの目安</div>
+      </div>
+      <div class="stat-box" style="background:linear-gradient(135deg,#f59e0b,#92400e);">
+        <div class="stat-num">100%</div>
+        <div class="stat-unit">確定</div>
+        <div class="stat-label">次回予約＝未来の売上</div>
       </div>
     </div>
 
-    <div style="background:#eff6ff;border-radius:10px;padding:14px;border:2px solid #3b82f6;">
-      <p style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:8px;">Pattern 2 ✅ お会計前の最終確認タイミング</p>
-      <p style="font-size:12px;color:#666;margin-bottom:8px;">来店の流れが終わる前に自然に提案<br>"判断を委ねる"のではなく、プロとして最適な周期を提示する</p>
-      <div style="background:white;border-radius:8px;padding:10px;font-size:13px;">
-        <div style="color:#22c55e;font-weight:700;margin-bottom:4px;">○ 「○週間後のご来店をおすすめしております」（提案型）</div>
-        <div style="color:#ef4444;font-weight:700;">✕ 「次回予約いかがなさいますか？」（質問型）</div>
+    <!-- お客様メリット -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--pink);">💄</div>
+      <h3>お客様へのメリット</h3>
+    </div>
+
+    <div class="grid2">
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:30px;text-align:center;margin-bottom:8px;">👁️</div>
+        <div style="font-size:13px;font-weight:800;margin-bottom:6px;text-align:center;">眉毛</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">約3〜4週間で形が崩れ始め、産毛や生えグセが戻りラインがぼやける。定期来店で「常に整った綺麗な眉」を保てる。</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:30px;text-align:center;margin-bottom:8px;">✨</div>
+        <div style="font-size:13px;font-weight:800;margin-bottom:6px;text-align:center;">まつ毛</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">新生毛にかけた場合3〜4週間、周期的な方は4〜6週間。正しい周期でかけ直すことでカールの持続・デザインが安定する。</div>
       </div>
     </div>
-  </div>
 
-  <!-- NG -->
-  <div class="sec-title">やってはいけないNG行動</div>
-  <div class="card card-red">
-    <ul style="list-style:none;">
-      <li style="padding:8px 0;border-bottom:1px solid #fee2e2;font-size:14px;display:flex;gap:8px;align-items:flex-start;">
-        <span style="color:#ef4444;font-size:18px;flex-shrink:0;">✕</span>
-        <span>退店間際に突然思い出したように聞く</span>
-      </li>
-      <li style="padding:8px 0;border-bottom:1px solid #fee2e2;font-size:14px;display:flex;gap:8px;align-items:flex-start;">
-        <span style="color:#ef4444;font-size:18px;flex-shrink:0;">✕</span>
-        <span>雑談の流れで軽く触れるだけ</span>
-      </li>
-      <li style="padding:8px 0;font-size:14px;display:flex;gap:8px;align-items:flex-start;">
-        <span style="color:#ef4444;font-size:18px;flex-shrink:0;">✕</span>
-        <span>「どうされますか？」とお客様任せにする</span>
-      </li>
-    </ul>
-    <div class="warn-box mt12" style="margin-bottom:0;">
-      <div class="warn-title">ポイント</div>
-      <p style="font-size:13px;color:#555;">次回予約は"ついで"ではなく<strong>施術の一部</strong>としてご案内するもの。</p>
+    <!-- サロンメリット -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--green);">📈</div>
+      <h3>サロン側のメリット</h3>
     </div>
-  </div>
 
-  <!-- 理想の状態 -->
-  <div class="highlight-box">
-    <div style="font-size:24px;margin-bottom:8px;">🏆</div>
-    <div class="big-text">理想の状態</div>
-    <div class="sub-text" style="margin-top:8px;font-size:14px;font-weight:700;">次回予約を取らないと予約が取りにくい環境<br>（忙しい店であることをお客様にアピール）</div>
-  </div>
+    <div class="grid2">
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">POINT 01</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px;">リピート率の安定</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">施術直後が一番満足度が高い瞬間。その場で次回日時を決めることで来店習慣がつく。</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">POINT 02</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px;">売上の安定</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">未来の売上が確定。予約枠が埋まりやすくなり、平日の暇な時間帯を埋められる。</div>
+      </div>
+    </div>
 
+    <!-- タイミング -->
+    <div class="s-head">
+      <div class="s-head-icon">⏰</div>
+      <h3>おすすめのタイミング</h3>
+    </div>
+
+    <div class="timing-card">
+      <div class="timing-head" style="background:#eff6ff;">
+        <span class="timing-tag" style="background:#3b82f6;color:white;">Pattern 1</span>
+        <h4 style="color:#1d4ed8;">仕上がりの鏡チェック時</h4>
+      </div>
+      <div class="timing-body">
+        <div style="font-size:12px;color:#64748b;margin-top:8px;">最も満足度が高い瞬間。感動が残っているうちに"保つ方法"として提案する。</div>
+        <div class="timing-script">
+          「この状態をキープするなら、次回は○週間後がおすすめです」<br>
+          「ご予定がお分かりでしたら、本日そのままお取りできます」
+        </div>
+      </div>
+    </div>
+
+    <div class="timing-card">
+      <div class="timing-head" style="background:#eff6ff;">
+        <span class="timing-tag" style="background:#6366f1;color:white;">Pattern 2</span>
+        <h4 style="color:#4338ca;">お会計前の最終確認タイミング</h4>
+      </div>
+      <div class="timing-body">
+        <div style="font-size:12px;color:#64748b;margin-top:8px;">"判断を委ねる"のではなく、プロとして最適な周期を提示する。</div>
+        <div class="timing-script">
+          ○「○週間後のご来店をおすすめしております」（提案型）
+        </div>
+        <div style="background:#fff1f2;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:12px;color:#b91c1c;font-weight:700;">
+          ✕「次回予約いかがなさいますか？」（質問型 — お客様任せはNG）
+        </div>
+      </div>
+    </div>
+
+    <!-- NG -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--red);">🚫</div>
+      <h3>絶対にやってはいけないNG</h3>
+    </div>
+
+    <div style="background:white;border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+      <div style="background:#ef4444;padding:10px 14px;color:white;font-size:13px;font-weight:800;">次回予約のNG行動</div>
+      <div style="padding:4px 14px 8px;">
+        <div class="cl-item">
+          <div style="width:22px;height:22px;background:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0;">✕</div>
+          <div>退店間際に突然思い出したように聞く</div>
+        </div>
+        <div class="cl-item">
+          <div style="width:22px;height:22px;background:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0;">✕</div>
+          <div>雑談の流れで軽く触れるだけ</div>
+        </div>
+        <div class="cl-item">
+          <div style="width:22px;height:22px;background:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0;">✕</div>
+          <div>「どうされますか？」とお客様任せにする</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 理想 -->
+    <div class="banner-strip" style="background:linear-gradient(135deg,#f59e0b,#92400e);">
+      <span class="bs-icon">🏆</span>
+      <div class="bs-title">理想の状態</div>
+      <div class="bs-sub" style="margin-top:8px;font-size:14px;font-weight:700;">次回予約を取らないと予約が取りにくい環境<br>（忙しい店であることをお客様にアピール）</div>
+    </div>
+
+  </div>
 </div>
+
 
 <script>
-function showTab(id) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
+function go(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 </script>
 </body>
