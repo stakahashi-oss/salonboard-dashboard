@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSIN STUDIO スタッフマニュアル</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #f0f4f8; color: #333; }
+
+  header {
+    background: linear-gradient(135deg, #2d9fa3 0%, #1a6e72 100%);
+    color: white;
+    padding: 22px 24px 18px;
+    text-align: center;
+  }
+  header h1 { font-size: 19px; font-weight: 700; letter-spacing: 0.03em; }
+  header p  { font-size: 12px; opacity: 0.85; margin-top: 5px; }
+
+  /* Scrollable tab bar */
+  .tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active { color: #2d9fa3; border-bottom-color: #2d9fa3; }
+  .tab-btn span { display: block; font-size: 16px; margin-bottom: 2px; text-align: center; }
+
+  .tab-content { display: none; padding: 20px 16px 60px; max-width: 700px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* Section title */
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1a6e72;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #d1f0f1;
+  }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #222;
+  }
+  .card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.75;
+  }
+
+  /* Step cards (timeline) */
+  .step-list { display: flex; flex-direction: column; gap: 0; }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .step-item:last-child { padding-bottom: 0; }
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .step-circle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #2d9fa3;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .step-circle.orange { background: #f59e0b; }
+  .step-circle.purple { background: #8b5cf6; }
+  .step-circle.red    { background: #ef4444; }
+  .step-circle.green  { background: #10b981; }
+  .step-circle.blue   { background: #3b82f6; }
+  .step-line {
+    width: 2px;
+    background: #d1f0f1;
+    flex: 1;
+    min-height: 20px;
+    margin-top: 4px;
+  }
+  .step-body {
+    flex: 1;
+    padding-top: 6px;
+    padding-bottom: 0;
+  }
+  .step-body-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 4px;
+  }
+  .step-body-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.7;
+  }
+
+  /* Alert boxes */
+  .alert {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #92400e;
+    margin: 14px 0;
+    line-height: 1.65;
+  }
+  .alert-red {
+    background: #fee2e2;
+    border-left-color: #ef4444;
+    color: #991b1b;
+  }
+  .alert-blue {
+    background: #dbeafe;
+    border-left-color: #3b82f6;
+    color: #1e3a8a;
+  }
+  .alert-green {
+    background: #d1fae5;
+    border-left-color: #10b981;
+    color: #065f46;
+  }
+  .alert-teal {
+    background: #ccfbf1;
+    border-left-color: #2d9fa3;
+    color: #134e4a;
+  }
+
+  /* Numbered steps (inline) */
+  .inline-steps { list-style: none; padding: 0; }
+  .inline-steps li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.65;
+  }
+  .inline-steps li:last-child { border-bottom: none; }
+  .inline-steps .num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #2d9fa3;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Product cards */
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .product-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    border-top: 4px solid #2d9fa3;
+  }
+  .product-card.accent { border-top-color: #8b5cf6; }
+  .product-name { font-size: 14px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .product-price { font-size: 18px; font-weight: 700; color: #2d9fa3; margin-bottom: 10px; }
+  .product-price.accent { color: #8b5cf6; }
+  .product-tag {
+    display: inline-block;
+    background: #f0f9fa;
+    color: #2d9fa3;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin: 2px 2px 2px 0;
+  }
+  .product-tag.accent { background: #f5f3ff; color: #8b5cf6; }
+  .product-detail {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    line-height: 1.7;
+  }
+
+  /* Talk examples */
+  .talk-box {
+    background: #f8fffe;
+    border: 1px solid #d1f0f1;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .talk-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2d9fa3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .talk-text {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  /* SV cards */
+  .sv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sv-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .sv-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2d9fa3, #1a6e72);
+    color: white;
+    font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px;
+  }
+  .sv-name { font-size: 14px; font-weight: 700; color: #222; }
+
+  /* Timing pattern */
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .pattern-card {
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+  .pattern-card.ok  { background: #d1fae5; border: 2px solid #10b981; }
+  .pattern-card.ng  { background: #fee2e2; border: 2px solid #ef4444; }
+  .pattern-label { font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+  .pattern-card.ok .pattern-label { color: #065f46; }
+  .pattern-card.ng .pattern-label { color: #991b1b; }
+  .pattern-text { font-size: 12px; line-height: 1.6; color: #333; }
+
+  /* Link button */
+  .link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2d9fa3, #1a6e72);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(45,159,163,0.3);
+  }
+  .link-btn-red {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  }
+  .link-btn-yt {
+    background: linear-gradient(135deg, #ff0000, #cc0000);
+    box-shadow: 0 4px 12px rgba(255,0,0,0.3);
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-teal   { background: #ccfbf1; color: #134e4a; }
+  .badge-orange { background: #fef3c7; color: #92400e; }
+  .badge-red    { background: #fee2e2; color: #991b1b; }
+
+  /* Sub section header */
+  .sub-section {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2d9fa3;
+    margin: 20px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid #2d9fa3;
+  }
+
+  /* Screen mockup */
+  .screen-mock {
+    background: #e8f4f8;
+    border: 2px solid #b2d8e0;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 12px;
+    color: #2d6a70;
+    font-family: monospace;
+  }
+  .screen-mock .highlight {
+    background: #ff6b6b;
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .screen-nav {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .screen-nav-btn {
+    background: #2d6fa3;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .screen-nav-btn.active { background: #d0f0f5; color: #1a6e72; outline: 2px solid #2d9fa3; }
+
+  /* Flow arrows */
+  .flow-arrow {
+    text-align: center;
+    color: #2d9fa3;
+    font-size: 18px;
+    margin: 4px 0;
+  }
+
+  .spacer { height: 12px; }
+
+  /* Responsive */
+  @media (max-width: 400px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .pattern-grid { grid-template-columns: 1fr; }
+    .sv-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📖 SSIN STUDIO スタッフマニュアル</h1>
+  <p>SSIN STUDIO / most eyes — ここを見れば全てわかる</p>
+</header>
+
+<div class="tabs" id="tabBar">
+  <button class="tab-btn active" onclick="showTab('flow')"><span>📋</span>業務フロー</button>
+  <button class="tab-btn" onclick="showTab('nippo')"><span>📣</span>日報</button>
+  <button class="tab-btn" onclick="showTab('cracoal')"><span>📞</span>クラコール</button>
+  <button class="tab-btn" onclick="showTab('square')"><span>💳</span>スクエア</button>
+  <button class="tab-btn" onclick="showTab('sb')"><span>📊</span>SB操作</button>
+  <button class="tab-btn" onclick="showTab('bussan')"><span>🛍️</span>物販・提案</button>
+  <button class="tab-btn" onclick="showTab('yoyaku')"><span>📅</span>次回予約</button>
+  <button class="tab-btn" onclick="showTab('sv')"><span>👥</span>SV・連絡先</button>
+</div>
+
+<!-- ===================== TAB 1: 業務フロー ===================== -->
+<div class="tab-content active" id="tab-flow">
+  <div class="section-title">📋 日次業務フロー</div>
+
+  <div class="card">
+    <div class="step-list">
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle">①</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">出勤 — タイムカード打刻 ＋ 日報送信</div>
+          <div class="step-body-desc">出勤したらまずタイムカードを打刻。<br>LINEグループに出勤日報を送信する。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle blue">②</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">掃除 ＋ レジの現金確認</div>
+          <div class="step-body-desc">店内の掃除を行い、レジの現金が正しいか確認する。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle blue">③</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">ブース整理・確認</div>
+          <div class="step-body-desc">施術ブースを整理・清潔に整える。備品の在庫も確認する。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle green">④</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">接客</div>
+          <div class="step-body-desc">お客様へ最高の接客・施術を提供する。<br>物販提案・次回予約の獲得も忘れずに。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle orange">⑤</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">休憩</div>
+          <div class="step-body-desc">定められた時間に休憩を取る。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle purple">⑥</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">空き時間タスク</div>
+          <div class="step-body-desc">清掃、SNS更新、HPB更新、口コミ返信、キャッチ・クーポン名更新など。<br>ToDoリストを確認して優先度の高いものから対応する。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle orange">⑦</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">レジ締め ＋ 各種記入</div>
+          <div class="step-body-desc">レジ締め作業 → 売上受取管理表に日別売上内訳を記入 → 次回予約ダッシュボードの記入。</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-circle red">⑧</div>
+          <!-- no line for last item -->
+        </div>
+        <div class="step-body">
+          <div class="step-body-title">退勤 — 日報送信 ＋ タイムカード打刻</div>
+          <div class="step-body-desc">日報をLINEグループへ送信。店舗を閉めてからタイムカードを打刻する。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sub-section">空き時間ToDoリスト（例）</div>
+  <div class="card">
+    <p style="font-size:13px; color:#555;">朝やること</p>
+    <ul style="font-size:13px; color:#444; padding-left:18px; margin-top:8px; line-height:2;">
+      <li>グループラインにスケジュールを送る</li>
+      <li>トイレ掃除/洗面/空気清浄機を動かす/ワゴンセッティング</li>
+      <li>音楽を流す/ウォーマーをつける</li>
+      <li>サロンボードのキャッチ&クーポン名の日付支度認</li>
+    </ul>
+    <p style="font-size:13px; color:#555; margin-top:12px;">空き時間業務（優先度順）</p>
+    <ul style="font-size:13px; color:#444; padding-left:18px; margin-top:8px; line-height:2;">
+      <li>ブログの更新 / 口コミ返信（HPB・Google）</li>
+      <li>キャッチ、クーポン名の更新</li>
+      <li>物販/オプションの店内POP作成</li>
+      <li>SNS投稿</li>
+      <li>シフト入力（当月があった場合）</li>
+      <li>店舗インスタでビフォア写真の投稿</li>
+      <li>清掃チェックリストを存在に清掃</li>
+      <li>公式LINEメッセージ配信</li>
+      <li>ダッシュボード/カルテを店舗に記入</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== TAB 2: 日報 ===================== -->
+<div class="tab-content" id="tab-nippo">
+  <div class="section-title">📣 日報グループ</div>
+
+  <div class="card">
+    <div class="card-title">日報グループとは？</div>
+    <p>出勤時・退勤時の日報送信や、日々の業務の中でわからないことを質問できるLINEグループです。本部SV・加盟店様からのご連絡もこちらで行われます。</p>
+    <div class="alert alert-teal" style="margin-top:12px;">
+      📔 <strong>ノートに店舗情報あり：</strong>サロンボードのID・パスワード、GmailアドレスなどはLINEグループの「ノート」に記載されています。必ず確認してください。
+    </div>
+  </div>
+
+  <div class="sub-section">出勤時に送ること</div>
+  <div class="card">
+    <div class="card-title">📤 出勤日報</div>
+    <div class="talk-box">
+      <div class="talk-label">例文</div>
+      <div class="talk-text">
+        6/20 おはようございます。<br>
+        【今月の目標】<br>
+        総売り 60万円<br>
+        物販 6万円<br>
+        OP 3万円<br><br>
+        ⭐ : 今月の日割り 28,571円/日<br><br>
+        【今日1日の目標】<br>
+        オプション 3<br>
+        次回予約 2<br>
+        物販 1
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-section">退勤時に送ること</div>
+  <div class="card">
+    <ul class="inline-steps">
+      <li>
+        <span class="num">1</span>
+        <div><strong>退勤日報</strong>を送る</div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div><strong>サロンボード売上報告のスクリーンショット</strong>を送る（受け取った現金と合わせて確認してから）</div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div><strong>ToDoリストのスクリーンショット</strong>を送る</div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== TAB 3: クラコール ===================== -->
+<div class="tab-content" id="tab-cracoal">
+  <div class="section-title">📞 クラコール通電確認</div>
+
+  <div class="alert alert-blue">
+    <strong>なぜ毎日確認するの？</strong><br>
+    お客様からの電話が正常に着信できているか確認するため、出勤後に毎日必ず実施してください。
+  </div>
+
+  <div class="card">
+    <div class="card-title">確認手順</div>
+    <ul class="inline-steps">
+      <li>
+        <span class="num">1</span>
+        <div>
+          <strong>店舗の電話番号を確認する</strong><br>
+          <span style="font-size:12px; color:#888;">※電話番号はLINEグループのノートに記載</span>
+        </div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div>
+          <strong>実際に電話をかけてみる</strong><br>
+          <span style="font-size:12px; color:#888;">※自分のスマホから店舗番号へ発信</span>
+        </div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div>
+          <strong>Softphoneアプリに着信が来ればOK！</strong><br>
+          <span style="font-size:12px; color:#888;">赤い着信画面が表示されたら正常に通電している</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card" style="background:#f0f9fa; border:2px solid #2d9fa3;">
+    <div style="text-align:center; padding:10px 0;">
+      <div style="font-size:40px; margin-bottom:8px;">📲</div>
+      <div style="font-size:15px; font-weight:700; color:#1a6e72;">Softphoneアプリに<br>着信画面が表示されたらOK!</div>
+      <div style="font-size:12px; color:#666; margin-top:8px;">赤いバーと着信ボタン（拒否/終了して応答）が表示される</div>
+    </div>
+  </div>
+
+  <div class="alert alert-red">
+    <strong>着信が来ない場合：</strong>Softphoneアプリの設定・ログイン状態を確認し、SVに連絡してください。お客様からの電話が全て取れていない状態になります。
+  </div>
+</div>
+
+<!-- ===================== TAB 4: スクエア ===================== -->
+<div class="tab-content" id="tab-square">
+  <div class="section-title">💳 スクエア緊急対応手順</div>
+
+  <div class="alert alert-red">
+    <strong>カード決済ができない！となったら</strong>まずこの手順を試してください。焦らず順番通りに対応しましょう。
+  </div>
+
+  <div class="card">
+    <div class="card-title">対応手順（全9ステップ）</div>
+    <ul class="inline-steps">
+      <li><span class="num">1</span><div><strong>iPadの電源を落とし、再起動</strong></div></li>
+      <li><span class="num">2</span><div><strong>スクエアの電源ボタンを、赤の点滅が消えるまで長押し</strong></div></li>
+      <li><span class="num">3</span><div><strong>電源ボタンを一度押し、緑のランプ点灯を確認</strong></div></li>
+      <li><span class="num">4</span><div><strong>再び、赤の点滅が消えるまで長押し</strong></div></li>
+      <li><span class="num">5</span><div><strong>電源ボタンを1度押すと緑に光り、[右左・左右]に点滅確認</strong></div></li>
+      <li><span class="num">6</span>
+        <div>
+          <strong>iPadのスクエアアプリを開く</strong><br>
+          <span style="font-size:12px; color:#888;">三本線（その他）→ 設定 → ハードウェア → スクエアリーダー → 接続</span>
+        </div>
+      </li>
+      <li><span class="num">7</span><div><strong>オレンジの点滅まで長押し</strong></div></li>
+      <li><span class="num">8</span><div><strong>「接続」と出てくるので押す</strong></div></li>
+      <li><span class="num">9</span><div><strong>接続完了！</strong></div></li>
+    </ul>
+  </div>
+
+  <div class="card" style="background:#fff8f0; border:1px solid #fed7aa;">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+      <span style="font-size:28px;">💡</span>
+      <span style="font-size:14px; font-weight:700; color:#9a3412;">スクエアリーダーの各部位</span>
+    </div>
+    <div style="font-size:13px; color:#555; line-height:1.8;">
+      <strong>LEDライト：</strong>上部中央の緑/赤のランプ<br>
+      <strong>USB-Cケーブルポート：</strong>充電用ポート（下部左）<br>
+      <strong>電源ボタン：</strong>下部右のボタン
+    </div>
+  </div>
+
+  <div class="sub-section">解決しない場合</div>
+
+  <a href="https://www.youtube.com/watch?v=8mS4OKqnrKc" target="_blank" class="link-btn link-btn-yt">
+    ▶ YouTube解説動画を見る
+  </a>
+
+  <a href="tel:0120117042" class="link-btn link-btn-red">
+    📞 スクエアサポートに電話：0120-117-042
+  </a>
+</div>
+
+<!-- ===================== TAB 5: サロンボード操作 ===================== -->
+<div class="tab-content" id="tab-sb">
+  <div class="section-title">📊 サロンボード操作</div>
+
+  <div class="alert alert-teal">
+    サロンボードはHPBの掲載情報を管理するシステムです。<strong>毎日のキャッチ更新</strong>と<strong>定期的なブログ投稿</strong>が集客の鍵です。
+  </div>
+
+  <!-- ブログ投稿 -->
+  <div class="sub-section">📝 ブログ投稿手順</div>
+
+  <div class="card">
+    <ul class="inline-steps">
+      <li>
+        <span class="num">1</span>
+        <div>
+          トップメニューの <strong>「掲載管理」</strong> を選択
+          <div class="screen-mock" style="margin-top:6px;">
+            <div class="screen-nav">
+              <span class="screen-nav-btn">予約管理</span>
+              <span class="screen-nav-btn active">掲載管理</span>
+              <span class="screen-nav-btn">お客様管理</span>
+              <span class="screen-nav-btn">売上管理</span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div>
+          サブメニューの <strong>「ブログ」</strong> を選択
+          <div class="screen-mock" style="margin-top:6px;">
+            <div class="screen-nav">
+              <span class="screen-nav-btn">掲載管理TOP</span>
+              <span class="screen-nav-btn">サロン</span>
+              <span class="screen-nav-btn">スタッフ</span>
+              <span class="screen-nav-btn">メニュー</span>
+              <span class="screen-nav-btn active">ブログ</span>
+              <span class="screen-nav-btn">口コミ</span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div><strong>「新規投稿」</strong> ボタンをクリック</div>
+      </li>
+      <li>
+        <span class="num">4</span>
+        <div>
+          <strong>内容を入力する</strong>
+          <div style="font-size:12px; color:#666; margin-top:6px; line-height:1.8;">
+            ・ 投稿者：自分で選択<br>
+            ・ カテゴリ：内容に合わせて選択<br>
+            ・ タイトル：25文字以内<br>
+            ・ 本文：1000文字・80行・画像4枚以内<br>
+            ・ クーポン：内容に合わせて選択（プライベート投稿でも選択可）<br>
+            ・ <strong>最後に店名・住所・アクセス・電話番号を記入</strong><br>
+            ・ フリーワード（ハッシュタグ）も入れる
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="num">5</span>
+        <div>
+          <strong>「確認する」</strong>を押してプレビュー確認
+        </div>
+      </li>
+      <li>
+        <span class="num">6</span>
+        <div>
+          <strong>「登録・反映する」</strong> → HPBに即掲載<br>
+          <span style="font-size:12px; color:#888;">「登録・未反映にする」→ ストックとして保存も可</span>
+        </div>
+      </li>
+    </ul>
+    <div class="alert" style="margin-top:12px;">
+      ブログを投稿したスタッフが<strong>非掲載の場合、ブログも一緒に非掲載</strong>になります。投稿者の設定に注意！
+    </div>
+  </div>
+
+  <!-- キャッチ変更 -->
+  <div class="sub-section">✏️ キャッチ変更手順（毎日実施）</div>
+
+  <div class="card">
+    <ul class="inline-steps">
+      <li>
+        <span class="num">1</span>
+        <div>
+          トップメニューの <strong>「掲載管理」</strong> を選択
+        </div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div>
+          サブメニューの <strong>「サロン」</strong> を選択
+          <div class="screen-mock" style="margin-top:6px;">
+            <div class="screen-nav">
+              <span class="screen-nav-btn">掲載管理TOP</span>
+              <span class="screen-nav-btn active">サロン</span>
+              <span class="screen-nav-btn">スタッフ</span>
+              <span class="screen-nav-btn">フォトギャラリー</span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div>「<strong>サロン情報</strong>」の項目まで下へスクロール</div>
+      </li>
+      <li>
+        <span class="num">4</span>
+        <div>
+          「<strong>キャッチ</strong>」の<span style="color:#ef4444; font-weight:700;">日付を今日の日付</span>に変更<br>
+          <span style="font-size:12px; color:#888;">例：★4/26空あり★口コミ高評!!高技術専門サロン...</span>
+        </div>
+      </li>
+      <li>
+        <span class="num">5</span>
+        <div>一番下まで下げて <strong>「登録」</strong> をクリック</div>
+      </li>
+      <li>
+        <span class="num">6</span>
+        <div>サブメニューの <strong>「掲載管理TOP」</strong> を選択</div>
+      </li>
+      <li>
+        <span class="num">7</span>
+        <div>
+          下までスクロールして <strong>「掲載変更を反映する」</strong> をクリック
+          <div class="alert" style="margin-top:8px;">
+            ⚠️ この操作を忘れると HPB に反映されません！必ず最後に「掲載変更を反映する」を押す。
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== TAB 6: 物販・提案 ===================== -->
+<div class="tab-content" id="tab-bussan">
+  <div class="section-title">🛍️ 物販・提案の基本</div>
+
+  <!-- Philosophy -->
+  <div class="card" style="background: linear-gradient(135deg, #f0f9fa, #e8f8f8); border: 2px solid #2d9fa3;">
+    <div style="text-align:center; padding:8px 0 14px;">
+      <div style="font-size:32px; margin-bottom:8px;">💊</div>
+      <div style="font-size:20px; font-weight:700; color:#1a6e72;">"売る" ではなく "処方する"</div>
+      <div style="font-size:13px; color:#555; margin-top:8px; line-height:1.7;">
+        お客様の本音は「自分に合ったものを提案してほしい」。<br>
+        売りつけではなく、お悩みへの解決策として提案する。
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow -->
+  <div class="card">
+    <div class="card-title">提案の流れ</div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+      <div style="background:#f0f9fa; border:2px solid #2d9fa3; border-radius:10px; padding:12px 24px; text-align:center; width:100%;">
+        <div style="font-size:13px; font-weight:700; color:#1a6e72;">😟 お悩みを聞く</div>
+        <div style="font-size:12px; color:#555; margin-top:4px;">カウンセリングで自然に引き出す</div>
+      </div>
+      <div class="flow-arrow">▼</div>
+      <div style="background:#fef3c7; border:2px solid #f59e0b; border-radius:10px; padding:12px 24px; text-align:center; width:100%;">
+        <div style="font-size:13px; font-weight:700; color:#92400e;">🔍 診察（原因を特定）</div>
+        <div style="font-size:12px; color:#555; margin-top:4px;">「それは〇〇が原因かもしれません」</div>
+      </div>
+      <div class="flow-arrow">▼</div>
+      <div style="background:#d1fae5; border:2px solid #10b981; border-radius:10px; padding:12px 24px; text-align:center; width:100%;">
+        <div style="font-size:13px; font-weight:700; color:#065f46;">💊 処方（商品提案）</div>
+        <div style="font-size:12px; color:#555; margin-top:4px;">「このアイテムがおすすめです」と具体的に提案</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div class="sub-section">商品知識</div>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-name">ラッシュアディクト</div>
+      <div class="product-price">¥11,000</div>
+      <span class="product-tag">長さ特化</span>
+      <span class="product-tag">まつ毛</span>
+      <div class="product-detail">
+        ・ 効果出現：<strong>3週間</strong><br>
+        ・ 容量：5mL<br>
+        ・ 持続：5〜6ヶ月<br>
+        ・ 使用：夜1回<br>
+        ・ 向いてる人：長さがほしい方
+      </div>
+    </div>
+    <div class="product-card accent">
+      <div class="product-name">エグータム</div>
+      <div class="product-price accent">¥6,000</div>
+      <span class="product-tag accent">太さ・密度</span>
+      <span class="product-tag accent">眉毛可</span>
+      <div class="product-detail">
+        ・ 効果出現：<strong>60日</strong><br>
+        ・ 容量：2mL<br>
+        ・ 持続：2〜3ヶ月<br>
+        ・ 眉毛にも使用可<br>
+        ・ 向いてる人：密度・太さがほしい方
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversation examples -->
+  <div class="sub-section">会話例</div>
+
+  <div class="talk-box">
+    <div class="talk-label">コーティング剤の提案</div>
+    <div class="talk-text">
+      「今日施術したパーマですが、コーティング剤を使うと形が長持ちするんですよ。<br>
+      お客様のまつ毛の状態を見ると、少しダメージがあるので、ケアしながら長持ちできるこちらがおすすめです。」
+    </div>
+  </div>
+
+  <div class="talk-box">
+    <div class="talk-label">美容液の提案（ラッシュアディクト）</div>
+    <div class="talk-text">
+      「まつ毛をもっと長くしたいというご希望がありましたね。<br>
+      こちらのラッシュアディクトは、3週間ほどで効果を感じていただけて、<br>
+      夜に1回塗るだけなので簡単ですよ。5〜6ヶ月もちますので、コスパも良いです。」
+    </div>
+  </div>
+
+  <div class="talk-box">
+    <div class="talk-label">アイペンシルの提案</div>
+    <div class="talk-text">
+      「眉毛の形はバッチリ整えましたが、色が薄い部分は普段ペンシルで補うと<br>
+      さらに綺麗に見えます。こちらのペンシルは自然な仕上がりで使いやすいので<br>
+      ぜひ試してみてください。」
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="card" style="background:#fffbeb; border:1px solid #fcd34d;">
+    <div class="card-title">💡 提案のコツ3つ</div>
+    <ul style="font-size:13px; color:#444; padding-left:16px; line-height:2.2;">
+      <li>カウンセリングで悩みを先に引き出す（押しつけ感ゼロ）</li>
+      <li>「処方」として提案する（「売りたい」ではなく「解決したい」）</li>
+      <li>施術中に自然に紹介し、会計前に改めて案内する</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== TAB 7: 次回予約 ===================== -->
+<div class="tab-content" id="tab-yoyaku">
+  <div class="section-title">📅 次回予約の重要性</div>
+
+  <!-- Why important -->
+  <div class="card" style="background: linear-gradient(135deg, #fdf4ff, #f5f3ff); border:2px solid #8b5cf6;">
+    <div style="text-align:center; padding:8px 0 14px;">
+      <div style="font-size:32px; margin-bottom:8px;">🎯</div>
+      <div style="font-size:16px; font-weight:700; color:#5b21b6;">次回予約は「次の来店を確約する」最強の施策</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title" style="color:#2d9fa3;">お客様のメリット</div>
+      <ul style="font-size:12px; color:#444; padding-left:14px; line-height:2.2;">
+        <li>希望日時を確保できる</li>
+        <li>綺麗な状態を維持できる</li>
+        <li>割引・特典を受けられる</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#8b5cf6;">サロンのメリット</div>
+      <ul style="font-size:12px; color:#444; padding-left:14px; line-height:2.2;">
+        <li>来店が確約される</li>
+        <li>空き枠が埋まる</li>
+        <li>失客防止になる</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Cycles -->
+  <div class="sub-section">サービス別の推奨サイクル</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+    <div class="card" style="text-align:center; border-top:4px solid #2d9fa3;">
+      <div style="font-size:28px; margin-bottom:6px;">👁️</div>
+      <div style="font-size:13px; font-weight:700; color:#1a6e72;">眉毛ワックス</div>
+      <div style="font-size:24px; font-weight:700; color:#2d9fa3; margin:8px 0;">3〜4週間</div>
+      <div style="font-size:11px; color:#888;">毛の成長に合わせたベストタイミング</div>
+    </div>
+    <div class="card" style="text-align:center; border-top:4px solid #8b5cf6;">
+      <div style="font-size:28px; margin-bottom:6px;">✨</div>
+      <div style="font-size:13px; font-weight:700; color:#5b21b6;">まつ毛パーマ</div>
+      <div style="font-size:24px; font-weight:700; color:#8b5cf6; margin:8px 0;">3〜6週間</div>
+      <div style="font-size:11px; color:#888;">パーマの持続期間に合わせて</div>
+    </div>
+  </div>
+
+  <!-- Timing patterns -->
+  <div class="sub-section">提案タイミング（パターン別）</div>
+
+  <div class="card">
+    <div class="card-title" style="color:#10b981;">✅ Pattern 1 — 施術中に提案</div>
+    <div class="talk-box" style="border-color:#d1fae5; background:#f0fdf4;">
+      <div class="talk-label" style="color:#065f46;">施術中の例</div>
+      <div class="talk-text">
+        「今日の施術が終わったら、次回はだいたい3〜4週間後くらいがベストですよ。<br>
+        ご都合はいかがでしょうか？今なら希望日時を押さえられますよ。」
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:#10b981;">✅ Pattern 2 — 会計・仕上がり確認時</div>
+    <div class="talk-box" style="border-color:#d1fae5; background:#f0fdf4;">
+      <div class="talk-label" style="color:#065f46;">会計時の例</div>
+      <div class="talk-text">
+        「仕上がりいかがでしたか？また3週間後くらいにご来店いただくと<br>
+        ずっとこの状態をキープできます。次回のご予約はいかがですか？」
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:#ef4444;">❌ NG パターン — やってはいけない提案</div>
+    <div class="talk-box" style="border-color:#fee2e2; background:#fff5f5;">
+      <div class="talk-label" style="color:#991b1b;">NG例</div>
+      <div class="talk-text">
+        「次回のご予約はいかがですか？」のみで終わる<br>
+        → <strong>「なぜ今予約するべきか」の理由がない。</strong><br><br>
+        「またいつでも来てください」で終わる<br>
+        → <strong>具体的な次回日時を提案していない。</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-teal">
+    <strong>ポイント：</strong>次回予約は「いつ頃がベストか」という<strong>具体的な日数・理由</strong>を伝えることで成功率が上がります。「3週間後」「毛が伸びてきた頃」など。
+  </div>
+</div>
+
+<!-- ===================== TAB 8: SV・連絡先 ===================== -->
+<div class="tab-content" id="tab-sv">
+  <div class="section-title">👥 SV・連絡先</div>
+
+  <div class="card">
+    <div class="card-title">SVとは？</div>
+    <p>各店舗には本部でサポートを行う<strong>SV（スーパーバイザー）</strong>という役職のスタッフがいます。店舗についてのアナウンスや注意事項を伝えるほか、日々の業務の相談窓口です。</p>
+    <div class="alert alert-teal" style="margin-top:12px;">
+      店舗へのデビュー後、担当SVとLINEグループで連携します。わからないことはまずSVへ連絡してください。
+    </div>
+  </div>
+
+  <div class="sub-section">SV一覧</div>
+  <div class="sv-grid">
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">林 治希</div>
+    </div>
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">宮脇 天龍</div>
+    </div>
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">竹部 翔</div>
+    </div>
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">高橋 将太</div>
+    </div>
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">山田 雅也</div>
+    </div>
+    <div class="sv-card">
+      <div class="sv-icon">👤</div>
+      <div class="sv-name">氏家 大樹</div>
+    </div>
+  </div>
+
+  <div class="sub-section">各種リンク・ツール</div>
+
+  <a href="/salonconnect_manual.html" class="link-btn">
+    📱 サロンコネクト操作マニュアルを見る
+  </a>
+
+  <div class="card">
+    <div class="card-title">困ったときの連絡先</div>
+    <ul class="inline-steps">
+      <li>
+        <span class="num" style="background:#2d9fa3;">1</span>
+        <div><strong>担当SV</strong>にLINEグループで連絡</div>
+      </li>
+      <li>
+        <span class="num" style="background:#f59e0b;">2</span>
+        <div>スクエア決済トラブル：<strong>0120-117-042</strong></div>
+      </li>
+      <li>
+        <span class="num" style="background:#8b5cf6;">3</span>
+        <div>サロンボードの操作：<strong>このマニュアルのSB操作タブ</strong>を参照</div>
+      </li>
+      <li>
+        <span class="num" style="background:#10b981;">4</span>
+        <div>サロンコネクト（予約・シフト）：<strong>サロンコネクトマニュアル</strong>を参照</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="alert" style="margin-top:8px;">
+    📔 店舗のID・パスワード・Gmailアドレスなどはすべて<strong>LINEグループのノート</strong>に記載されています。
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  // scroll tab into view
+  event.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+</script>
+
+</body>
+</html>
