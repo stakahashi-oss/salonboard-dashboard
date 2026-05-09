@@ -3277,8 +3277,12 @@ let scenarioSettings = {};
 async function loadScenarioSettings() {
   document.getElementById('scenarioSteps').innerHTML = '<div class="loading"><span class="spinner"></span>設定を読込中...</div>';
   try {
-    const data = await gasGet('get_settings', {}, 10);
+    const [data, tagsData] = await Promise.all([
+      gasGet('get_settings', {}, 10),
+      gasGet('get_tags', {}, 5)
+    ]);
     scenarioSettings = data.settings || {};
+    tagMaster = tagsData.tags || [];
     // 送信時間セレクトに反映
     const hour = scenarioSettings['送信時間'] || '9';
     const sel = document.getElementById('sendHourSelect');
@@ -3343,12 +3347,19 @@ function renderScenarioSteps() {
     ].join('');
 
     const tagRow = `
-        <div class="scenario-timing-row" style="margin-bottom:10px">
+        <div class="scenario-timing-row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
           <span class="scenario-timing-label">🏷️ 対象タグ:</span>
           <select id="tag-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:5px 10px;font-size:13px;background:#fff;min-width:180px">
             ${tagOptions}
           </select>
+          <button onclick="toggleNewTagInput('${step.id}')" style="border:1.5px dashed #1D9E75;background:#f0fdf4;color:#1D9E75;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer">＋ 新規タグ</button>
           <span style="font-size:11px;color:#aaa">このステップの配信対象を絞り込む</span>
+          <div id="new-tag-input-${step.id}" style="display:none;width:100%;margin-top:6px;display:none;align-items:center;gap:8px">
+            <input id="new-tag-name-${step.id}" type="text" placeholder="タグ名を入力（例：眉毛・再来・失客リスク）" style="border:1.5px solid #1D9E75;border-radius:8px;padding:6px 12px;font-size:13px;flex:1;max-width:320px;outline:none">
+            <input id="new-tag-color-${step.id}" type="color" value="#1D9E75" style="width:36px;height:32px;border:1.5px solid #ddd;border-radius:6px;cursor:pointer;padding:2px">
+            <button onclick="createTagFromScenario('${step.id}')" style="background:#1D9E75;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer">作成</button>
+            <button onclick="toggleNewTagInput('${step.id}')" style="background:#f1f5f9;color:#64748b;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer">キャンセル</button>
+          </div>
         </div>`;
 
     return `
@@ -3501,6 +3512,34 @@ function renderTagMaster() {
       ${t.name}
       <span onclick="deleteTagMaster('${t.name}')" style="cursor:pointer;color:${t.color};font-size:14px;line-height:1;opacity:.7" title="削除">×</span>
     </div>`).join('');
+}
+
+function toggleNewTagInput(stepId) {
+  const el = document.getElementById(`new-tag-input-${stepId}`);
+  if (!el) return;
+  const isVisible = el.style.display === 'flex';
+  el.style.display = isVisible ? 'none' : 'flex';
+  if (!isVisible) setTimeout(() => document.getElementById(`new-tag-name-${stepId}`)?.focus(), 50);
+}
+
+async function createTagFromScenario(stepId) {
+  const nameEl = document.getElementById(`new-tag-name-${stepId}`);
+  const colorEl = document.getElementById(`new-tag-color-${stepId}`);
+  const name = nameEl?.value.trim();
+  const color = colorEl?.value || '#1D9E75';
+  if (!name) { alert('タグ名を入力してください'); return; }
+  try {
+    const r = await gasPost({action: 'create_tag', tag_name: name, color});
+    if (r.error) { alert(r.error); return; }
+    const tagsData = await gasGet('get_tags');
+    tagMaster = tagsData.tags || [];
+    renderScenarioSteps();
+    // 作成したタグを自動選択
+    setTimeout(() => {
+      const sel = document.getElementById(`tag-${stepId}`);
+      if (sel) sel.value = name;
+    }, 50);
+  } catch(e) { alert('エラー: ' + e.message); }
 }
 
 async function createNewTag() {
