@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S藤沢・S岐阜｜5月週次振り返り 2026-05</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:1000px;margin:0 auto;padding:24px 16px}
+
+/* ヘッダー */
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:12px;padding:18px 24px;margin-bottom:20px;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.header-left .badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px}
+.header-left .title{font-size:18px;font-weight:800}
+.header-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.75)}
+.chip.green{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:#86efac}
+.chip.yellow{background:rgba(234,179,8,.15);border-color:rgba(234,179,8,.3);color:#fde047}
+.chip.red{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#fca5a5}
+.chip.blue{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93c5fd}
+
+/* 2カラムグリッド */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:680px){.two-col{grid-template-columns:1fr}}
+
+/* セクションヘッダ */
+.section-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;padding:18px 0 8px}
+.section-label:first-child{padding-top:4px}
+
+/* 店舗カラム */
+.store-col{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+.store-col-header{padding:12px 16px;font-size:13px;font-weight:800;color:#fff;letter-spacing:.03em}
+.fujisawa .store-col-header{background:linear-gradient(90deg,#0f4c81,#1565c0)}
+.gifu .store-col-header{background:linear-gradient(90deg,#14532d,#16a34a)}
+.store-col-header .sub{font-size:10px;font-weight:500;opacity:.7;margin-left:8px}
+
+.store-body{padding:14px 16px}
+
+/* KPIカード */
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.kpi-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:center}
+.kpi-label{font-size:10px;color:#64748b;font-weight:600;margin-bottom:2px}
+.kpi-value{font-size:17px;font-weight:800;color:#0f172a}
+.kpi-sub{font-size:10px;color:#64748b;margin-top:1px}
+.kpi-card.green{border-color:#bbf7d0;background:#f0fdf4}
+.kpi-card.green .kpi-value{color:#15803d}
+.kpi-card.red{border-color:#fecaca;background:#fff7f7}
+.kpi-card.red .kpi-value{color:#dc2626}
+
+/* 月次サマリーバー */
+.month-bar-wrap{margin-bottom:14px}
+.month-bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.month-bar-label .left{color:#475569;font-weight:600}
+.month-bar-label .right{color:#1e293b;font-weight:700}
+.bar-track{height:10px;background:#e2e8f0;border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .4s}
+.bar-fill.good{background:linear-gradient(90deg,#22c55e,#16a34a)}
+.bar-fill.warn{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.bar-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
+
+/* スタッフテーブル */
+.staff-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.staff-table th{background:#f1f5f9;padding:5px 8px;text-align:left;font-weight:700;color:#475569;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.staff-table td{padding:6px 8px;border-top:1px solid #f1f5f9}
+.staff-table tr:hover td{background:#fafcff}
+.bar-mini{height:5px;border-radius:3px;margin-top:3px}
+.bar-mini.blue{background:#3b82f6}
+.bar-mini.green{background:#22c55e}
+.bar-mini.purple{background:#a855f7}
+.bar-mini.orange{background:#f97316}
+
+/* 週次セクション */
+.week-section{margin-bottom:14px}
+.week-title{font-size:11px;font-weight:800;color:#475569;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #e2e8f0}
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.day-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 6px;text-align:center}
+.day-card.has-data{background:#eff6ff;border-color:#bfdbfe}
+.day-card.pending{background:#faf5ff;border-color:#e9d5ff;opacity:.7}
+.day-card.closed{background:#f8fafc;border-color:#e2e8f0;opacity:.5}
+.day-name{font-size:9px;color:#94a3b8;font-weight:600}
+.day-date{font-size:10px;font-weight:700;color:#475569;margin-bottom:3px}
+.day-amt{font-size:13px;font-weight:800;color:#1e293b}
+.day-cnt{font-size:10px;color:#64748b}
+.day-badge{font-size:9px;padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block}
+.day-badge.actual{background:#dbeafe;color:#1d4ed8}
+.day-badge.pending{background:#ede9fe;color:#6d28d9}
+.day-badge.closed{background:#f1f5f9;color:#94a3b8}
+
+/* 4月vs3月 比較 */
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.compare-row:last-child{border-bottom:none}
+.compare-label{font-size:12px;color:#64748b}
+.compare-vals{display:flex;gap:10px;align-items:center}
+.val-this{font-size:13px;font-weight:700;color:#1e293b}
+.val-prev{font-size:11px;color:#94a3b8}
+.diff-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.diff-up{background:#dcfce7;color:#15803d}
+.diff-down{background:#fee2e2;color:#dc2626}
+.diff-flat{background:#f1f5f9;color:#64748b}
+
+/* アクションリスト */
+.action-item{display:flex;gap:8px;padding:10px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;align-items:flex-start}
+.action-item:hover{border-color:#bfdbfe;background:#fafcff}
+.action-num{width:20px;height:20px;border-radius:5px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.action-num.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.action-num.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.action-num.g{background:rgba(34,197,94,.1);color:#15803d;border:1px solid rgba(34,197,94,.25)}
+.action-body .action-title{font-weight:700;font-size:12px}
+.action-body .action-why{font-size:11px;color:#64748b;margin-top:2px;line-height:1.5}
+.action-meta{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px}
+.who.me{background:#eff6ff;color:#1d4ed8}
+.who.sv{background:#f0fdf4;color:#15803d}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px}
+.due.urgent{background:rgba(239,68,68,.08);color:#dc2626}
+.due.soon{background:rgba(245,158,11,.08);color:#d97706}
+.due.normal{background:#eff6ff;color:#2563eb}
+
+/* 注意ボックス */
+.info-box{padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:12px;line-height:1.6}
+.info-box.blue{background:#eff6ff;border-left:3px solid #3b82f6;color:#1e40af}
+.info-box.yellow{background:#fffbeb;border-left:3px solid #f59e0b;color:#92400e}
+.info-box.green{background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d}
+
+footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:24px;border-top:1px solid #e2e8f0;padding-top:10px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-left">
+    <div class="badge">直営MTG ／ 週次振り返り</div>
+    <div class="title">S藤沢 × S岐阜 ― 2026年5月 W1-W2</div>
+  </div>
+  <div class="header-chips">
+    <span class="chip">対象期間: 5/1〜5/10</span>
+    <span class="chip green">S藤沢 4月 ✅ 119%</span>
+    <span class="chip yellow">S岐阜 4月 ⚠️ 85%</span>
+    <span class="chip blue">5/4〜 データ待ち</span>
+  </div>
+</div>
+
+<!-- ======= 4月最終実績 ======= -->
+<div class="section-label">📊 4月最終実績（確定値）</div>
+
+<div class="two-col">
+
+  <!-- S藤沢 4月 -->
+  <div class="store-col fujisawa">
+    <div class="store-col-header">S藤沢<span class="sub">SV: 内山 ｜ 4月目標: ¥1,199,940</span></div>
+    <div class="store-body">
+
+      <div class="kpi-row">
+        <div class="kpi-card green">
+          <div class="kpi-label">月売上</div>
+          <div class="kpi-value">¥1,431K</div>
+          <div class="kpi-sub">目標比 119.3% ✅</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">客数</div>
+          <div class="kpi-value">415件</div>
+          <div class="kpi-sub">3月比 +99件</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">客単価</div>
+          <div class="kpi-value">¥3,448</div>
+          <div class="kpi-sub">3月比 -¥213</div>
+        </div>
+      </div>
+
+      <div class="month-bar-wrap">
+        <div class="month-bar-label">
+          <span class="left">売上達成率 vs 月目標</span>
+          <span class="right">¥1,431,300 / ¥1,199,940</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill good" style="width:100%"></div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-label">3月実績</div>
+        <div class="compare-vals">
+          <span class="val-prev">¥1,157,000 / 316件</span>
+          <span class="diff-badge diff-up">+¥274K ↑</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-label">4月実績</div>
+        <div class="compare-vals">
+          <span class="val-this">¥1,431,300 / 415件</span>
+          <span class="diff-badge diff-up">+23.7%</span>
+        </div>
+      </div>
+
+      <div class="section-label" style="padding-top:12px">スタッフ別（4月）</div>
+      <table class="staff-table">
+        <tr><th>スタッフ</th><th>売上</th><th>件数</th><th>単価</th><th>比率</th></tr>
+        <tr>
+          <td>O.sena（大塚）</td>
+          <td><strong>¥707,000</strong></td>
+          <td>216件</td>
+          <td>¥3,273</td>
+          <td>49%<div class="bar-mini blue" style="width:49%"></div></td>
+        </tr>
+        <tr>
+          <td>K.rina（笠倉）</td>
+          <td><strong>¥547,400</strong></td>
+          <td>126件</td>
+          <td>¥4,344</td>
+          <td>38%<div class="bar-mini green" style="width:38%"></div></td>
+        </tr>
+        <tr>
+          <td>Y.megumi</td>
+          <td><strong>¥189,800</strong></td>
+          <td>46件</td>
+          <td>¥4,126</td>
+          <td>13%<div class="bar-mini orange" style="width:13%"></div></td>
+        </tr>
+      </table>
+
+      <div class="info-box green">
+        <strong>✅ 4月ハイライト:</strong> 目標¥120万を¥143万で超過達成。K.rinaの単価¥4,344が3名中最高。客数は3月から+99件増と大幅拡大。Y.megumiは週3日稼働で13%貢献。
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S岐阜 4月 -->
+  <div class="store-col gifu">
+    <div class="store-col-header">S岐阜<span class="sub">SV: 山田 ｜ 4月目標: ¥696,000</span></div>
+    <div class="store-body">
+
+      <div class="kpi-row">
+        <div class="kpi-card red">
+          <div class="kpi-label">月売上</div>
+          <div class="kpi-value">¥591K</div>
+          <div class="kpi-sub">目標比 84.9% ⚠️</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">客数</div>
+          <div class="kpi-value">174件</div>
+          <div class="kpi-sub">3月比 +42件</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">客単価</div>
+          <div class="kpi-value">¥3,395</div>
+          <div class="kpi-sub">3月比 -¥1,118 ⚠️</div>
+        </div>
+      </div>
+
+      <div class="month-bar-wrap">
+        <div class="month-bar-label">
+          <span class="left">売上達成率 vs 月目標</span>
+          <span class="right">¥590,870 / ¥696,000</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill warn" style="width:84.9%"></div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-label">3月実績</div>
+        <div class="compare-vals">
+          <span class="val-prev">¥595,800 / 132件</span>
+          <span class="diff-badge diff-flat">ほぼ横ばい</span>
+        </div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-label">4月実績</div>
+        <div class="compare-vals">
+          <span class="val-this">¥590,870 / 174件</span>
+          <span class="diff-badge diff-down">-¥4,930 (−0.8%)</span>
+        </div>
+      </div>
+
+      <div class="section-label" style="padding-top:12px">スタッフ別（4月）</div>
+      <table class="staff-table">
+        <tr><th>スタッフ</th><th>売上</th><th>件数</th><th>単価</th><th>備考</th></tr>
+        <tr>
+          <td>Yuki</td>
+          <td><strong>¥594,870</strong></td>
+          <td>166件</td>
+          <td>¥3,583</td>
+          <td>実質1名体制</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8">Mina / natsuki</td>
+          <td style="color:#94a3b8">¥0</td>
+          <td style="color:#94a3b8">0件</td>
+          <td style="color:#94a3b8">—</td>
+          <td style="color:#94a3b8">稼働なし</td>
+        </tr>
+      </table>
+
+      <div class="info-box yellow">
+        <strong>⚠️ 4月課題:</strong> Yuki 1名体制で目標¥69.6万に対し¥59.1万（-¥10.5万）。客数は3月+42件増えたが単価が¥4,513→¥3,395と▲¥1,118急落。Mina・natsukiの稼働がないことで天井が見えている。
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ======= 5月W1 ======= -->
+<div class="section-label">🗓️ 5月 W1（5/1 木〜5/4 日）GW期間</div>
+
+<div class="info-box blue">
+  <strong>データ状況:</strong> 5/1〜5/3 のデータをシステムから確認済み。5/4（日）以降は現時点でCSVに未反映のため「データ待ち」。会議中に実数を確認・更新してください。
+</div>
+
+<div class="two-col">
+
+  <!-- S藤沢 W1 -->
+  <div class="store-col fujisawa">
+    <div class="store-col-header">S藤沢 ― 5月W1<span class="sub">5/1-5/3 確認済 ｜ 5/4 待ち</span></div>
+    <div class="store-body">
+
+      <div class="week-grid">
+        <div class="day-card has-data">
+          <div class="day-name">木</div>
+          <div class="day-date">5/1</div>
+          <div class="day-amt">¥33,800</div>
+          <div class="day-cnt">8件</div>
+          <span class="day-badge actual">確認済</span>
+        </div>
+        <div class="day-card has-data">
+          <div class="day-name">金</div>
+          <div class="day-date">5/2</div>
+          <div class="day-amt">¥22,400</div>
+          <div class="day-cnt">7件</div>
+          <span class="day-badge actual">確認済</span>
+        </div>
+        <div class="day-card has-data">
+          <div class="day-name">土</div>
+          <div class="day-date">5/3</div>
+          <div class="day-amt">¥49,200</div>
+          <div class="day-cnt">10件</div>
+          <span class="day-badge actual">確認済</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">日</div>
+          <div class="day-date">5/4</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="compare-row">
+          <div class="compare-label">W1 確認分合計（5/1-5/3）</div>
+          <div class="compare-vals"><span class="val-this">¥105,400 / 25件</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">W1 最終合計（5/4追加後）</div>
+          <div class="compare-vals"><span class="val-prev" style="color:#7c3aed">□ 確認中</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">スタッフ</div>
+          <div class="compare-vals"><span class="val-prev">Y.megumi / K.rina ※ O.sena稼働未確認</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S岐阜 W1 -->
+  <div class="store-col gifu">
+    <div class="store-col-header">S岐阜 ― 5月W1<span class="sub">5/2-5/3 確認済 ｜ 5/1・5/4 待ち</span></div>
+    <div class="store-body">
+
+      <div class="week-grid">
+        <div class="day-card closed">
+          <div class="day-name">木</div>
+          <div class="day-date">5/1</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge closed">未反映</span>
+        </div>
+        <div class="day-card has-data">
+          <div class="day-name">金</div>
+          <div class="day-date">5/2</div>
+          <div class="day-amt">¥29,800</div>
+          <div class="day-cnt">9件</div>
+          <span class="day-badge actual">確認済</span>
+        </div>
+        <div class="day-card has-data">
+          <div class="day-name">土</div>
+          <div class="day-date">5/3</div>
+          <div class="day-amt">¥35,200</div>
+          <div class="day-cnt">6件</div>
+          <span class="day-badge actual">確認済</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">日</div>
+          <div class="day-date">5/4</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="compare-row">
+          <div class="compare-label">W1 確認分合計（5/2-5/3）</div>
+          <div class="compare-vals"><span class="val-this">¥65,000 / 15件</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">W1 最終合計（5/1+5/4追加後）</div>
+          <div class="compare-vals"><span class="val-prev" style="color:#7c3aed">□ 確認中</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">スタッフ</div>
+          <div class="compare-vals"><span class="val-prev">Yuki（1名体制継続）</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ======= 5月W2 ======= -->
+<div class="section-label">🗓️ 5月 W2（5/5 月〜5/10 土）こどもの日〜週末</div>
+
+<div class="two-col">
+
+  <!-- S藤沢 W2 -->
+  <div class="store-col fujisawa">
+    <div class="store-col-header">S藤沢 ― 5月W2<span class="sub">5/5〜5/10 データ待ち</span></div>
+    <div class="store-body">
+
+      <div class="week-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="day-card pending">
+          <div class="day-name">月 祝</div>
+          <div class="day-date">5/5</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">火</div>
+          <div class="day-date">5/6</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">水</div>
+          <div class="day-date">5/7</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">木</div>
+          <div class="day-date">5/8</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">金</div>
+          <div class="day-date">5/9</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">土</div>
+          <div class="day-date">5/10</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="compare-row">
+          <div class="compare-label">W2 合計</div>
+          <div class="compare-vals"><span class="val-prev" style="color:#7c3aed">□ 確認中</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">5月前半（W1+W2）推計ペース</div>
+          <div class="compare-vals"><span class="val-prev">W1 ¥105K÷3日＝¥35K/日</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S岐阜 W2 -->
+  <div class="store-col gifu">
+    <div class="store-col-header">S岐阜 ― 5月W2<span class="sub">5/5〜5/10 データ待ち</span></div>
+    <div class="store-body">
+
+      <div class="week-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="day-card pending">
+          <div class="day-name">月 祝</div>
+          <div class="day-date">5/5</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">火</div>
+          <div class="day-date">5/6</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">水</div>
+          <div class="day-date">5/7</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">木</div>
+          <div class="day-date">5/8</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">金</div>
+          <div class="day-date">5/9</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+        <div class="day-card pending">
+          <div class="day-name">土</div>
+          <div class="day-date">5/10</div>
+          <div class="day-amt">—</div>
+          <div class="day-cnt">—</div>
+          <span class="day-badge pending">待ち</span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="compare-row">
+          <div class="compare-label">W2 合計</div>
+          <div class="compare-vals"><span class="val-prev" style="color:#7c3aed">□ 確認中</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">5月前半（W1+W2）推計ペース</div>
+          <div class="compare-vals"><span class="val-prev">W1 ¥65K÷2日＝¥32.5K/日</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ======= MTGアジェンダ & アクション ======= -->
+<div class="section-label">📋 本日のアクション</div>
+
+<div class="action-item">
+  <div class="action-num r">1</div>
+  <div class="action-body">
+    <div class="action-title">【S藤沢】5/4〜5/9の実績数値を確認・補填</div>
+    <div class="action-why">5/1-5/3のみシステム反映済み。5/4(日)〜5/9(金)の売上・客数・スタッフ別をサロンボードで確認してこのページの数値を更新する</div>
+    <div class="action-meta"><span class="who me">タカショー</span><span class="due urgent">本日中</span></div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num r">2</div>
+  <div class="action-body">
+    <div class="action-title">【S岐阜】5/1 + 5/4〜5/9の実績確認</div>
+    <div class="action-why">5/2-5/3のみ確認済み。5/1は定休日か稼働なしかを確認。5/4〜も同様に補填が必要</div>
+    <div class="action-meta"><span class="who me">タカショー</span><span class="due urgent">本日中</span></div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num a">3</div>
+  <div class="action-body">
+    <div class="action-title">【S岐阜】客単価急落の原因特定（¥4,513→¥3,395）</div>
+    <div class="action-why">3月¥4,513 → 4月¥3,395 と▲¥1,118急落。メニュー構成の変化かYukiのオペレーション変化か、4月の会計明細を確認して根本原因を特定する</div>
+    <div class="action-meta"><span class="who sv">SV（山田）</span><span class="due soon">今月中</span></div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num a">4</div>
+  <div class="action-body">
+    <div class="action-title">【S岐阜】Mina・natsuki の稼働再開 or 採用検討</div>
+    <div class="action-why">Yuki 1名体制が4月も継続。月¥69.6万目標に対し¥59万止まりの構造的原因。あと¥10万積み上げるには2名体制が必要。2人の稼働状況を確認する</div>
+    <div class="action-meta"><span class="who sv">SV（山田）</span><span class="due soon">今月中</span></div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num g">5</div>
+  <div class="action-body">
+    <div class="action-title">【S藤沢】5月目標 vs 4月ペースの確認・次回予約率KPI設定</div>
+    <div class="action-why">4月は目標比+19%で過達成。5月の目標数値と次回予約率KPIをMTGで確認・設定。5/7のMTGで45%目標が掲げられており、藤沢の5月目標も同様に確認する</div>
+    <div class="action-meta"><span class="who me">タカショー</span><span class="due normal">今月</span></div>
+  </div>
+</div>
+
+<div class="info-box yellow" style="margin-top:16px">
+  <strong>⚠️ このページのデータについて:</strong> 売上CSV(毎日更新)の最終取得は 2026/05/04 22時。5/5〜5/9 の実績はシステムに未反映のため「待ち」表示。MTG中にサロンボードで当該店舗の売上を確認の上、このページの数値を都度アップデートしてください。
+</div>
+
+<footer>S藤沢 × S岐阜 直営MTG ｜ 2026-05-09 ｜ SSIN STUDIO 直営</footer>
+
+</body>
+</html>
