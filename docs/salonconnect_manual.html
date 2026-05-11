@@ -3,415 +3,240 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>サロンコネクト スタッフ操作マニュアル</title>
+<title>サロンコネクト 操作マニュアル</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #f0f4f8; color: #333; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f7f6f3;color:#1e293b;font-size:14px;line-height:1.7}
 
-  header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px 24px;
-    text-align: center;
-  }
-  header h1 { font-size: 20px; font-weight: 700; }
-  header p  { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+/* ── Header ── */
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:24px 20px;text-align:center;color:#fff}
+.page-header h1{font-size:20px;font-weight:800;letter-spacing:.02em}
+.page-header p{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px}
 
-  .tabs {
-    display: flex;
-    background: #fff;
-    border-bottom: 2px solid #e5e7eb;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 14px 8px;
-    border: none;
-    background: none;
-    font-size: 13px;
-    font-weight: 600;
-    color: #888;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-  }
-  .tab-btn.active { color: #667eea; border-bottom-color: #667eea; }
-  .tab-btn span { display: block; font-size: 18px; margin-bottom: 2px; }
+/* ── Container ── */
+.container{max-width:720px;margin:0 auto;padding:24px 16px 48px}
 
-  .tab-content { display: none; padding: 20px 16px 40px; max-width: 680px; margin: 0 auto; }
-  .tab-content.active { display: block; }
+/* ── Section heading ── */
+.sec-title{font-size:16px;font-weight:800;color:#0f172a;margin:32px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';display:inline-block;width:4px;height:18px;background:#1D9E75;border-radius:2px}
 
-  .section-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* ── Intro text ── */
+.intro{font-size:13px;color:#475569;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;margin-bottom:18px}
 
-  .step-card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  }
-  .step-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .step-num {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px; flex-shrink: 0;
-    color: white;
-  }
-  .step-num.purple { background: #667eea; }
-  .step-num.red    { background: #ef4444; }
-  .step-num.green  { background: #10b981; }
+/* ── Step card ── */
+.step-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:18px 18px 16px;margin-bottom:14px;position:relative}
+.step-card:hover{border-color:#a7f3d0;box-shadow:0 4px 12px rgba(29,158,117,.08)}
 
-  .step-title { font-size: 15px; font-weight: 700; }
-  .step-desc  { font-size: 14px; color: #555; line-height: 1.7; }
-  .step-img {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 12px;
-    border: 1px solid #e5e7eb;
-  }
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:#1D9E75;color:#fff;border-radius:50%;font-size:12px;font-weight:800;flex-shrink:0;margin-bottom:10px}
+.step-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.step-label{font-size:13px;font-weight:800;color:#1D9E75;line-height:1.4;flex:1}
+.step-body{font-size:13px;color:#475569;line-height:1.7;padding-left:38px}
 
-  .alert {
-    background: #fef3c7;
-    border-left: 4px solid #f59e0b;
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    color: #92400e;
-    margin: 16px 0;
-    line-height: 1.6;
-  }
-  .alert-red {
-    background: #fee2e2;
-    border-left-color: #ef4444;
-    color: #991b1b;
-  }
-  .alert-green {
-    background: #d1fae5;
-    border-left-color: #10b981;
-    color: #065f46;
-  }
+/* ── Image grid ── */
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-left:38px}
+.img-grid.single{grid-template-columns:1fr}
+.img-wrap{border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;cursor:zoom-in;transition:box-shadow .15s}
+.img-wrap:hover{box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.img-wrap img{width:100%;display:block;object-fit:cover}
+.img-caption{font-size:10px;color:#94a3b8;text-align:center;padding:5px 8px;background:#f8fafc;border-top:1px solid #f1f5f9}
+.img-placeholder{width:100%;aspect-ratio:16/9;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:11px;color:#94a3b8;flex-direction:column;gap:4px}
+.img-placeholder span{font-size:22px}
 
-  .two-type {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .type-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: border 0.2s;
-  }
-  .type-card.purple { border-color: #667eea; }
-  .type-card.green  { border-color: #10b981; }
-  .type-card .icon  { font-size: 28px; margin-bottom: 6px; }
-  .type-card .label { font-size: 13px; font-weight: 700; }
-  .type-card .sub   { font-size: 11px; color: #888; margin-top: 2px; }
+/* ── Warning box ── */
+.warn-box{background:#fffbeb;border:2px solid #f59e0b;border-radius:14px;padding:18px 18px 16px;margin-bottom:14px}
+.warn-box .warn-head{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:#92400e;margin-bottom:10px}
+.warn-box ul{padding-left:18px;margin-top:6px}
+.warn-box li{font-size:13px;color:#78350f;line-height:1.8;margin-bottom:2px}
+.warn-main{font-size:14px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:8px;padding:10px 14px;margin-bottom:10px}
 
-  .items-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .item-tag {
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .item-tag .num {
-    width: 20px; height: 20px;
-    background: #667eea;
-    color: white;
-    border-radius: 50%;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
+/* ── Caution box ── */
+.caution-box{background:#fff7f7;border:1.5px solid #fca5a5;border-radius:12px;padding:14px 16px;margin-top:10px}
+.caution-box .caution-title{font-size:12px;font-weight:800;color:#dc2626;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.caution-box li{font-size:12px;color:#7f1d1d;line-height:1.8;list-style:none;padding-left:14px;position:relative}
+.caution-box li::before{content:'✗';position:absolute;left:0;color:#dc2626;font-size:11px}
 
-  .faq-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #ede9fe;
-    color: #6d28d9;
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    margin-top: 8px;
-  }
+/* ── Info box ── */
+.info-box{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:14px 16px;margin-top:10px}
+.info-box .info-title{font-size:12px;font-weight:800;color:#1d4ed8;margin-bottom:8px}
+.info-box li{font-size:12px;color:#1e3a8a;line-height:1.8;list-style:none;padding-left:14px;position:relative}
+.info-box li::before{content:'✓';position:absolute;left:0;color:#1d4ed8;font-size:11px}
 
-  .shift-rule {
-    background: #f9fafb;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-  .shift-rule table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .shift-rule th { background: #667eea; color: white; padding: 10px 12px; text-align: left; }
-  .shift-rule td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
-  .shift-rule tr:last-child td { border-bottom: none; }
+/* ── Footer ── */
+.footer-note{text-align:center;font-size:13px;font-weight:700;color:#475569;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:32px}
 
-  .trouble-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border-left: 4px solid #f59e0b;
-  }
-  .trouble-q { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #92400e; }
-  .trouble-a { font-size: 13px; color: #555; line-height: 1.6; }
+/* ── Lightbox ── */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:8px;object-fit:contain}
+.lightbox-close{position:absolute;top:16px;right:20px;font-size:28px;color:#fff;cursor:pointer;line-height:1;opacity:.8}
+.lightbox-close:hover{opacity:1}
+
+@media(max-width:480px){
+  .img-grid{grid-template-columns:1fr}
+  .step-body,.img-grid{padding-left:0}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>📋 サロンコネクト 操作マニュアル</h1>
-  <p>スタッフ向け｜予約・シフト・キャンセル</p>
-</header>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('yoyaku')">
-    <span>📅</span>予約登録
-  </button>
-  <button class="tab-btn" onclick="showTab('cancel')">
-    <span>❌</span>キャンセル
-  </button>
-  <button class="tab-btn" onclick="showTab('shift')">
-    <span>🗓️</span>シフト
-  </button>
-  <button class="tab-btn" onclick="showTab('trouble')">
-    <span>⚠️</span>困ったとき
-  </button>
+<div class="page-header">
+  <h1>サロンコネクト 操作マニュアル</h1>
+  <p>次回予約・キャンセル・重複予約の正しい運用フロー</p>
 </div>
 
-<!-- ===== 予約登録タブ ===== -->
-<div id="tab-yoyaku" class="tab-content active">
-  <div class="section-title">📅 予約を入れる</div>
+<div class="container">
 
-  <div class="two-type">
-    <div class="type-card purple">
-      <div class="icon">🆕</div>
-      <div class="label">新規のお客様</div>
-      <div class="sub">初めてのご来店</div>
+  <!-- ═══ SECTION 1 ═══ -->
+  <div class="sec-title">次回予約の登録フロー</div>
+  <div class="intro">次回予約を取る際は、必ず以下の順番で操作してください。</div>
+
+  <!-- STEP 1 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-label">サロンコネクトで次回の予約を登録する（枠埋めのため）</div>
     </div>
-    <div class="type-card green">
-      <div class="icon">🔄</div>
-      <div class="label">既存のお客様</div>
-      <div class="sub">来店歴あり</div>
+    <div class="step-body">
+      お客様の次回予約は、まずサロンコネクト側で枠埋め目的の予約を登録します。
     </div>
   </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-label">サロンボードに自動反映される</div>
+    </div>
+    <div class="step-body">
+      サロンコネクトで登録した予約が、サロンボード上に自動で反映されます。
+      <div class="img-grid">
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step2-1.png" alt="予約カレンダー全体" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step2-1.png</div><div class=\'img-caption\'>予約カレンダー全体</div>'">
+          <div class="img-caption">予約カレンダー全体</div>
+        </div>
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step2-2.png" alt="反映された予約の表示" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step2-2.png</div><div class=\'img-caption\'>反映された予約の表示</div>'">
+          <div class="img-caption">反映された予約の表示</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-label">反映された予約をクリックし「変更」を押す</div>
+    </div>
+    <div class="step-body">
+      反映された予約をクリックするとポップアップが表示されます。「変更」ボタンを押してください。この時点では予約経路が「電話(自社)」になっています。
+      <div class="img-grid single">
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step3.png" alt="予約詳細ポップアップ" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step3.png</div><div class=\'img-caption\'>予約詳細ポップアップ</div>'">
+          <div class="img-caption">予約詳細ポップアップ（経路：電話(自社)の状態）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-label">予約経路を変更する</div>
+    </div>
+    <div class="step-body">
+      プルダウンから「新規次回予約」または「再来次回予約」を選択してください。
+      <div class="img-grid single">
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step4.png" alt="予約経路プルダウン" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step4.png</div><div class=\'img-caption\'>予約経路プルダウン</div>'">
+          <div class="img-caption">予約経路プルダウン</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-label">お客様統合を行う</div>
+    </div>
+    <div class="step-body">
+      お客様情報欄に氏名(カナ)を入力し、「検索する」をクリック。既存のお客様情報と紐付けてください。
+      <div class="img-grid">
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step5-1.png" alt="お客様情報入力画面" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step5-1.png</div><div class=\'img-caption\'>お客様情報入力画面</div>'">
+          <div class="img-caption">お客様情報入力画面</div>
+        </div>
+        <div class="img-wrap" onclick="openLightbox(this)">
+          <img src="/images/salonconnect/step5-2.png" alt="統合後のお客様情報画面" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'><span>🖼</span>step5-2.png</div><div class=\'img-caption\'>統合後のお客様情報</div>'">
+          <div class="img-caption">統合後のお客様情報画面</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2 ═══ -->
+  <div class="sec-title">キャンセルが発生した場合</div>
+
+  <div class="warn-box">
+    <div class="warn-head">⚠️ キャンセル処理の注意</div>
+    <div class="warn-main">キャンセル処理は必ずサロンコネクト側で行ってください。</div>
+    <ul>
+      <li>サロンボード側でのキャンセル・削除操作は一切不要です。</li>
+      <li>サロンコネクトでキャンセルすれば、サロンボード側にも正しく反映されます。</li>
+    </ul>
+  </div>
+
+  <!-- ═══ SECTION 3 ═══ -->
+  <div class="sec-title">サロンボード上で予約が重なって見える場合の対応</div>
 
   <div class="step-card">
-    <div class="step-header">
-      <div class="step-num purple">1</div>
-      <div class="step-title">カレンダーの空き枠をクリック</div>
+    <div class="step-body" style="padding-left:0">
+      枠埋め（ブッキング防止）のために、サロンコネクトから自動で反映されたサロンボード上の予約が重なって見える場合があります。<br><br>
+      <strong style="color:#0f172a">→ そのまま放置してください。</strong>
+
+      <div class="info-box" style="margin-top:14px">
+        <div class="info-title">✅ 放置してよい理由</div>
+        <ul>
+          <li>枠埋め用の予約は「電話予約」扱いのため、放置していてもレジ締めやアラートに影響はありません。</li>
+        </ul>
+      </div>
+
+      <div class="caution-box">
+        <div class="caution-title">⛔ やってはいけないこと</div>
+        <ul>
+          <li>サロンボード側で手動キャンセルしてしまうとデータの整合性が崩れます。必ず「重なったまま」の状態で運用してください。</li>
+        </ul>
+      </div>
     </div>
-    <div class="step-desc">予約を入れたい時間帯の空き枠をタップ・クリックすると予約登録画面が開きます。</div>
   </div>
 
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num purple">2</div>
-      <div class="step-title">既存のお客様：顧客検索を使う</div>
-    </div>
-    <div class="step-desc">「名前（カナ）の顧客検索」をクリック → 電話番号または名前で検索 → 該当者を選択すると情報が自動入力されます。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/03/edc7bb072b5a85c697edf28a78951788.png" alt="顧客検索画面">
+  <!-- ═══ Footer ═══ -->
+  <div class="footer-note">
+    以上、本日からこちらのフローで徹底をお願いいたします。
   </div>
 
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num purple">3</div>
-      <div class="step-title">必要事項を入力する</div>
-    </div>
-    <div class="step-desc">以下の9項目を入力してください。</div>
-    <div class="items-grid">
-      <div class="item-tag"><span class="num">❶</span> 登録内容</div>
-      <div class="item-tag"><span class="num">❷</span> お客様名</div>
-      <div class="item-tag"><span class="num">❸</span> 電話番号</div>
-      <div class="item-tag"><span class="num">❹</span> 予約日時</div>
-      <div class="item-tag"><span class="num">❺</span> メニュー</div>
-      <div class="item-tag"><span class="num">❻</span> 担当スタッフ</div>
-      <div class="item-tag"><span class="num">❼</span> 合計金額</div>
-      <div class="item-tag"><span class="num">❽</span> 施術時間</div>
-      <div class="item-tag"><span class="num">❾</span> メモ</div>
-    </div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/03/y1520.png" alt="入力項目">
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num purple">4</div>
-      <div class="step-title">「保存する」をクリックして完了</div>
-    </div>
-    <div class="step-desc">画面右下の「保存する」ボタンをクリックすると予約が確定します。新規のお客様は次回から顧客検索で出てきます。</div>
-  </div>
-
-  <a class="faq-link" href="https://faq.salonconnect.jp/?p=233" target="_blank">📖 公式FAQで確認する</a>
 </div>
 
-<!-- ===== キャンセルタブ ===== -->
-<div id="tab-cancel" class="tab-content">
-  <div class="section-title">❌ キャンセル処理</div>
-
-  <div class="alert alert-red">
-    ⚠️ HPB・楽天などポータルサイトの予約も<strong>自動でキャンセルが連動</strong>されます。サロンコネクト側でのみ操作してください。
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num red">1</div>
-      <div class="step-title">対象の予約枠をクリック</div>
-    </div>
-    <div class="step-desc">カレンダーからキャンセルしたい予約枠をクリックし、「予約詳細の確認」をクリックします。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/05/IMG_0411.png" alt="予約詳細確認">
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num red">2</div>
-      <div class="step-title">ステータスを「キャンセル」に変更</div>
-    </div>
-    <div class="step-desc">
-      ステータスの「<strong>来店待ち ▼</strong>」をクリック →「<strong>キャンセル</strong>」を選択 → 右下の「<strong>保存する</strong>」をクリックして完了。
-    </div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/05/IMG_0424.png" alt="キャンセル操作">
-  </div>
-
-  <div class="alert alert-green">
-    ✅ 「保存する」を押した時点でキャンセル完了です。ポータルサイトへの反映には数分かかる場合があります。
-  </div>
-
-  <a class="faq-link" href="https://faq.salonconnect.jp/?p=474" target="_blank">📖 公式FAQで確認する</a>
-</div>
-
-<!-- ===== シフトタブ ===== -->
-<div id="tab-shift" class="tab-content">
-  <div class="section-title">🗓️ シフトを入れる</div>
-
-  <div class="alert">
-    ⚠️ サロンコネクト導入後は<strong>サロンコネクト側でシフトを設定</strong>してください。ポータルサイト側での直接設定は不要です（オズモール除く）。
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num green">1</div>
-      <div class="step-title">「スタッフ管理」→「スタッフシフト」を開く</div>
-    </div>
-    <div class="step-desc">メニューからスタッフ管理を選び、「スタッフシフト」に進みます。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/08/sutaffu1.png" alt="スタッフシフト画面">
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num green">2</div>
-      <div class="step-title">対象の月とスタッフを選択</div>
-    </div>
-    <div class="step-desc">設定したい月とスタッフを選択します。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/08/IMG_0452.png" alt="月・スタッフ選択">
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num green">3</div>
-      <div class="step-title">変更したい日付をクリック → 時間設定 → 「決定」</div>
-    </div>
-    <div class="step-desc">変更したい日付をクリックし、出勤時間または休日を設定して「決定」を押します。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/08/unnamed-_1.jpg" alt="時間設定">
-  </div>
-
-  <div class="step-card">
-    <div class="step-header">
-      <div class="step-num green">4</div>
-      <div class="step-title">全員分終わったら「保存する」</div>
-    </div>
-    <div class="step-desc">全ての変更が終わったら、画面右下の「<strong>保存する</strong>」をクリック。<br>他のスタッフも設定する場合はスタッフを切り替えて手順2〜4を繰り返します。</div>
-    <img class="step-img" src="https://faq.salonconnect.jp/wp-content/uploads/2018/08/sutaffusutaffu.png" alt="スタッフ切替">
-  </div>
-
-  <div class="shift-rule">
-    <table>
-      <tr><th>種類</th><th>説明</th></tr>
-      <tr><td><strong>基本シフト</strong></td><td>毎週同じ曜日の定期シフト。毎月自動延長される</td></tr>
-      <tr><td><strong>シフト管理</strong></td><td>月ごとの個別変更（急な休み・出勤変更など）</td></tr>
-    </table>
-  </div>
-
-  <div class="alert" style="margin-top:14px">
-    設定がない日は<strong>自動的に休日扱い</strong>になります。先に<strong>店舗シフト</strong>が設定されていないとスタッフシフトは設定できません。
-  </div>
-
-  <a class="faq-link" href="https://faq.salonconnect.jp/?p=1162" target="_blank">📖 公式FAQで確認する</a>
-</div>
-
-<!-- ===== 困ったときタブ ===== -->
-<div id="tab-trouble" class="tab-content">
-  <div class="section-title">⚠️ 困ったときの対処法</div>
-
-  <div class="trouble-card">
-    <div class="trouble-q">❓ シフトが設定できない</div>
-    <div class="trouble-a">まず<strong>店舗シフト</strong>（店舗管理 → 店舗シフト）が設定されているか確認してください。店舗シフトが未設定だとスタッフシフトは設定できません。</div>
-  </div>
-
-  <div class="trouble-card">
-    <div class="trouble-q">❓ キャンセルしたのにポータルサイトに残っている</div>
-    <div class="trouble-a">反映に数分かかります。5分経っても消えない場合は、サロンコネクトの「手動再反映」機能を使ってください。</div>
-  </div>
-
-  <div class="trouble-card">
-    <div class="trouble-q">❓ 月またぎのシフトが一括設定できない</div>
-    <div class="trouble-a">月をまたいだ一括設定はできません。月ごとに個別で設定が必要です。</div>
-  </div>
-
-  <div class="trouble-card">
-    <div class="trouble-q">❓ ポータルからキャンセルになった予約がサロンコネクトに残っている</div>
-    <div class="trouble-a">手動で該当予約を開き、ステータスを「キャンセル」に変更して保存してください。</div>
-  </div>
-
-  <div class="trouble-card">
-    <div class="trouble-q">❓ 予約・シフト操作でエラーが出た</div>
-    <div class="trouble-a">画面をリロードして再試行してください。繰り返す場合はサロンコネクトサポートへ連絡してください。</div>
-  </div>
-
-  <a class="faq-link" href="https://faq.salonconnect.jp/" target="_blank">📖 公式FAQ一覧を見る</a>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
 </div>
 
 <script>
-function showTab(name) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
+function openLightbox(wrap) {
+  const img = wrap.querySelector('img');
+  if (!img) return;
+  document.getElementById('lightboxImg').src = img.src;
+  document.getElementById('lightbox').classList.add('active');
 }
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>
