@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理ダッシュボード</title>
+<title>S札幌 管理ダッシュボード</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -272,7 +272,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
   <div class="login-box">
     <div class="login-box-logo">💎</div>
     <div class="login-box-title">Sステップ</div>
-    <div class="login-box-sub">サロン管理ダッシュボード</div>
+    <div class="login-box-sub">S札幌 管理ダッシュボード</div>
     <input class="login-box-input" id="dashLoginPass" type="password" placeholder="パスワードを入力"
       onkeydown="if(event.key==='Enter')doDashLogin()">
     <button class="login-box-btn" onclick="doDashLogin()">ログイン</button>
@@ -2698,7 +2698,7 @@ async function refreshAll() {
 // ══════════════════════════════════════════════════════════
 // LINE管理 共通設定
 // ══════════════════════════════════════════════════════════
-const DASH_GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
+const DASH_GAS_URL = ""; // ← 札幌GASデプロイ後にURLを貼り付けてください
 const DASH_SECRET  = "ssin2026";
 
 async function gasGet(action, extra = {}, ttlMin = 0) {
@@ -3426,7 +3426,7 @@ const SCENARIO_STEPS = [
     defaultHour: 11,
     msgKey: 'メッセージ_新規40日後_LED',
     defaultTiming: 30,
-    defaultMsg: 'こんにちは^ ^\nLUMISS 藤沢です♪\n\nエクステのばらつきや自まつ毛が伸びてきたら、リペアの時期です💙\n\nLUMISSでは40日以内のリペアがとってもお得です✨\n\n◎量が欲しい方\n30分つけ放題・60本保証\n通常¥6,400 → ¥5,400\n\n◎少し付け足したい方\n40本付け足し\n通常¥6,400 → ¥4,900\n\nご予約枠は埋まりやすいのでお早めに！\n\nLUMISS 藤沢',
+    defaultMsg: 'こんにちは^ ^\nSSIN STUDIO 札幌です♪\n\nエクステのばらつきや自まつ毛が伸びてきたら、リペアの時期です💙\n\nLUMISSでは40日以内のリペアがとってもお得です✨\n\n◎量が欲しい方\n30分つけ放題・60本保証\n通常¥6,400 → ¥5,400\n\n◎少し付け足したい方\n40本付け足し\n通常¥6,400 → ¥4,900\n\nご予約枠は埋まりやすいのでお早めに！\n\nSSIN STUDIO 札幌',
     placeholder: '{name} {store}',
     defaultTag: 'LEDエクステ',
     note: '対象：来店1回目のみ（2回目以降・未来店は除外）。タグはGASも設定シートから読みます',
