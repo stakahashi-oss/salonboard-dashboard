@@ -280,18 +280,6 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
   </div>
 </div>
 
-<!-- ── Auth Gate ── -->
-<div id="authGate">
-  <div class="auth-box">
-    <div class="auth-logo">💎</div>
-    <div class="auth-title">Sステップ Management</div>
-    <div class="auth-sub">管理者専用システムです</div>
-    <input class="auth-input" id="authInput" type="password" placeholder="パスワードを入力"
-      onkeydown="if(event.key==='Enter')checkAuth()">
-    <button class="auth-btn" onclick="checkAuth()">ログイン</button>
-    <div class="auth-err" id="authErr"></div>
-  </div>
-</div>
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
@@ -1290,24 +1278,13 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
 
 <script>
 // ── Auth ─────────────────────────────────────────────
-const AUTH_KEY = 'ssin_auth_v1';
-const AUTH_PASS = 'ssin2026';
+const DASH_SESSION_KEY = 'ssin_dash_auth_sapporo';
 (function() {
-  if (sessionStorage.getItem(AUTH_KEY) === 'ok') {
-    document.getElementById('authGate').classList.add('hidden');
+  if (sessionStorage.getItem(DASH_SESSION_KEY) === 'ok') {
+    document.getElementById('loginOverlay').style.display = 'none';
+    setTimeout(initDashboard, 0);
   }
 })();
-function checkAuth() {
-  const val = document.getElementById('authInput').value;
-  if (val === AUTH_PASS) {
-    sessionStorage.setItem(AUTH_KEY, 'ok');
-    document.getElementById('authGate').classList.add('hidden');
-  } else {
-    document.getElementById('authErr').textContent = 'パスワードが違います';
-    document.getElementById('authInput').value = '';
-    document.getElementById('authInput').focus();
-  }
-}
 
 // ── State ────────────────────────────────────────────
 let resData = [], lstepData = {}, lineInfo = {};
@@ -1339,6 +1316,7 @@ const DASH_PASS = "ssin2026";
 function doDashLogin() {
   const val = document.getElementById('dashLoginPass').value;
   if (val === DASH_PASS) {
+    sessionStorage.setItem(DASH_SESSION_KEY, 'ok');
     document.getElementById('loginOverlay').style.display = 'none';
     initDashboard();
   } else {
