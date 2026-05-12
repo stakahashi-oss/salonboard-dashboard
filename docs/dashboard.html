@@ -3329,7 +3329,7 @@ const SCENARIO_STEPS = [
     defaultTiming: 40,
     defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nSSIN STUDIOでは、眉毛のモチをより良く保つために40日以内の再来をおすすめしています。\n\n今回は特別に、40日以内のご来店で500円OFFのクーポンをご用意しました♪\n今の眉毛を保ちながら、より理想の目元へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
     placeholder: '{name} {store}',
-    note: '対象：眉毛ワックスタグ / GASで「来店回数≤1 かつ 眉毛ワックスタグ」を条件にフィルタしてください',
+    note: 'GASの checkNew40DayStep() が「眉毛ワックスタグ かつ 来店回数≤1」を自動判定して送信します',
   },
   {
     id: 'step_new40_lash',
@@ -3345,7 +3345,7 @@ const SCENARIO_STEPS = [
     defaultTiming: 40,
     defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nまつ毛パーマは40日前後でカールが取れてきます👀\nせっかくのパーマを長くキープするためにも、40日以内の再来をおすすめしています♪\n\n今回は特別に、40日以内のご来店で500円OFFのクーポンをご用意しました♪\n前回より更に理想のまつ毛へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
     placeholder: '{name} {store}',
-    note: '対象：まつ毛パーマタグ / GASで「来店回数≤1 かつ まつ毛パーマタグ」を条件にフィルタしてください',
+    note: 'GASの checkNew40DayStep() が「まつ毛パーマタグ かつ 来店回数≤1」を自動判定して送信します',
   },
   {
     id: 'step_new40_set',
@@ -3361,7 +3361,7 @@ const SCENARIO_STEPS = [
     defaultTiming: 40,
     defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nまつ毛パーマは40日前後でカールが取れてきます。眉毛も1ヶ月ほどで形が崩れてきます。\nせっかくのセット施術をキープするためにも、40日以内の再来をおすすめしています♪\n\n今回は特別に、40日以内のご来店でセットメニューが800円OFFのクーポンをご用意しました♪\n前回より更に理想のまつ毛と眉毛へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
     placeholder: '{name} {store}',
-    note: '対象：セットタグ / GASで「来店回数≤1 かつ セットタグ」を条件にフィルタしてください',
+    note: 'GASの checkNew40DayStep() が「セットタグ かつ 来店回数≤1」を自動判定して送信します',
   },
 ];
 
@@ -3440,7 +3440,17 @@ function renderScenarioSteps() {
       ...tagMaster.map(t => `<option value="${t.name}" ${tagFilter === t.name ? 'selected' : ''}>🏷️ ${t.name}</option>`)
     ].join('');
 
-    const tagRow = `
+    const fixedTagLabels = {
+      'step_new40_eyebrow': '眉毛ワックス',
+      'step_new40_lash':    'まつ毛パーマ',
+      'step_new40_set':     'セット',
+    };
+    const tagRow = fixedTagLabels[step.id] ? `
+        <div class="scenario-timing-row" style="margin-bottom:10px">
+          <span class="scenario-timing-label">🏷️ 対象タグ:</span>
+          <span style="background:#e0f2fe;border:1.5px solid #38bdf8;border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;color:#0369a1">🔒 ${fixedTagLabels[step.id]}（GAS側で自動フィルタ）</span>
+          <span style="font-size:11px;color:#aaa;margin-left:6px">＋ 来店回数≤1</span>
+        </div>` : `
         <div class="scenario-timing-row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
           <span class="scenario-timing-label">🏷️ 対象タグ:</span>
           <select id="tag-${step.id}" style="border:1.5px solid #ddd;border-radius:8px;padding:5px 10px;font-size:13px;background:#fff;min-width:180px">
