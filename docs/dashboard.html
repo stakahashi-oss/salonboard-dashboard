@@ -3532,7 +3532,7 @@ async function sendNew40Backlog(stepId, idx) {
     const d = r.debug || {};
     const detail = r.sent > 0
       ? `✅ ${r.sent}件 送信完了（スキップ: ${r.skipped}件）`
-      : `⚠️ 送信0件 — 来店回数不一致:${d.visitMismatch||0} タグなし:${d.noTag||0} 来店日なし:${d.noDate||0} 日数不足:${d.tooEarly||0} 送済:${d.alreadySent||0}（総数:${d.total||0}）`;
+      : `⚠️ 送信0件（対象: ${r.total||0}件・送済スキップ: ${r.skipped||0}件）`;
     statusEl.textContent = detail;
     setTimeout(() => { statusEl.textContent = ''; }, 10000);
   } catch(e) {
