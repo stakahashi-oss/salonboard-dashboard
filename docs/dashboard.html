@@ -3529,8 +3529,12 @@ async function sendNew40Backlog(stepId, idx) {
     const r = await gasPost({action: 'send_new40_backlog', step_id: stepId, timing, tag,
                              enable_key: step.enableKey, msg_key: step.msgKey, log_type: stepId.replace('step_new40_','new40_')});
     if (r.error) throw new Error(r.error);
-    statusEl.textContent = `✅ ${r.sent}件 送信完了（スキップ: ${r.skipped}件）`;
-    setTimeout(() => { statusEl.textContent = ''; }, 6000);
+    const d = r.debug || {};
+    const detail = r.sent > 0
+      ? `✅ ${r.sent}件 送信完了（スキップ: ${r.skipped}件）`
+      : `⚠️ 送信0件 — 来店回数不一致:${d.visitMismatch||0} タグなし:${d.noTag||0} 来店日なし:${d.noDate||0} 日数不足:${d.tooEarly||0} 送済:${d.alreadySent||0}（総数:${d.total||0}）`;
+    statusEl.textContent = detail;
+    setTimeout(() => { statusEl.textContent = ''; }, 10000);
   } catch(e) {
     statusEl.textContent = `❌ ${e.message}`;
   }
