@@ -1,12 +1,23 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
 const COUNSELING_URL = "https://salonboard-dashboard.vercel.app/counseling/";
+// コンバージョン追跡のフォールバック先（/track は藤沢GASへ）
+const FUJISAWA_GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
 
-// 店舗別トークン（destination = BotのuserId）
-// ※テスト中：藤沢店のみ有効
+// 店舗別設定（destination = LINE BotのuserId = webhook body.destination）
+// gasUrl: 店舗専用GASのWebアプリURL
 const STORE_TOKENS = {
+  // ── S藤沢 ──────────────────────────────────────────
   "Uee68876a1fd6e81c310e42eb7391fc25": {
-    token: "nnZPLMB+/uCYYXgb53+eWZIRdpLQ+2raDYVB9sRgeYyp4eOjRemM4pMvIbZrMuutUQWPwb6/9HlrZkhoB9/VTGgv3B6BvOmr9WAm/rijNxckFfybOnK2UycxSsF3+FPVItv8S1hFe6YtTRx2w0DhQI9PbdgDzCFqoOLOYbqAITQ=",
-    store: "SSIN STUDIO 藤沢"
+    token: "SGedhcEWaQr53y2EmjxzcyFUpMjWS8DrcQVgpUFnqiRkIhfxGGYT3t6TmDLx+VLfUQWPwb6/9HlrZkhoB9/VTGgv3B6BvOmr9WAm/rijNxfw41iE9VFTiGYCkT16mAYLkHxbnI2ZKNEWwYr36hQ5N49PbdgDzCFqoOLOYbqAITQ=",
+    store: "SSIN STUDIO 藤沢",
+    gasUrl: "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec"
+  },
+  // ── S札幌 ──────────────────────────────────────────
+  // destination: LINE Bot info API で確認（アクセストークン発行後 curl で取得）
+  // curl -H "Authorization: Bearer {TOKEN}" https://api.line.me/v2/bot/info
+  "SAPPORO_BOT_USER_ID": {
+    token: "", // ← LINE Developersで長期アクセストークンを発行して貼り付け
+    store: "SSIN STUDIO 札幌",
+    gasUrl: "" // ← 札幌GASデプロイ後のWebアプリURLを貼り付け
   }
 };
 
@@ -24,7 +35,7 @@ export default {
           key: "ssin2026",
           action: "log_conversion",
           data: {broadcast_id: bid, line_uid: uid, url: dest}
-        }));
+        }, FUJISAWA_GAS_URL));
       }
       return Response.redirect(dest || "https://salonboard-dashboard.vercel.app/", 302);
     }
@@ -54,25 +65,32 @@ async function handleLineEvents(body) {
     var event = body.events[i];
     var userId = event.source && event.source.userId;
 
-    if (event.type === "follow" && userId && storeInfo) {
-      // GAS設定シートから挨拶メッセージを取得して送信
+    if (event.type === "follow" && userId && storeInfo && storeInfo.token) {
+      // 挨拶はreplyToken使用（無料・通数カウントなし）
       var formUrl = COUNSELING_URL + "?uid=" + userId + "&store=" + encodeURIComponent(storeInfo.store);
-      var message = await buildGreetingMessage(storeInfo.store, formUrl);
+      var message = await buildGreetingMessage(storeInfo.store, formUrl, storeInfo.gasUrl);
       if (message) {
-        await pushToLine(userId, message, storeInfo.token);
+        var replyToken = event.replyToken;
+        if (replyToken) {
+          await replyToLine(replyToken, message, storeInfo.token);
+        } else {
+          await pushToLine(userId, message, storeInfo.token);
+        }
       }
 
       // GAS GETでUID登録（POST失敗時のフォールバック）
-      var registerUrl = GAS_URL
-        + "?key=ssin2026&action=register_friend"
-        + "&line_uid=" + encodeURIComponent(userId)
-        + "&store=" + encodeURIComponent(storeInfo.store);
-      await fetch(registerUrl).catch(function(e) { console.error("register_friend GET error:", e); });
+      if (storeInfo.gasUrl) {
+        var registerUrl = storeInfo.gasUrl
+          + "?key=ssin2026&action=register_friend"
+          + "&line_uid=" + encodeURIComponent(userId)
+          + "&store=" + encodeURIComponent(storeInfo.store);
+        await fetch(registerUrl).catch(function(e) { console.error("register_friend GET error:", e); });
+      }
     }
 
     // メッセージ受信 → UIDとストアのみ登録（メッセージ本文は保存しない）
-    if (event.type === "message" && event.message && event.message.type === "text" && userId && storeInfo) {
-      var msgRegisterUrl = GAS_URL
+    if (event.type === "message" && event.message && event.message.type === "text" && userId && storeInfo && storeInfo.gasUrl) {
+      var msgRegisterUrl = storeInfo.gasUrl
         + "?key=ssin2026&action=register_friend"
         + "&line_uid=" + encodeURIComponent(userId)
         + "&store=" + encodeURIComponent(storeInfo.store);
@@ -80,14 +98,17 @@ async function handleLineEvents(body) {
     }
   }
 
-  // GASにも全イベントを転送（トーク保存など）
-  await forwardToGAS(body);
+  // 店舗専用GASにイベントを転送（トーク保存など）
+  if (storeInfo && storeInfo.gasUrl) {
+    await forwardToGAS(body, storeInfo.gasUrl);
+  }
 }
 
-async function buildGreetingMessage(storeName, counselingUrl) {
+async function buildGreetingMessage(storeName, counselingUrl, gasUrl) {
   var defaultMsg = storeName + "です😊\n\nLINEのご登録ありがとうございます✨\n\nご来店前に下記のカウンセリングシートをご記入いただけるとスムーズにご案内できます📋\n\n▼ カウンセリングシート\n" + counselingUrl + "\n\nご予約・お問い合わせはいつでもこちらのLINEへお気軽にどうぞ🌸";
+  if (!gasUrl) return defaultMsg;
   try {
-    var settingsUrl = GAS_URL + "?key=ssin2026&action=get_settings";
+    var settingsUrl = gasUrl + "?key=ssin2026&action=get_settings";
     var res = await fetch(settingsUrl);
     if (res.ok) {
       var json = await res.json();
@@ -108,6 +129,24 @@ async function buildGreetingMessage(storeName, counselingUrl) {
   return defaultMsg;
 }
 
+async function replyToLine(replyToken, message, token) {
+  try {
+    await fetch("https://api.line.me/v2/bot/message/reply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({
+        replyToken: replyToken,
+        messages: [{type: "text", text: message}]
+      })
+    });
+  } catch(e) {
+    console.error("replyToLine error:", e);
+  }
+}
+
 async function pushToLine(userId, message, token) {
   try {
     await fetch("https://api.line.me/v2/bot/message/push", {
@@ -126,10 +165,10 @@ async function pushToLine(userId, message, token) {
   }
 }
 
-async function forwardToGAS(body) {
+async function forwardToGAS(body, gasUrl) {
   try {
-    if (!body) return;
-    var res = await fetch(GAS_URL, {
+    if (!body || !gasUrl) return;
+    var res = await fetch(gasUrl, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(body),
@@ -149,3 +188,4 @@ async function forwardToGAS(body) {
     console.error("forwardToGAS error:", e);
   }
 }
+
