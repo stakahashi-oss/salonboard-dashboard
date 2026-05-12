@@ -48,6 +48,7 @@ async function forwardToGAS(body) {
       var userId = event.source ? event.source.userId : "";
 
       if (event.type === "follow") {
+        var storeName = url.searchParams.get("store") || "";
         var profile = await fetchLineProfile(userId);
         var displayName = profile ? (profile.displayName || "") : "";
         await fetch(GAS_URL, {
@@ -56,11 +57,11 @@ async function forwardToGAS(body) {
           body: JSON.stringify({
             key: "ssin2026",
             action: "register_friend",
-            data: {line_uid: userId, phone: "", name: "", display_name: displayName}
+            data: {line_uid: userId, phone: "", name: "", display_name: displayName, store: storeName}
           }),
           redirect: "follow"
         });
-        await sendCounselingLink(userId, displayName);
+        await sendCounselingLink(userId, displayName, storeName);
       }
 
       if (event.type === "message") {
@@ -166,8 +167,8 @@ async function fetchBotName() {
   }
 }
 
-async function sendCounselingLink(userId, displayName) {
-  var formUrl = FORM_URL + "?uid=" + encodeURIComponent(userId);
+async function sendCounselingLink(userId, displayName, storeName) {
+  var formUrl = FORM_URL + "?uid=" + encodeURIComponent(userId) + (storeName ? "&store=" + encodeURIComponent(storeName) : "");
   var botName = await fetchBotName();
   var name = displayName ? displayName + "様、" : "";
   var message = "友だち追加ありがとうございます！\uD83D\uDE0A\n" + botName + " です\u2728\n\n"

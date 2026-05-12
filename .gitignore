@@ -9,3 +9,4 @@ __pycache__/
 counseling_ss_id.txt
 lstep_*.json
 line_*.json
+.vercel
