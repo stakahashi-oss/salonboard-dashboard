@@ -788,7 +788,11 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
+const GAS_URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
+const GAS_URL_BY_STORE = {
+  "sapporo":  "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruOSADhf6ZJyGYWIiSwy98VxUlLDnqC7JxywP29iPgzn43r1aMGp/exec",
+  "fujisawa": "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec"
+};
 const SECRET  = "ssin2026";
 
 let currentCustomer = {};
@@ -807,6 +811,7 @@ const STORE_NAME_MAP = {
   "tokorozawa":"most eyes 所沢"
 };
 const STORE_FROM_URL = STORE_NAME_MAP[STORE_CODE_FROM_URL] || STORE_CODE_FROM_URL;
+const GAS_URL = GAS_URL_BY_STORE[STORE_CODE_FROM_URL] || GAS_URL_DEFAULT;
 
 // ── 画面遷移 ─────────────────────────────────────────────
 function showScreen(id) {
