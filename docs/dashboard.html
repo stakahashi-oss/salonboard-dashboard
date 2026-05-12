@@ -3316,20 +3316,52 @@ const SCENARIO_STEPS = [
     placeholder: '{name} {store} {next_menu} {next_timing}',
   },
   {
-    id: 'step_new40',
-    label: '新規フォロー（初回来店40日後・2回目なし）',
+    id: 'step_new40_eyebrow',
+    label: '新規40日後 ①眉毛ワックス（2回目なし）',
     icon: '🆕',
-    enableKey: '有効_ステップ新規40日',
-    timingKey: 'タイミング_新規フォロー40',
+    enableKey: '有効_ステップ新規40日_眉毛',
+    timingKey: 'タイミング_新規フォロー40_眉毛',
     timingUnit: '日後',
     timingNote: '初回来店から何日後に送るか（2回目来店がない場合のみ送信）',
     timeKey: '送信時間_ステップ',
     defaultHour: 11,
-    msgKey: 'メッセージ_新規40日後',
+    msgKey: 'メッセージ_新規40日後_眉毛',
     defaultTiming: 40,
-    defaultMsg: '{store}です✨\n\n先日はご来店いただきありがとうございました🙏\n{name}様のお顔が思い浮かんでご連絡しました😊\n\nそろそろまつ毛・眉毛のメンテナンスはいかがでしょうか？\n\n🎁 再来特典として次回ご来店時に\n「オプション無料」でお待ちしています✨\n\nご予約はこちらのLINEへお気軽にどうぞ📱',
+    defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nSSIN STUDIOでは、眉毛のモチをより良く保つために40日以内の再来をおすすめしています。\n\n今回は特別に、40日以内のご来店で500円OFFのクーポンをご用意しました♪\n今の眉毛を保ちながら、より理想の目元へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
     placeholder: '{name} {store}',
-    note: '⚠️ GAS側に来店回数チェックが必要です（下記コードを追加してください）',
+    note: '対象：眉毛ワックスタグ / GASで「来店回数≤1 かつ 眉毛ワックスタグ」を条件にフィルタしてください',
+  },
+  {
+    id: 'step_new40_lash',
+    label: '新規40日後 ②まつ毛パーマ（2回目なし）',
+    icon: '🆕',
+    enableKey: '有効_ステップ新規40日_まつ毛',
+    timingKey: 'タイミング_新規フォロー40_まつ毛',
+    timingUnit: '日後',
+    timingNote: '初回来店から何日後に送るか（2回目来店がない場合のみ送信）',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
+    msgKey: 'メッセージ_新規40日後_まつ毛',
+    defaultTiming: 40,
+    defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nまつ毛パーマは40日前後でカールが取れてきます👀\nせっかくのパーマを長くキープするためにも、40日以内の再来をおすすめしています♪\n\n今回は特別に、40日以内のご来店で500円OFFのクーポンをご用意しました♪\n前回より更に理想のまつ毛へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
+    placeholder: '{name} {store}',
+    note: '対象：まつ毛パーマタグ / GASで「来店回数≤1 かつ まつ毛パーマタグ」を条件にフィルタしてください',
+  },
+  {
+    id: 'step_new40_set',
+    label: '新規40日後 ③まつ毛＋眉毛セット（2回目なし）',
+    icon: '🆕',
+    enableKey: '有効_ステップ新規40日_セット',
+    timingKey: 'タイミング_新規フォロー40_セット',
+    timingUnit: '日後',
+    timingNote: '初回来店から何日後に送るか（2回目来店がない場合のみ送信）',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
+    msgKey: 'メッセージ_新規40日後_セット',
+    defaultTiming: 40,
+    defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nまつ毛パーマは40日前後でカールが取れてきます。眉毛も1ヶ月ほどで形が崩れてきます。\nせっかくのセット施術をキープするためにも、40日以内の再来をおすすめしています♪\n\n今回は特別に、40日以内のご来店でセットメニューが800円OFFのクーポンをご用意しました♪\n前回より更に理想のまつ毛と眉毛へ。\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
+    placeholder: '{name} {store}',
+    note: '対象：セットタグ / GASで「来店回数≤1 かつ セットタグ」を条件にフィルタしてください',
   },
 ];
 
@@ -3384,7 +3416,7 @@ function renderScenarioSteps() {
     const hourOptions = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].map(h =>
       `<option value="${h}" ${Number(hour) === h ? 'selected' : ''}>${String(h).padStart(2,'0')}:00</option>`
     ).join('');
-    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3' || step.id === 'step_new40') ? '（ステップ1〜4 共通）' : '';
+    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3' || step.id === 'step_new40_eyebrow' || step.id === 'step_new40_lash' || step.id === 'step_new40_set') ? '（ステップ1〜4 共通）' : '';
 
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
