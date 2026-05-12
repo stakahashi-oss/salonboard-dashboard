@@ -15,7 +15,7 @@ const STORE_TOKENS = {
   "U0cdc6d43d3e5be2d7cc67f8eb0c5fb84": {
     token: "OVWoRXHkZOEINMNOPly4BFq4fRPauohaxYpaQstRXbBc3apzMhqKgAKOzipFPJyQXxIlLpv9vv/U8rhnOTmtVqj8wet92Mzdj0ZxtLrL8+gA5iYx3kv7p83S/cNvWuIhQDxPkuLQDfDMv0vD5Mgo2o9PbdgDzCFqoOLOYbqAITQ=",
     store: "SSIN STUDIO 札幌",
-    gasUrl: "" // ← 札幌GASデプロイ後にURLを設定
+    gasUrl: "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruOSADhf6ZJyGYWIiSwy98VxUlLDnqC7JxywP29iPgzn43r1aMGp/exec"
   }
 };
 
