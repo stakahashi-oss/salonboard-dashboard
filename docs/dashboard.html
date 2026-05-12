@@ -3315,6 +3315,22 @@ const SCENARIO_STEPS = [
     defaultMsg: '{store}です💝\n\nご来店から2ヶ月が経ちました！\n{name}様にまた会いたいなとご連絡しました😊\n\nぜひまたご来店ください✨\nご予約・ご相談はこちらのLINEへ🌸',
     placeholder: '{name} {store} {next_menu} {next_timing}',
   },
+  {
+    id: 'step_new40',
+    label: '新規フォロー（初回来店40日後・2回目なし）',
+    icon: '🆕',
+    enableKey: '有効_ステップ新規40日',
+    timingKey: 'タイミング_新規フォロー40',
+    timingUnit: '日後',
+    timingNote: '初回来店から何日後に送るか（2回目来店がない場合のみ送信）',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
+    msgKey: 'メッセージ_新規40日後',
+    defaultTiming: 40,
+    defaultMsg: '{store}です✨\n\n先日はご来店いただきありがとうございました🙏\n{name}様のお顔が思い浮かんでご連絡しました😊\n\nそろそろまつ毛・眉毛のメンテナンスはいかがでしょうか？\n\n🎁 再来特典として次回ご来店時に\n「オプション無料」でお待ちしています✨\n\nご予約はこちらのLINEへお気軽にどうぞ📱',
+    placeholder: '{name} {store}',
+    note: '⚠️ GAS側に来店回数チェックが必要です（下記コードを追加してください）',
+  },
 ];
 
 let scenarioSettings = {};
@@ -3368,7 +3384,7 @@ function renderScenarioSteps() {
     const hourOptions = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].map(h =>
       `<option value="${h}" ${Number(hour) === h ? 'selected' : ''}>${String(h).padStart(2,'0')}:00</option>`
     ).join('');
-    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3') ? '（ステップ1〜3 共通）' : '';
+    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3' || step.id === 'step_new40') ? '（ステップ1〜4 共通）' : '';
 
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
@@ -3408,6 +3424,8 @@ function renderScenarioSteps() {
           </div>
         </div>`;
 
+    const noteRow = step.note ? `<div style="background:#fef9c3;border:1.5px solid #fbbf24;border-radius:8px;padding:8px 12px;font-size:12px;color:#92400e;font-weight:600;margin-bottom:10px">⚠️ ${step.note}</div>` : '';
+
     return `
       <div class="scenario-step ${enabled ? 'active-step' : ''}" id="scenario-${step.id}">
         <div class="scenario-step-header">
@@ -3423,6 +3441,7 @@ function renderScenarioSteps() {
             <span style="font-size:12px;color:#888" id="toggle-label-${step.id}">${enabled ? 'ON' : 'OFF'}</span>
           </div>
         </div>
+        ${noteRow}
         ${timingRow}
         ${tagRow}
         <div class="scenario-placeholder-hint">
