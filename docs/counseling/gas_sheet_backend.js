@@ -1,7 +1,7 @@
 var SECRET_KEY = "ssin2026";
 var SALES_SS_ID = "1B2eQ8K4oN7DgvTU3-mWF8ZShfDDVPXM8aU6GuxlWwMI";
 var SALES_SHEET_GID = 50056376;
-var LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1o/w1cDnyilFU=";
+var LINE_TOKEN = PropertiesService.getScriptProperties().getProperty("FUJISAWA_TOKEN") || "";
 var RESERVATION_SS_ID = "1Uwvhc1S_4gLStUiWBp8M_x8cDZBbu7VpMuskkpA8zXg";
 // 新規追加シート（売上情報 gid=670101152）
 var NEW_SALES_SS_ID  = "18M2qZjIUUNWG7NWdnJX5VcguggmNFox8espJSuG6Qv0";
@@ -124,6 +124,7 @@ function doGet(e) {
   if (act === "register_friend")      return resp(registerFriend({line_uid: e.parameter.line_uid, store: e.parameter.store || "", display_name: e.parameter.display_name || "", name: e.parameter.name || "", phone: e.parameter.phone || ""}));
   if (act === "link_uid_to_phone")    return resp(linkUidToPhone(e.parameter.line_uid, e.parameter.phone));
   if (act === "delete_friend")        return resp(deleteFriend(e.parameter.line_uid));
+  if (act === "write_step_preview")   return resp(writeStepPreviewSheet());
   return resp({error: "unknown action"});
 }
 
@@ -2702,4 +2703,189 @@ function runDailyAutoTag() {
 
   Logger.log("runDailyAutoTag 完了: " + (friends.length - 1) + "件処理");
   return {status: "ok", processed: friends.length - 1};
+}
+
+// ══════════════════════════════════════════════════════════
+//  ステップ送信プレビューシート生成
+//  「過去分を今すぐ送る」対象者をスプレッドシートに書き出す
+// ══════════════════════════════════════════════════════════
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("📋 LINEステップ")
+    .addItem("ステップ送信プレビューを更新", "writeStepPreviewSheet")
+    .addToUi();
+}
+
+function writeStepPreviewSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var SHEET_NAME = "ステップ送信プレビュー";
+
+  // シートを取得 or 新規作成
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  } else {
+    sheet.clearContents();
+    sheet.clearFormats();
+  }
+
+  // LINE友だちシートを読む
+  var friendSheet = ss.getSheetByName("LINE友だち");
+  if (!friendSheet) return {error: "LINE友だちシートが見つかりません"};
+  var fd = friendSheet.getDataRange().getValues();
+  var fh = fd[0];
+  var colUid     = fh.indexOf("LINE_UID");
+  var colName    = fh.indexOf("お名前");
+  var colDisplay = fh.indexOf("LINE表示名");
+  var colTag     = fh.indexOf("タグ");
+  var colReg     = fh.indexOf("登録日時");
+  var colLast    = fh.indexOf("最終来店日");
+  var colVisits  = fh.indexOf("来店回数");
+  var colPhone   = fh.indexOf("電話番号");
+
+  var now = new Date();
+  var TARGET_TAGS = ["セット", "LEDエクステ"];
+  var DAYS_THRESHOLD = 30;
+
+  // 各タグの対象者を分類
+  var sections = {};
+  TARGET_TAGS.forEach(function(tag) { sections[tag] = {eligible: [], soon: []}; });
+
+  for (var i = 1; i < fd.length; i++) {
+    var row = fd[i];
+    var tags = String(row[colTag] || "").split(",").map(function(t){ return t.trim(); });
+    var name = String(row[colName] || row[colDisplay] || "不明");
+    var uid  = String(row[colUid]  || "");
+    var phone = String(row[colPhone] || "");
+
+    // 登録日
+    var regRaw = row[colReg];
+    var regDate = regRaw ? new Date(regRaw) : null;
+    var regDays = regDate ? Math.floor((now - regDate) / 86400000) : 0;
+    var regStr  = regDate ? Utilities.formatDate(regDate, "Asia/Tokyo", "MM/dd") : "不明";
+
+    // 最終来店日
+    var lastRaw = row[colLast];
+    var lastDate = lastRaw ? new Date(lastRaw) : null;
+    var lastStr  = lastDate ? Utilities.formatDate(lastDate, "Asia/Tokyo", "MM/dd") : "不明";
+
+    // 来店回数
+    var visitCount = parseInt(row[colVisits] || 0) || 0;
+
+    TARGET_TAGS.forEach(function(targetTag) {
+      if (tags.indexOf(targetTag) === -1) return;
+
+      // 来店2回以上は除外（2回目以降）
+      // 未来店（0回）も除外
+      var status;
+      if (visitCount >= 2) {
+        status = "除外（2回目以降）";
+      } else if (visitCount === 0 && !lastDate) {
+        status = "除外（未来店）";
+      } else if (regDays >= DAYS_THRESHOLD) {
+        status = "✅ 送信対象";
+      } else {
+        status = "⏳ あと" + (DAYS_THRESHOLD - regDays) + "日";
+      }
+
+      var entry = [name, targetTag, regStr, regDays + "日前", lastStr, visitCount || "不明", status, phone, uid];
+
+      if (status === "✅ 送信対象") {
+        sections[targetTag].eligible.push(entry);
+      } else if (status.indexOf("⏳") === 0) {
+        sections[targetTag].soon.push(entry);
+      }
+      // 除外は表示しない
+    });
+  }
+
+  // ── シート書き込み ──
+  var COL_HEADERS = ["名前", "タグ", "登録日", "経過日数", "最終来店日", "来店回数", "状態", "電話番号", "LINE_UID"];
+  var currentRow = 1;
+
+  // タイトル
+  sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+    .merge()
+    .setValue("📋 ステップ送信プレビュー　更新: " + Utilities.formatDate(now, "Asia/Tokyo", "yyyy/MM/dd HH:mm"))
+    .setBackground("#1e293b").setFontColor("#ffffff").setFontWeight("bold").setFontSize(12);
+  currentRow++;
+
+  TARGET_TAGS.forEach(function(tag) {
+    var eligible = sections[tag].eligible;
+    var soon     = sections[tag].soon;
+
+    // ── タグ見出し ──
+    sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+      .merge()
+      .setValue("■ 対象タグ: " + tag + "　　今すぐ送れる: " + eligible.length + "件 ／ まだ送れない: " + soon.length + "件")
+      .setBackground("#0f4c81").setFontColor("#ffffff").setFontWeight("bold").setFontSize(11);
+    currentRow++;
+
+    // ── 送信対象ブロック ──
+    if (eligible.length > 0) {
+      // セクションヘッダ
+      sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+        .merge()
+        .setValue("✅ 送信対象（登録から" + DAYS_THRESHOLD + "日以上 / " + eligible.length + "件）")
+        .setBackground("#16a34a").setFontColor("#ffffff").setFontWeight("bold");
+      currentRow++;
+      // カラムヘッダ
+      sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+        .setValues([COL_HEADERS])
+        .setBackground("#dcfce7").setFontWeight("bold").setFontColor("#15803d");
+      currentRow++;
+      // データ行
+      eligible.sort(function(a, b){ return parseInt(b[3]) - parseInt(a[3]); }); // 経過日数降順
+      eligible.forEach(function(r) {
+        sheet.getRange(currentRow, 1, 1, r.length).setValues([r]).setBackground("#f0fdf4");
+        currentRow++;
+      });
+    } else {
+      sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+        .merge().setValue("送信対象なし（まだ誰も30日経過していません）")
+        .setBackground("#f1f5f9").setFontColor("#94a3b8").setFontStyle("italic");
+      currentRow++;
+    }
+
+    // ── もうすぐ対象ブロック（上位10件のみ）──
+    if (soon.length > 0) {
+      soon.sort(function(a, b){ return parseInt(b[3]) - parseInt(a[3]); });
+      var showSoon = soon.slice(0, 10);
+      sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+        .merge()
+        .setValue("⏳ もうすぐ対象（30日未満 / 近い順 " + showSoon.length + "件表示 / 全" + soon.length + "件）")
+        .setBackground("#d97706").setFontColor("#ffffff").setFontWeight("bold");
+      currentRow++;
+      sheet.getRange(currentRow, 1, 1, COL_HEADERS.length)
+        .setValues([COL_HEADERS])
+        .setBackground("#fef3c7").setFontWeight("bold").setFontColor("#92400e");
+      currentRow++;
+      showSoon.forEach(function(r) {
+        sheet.getRange(currentRow, 1, 1, r.length).setValues([r]).setBackground("#fffbeb");
+        currentRow++;
+      });
+    }
+
+    // 空行
+    currentRow++;
+  });
+
+  // 列幅調整
+  sheet.setColumnWidth(1, 130);  // 名前
+  sheet.setColumnWidth(2, 100);  // タグ
+  sheet.setColumnWidth(3, 65);   // 登録日
+  sheet.setColumnWidth(4, 70);   // 経過日数
+  sheet.setColumnWidth(5, 80);   // 最終来店日
+  sheet.setColumnWidth(6, 65);   // 来店回数
+  sheet.setColumnWidth(7, 140);  // 状態
+  sheet.setColumnWidth(8, 110);  // 電話番号
+  sheet.setColumnWidth(9, 200);  // LINE_UID
+  sheet.setFrozenRows(0);
+
+  // このシートをアクティブに
+  ss.setActiveSheet(sheet);
+
+  var totalEligible = TARGET_TAGS.reduce(function(s, t){ return s + sections[t].eligible.length; }, 0);
+  Logger.log("writeStepPreviewSheet 完了: 対象合計=" + totalEligible + "件");
+  return {status: "ok", total_eligible: totalEligible, rows_written: currentRow - 1};
 }
