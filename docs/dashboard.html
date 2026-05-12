@@ -389,6 +389,29 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       </div>
     </div>
 
+    <!-- 40日配信 クイックアクション -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+      <!-- 35〜39日: もうすぐ40日 -->
+      <div class="card" style="border:2px solid #f59e0b;background:linear-gradient(135deg,#fffbeb,#fef3c7);">
+        <div style="padding:16px 18px">
+          <div style="font-size:12px;color:#92400e;font-weight:700;margin-bottom:4px">⏰ もうすぐ40日（35〜39日）</div>
+          <div style="font-size:28px;font-weight:700;color:#0f172a;line-height:1.1"><span id="kpi-approaching40">-</span> <span style="font-size:14px;font-weight:500">名</span></div>
+          <div style="font-size:11px;color:#78350f;margin-top:4px;margin-bottom:12px">来店から35〜39日経過・失効まであと数日</div>
+          <button class="btn" style="width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:700;border:none;padding:9px 0;border-radius:8px;cursor:pointer;font-size:13px" onclick="quickBroadcast(35,39,'35〜39日経過')">📤 今すぐ配信する →</button>
+        </div>
+      </div>
+
+      <!-- 40日以上: 離脱済み -->
+      <div class="card" style="border:2px solid #ef4444;background:linear-gradient(135deg,#fff1f2,#fee2e2);">
+        <div style="padding:16px 18px">
+          <div style="font-size:12px;color:#991b1b;font-weight:700;margin-bottom:4px">🚨 40日以上未来店</div>
+          <div style="font-size:28px;font-weight:700;color:#0f172a;line-height:1.1"><span id="kpi-over40">-</span> <span style="font-size:14px;font-weight:500">名</span></div>
+          <div style="font-size:11px;color:#7f1d1d;margin-top:4px;margin-bottom:12px">来店から40日以上経過・要掘り起こし</div>
+          <button class="btn" style="width:100%;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-weight:700;border:none;padding:9px 0;border-radius:8px;cursor:pointer;font-size:13px" onclick="quickBroadcast(40,null,'40日以上未来店')">📤 今すぐ配信する →</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 店舗フィルタ + 当月実績 -->
     <div class="card" style="margin-top:16px">
       <div class="card-header">
@@ -1357,22 +1380,44 @@ async function loadDashboard() {
 
 function refreshAll() { loadDashboard(); }
 
-// ── ホーム: 30日以上未来店・予約なし カウント ───────────
+// ── ホーム: 未来店カウント（30日以上・35〜39日・40日以上） ───────────
 function updateChurnKpi() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const list = (allFriends || []).filter(f => {
+  let churn30 = 0, approaching40 = 0, over40 = 0;
+  (allFriends || []).forEach(f => {
     const raw = (f['最終来店日'] || '').slice(0,10);
-    if (!raw) return false;
+    if (!raw) return;
     const d = new Date(raw);
-    if (isNaN(d)) return false;
+    if (isNaN(d)) return;
     const days = Math.floor((today - d) / 86400000);
-    if (days < 30) return false;
+    if (days < 30) return;
     const tags = (f['タグ'] || '').split(',').map(t => t.trim());
-    // 先予約ありタグがなければ要アプローチ対象（次回予約スクレイパー未実行時も正しく計上）
-    return !tags.includes('先予約あり');
+    if (tags.includes('先予約あり')) return;
+    churn30++;
+    if (days >= 35 && days <= 39) approaching40++;
+    if (days >= 40) over40++;
   });
   const el = document.getElementById('kpi-churn-40');
-  if (el) el.textContent = list.length;
+  if (el) el.textContent = churn30;
+  const el2 = document.getElementById('kpi-approaching40');
+  if (el2) el2.textContent = approaching40;
+  const el3 = document.getElementById('kpi-over40');
+  if (el3) el3.textContent = over40;
+}
+
+// ── 40日配信クイックアクション ───────────
+function quickBroadcast(minDays, maxDays, label) {
+  const navItems = document.querySelectorAll('.nav-item');
+  const broadcastNav = Array.from(navItems).find(n => n.getAttribute('onclick') && n.getAttribute('onclick').includes('line-broadcast'));
+  showTab('line-broadcast', broadcastNav);
+  if (!isLoaded('broadcast')) loadBroadcastTab();
+  setTimeout(() => {
+    const minEl = document.getElementById('broadcastMinLastDays');
+    const maxEl = document.getElementById('broadcastMaxLastDays');
+    if (minEl) minEl.value = minDays;
+    if (maxEl) maxEl.value = maxDays !== null ? maxDays : '';
+    previewBroadcastTargets();
+  }, 600);
 }
 
 // ── ホーム: 店舗フィルタ初期化 ───────────
