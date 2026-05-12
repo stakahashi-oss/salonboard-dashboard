@@ -797,7 +797,16 @@ let screenHistory = ["screen-start"];
 
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const LINE_UID_FROM_URL = URL_PARAMS.get("uid") || "";
-const STORE_FROM_URL = URL_PARAMS.get("store") || "";
+const STORE_CODE_FROM_URL = URL_PARAMS.get("store") || "";
+const STORE_NAME_MAP = {
+  "sapporo":   "SSIN STUDIO 札幌",
+  "fujisawa":  "SSIN STUDIO 藤沢",
+  "kumamoto":  "SSIN STUDIO 熊本",
+  "nikotatsu": "SSIN STUDIO 二子玉川",
+  "tachikawa": "SSIN STUDIO 立川",
+  "tokorozawa":"most eyes 所沢"
+};
+const STORE_FROM_URL = STORE_NAME_MAP[STORE_CODE_FROM_URL] || STORE_CODE_FROM_URL;
 
 // ── 画面遷移 ─────────────────────────────────────────────
 function showScreen(id) {
