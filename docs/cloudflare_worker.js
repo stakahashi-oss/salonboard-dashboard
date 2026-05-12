@@ -12,12 +12,10 @@ const STORE_TOKENS = {
     gasUrl: "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec"
   },
   // ── S札幌 ──────────────────────────────────────────
-  // destination: LINE Bot info API で確認（アクセストークン発行後 curl で取得）
-  // curl -H "Authorization: Bearer {TOKEN}" https://api.line.me/v2/bot/info
-  "SAPPORO_BOT_USER_ID": {
-    token: "", // ← LINE Developersで長期アクセストークンを発行して貼り付け
+  "U0cdc6d43d3e5be2d7cc67f8eb0c5fb84": {
+    token: "OVWoRXHkZOEINMNOPly4BFq4fRPauohaxYpaQstRXbBc3apzMhqKgAKOzipFPJyQXxIlLpv9vv/U8rhnOTmtVqj8wet92Mzdj0ZxtLrL8+gA5iYx3kv7p83S/cNvWuIhQDxPkuLQDfDMv0vD5Mgo2o9PbdgDzCFqoOLOYbqAITQ=",
     store: "SSIN STUDIO 札幌",
-    gasUrl: "" // ← 札幌GASデプロイ後のWebアプリURLを貼り付け
+    gasUrl: "" // ← 札幌GASデプロイ後にURLを設定
   }
 };
 
