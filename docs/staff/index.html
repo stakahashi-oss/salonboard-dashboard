@@ -93,6 +93,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
 .empty { text-align:center; padding:60px 20px; color:#aaa; font-size:14px; }
 .error-msg { text-align:center; padding:40px 20px; color:#e74c3c; font-size:13px; background:#fff2f2; margin:12px; border-radius:12px; }
 </style>
+<script src="/store_config.js"></script>
 </head>
 <body>
 
@@ -171,26 +172,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; 
 </div>
 
 <script>
-const GAS_URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
-const GAS_KEY = "ssin2026";
+const GAS_KEY    = "ssin2026";
 const STAFF_PASS = "ssin2026";
-const COUNSELING_BASE = "https://salonboard-dashboard.vercel.app/counseling/";
-
-// 店舗表示名 → GAS URL
-const GAS_URL_MAP = {
-  "SSIN STUDIO 藤沢":    "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec",
-  "SSIN STUDIO 札幌":    "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruOSADhf6ZJyGYWIiSwy98VxUlLDnqC7JxywP29iPgzn43r1aMGp/exec"
-};
-
-// 店舗表示名 → カウンセリングURL用コード
-const STORE_CODE_MAP = {
-  "SSIN STUDIO 藤沢":    "fujisawa",
-  "SSIN STUDIO 札幌":    "sapporo",
-  "SSIN STUDIO 熊本":    "kumamoto",
-  "SSIN STUDIO 二子玉川":"nikotatsu",
-  "SSIN STUDIO 立川":    "tachikawa",
-  "most eyes 所沢":      "tokorozawa"
-};
 
 const STORE_MAP = {
   "most eyes":   ["下北沢","立川","川崎","所沢","横浜"],
@@ -200,7 +183,7 @@ const STORE_MAP = {
   "テスト":      ["テスト"]
 };
 
-let currentGasUrl = GAS_URL_DEFAULT;
+let currentGasUrl = SSIN_DEFAULT_GAS;
 
 let allCounseling = [];
 let allTalks = [];
@@ -238,7 +221,7 @@ function doLogin() {
   if (!brand) { errEl.textContent = "ブランドを選択してください"; return; }
   if (!store) { errEl.textContent = "店舗を選択してください"; return; }
   selectedStore = store;
-  currentGasUrl = GAS_URL_MAP[store] || GAS_URL_DEFAULT;
+  currentGasUrl = SSIN_GAS_BY_NAME[store] || SSIN_DEFAULT_GAS;
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("app").style.display = "flex";
   document.getElementById("app").style.flexDirection = "column";

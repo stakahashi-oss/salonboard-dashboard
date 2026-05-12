@@ -148,6 +148,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 #img-modal img { max-width:100%; max-height:90vh; border-radius:12px; object-fit:contain; }
 #img-modal-close { position:absolute; top:16px; right:16px; width:36px; height:36px; background:rgba(255,255,255,.2); border:none; border-radius:50%; color:#fff; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 </style>
+<script src="/store_config.js"></script>
 </head>
 <body>
 
@@ -788,11 +789,6 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
 </div>
 
 <script>
-const GAS_URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
-const GAS_URL_BY_STORE = {
-  "sapporo":  "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruOSADhf6ZJyGYWIiSwy98VxUlLDnqC7JxywP29iPgzn43r1aMGp/exec",
-  "fujisawa": "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec"
-};
 const SECRET  = "ssin2026";
 
 let currentCustomer = {};
@@ -802,16 +798,8 @@ let screenHistory = ["screen-start"];
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const LINE_UID_FROM_URL = URL_PARAMS.get("uid") || "";
 const STORE_CODE_FROM_URL = URL_PARAMS.get("store") || "";
-const STORE_NAME_MAP = {
-  "sapporo":   "SSIN STUDIO 札幌",
-  "fujisawa":  "SSIN STUDIO 藤沢",
-  "kumamoto":  "SSIN STUDIO 熊本",
-  "nikotatsu": "SSIN STUDIO 二子玉川",
-  "tachikawa": "SSIN STUDIO 立川",
-  "tokorozawa":"most eyes 所沢"
-};
-const STORE_FROM_URL = STORE_NAME_MAP[STORE_CODE_FROM_URL] || STORE_CODE_FROM_URL;
-const GAS_URL = GAS_URL_BY_STORE[STORE_CODE_FROM_URL] || GAS_URL_DEFAULT;
+const STORE_FROM_URL = SSIN_NAME_BY_CODE[STORE_CODE_FROM_URL] || STORE_CODE_FROM_URL;
+const GAS_URL        = SSIN_GAS_BY_CODE[STORE_CODE_FROM_URL]  || SSIN_DEFAULT_GAS;
 
 // ── 画面遷移 ─────────────────────────────────────────────
 function showScreen(id) {
