@@ -3366,6 +3366,23 @@ const SCENARIO_STEPS = [
     defaultTag: 'セット',
     note: '来店回数≤1 の条件はGASが自動判定。タグはGASも設定シートから読みます',
   },
+  {
+    id: 'step_new40_led',
+    label: '新規40日後 ④LEDエクステ リペア（2回目なし）',
+    icon: '💙',
+    enableKey: '有効_ステップ新規40日_LED',
+    timingKey: 'タイミング_新規フォロー40_LED',
+    timingUnit: '日後',
+    timingNote: '初回来店から何日後に送るか（2回目来店がない場合のみ送信）',
+    timeKey: '送信時間_ステップ',
+    defaultHour: 11,
+    msgKey: 'メッセージ_新規40日後_LED',
+    defaultTiming: 30,
+    defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nエクステのばらつきや自まつ毛の伸びが気になってきたら、リペアのサインです💙\n\n今なら40日以内のご来店限定で、お得なリペアをご用意しました✨\n\n【量が欲しい方】\n30分つけ放題・60本保証\n通常¥6,400 → ¥5,400（¥1,000 OFF）\n\n【少し付け足したい方】\n40本付け足し\n通常¥6,400 → ¥4,900（¥1,500 OFF）\n\nリペア1回でしっかり戻りますよ🌸\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
+    placeholder: '{name} {store}',
+    defaultTag: 'LEDエクステ',
+    note: '来店回数≤1 の条件はGASが自動判定。タグはGASも設定シートから読みます',
+  },
 ];
 
 let scenarioSettings = {};
