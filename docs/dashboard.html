@@ -3510,11 +3510,30 @@ function renderScenarioSteps() {
           <button class="btn btn-green" onclick="saveScenarioStep('${step.id}',${idx})">💾 保存</button>
           <button class="btn btn-blue btn-sm" onclick="previewScenarioStep('${step.id}')">👁 プレビュー</button>
           <button class="btn btn-gray btn-sm" onclick="resetScenarioStep('${step.id}',${idx})">↩ リセット</button>
+          ${step.id.startsWith('step_new40_') ? `<button class="btn btn-sm" style="background:#f59e0b;color:#fff;border:none" onclick="sendNew40Backlog('${step.id}',${idx})">📤 過去分を今すぐ送る</button>` : ''}
           <span id="save-status-${step.id}" style="font-size:12px;color:#888;align-self:center"></span>
         </div>
         <div class="scenario-preview" id="preview-${step.id}"></div>
       </div>`;
   }).join('');
+}
+
+async function sendNew40Backlog(stepId, idx) {
+  const step = SCENARIO_STEPS[idx];
+  if (!confirm(`「${step.label}」の過去分（30日以上経過・2回目来店なし）に今すぐ一括送信しますか？\n\n※送信済みの人にはスキップします`)) return;
+  const statusEl = document.getElementById(`save-status-${stepId}`);
+  statusEl.textContent = '送信中...';
+  try {
+    const timing = parseInt(scenarioSettings[step.timingKey] || step.defaultTiming || 30);
+    const tag    = scenarioSettings[`シナリオタグ_${stepId}`] || step.defaultTag || '';
+    const r = await gasPost({action: 'send_new40_backlog', step_id: stepId, timing, tag,
+                             enable_key: step.enableKey, msg_key: step.msgKey, log_type: stepId.replace('step_new40_','new40_')});
+    if (r.error) throw new Error(r.error);
+    statusEl.textContent = `✅ ${r.sent}件 送信完了（スキップ: ${r.skipped}件）`;
+    setTimeout(() => { statusEl.textContent = ''; }, 6000);
+  } catch(e) {
+    statusEl.textContent = `❌ ${e.message}`;
+  }
 }
 
 async function toggleScenarioStep(id, enableKey, checked) {
