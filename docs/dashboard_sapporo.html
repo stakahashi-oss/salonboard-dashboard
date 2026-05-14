@@ -253,7 +253,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
 .modal-close:hover { background:#E5E7EB; }
 
 /* ── Login ── */
-#loginOverlay { position:fixed; inset:0; background:linear-gradient(145deg,#E1F5EE 0%,#f0faf5 40%,#F7F6F3 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
+#loginOverlay { display:none; }
 .login-box { background:rgba(255,255,255,.98); border-radius:20px; padding:44px 36px; width:100%; max-width:360px; box-shadow:0 16px 48px rgba(29,158,117,.14),0 0 0 1px rgba(29,158,117,.08); text-align:center; }
 .login-box-logo { background:linear-gradient(135deg,var(--accent),#34d399); width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 20px; }
 .login-box-title { font-size:20px; font-weight:700; margin-bottom:4px; color:var(--text); }
@@ -1278,13 +1278,8 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
 
 <script>
 // ── Auth ─────────────────────────────────────────────
-const DASH_SESSION_KEY = 'ssin_dash_auth_sapporo';
-(function() {
-  if (sessionStorage.getItem(DASH_SESSION_KEY) === 'ok') {
-    document.getElementById('loginOverlay').style.display = 'none';
-    setTimeout(initDashboard, 0);
-  }
-})();
+// (login removed – GAS key=ssin2026 handles auth)
+window.addEventListener('DOMContentLoaded', function() { initDashboard(); });
 
 // ── State ────────────────────────────────────────────
 let resData = [], lstepData = {}, lineInfo = {};
