@@ -799,7 +799,7 @@ const URL_PARAMS = new URLSearchParams(window.location.search);
 const LINE_UID_FROM_URL = URL_PARAMS.get("uid") || "";
 const STORE_CODE_FROM_URL = URL_PARAMS.get("store") || "";
 const STORE_FROM_URL = SSIN_NAME_BY_CODE[STORE_CODE_FROM_URL] || STORE_CODE_FROM_URL;
-const GAS_URL        = SSIN_GAS_BY_CODE[STORE_CODE_FROM_URL]  || SSIN_DEFAULT_GAS;
+const GAS_URL        = SSIN_GAS_BY_CODE[STORE_CODE_FROM_URL] || SSIN_GAS_BY_NAME[STORE_CODE_FROM_URL] || SSIN_DEFAULT_GAS;
 
 // ── 画面遷移 ─────────────────────────────────────────────
 function showScreen(id) {
