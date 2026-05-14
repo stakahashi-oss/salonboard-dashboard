@@ -1358,7 +1358,7 @@ async function loadDashboard() {
   loadHomeStoreStats();
 }
 
-function refreshAll() { loadDashboard(); }
+
 
 // ── ホーム: 未来店カウント（30日以上・35〜39日・40日以上） ───────────
 function updateChurnKpi() {
@@ -2671,8 +2671,11 @@ function confirmBroadcast() { confirmHomeBroadcast(); }
 async function refreshAll() {
   // キャッシュをクリアして強制再取得
   Object.keys(localStorage).filter(k => k.startsWith('sgc_')).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem('lineFriendsCache_v2');
+  Object.keys(_loaded).forEach(k => delete _loaded[k]);
+  allFriends = [];
   document.getElementById('updatedAt').textContent = '更新中...';
-  await loadAll();
+  await loadDashboard();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -2761,6 +2764,9 @@ async function loadLineFriendsMgmt() {
       allFriends = data.friends || [];
       saveFriendsToCache(allFriends);
       _applyFriendsToUI(allFriends);
+      updateChurnKpi();
+      initHomeStoreFilter();
+      loadHomeStoreStats();
     }).catch(() => {});
     gasGet('get_sales_customers').then(res => {
       window._salesByPhone = res.by_phone || {};
