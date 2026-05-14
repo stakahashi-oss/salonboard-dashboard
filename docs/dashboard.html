@@ -3447,16 +3447,7 @@ const SCENARIO_STEPS = [
     defaultHour: 10,
     msgKey: 'メッセージ_予約確認',
     defaultTiming: null,
-    defaultMsg: '{store}です🌸
-
-{name}様、ご予約ありがとうございます✨
-
-📅 来店日時: {visit_date}
-⏰ 開始時間: {start_time}
-💆 メニュー: {menu}
-
-ご来店を楽しみにしております😊
-変更・キャンセルはこちらのLINEへ📱',
+    defaultMsg: '{store}です🌸\n\n{name}様、ご予約ありがとうございます✨\n\n📅 来店日時: {visit_date}\n⏰ 開始時間: {start_time}\n💆 メニュー: {menu}\n\nご来店を楽しみにしております😊\n変更・キャンセルはこちらのLINEへ📱',
     placeholder: '{name} {store} {visit_date} {start_time} {menu}',
     note: '毎日N時に未送信の未来予約を検索→1予約につき1回のみ送信。複数店舗は各店のLINEトークンで送信',
   },
@@ -3514,15 +3505,7 @@ const SCENARIO_STEPS = [
     defaultHour: 11,
     msgKey: 'メッセージ_再来店リマインド',
     defaultTiming: 30,
-    defaultMsg: 'こんにちは^ ^
-{store}です✨
-
-そろそろお手入れの時期が近づいてきました😊
-
-また{name}様にお会いできることを楽しみにしています🌸
-
-ぜひお気軽にご予約ください📅
-ご予約はこちらのLINEへ📱',
+    defaultMsg: 'こんにちは^ ^\n{store}です✨\n\nそろそろお手入れの時期が近づいてきました😊\n\nまた{name}様にお会いできることを楽しみにしています🌸\n\nぜひお気軽にご予約ください📅\nご予約はこちらのLINEへ📱',
     placeholder: '{name} {store} {timing}',
     note: '全顧客対象（来店回数問わず）。タグで絞り込み可。複数店舗対応',
   },
@@ -3754,9 +3737,7 @@ async function sendNew40Backlog(stepId, idx) {
 
 async function sendRevisit40Backlog(stepId, idx) {
   const step = SCENARIO_STEPS[idx];
-  if (!confirm('`${step.label}`の対象者（最終来店からN日以上経過）に今すぐ一括送信しますか？
-
-※本日分送信済みの人はスキップします')) return;
+  if (!confirm(`${step.label}の対象者（最終来店からN日以上経過）に今すぐ一括送信しますか？\n\n※本日分送信済みの人はスキップします`)) return;
   const statusEl = document.getElementById(`save-status-${stepId}`);
   statusEl.textContent = '送信中...';
   try {
