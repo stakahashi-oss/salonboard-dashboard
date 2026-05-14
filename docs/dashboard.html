@@ -58,15 +58,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Noto Sans JP','Inter','Hiragino Sans','Meiryo',sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; font-size:14px; -webkit-font-smoothing:antialiased; }
 
-/* ── Auth gate ── */
-#authGate { position:fixed; inset:0; background:#111827; display:flex; align-items:center; justify-content:center; z-index:9999; }
-#authGate.hidden { display:none; }
-.auth-box { background:#fff; border-radius:16px; padding:40px 36px; width:340px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
-.auth-logo { width:44px; height:44px; background:linear-gradient(135deg,#1D9E75,#34d399); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 16px; }
-.auth-title { text-align:center; font-size:18px; font-weight:700; color:#111827; margin-bottom:4px; }
-.auth-sub { text-align:center; font-size:12px; color:#6B7280; margin-bottom:24px; }
-.auth-input { width:100%; border:1.5px solid #E5E7EB; border-radius:10px; padding:11px 14px; font-size:14px; outline:none; transition:border-color .15s; font-family:inherit; }
-.auth-input:focus { border-color:#1D9E75; }
+/* ── Auth gate (removed – single login via loginOverlay) ── */
 .auth-btn { width:100%; margin-top:12px; background:#1D9E75; color:#fff; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:600; cursor:pointer; transition:background .15s; font-family:inherit; }
 .auth-btn:hover { background:#168a65; }
 .auth-err { color:#D85A30; font-size:12px; text-align:center; margin-top:8px; min-height:18px; }
@@ -280,18 +272,6 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
   </div>
 </div>
 
-<!-- ── Auth Gate ── -->
-<div id="authGate">
-  <div class="auth-box">
-    <div class="auth-logo">💎</div>
-    <div class="auth-title">Sステップ Management</div>
-    <div class="auth-sub">管理者専用システムです</div>
-    <input class="auth-input" id="authInput" type="password" placeholder="パスワードを入力"
-      onkeydown="if(event.key==='Enter')checkAuth()">
-    <button class="auth-btn" onclick="checkAuth()">ログイン</button>
-    <div class="auth-err" id="authErr"></div>
-  </div>
-</div>
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
@@ -1290,24 +1270,7 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
 
 <script>
 // ── Auth ─────────────────────────────────────────────
-const AUTH_KEY = 'ssin_auth_v1';
-const AUTH_PASS = 'ssin2026';
-(function() {
-  if (sessionStorage.getItem(AUTH_KEY) === 'ok') {
-    document.getElementById('authGate').classList.add('hidden');
-  }
-})();
-function checkAuth() {
-  const val = document.getElementById('authInput').value;
-  if (val === AUTH_PASS) {
-    sessionStorage.setItem(AUTH_KEY, 'ok');
-    document.getElementById('authGate').classList.add('hidden');
-  } else {
-    document.getElementById('authErr').textContent = 'パスワードが違います';
-    document.getElementById('authInput').value = '';
-    document.getElementById('authInput').focus();
-  }
-}
+// (authGate removed – login handled by loginOverlay / doDashLogin only)
 
 // ── State ────────────────────────────────────────────
 let resData = [], lstepData = {}, lineInfo = {};
