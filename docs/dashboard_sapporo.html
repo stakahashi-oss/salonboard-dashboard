@@ -337,6 +337,10 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
       Lステップ成果
     </div>
+    <div class="nav-item" onclick="showTab('auto-send-log',this);if(!isLoaded('auto-send-log'))loadAutoSendLog()">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      自動配信ログ
+    </div>
   </div>
 </nav>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active')"></div>
@@ -1274,6 +1278,18 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
       <div id="autoTagRulesList"><div class="loading"><span class="spinner"></span>読込中...</div></div>
     </div>
   </div>
+
+  <!-- ── 自動配信ログ ── -->
+  <div class="section" id="tab-auto-send-log">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">Auto Send Log</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text)">自動配信ログ</div>
+      </div>
+      <button class="btn btn-green btn-sm" onclick="loadAutoSendLog(true)">🔄 再読み込み</button>
+    </div>
+    <div id="autoSendLogContent"><div class="loading"><span class="spinner"></span>読込中...</div></div>
+  </div>
 </main>
 
 <script>
@@ -2049,7 +2065,7 @@ function showTab(name, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
-  const titles = {dashboard:'ホーム',counseling:'カウンセリング記録',analysis:'顧客分析','line-friends-mgmt':'友だち管理','line-broadcast':'配信','line-scenario':'シナリオ設定','line-tags':'タグ管理','auto-tag':'自動タグ設定','line-stats':'配信結果','line-talk':'トーク','lstep-results':'Lステップ成果'};
+  const titles = {dashboard:'ホーム',counseling:'カウンセリング記録',analysis:'顧客分析','line-friends-mgmt':'友だち管理','line-broadcast':'配信','line-scenario':'シナリオ設定','line-tags':'タグ管理','auto-tag':'自動タグ設定','line-stats':'配信結果','line-talk':'トーク','lstep-results':'Lステップ成果','auto-send-log':'自動配信ログ'};
   document.querySelector('.header h1').textContent = titles[name] || '管理ダッシュボード';
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('active');
@@ -4483,6 +4499,69 @@ async function saveAutoTagRules() {
     alert('保存に失敗しました');
     btn.textContent = '💾 保存';
     btn.disabled = false;
+  }
+}
+
+// ── 自動配信ログ ─────────────────────────────────────────────
+async function loadAutoSendLog(force) {
+  if (!force) markLoaded('auto-send-log');
+  const el = document.getElementById('autoSendLogContent');
+  el.innerHTML = '<div class="loading"><span class="spinner"></span>読込中...</div>';
+  try {
+    const data = await gasGet('get_auto_send_log', {limit: 200});
+    const logs = data.logs || [];
+    if (!logs.length) {
+      el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px">まだ自動配信ログがありません。<br>配信が実行されると自動的に記録されます。</div>';
+      return;
+    }
+    const successCount = logs.filter(l => l.status.includes('成功')).length;
+    const failCount    = logs.filter(l => l.status.includes('失敗')).length;
+    const triggers = {};
+    logs.forEach(l => { triggers[l.trigger] = (triggers[l.trigger]||0)+1; });
+    const triggerHtml = Object.entries(triggers).map(([k,v])=>
+      `<span style="background:var(--accent-light);color:var(--accent);padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:2px">${k}: ${v}件</span>`
+    ).join('');
+    el.innerHTML = `
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <div class="kpi-card" style="flex:0 0 auto;padding:12px 20px">
+          <div class="kpi-label">📊 総配信数</div>
+          <div class="kpi-value" style="font-size:28px">${logs.length}</div>
+        </div>
+        <div class="kpi-card" style="flex:0 0 auto;padding:12px 20px;border-top:3px solid var(--accent)">
+          <div class="kpi-label">✅ 成功</div>
+          <div class="kpi-value" style="font-size:28px;color:var(--accent)">${successCount}</div>
+        </div>
+        <div class="kpi-card" style="flex:0 0 auto;padding:12px 20px;border-top:3px solid var(--danger)">
+          <div class="kpi-label">❌ 失敗</div>
+          <div class="kpi-value" style="font-size:28px;color:var(--danger)">${failCount}</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap">${triggerHtml}</div>
+      <div style="overflow-x:auto;border-radius:10px;border:1px solid #E5E7EB">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:#F9FAFB;border-bottom:1px solid #E5E7EB">
+              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-muted)">日時</th>
+              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-muted)">トリガー</th>
+              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-muted)">LINE UID</th>
+              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-muted)">メッセージ（先頭）</th>
+              <th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--text-muted)">結果</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${logs.map((l,i) => `
+            <tr style="border-bottom:1px solid #F3F4F6;background:${i%2?'#FAFAFA':'#fff'}">
+              <td style="padding:9px 12px;white-space:nowrap;color:var(--text-muted)">${l.date}</td>
+              <td style="padding:9px 12px"><span style="background:${l.trigger.includes('リマインド')?'#EFF6FF':l.trigger.includes('お礼')?'#F0FDF4':l.trigger.includes('ステップ')?'#FEF9C3':'#F3E8FF'};color:#374151;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600">${l.trigger}</span></td>
+              <td style="padding:9px 12px;font-family:monospace;font-size:11px;color:var(--text-muted)">${l.uid.substring(0,12)}...</td>
+              <td style="padding:9px 12px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.msg}</td>
+              <td style="padding:9px 12px">${l.status}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div style="color:var(--danger);padding:20px">エラー: ${e.message}</div>`;
   }
 }
 </script>
