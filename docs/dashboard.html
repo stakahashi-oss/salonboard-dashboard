@@ -770,7 +770,11 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
     <div class="card">
       <div class="card-header">
         <div class="card-title">⚠️ 失客リスク顧客（45日以上来店なし）</div>
-        <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span id="churnBroadcastStatus" style="font-size:12px;color:#888"></span>
+          <button class="btn btn-sm" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:700;white-space:nowrap" onclick="quickChurnBroadcast()">📤 この一覧に送信</button>
+          <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
+        </div>
       </div>
       <div style="font-size:12px;color:#e67e22;margin-bottom:12px">🚨 高リスク＝120日以上　⚠️ 中リスク＝90日以上　要注意＝45日以上</div>
       <div id="churnRiskTable"><div style="text-align:center;padding:20px;color:#999">読込中...</div></div>
@@ -1447,6 +1451,41 @@ function quickBroadcast(minDays, maxDays, label) {
     if (maxEl) maxEl.value = maxDays !== null ? maxDays : '';
     previewBroadcastTargets();
   }, 600);
+}
+
+// ── 失客リスク 一括送信 ───────────
+const CHURN_MSG_TEMPLATE = `{name}様、こんにちは！\nSSIN STUDIO 藤沢です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nいつでもお気軽にご予約・ご相談をこちらのLINEからどうぞ🌸\n\nまたお会いできるのを楽しみにしております！`;
+
+async function quickChurnBroadcast() {
+  const targets = (allFriends||[]).filter(f => {
+    const t = (f['タグ']||'').split(',').map(x=>x.trim());
+    return t.includes('失客リスク') && !t.includes('先予約あり');
+  });
+  if (!targets.length) { alert('対象者がいません（失客リスクタグがある方がいません）'); return; }
+  if (!confirm(`失客リスク顧客 ${targets.length}名に「そろそろどうですか」メッセージを送信します。\n（先予約ありの方は除外済み）\n\nよろしいですか？`)) return;
+
+  const statusEl = document.getElementById('churnBroadcastStatus');
+  if (statusEl) { statusEl.textContent = `送信中... 0/${targets.length}`; statusEl.style.color = '#888'; }
+
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    const f = targets[i];
+    const name = (f['お名前'] || f['LINE表示名'] || 'お客様').trim();
+    const msg = CHURN_MSG_TEMPLATE.replace(/{name}/g, name);
+    try {
+      await gasPost({action: 'send_push', line_uid: f['LINE_UID'], message: msg});
+      success++;
+      if (statusEl) statusEl.textContent = `送信中... ${success}/${targets.length}`;
+    } catch(e) {
+      console.error('churn send error:', f['LINE_UID'], e);
+    }
+  }
+
+  if (statusEl) {
+    statusEl.textContent = `✅ ${success}/${targets.length}名に送信完了`;
+    statusEl.style.color = '#00b900';
+  }
+  alert(`✅ ${success}名に送信しました！`);
 }
 
 // ── ホーム: 店舗フィルタ初期化 ───────────
