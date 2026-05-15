@@ -229,6 +229,8 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid #6366f1">基本情報</div>
         <div class="q-label">お名前（フルネーム）<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_name" placeholder="例：山田 花子" autocomplete="name">
+        <div class="q-label-sm">フリガナ（カタカナ）<span class="q-required">*</span></div>
+        <input class="gf-input" type="text" id="f_furigana" placeholder="例：ヤマダ ハナコ" autocomplete="off" oninput="this.value=toKatakana(this.value)">
         <div class="q-label-sm">住所<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_address" placeholder="例：東京都新宿区...">
         <div class="q-label-sm">電話番号（携帯）<span class="q-required">*</span></div>
@@ -930,9 +932,14 @@ function startNew() {
   showFormScreen();
 }
 
+function toKatakana(str) {
+  return str.replace(/[ぁ-ゖ]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+}
+
 function showFormScreen() {
   const c = currentCustomer;
   if (c.name) document.getElementById("f_name").value = c.name;
+  if (c.furigana) document.getElementById("f_furigana").value = c.furigana;
   if (c.phone) document.getElementById("f_phone").value = c.phone;
   goFormPage(1);
   showScreen("screen-form");
@@ -961,6 +968,12 @@ async function submitForm() {
   // お名前
   const nameEl = document.getElementById("f_name");
   if (!nameEl.value.trim()) { missing.push("お名前（フルネーム）"); firstEls.push(nameEl); }
+
+  // フリガナ
+  const furiganaEl = document.getElementById("f_furigana");
+  const furiganaVal = furiganaEl.value.trim();
+  if (!furiganaVal) { missing.push("フリガナ（カタカナ）"); firstEls.push(furiganaEl); }
+  else if (!/^[ァ-ヶーヴ\s　]+$/.test(furiganaVal)) { missing.push("フリガナはカタカナで入力してください"); firstEls.push(furiganaEl); }
 
   // 電話番号
   const phoneEl = document.getElementById("f_phone");
@@ -1040,6 +1053,7 @@ async function submitForm() {
     visit_date:     currentCustomer.visit_date || "",
     reservation_id: currentCustomer.reservation_id || "",
     name:           nameEl.value.trim(),
+    furigana:       document.getElementById("f_furigana").value.trim(),
     phone:          document.getElementById("f_phone").value.replace(/-/g,"").trim() || currentCustomer.phone || "",
     menu:           getSelected("f_menu"),
     staff:          currentCustomer.staff || "",
@@ -1135,7 +1149,7 @@ async function showHistory() {
 function resetForm() {
   currentCustomer = {}; currentReservation = {};
   window._searchResults = []; window._pastCounseling = null;
-  ["f_name","f_address","f_phone","f_birthdate","f_job","l_homecare","searchPhone"]
+  ["f_name","f_furigana","f_address","f_phone","f_birthdate","f_job","l_homecare","searchPhone"]
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
   ["f_source","f_transfer","f_freq","f_menu",
    "b_timing","b_self_care","b_surgery","b_color","b_design","b_impression",
