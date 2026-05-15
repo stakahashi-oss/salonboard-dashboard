@@ -506,6 +506,16 @@ textarea.msg-input:focus { border-color:#00b900; }
       <div class="kpi-card blue"><div class="kpi-label">📅 今月追加</div><div class="kpi-value" id="kpi-friends-month">-</div></div>
       <div class="kpi-card"><div class="kpi-label">🔗 カウンセリング連携済み</div><div class="kpi-value" id="kpi-friends-linked">-</div></div>
     </div>
+    <div class="kpi-grid" style="margin-bottom:16px">
+      <div class="kpi-card" style="border-left-color:#00b900"><div class="kpi-label">✅ 新規次回</div><div class="kpi-value" id="kpi-tag-shinkijikai">-</div></div>
+      <div class="kpi-card" style="border-left-color:#3498db"><div class="kpi-label">🔄 再来次回</div><div class="kpi-value" id="kpi-tag-raikojikai">-</div></div>
+      <div class="kpi-card" style="border-left-color:#9b59b6"><div class="kpi-label">📋 先予約あり</div><div class="kpi-value" id="kpi-tag-sakiyoyaku">-</div></div>
+      <div class="kpi-card" style="border-left-color:#e74c3c"><div class="kpi-label">⚠️ 次回予約なし</div><div class="kpi-value" id="kpi-tag-nojikai">-</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">🏷️ 次回予約タグ 分布</div></div>
+      <div class="chart-wrap"><canvas id="tagDistChart"></canvas></div>
+    </div>
     <div class="card">
       <div class="card-header">
         <div class="card-title">👥 LINE友だち一覧</div>
@@ -754,7 +764,7 @@ let resData = [], lstepData = {}, lineInfo = {};
 let resPage = 1;
 const PAGE_SIZE = 30;
 let currentMsgType = 'text';
-let sendChartInst, openRateChartInst, storeChartInst, statusChartInst, followersChartInst, deliveryChartInst;
+let sendChartInst, openRateChartInst, storeChartInst, statusChartInst, followersChartInst, deliveryChartInst, tagDistChartInst;
 
 const TEMPLATES = {
   coupon: [
@@ -1438,6 +1448,18 @@ async function loadLineFriendsMgmt() {
     document.getElementById('kpi-friends-month').textContent  = monthCount;
     document.getElementById('kpi-friends-linked').textContent = linkedCount;
 
+    // タグ別KPI
+    const hasTag = (f, tag) => (f['タグ']||'').split(',').map(t=>t.trim()).includes(tag);
+    const cShinkiJikai  = allFriends.filter(f => hasTag(f, '新規次回')).length;
+    const cRaikoJikai   = allFriends.filter(f => hasTag(f, '再来次回')).length;
+    const cSakiYoyaku   = allFriends.filter(f => hasTag(f, '先予約あり')).length;
+    const cNoJikai      = allFriends.filter(f => hasTag(f, '次回予約なし')).length;
+    document.getElementById('kpi-tag-shinkijikai').textContent = cShinkiJikai;
+    document.getElementById('kpi-tag-raikojikai').textContent  = cRaikoJikai;
+    document.getElementById('kpi-tag-sakiyoyaku').textContent  = cSakiYoyaku;
+    document.getElementById('kpi-tag-nojikai').textContent     = cNoJikai;
+    renderTagDistChart(cShinkiJikai, cRaikoJikai, cSakiYoyaku, cNoJikai);
+
     // タグ一覧を作成してフィルターに反映
     const tagSet = new Set();
     allFriends.forEach(f => {
@@ -1456,6 +1478,29 @@ async function loadLineFriendsMgmt() {
   } catch(e) {
     document.getElementById('friendsMgmtResult').innerHTML = `<div class="notice-red">❌ 読込エラー: ${e.message}</div>`;
   }
+}
+
+function renderTagDistChart(shinki, raiko, saki, noJikai) {
+  const ctx = document.getElementById('tagDistChart');
+  if (!ctx) return;
+  if (tagDistChartInst) tagDistChartInst.destroy();
+  tagDistChartInst = new Chart(ctx.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['新規次回', '再来次回', '先予約あり', '次回予約なし'],
+      datasets: [{
+        data: [shinki, raiko, saki, noJikai],
+        backgroundColor: ['#00b900', '#3498db', '#9b59b6', '#e74c3c'],
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+  });
 }
 
 function filterFriendsMgmt() {
