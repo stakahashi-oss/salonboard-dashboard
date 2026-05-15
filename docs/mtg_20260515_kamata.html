@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S蒲田 × LIBERAS｜オーナーMTG 2026-05-15</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:1000px;margin:0 auto;padding:24px 16px}
+
+/* ヘッダー */
+.page-header{background:linear-gradient(135deg,#1a0a2e,#3b0764);border-radius:12px;padding:18px 24px;margin-bottom:20px;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.header-left .badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px}
+.header-left .title{font-size:18px;font-weight:800}
+.header-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.75)}
+.chip.green{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:#86efac}
+.chip.yellow{background:rgba(234,179,8,.15);border-color:rgba(234,179,8,.3);color:#fde047}
+.chip.red{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#fca5a5}
+.chip.blue{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93c5fd}
+.chip.purple{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:#d8b4fe}
+
+/* セクションヘッダ */
+.section-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;padding:18px 0 8px}
+.section-label:first-child{padding-top:4px}
+
+/* 2カラムグリッド */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:680px){.two-col{grid-template-columns:1fr}}
+
+/* 3カラムグリッド */
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:680px){.three-col{grid-template-columns:1fr}}
+
+/* KPIカード */
+.kpi-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;text-align:center}
+.kpi-label{font-size:10px;color:#64748b;font-weight:700;margin-bottom:4px;letter-spacing:.03em}
+.kpi-value{font-size:22px;font-weight:800;color:#0f172a;line-height:1.1}
+.kpi-sub{font-size:11px;color:#64748b;margin-top:3px}
+.kpi-card.green{border-color:#bbf7d0;background:#f0fdf4}
+.kpi-card.green .kpi-value{color:#15803d}
+.kpi-card.red{border-color:#fecaca;background:#fff7f7}
+.kpi-card.red .kpi-value{color:#dc2626}
+.kpi-card.yellow{border-color:#fef08a;background:#fefce8}
+.kpi-card.yellow .kpi-value{color:#d97706}
+.kpi-card.purple{border-color:#e9d5ff;background:#faf5ff}
+.kpi-card.purple .kpi-value{color:#7c3aed}
+
+/* 月次バー */
+.month-bar-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.month-bar-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px}
+.month-bar-label .left{color:#475569;font-weight:700}
+.month-bar-label .right{color:#1e293b;font-weight:800}
+.bar-track{height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px}
+.bar-fill.warn{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.bar-fill.good{background:linear-gradient(90deg,#22c55e,#16a34a)}
+.bar-fill.danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
+.bar-fill.purple{background:linear-gradient(90deg,#a855f7,#7c3aed)}
+
+/* ホワイトカード */
+.white-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.white-card .card-title{font-size:12px;font-weight:800;color:#475569;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #f1f5f9}
+
+/* 比較行 */
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f8fafc}
+.compare-row:last-child{border-bottom:none}
+.compare-label{font-size:12px;color:#64748b}
+.compare-vals{display:flex;gap:8px;align-items:center}
+.val-main{font-size:13px;font-weight:700;color:#1e293b}
+.diff-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.diff-up{background:#dcfce7;color:#15803d}
+.diff-down{background:#fee2e2;color:#dc2626}
+.diff-flat{background:#f1f5f9;color:#64748b}
+.diff-warn{background:#fef3c7;color:#92400e}
+
+/* アクションリスト */
+.action-item{display:flex;gap:10px;padding:11px 13px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:7px;align-items:flex-start}
+.action-item:hover{border-color:#bfdbfe;background:#fafcff}
+.action-num{width:22px;height:22px;border-radius:6px;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-num.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.action-num.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.action-num.g{background:rgba(34,197,94,.1);color:#15803d;border:1px solid rgba(34,197,94,.25)}
+.action-num.p{background:rgba(168,85,247,.1);color:#7c3aed;border:1px solid rgba(168,85,247,.25)}
+.action-body{flex:1;min-width:0}
+.action-title{font-weight:700;font-size:13px;color:#1e293b}
+.action-why{font-size:11px;color:#64748b;margin-top:2px;line-height:1.55}
+.action-meta{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.who{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.who.me{background:#eff6ff;color:#1d4ed8}
+.who.sv{background:#f0fdf4;color:#15803d}
+.who.lib{background:#faf5ff;color:#6d28d9}
+.due{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.due.urgent{background:rgba(239,68,68,.08);color:#dc2626}
+.due.soon{background:rgba(245,158,11,.08);color:#d97706}
+.due.normal{background:#eff6ff;color:#2563eb}
+
+/* スタッフカード */
+.staff-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.staff-name{font-size:13px;font-weight:800;color:#1e293b;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.staff-role{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:#f1f5f9;color:#475569}
+.staff-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
+.status-main{background:#dcfce7;color:#15803d}
+.status-care{background:#fef3c7;color:#92400e}
+.status-new{background:#eff6ff;color:#1d4ed8}
+.staff-body{font-size:12px;color:#475569;line-height:1.7;margin-top:6px}
+.staff-body strong{color:#1e293b;font-weight:700}
+
+/* 施策カード */
+.measure-card{background:#fff;border-left:4px solid #7c3aed;border-radius:0 8px 8px 0;padding:11px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.measure-card.blue{border-left-color:#2563eb}
+.measure-card.green{border-left-color:#16a34a}
+.measure-card.orange{border-left-color:#ea580c}
+.measure-card.red{border-left-color:#dc2626}
+.measure-card.teal{border-left-color:#0d9488}
+.measure-title{font-size:13px;font-weight:800;color:#1e293b;margin-bottom:4px}
+.measure-desc{font-size:12px;color:#475569;line-height:1.6}
+.measure-effect{font-size:11px;font-weight:600;color:#7c3aed;margin-top:5px;background:#faf5ff;display:inline-block;padding:2px 8px;border-radius:4px}
+.measure-card.blue .measure-effect{color:#2563eb;background:#eff6ff}
+.measure-card.green .measure-effect{color:#16a34a;background:#f0fdf4}
+.measure-card.orange .measure-effect{color:#ea580c;background:#fff7ed}
+.measure-card.red .measure-effect{color:#dc2626;background:#fff1f2}
+.measure-card.teal .measure-effect{color:#0d9488;background:#f0fdfa}
+
+/* ビジョンタイムライン */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:#e2e8f0;border-radius:1px}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-18px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px #e2e8f0}
+.tl-dot.now{background:#7c3aed;box-shadow:0 0 0 2px #a855f7}
+.tl-dot.mid{background:#2563eb;box-shadow:0 0 0 2px #3b82f6}
+.tl-dot.goal{background:#16a34a;box-shadow:0 0 0 2px #22c55e}
+.tl-time{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.06em;margin-bottom:2px}
+.tl-title{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:2px}
+.tl-body{font-size:12px;color:#64748b;line-height:1.55}
+
+/* 注意ボックス */
+.info-box{padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:12px;line-height:1.6}
+.info-box.blue{background:#eff6ff;border-left:3px solid #3b82f6;color:#1e40af}
+.info-box.yellow{background:#fffbeb;border-left:3px solid #f59e0b;color:#92400e}
+.info-box.green{background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d}
+.info-box.red{background:#fff1f2;border-left:3px solid #ef4444;color:#9f1239}
+.info-box.purple{background:#faf5ff;border-left:3px solid #7c3aed;color:#4c1d95}
+
+/* 担当仕分けバッジ行 */
+.owner-section{margin-bottom:8px}
+.owner-header{font-size:11px;font-weight:800;padding:5px 10px;border-radius:6px 6px 0 0;letter-spacing:.04em}
+.owner-header.lime{background:#dbeafe;color:#1e40af}
+.owner-header.lib{background:#ede9fe;color:#4c1d95}
+.owner-tasks{background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 6px 6px;padding:8px 12px}
+.owner-task-item{font-size:12px;color:#374151;padding:4px 0;border-bottom:1px solid #f9fafb;display:flex;align-items:baseline;gap:6px}
+.owner-task-item:last-child{border-bottom:none}
+.owner-task-item::before{content:'→';color:#94a3b8;font-size:10px;flex-shrink:0}
+.owner-task-item .task-due{font-size:10px;font-weight:700;color:#ea580c;margin-left:auto;flex-shrink:0}
+
+footer{text-align:right;font-size:11px;color:#94a3b8;margin-top:24px;border-top:1px solid #e2e8f0;padding-top:10px}
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<div class="page-header">
+  <div class="header-left">
+    <div class="badge">加盟店オーナーMTG ／ 2026-05-15</div>
+    <div class="title">S蒲田 × LIBERAS ― 5月オーナーMTG</div>
+  </div>
+  <div class="header-chips">
+    <span class="chip">4月売上: ¥1,380K</span>
+    <span class="chip yellow">目標比 98.6% ⚠️ 未達</span>
+    <span class="chip red">新規再来率 7.5%（目標30〜50%）</span>
+    <span class="chip purple">オプション獲得率 3.8%</span>
+  </div>
+</div>
+
+<!-- ========== 4月実績 KPI ========== -->
+<div class="section-label">📊 4月最終実績（確定値）</div>
+
+<div class="three-col" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-bottom:8px">
+  <div class="kpi-card yellow">
+    <div class="kpi-label">月売上</div>
+    <div class="kpi-value">¥1,380K</div>
+    <div class="kpi-sub">目標 ¥1,400K ▼¥20K</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">客数</div>
+    <div class="kpi-value">263名</div>
+    <div class="kpi-sub">客単価 ¥5,247</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">新規再来率</div>
+    <div class="kpi-value">7.5%</div>
+    <div class="kpi-sub">目標 30〜50%</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">オプション獲得率</div>
+    <div class="kpi-value">3.8%</div>
+    <div class="kpi-sub">他店実績 75%</div>
+  </div>
+</div>
+
+<div class="month-bar-wrap">
+  <div class="month-bar-label">
+    <span class="left">月売上達成率</span>
+    <span class="right">¥1,380K ÷ ¥1,400K = 98.6%</span>
+  </div>
+  <div class="bar-track"><div class="bar-fill warn" style="width:98.6%"></div></div>
+
+  <div style="margin-top:12px">
+    <div class="month-bar-label">
+      <span class="left">新規再来率</span>
+      <span class="right">7.5%（目標30〜50%の下限に対して25%不足）</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill danger" style="width:15%"></div></div>
+  </div>
+
+  <div style="margin-top:12px">
+    <div class="month-bar-label">
+      <span class="left">オプション獲得率</span>
+      <span class="right">3.8%（他店舗最高 75% との乖離が致命的）</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill danger" style="width:3.8%"></div></div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="white-card">
+    <div class="card-title">売上内訳</div>
+    <div class="compare-row">
+      <span class="compare-label">施術売上</span>
+      <div class="compare-vals"><span class="val-main">¥1,230K</span><span class="diff-flat">89%</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">物販売上</span>
+      <div class="compare-vals"><span class="val-main">¥100K</span><span class="diff-up">+物販貢献あり</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">回数券（月5〜7件目標）</span>
+      <div class="compare-vals"><span class="val-main" style="color:#dc2626">低調</span><span class="diff-down">要テコ入れ</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">オプション（10件程度）</span>
+      <div class="compare-vals"><span class="val-main" style="color:#dc2626">約10件</span><span class="diff-down">獲得率3.8%</span></div>
+    </div>
+  </div>
+  <div class="white-card">
+    <div class="card-title">重要課題サマリー</div>
+    <div class="compare-row">
+      <span class="compare-label">最大の病巣</span>
+      <div class="compare-vals"><span class="val-main" style="color:#dc2626">新規再来7.5%</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">第2の課題</span>
+      <div class="compare-vals"><span class="val-main" style="color:#dc2626">オプション提案力</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">スタッフ育成</span>
+      <div class="compare-vals"><span class="val-main" style="color:#d97706">山本さん技術不安定</span></div>
+    </div>
+    <div class="compare-row">
+      <span class="compare-label">採用状況</span>
+      <div class="compare-vals"><span class="val-main">エージェント進行中</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="info-box red">
+  <strong>⚠️ 最重要警告：</strong> 新規再来率 7.5% は「新規100名来店して7〜8名しか2回目に来ない」状態。目標の30〜50%に達するには構造的な仕組み改革が必要。単発の声がけでは解決しない。
+</div>
+
+<!-- ========== 決定施策 ========== -->
+<div class="section-label">🚀 決定施策（7件）</div>
+
+<div class="measure-card blue">
+  <div class="measure-title">① 段階的次回予約特典（再来率底上げの核心策）</div>
+  <div class="measure-desc">
+    1回目（新規と同価格で次回案内）→ 2回目（オプション無料特典）→ 3回目（回数券販売へ誘導）。
+    毎回「次に来る理由」を作ることで自然な来店サイクルを設計する。
+  </div>
+  <span class="measure-effect">期待効果: 新規再来率 7.5% → 30%超を目指す</span>
+</div>
+
+<div class="measure-card green">
+  <div class="measure-title">② ショップカード導入（来店回数ごと割引）</div>
+  <div class="measure-desc">
+    3回目: ¥500OFF ／ 6回目: ¥1,000OFF ／ 9回目: ¥500OFF ／ 12回目: ¥1,000OFF。
+    財布への可視化で「次も来るメリット」を手元に持たせ、離脱防止のアンカーとする。
+  </div>
+  <span class="measure-effect">期待効果: 3回目以降の定着率向上・VIP化への入口</span>
+</div>
+
+<div class="measure-card" style="border-left-color:#7c3aed">
+  <div class="measure-title">③ 回数券 月間KPI設定（売上の10%目標）</div>
+  <div class="measure-desc">
+    月5〜7件を最低ラインとして設定。¥1,380K × 10% = ¥138K分。
+    相澤さんが現在回数券販売が落ちているため、接客フロー内に回数券提案タイミングを明文化する。
+  </div>
+  <span class="measure-effect">期待効果: LTV向上・売上安定化（翌月以降の先払い確保）</span>
+</div>
+
+<div class="measure-card orange">
+  <div class="measure-title">④ コースメニューポップ作成（オプション獲得率75%実績の横展開）</div>
+  <div class="measure-desc">
+    アイシャンプー・トリートメントなどのオプションを視覚化したポップを制作・設置。
+    他店舗でオプション獲得率75%を実現したポップを蒲田向けに共有展開する。
+    声がけ依存からツール依存の接客設計へ転換。
+  </div>
+  <span class="measure-effect">期待効果: オプション獲得率 3.8% → 30%以上（10倍化目標）</span>
+</div>
+
+<div class="measure-card teal">
+  <div class="measure-title">⑤ カウンセリングシート改善（カルテ君への新規特典反映）</div>
+  <div class="measure-desc">
+    新規向け物販 ¥2,300OFF をカルテ君のカウンセリングシートに反映。
+    接客者が特典を説明し忘れても仕組みが補完できるよう標準化する。
+  </div>
+  <span class="measure-effect">期待効果: 物販購入率・顧客満足度の底上げ</span>
+</div>
+
+<div class="measure-card" style="border-left-color:#64748b">
+  <div class="measure-title">⑥ マニュアル作成（業務フロー・接客標準化）</div>
+  <div class="measure-desc">
+    業務手順・接客トーク・特典案内タイミングを文書化。
+    山本さんの技術・接客の不安定さを仕組みで補完し、属人性を排除する。
+  </div>
+  <span class="measure-effect">期待効果: スタッフ品質の均一化・新人育成コスト削減</span>
+</div>
+
+<div class="measure-card red">
+  <div class="measure-title">⑦ 5月集客: ゲリラクーポン配信 + ミニモ 2,300円OFF</div>
+  <div class="measure-desc">
+    LINE配信でゲリラクーポン（短期・数量限定）を実施し、5月後半の空き枠を埋める。
+    ミニモ掲載を2,300円OFFに設定し、新規流入の入口を強化する。
+  </div>
+  <span class="measure-effect">期待効果: 5月新規件数の底上げ・即効性のある集客補強</span>
+</div>
+
+<!-- ========== アクション担当 ========== -->
+<div class="section-label">✅ アクション担当別タスク</div>
+
+<div class="owner-section">
+  <div class="owner-header lime">株式会社 Lime（タカショー担当）</div>
+  <div class="owner-tasks">
+    <div class="owner-task-item">マニュアル作成（業務フロー・接客標準化テンプレート）<span class="task-due">今週中</span></div>
+    <div class="owner-task-item">コースメニューポップを共有（他店舗の75%実績版）<span class="task-due">今週中</span></div>
+    <div class="owner-task-item">ショップカード設定・デザイン確定<span class="task-due">5/20まで</span></div>
+    <div class="owner-task-item">スケジュール共有（月間稼働・タスク一覧）<span class="task-due">5/16まで</span></div>
+    <div class="owner-task-item">カルテ君へ新規¥2,300OFF特典を反映<span class="task-due">5/17まで</span></div>
+    <div class="owner-task-item">ゲリラクーポン LINE配信実施<span class="task-due">5月後半</span></div>
+    <div class="owner-task-item">相澤さん個別面談（回数券販売の復活施策すり合わせ）<span class="task-due">5/22まで</span></div>
+  </div>
+</div>
+
+<div style="margin-top:8px" class="owner-section">
+  <div class="owner-header lib">LIBERAS株式会社（オーナー側担当）</div>
+  <div class="owner-tasks">
+    <div class="owner-task-item">スタッフへの全施策アナウンス（段階特典・ショップカード・回数券KPI）<span class="task-due">5/16まで</span></div>
+    <div class="owner-task-item">ミニモ 2,300円OFFクーポン設定<span class="task-due">5/17まで</span></div>
+    <div class="owner-task-item">山本さん個別指導（技術安定化・接客改善・勤務態度）<span class="task-due">継続</span></div>
+  </div>
+</div>
+
+<!-- ========== スタッフ別状況 ========== -->
+<div class="section-label">👥 スタッフ別状況</div>
+
+<div class="three-col">
+  <div class="staff-card">
+    <div class="staff-name">
+      相澤さん
+      <span class="staff-role">主力スタイリスト</span>
+      <span class="staff-status status-main">要面談</span>
+    </div>
+    <div class="staff-body">
+      <strong>強み：</strong> 店舗売上の中核を担う主力。物販・技術ともに高水準。<br>
+      <strong>課題：</strong> 回数券販売が最近落ちてきている。接客フロー内での提案タイミングが失われている可能性。<br>
+      <strong>アクション：</strong> 個別面談で回数券提案の障壁を言語化し、トークスクリプトを一緒に作る。
+    </div>
+  </div>
+  <div class="staff-card">
+    <div class="staff-name">
+      松井さん
+      <span class="staff-role">スタイリスト</span>
+      <span class="staff-status status-main">物販好調</span>
+    </div>
+    <div class="staff-body">
+      <strong>強み：</strong> 物販への貢献が顕著。¥100K物販売上の主な牽引役。<br>
+      <strong>課題：</strong> 物販以外のKPI（次回予約・オプション）への波及をいかに作るか。<br>
+      <strong>アクション：</strong> 物販トーク→次回予約・オプション連携の標準フローを横展開するモデルに。
+    </div>
+  </div>
+  <div class="staff-card">
+    <div class="staff-name">
+      山本さん
+      <span class="staff-role">育成中</span>
+      <span class="staff-status status-care">要指導</span>
+    </div>
+    <div class="staff-body">
+      <strong>強み：</strong> 新戦力として期待されている段階。<br>
+      <strong>課題：</strong> 技術の不安定さ・接客品質のばらつき・勤務態度（サボり癖）が課題として明確に浮上。<br>
+      <strong>アクション：</strong> LIBERAS側で個別指導継続。マニュアルで行動基準を明文化し、言い訳できない環境を作る。
+    </div>
+  </div>
+</div>
+
+<div class="info-box yellow" style="margin-top:12px">
+  <strong>採用状況：</strong> エージェント経由で採用活動進行中。スタッフ体制の強化が売上拡大の前提条件。山本さんの育成と並行して、次の主力候補の確保を急ぐ。
+</div>
+
+<!-- ========== 長期ビジョン ========== -->
+<div class="section-label">🗺️ 長期ビジョン（ロードマップ）</div>
+
+<div class="white-card">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot now"></div>
+      <div class="tl-time">NOW ― 2026年5月</div>
+      <div class="tl-title">仕組みの土台を作る</div>
+      <div class="tl-body">段階特典・ショップカード・マニュアル・ポップを一斉投入。ゲリラクーポン+ミニモで5月売上を底上げ。新規再来の仕組みをゼロから設計。</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot mid"></div>
+      <div class="tl-time">2026年8〜9月 ― 中間マイルストーン</div>
+      <div class="tl-title">施策の効果検証 & 回転率改善</div>
+      <div class="tl-body">ショップカード3回目達成者が出始める頃。新規再来率の数値変化を追う。回数券月5〜7件ペースが定着しているか確認。山本さん or 新採用が戦力化。</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot mid"></div>
+      <div class="tl-time">2026年10月 ― 第1目標</div>
+      <div class="tl-title">リピーター層の定着</div>
+      <div class="tl-body">3〜6回来店の安定リピーター層が形成され、月次売上が¥1,500K台を安定的に推移する状態を目指す。新規再来率 30% 達成が指標。</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot goal"></div>
+      <div class="tl-time">2026年12月 ― 最終目標</div>
+      <div class="tl-title">VIP層構築 × 高単価新規獲得</div>
+      <div class="tl-body">ショップカード6〜9回到達のVIP顧客が生まれ、客単価が自然に上昇。高単価クーポン・指名制度で強固な収益モデルへ。月売上¥1,700K以上が視野。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== アクション ========== -->
+<div class="section-label">⚡ 即時アクションリスト（優先順位付き）</div>
+
+<div class="action-item">
+  <div class="action-num r">1</div>
+  <div class="action-body">
+    <div class="action-title">ゲリラクーポン LINE配信 ― 5月後半の空き枠を今すぐ埋める</div>
+    <div class="action-why">4月目標未達の穴を5月後半で補う。新規再来7.5%問題の短期対策として今できる最速手。</div>
+    <div class="action-meta">
+      <span class="who me">タカショー</span>
+      <span class="due urgent">今週実施</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num r">2</div>
+  <div class="action-body">
+    <div class="action-title">コースポップ 蒲田向け共有 ― オプション3.8%を一撃で変える</div>
+    <div class="action-why">他店舗75%実績のポップをそのまま転用。ゼロから作らず即日展開が可能。</div>
+    <div class="action-meta">
+      <span class="who me">タカショー</span>
+      <span class="due urgent">今週中</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num r">3</div>
+  <div class="action-body">
+    <div class="action-title">ミニモ 2,300円OFF 設定 ― 新規流入の入口を強化</div>
+    <div class="action-why">ゲリラ配信と並行して外部集客を増強。ミニモは新規が特典に敏感な媒体。</div>
+    <div class="action-meta">
+      <span class="who lib">LIBERAS</span>
+      <span class="due urgent">5/17まで</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num a">4</div>
+  <div class="action-body">
+    <div class="action-title">段階特典フロー + ショップカード スタッフへアナウンス</div>
+    <div class="action-why">仕組みを作っても伝わらなければ意味なし。全スタッフが同じ言葉で説明できる状態にする。</div>
+    <div class="action-meta">
+      <span class="who lib">LIBERAS</span>
+      <span class="due soon">5/16まで</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num a">5</div>
+  <div class="action-body">
+    <div class="action-title">カルテ君 新規¥2,300OFF特典を反映</div>
+    <div class="action-why">カウンセリング時に特典の見落としが発生している。システム側で自動表示させれば人依存を排除できる。</div>
+    <div class="action-meta">
+      <span class="who me">タカショー</span>
+      <span class="due soon">5/17まで</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num a">6</div>
+  <div class="action-body">
+    <div class="action-title">相澤さん 回数券販売復活 個別面談</div>
+    <div class="action-why">主力スタッフの回数券低下は売上の長期的なダメージになる。原因特定と対策を一緒に設計する。</div>
+    <div class="action-meta">
+      <span class="who me">タカショー</span>
+      <span class="due soon">5/22まで</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num g">7</div>
+  <div class="action-body">
+    <div class="action-title">マニュアル作成 ― 属人化を排除して組織の土台を作る</div>
+    <div class="action-why">山本さん問題の根本は「何をすべきか」の不明確さ。マニュアルは育成の前提条件。</div>
+    <div class="action-meta">
+      <span class="who me">タカショー</span>
+      <span class="due normal">今週中</span>
+    </div>
+  </div>
+</div>
+
+<div class="action-item">
+  <div class="action-num g">8</div>
+  <div class="action-body">
+    <div class="action-title">山本さん個別指導（LIBERAS継続タスク）</div>
+    <div class="action-why">技術・接客・勤務態度の3点が同時に課題。継続的なモニタリングと記録が必要。</div>
+    <div class="action-meta">
+      <span class="who lib">LIBERAS</span>
+      <span class="due normal">継続</span>
+    </div>
+  </div>
+</div>
+
+<footer>S蒲田 × LIBERAS オーナーMTG ／ 2026-05-15 ／ 作成: 株式会社Lime タカショー</footer>
+
+</body>
+</html>
