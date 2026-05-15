@@ -1527,7 +1527,7 @@ function renderFriendsMgmt(friends) {
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>登録日</th><th>名前</th><th>電話番号</th><th>最終来店</th><th>タグ</th><th>操作</th>
+          <th>登録日</th><th>名前</th><th>電話番号</th><th>最終来店</th><th>次回予約日</th><th>タグ</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${friends.slice(0, 200).map(f => {
@@ -1538,11 +1538,14 @@ function renderFriendsMgmt(friends) {
             const tags      = f['タグ'] ? f['タグ'].split(',').map(t=>`<span style="background:#e8f5e9;color:#00b900;border-radius:10px;padding:1px 8px;font-size:11px;margin-right:3px">${t.trim()}</span>`).join('') : '';
             const uid       = (f['LINE_UID']||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
             const safeName  = name.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+            const nextVisit = (f['次回予約日']||'').substring(0,10) || '―';
+            const nvStyle   = nextVisit !== '―' ? 'color:#00b900;font-weight:600' : 'color:#aaa';
             return `<tr>
               <td style="white-space:nowrap">${regDate}</td>
               <td><strong>${name}</strong></td>
               <td>${phone}</td>
               <td style="white-space:nowrap">${lastVisit}</td>
+              <td style="white-space:nowrap;${nvStyle}">${nextVisit}</td>
               <td>${tags || '―'}</td>
               <td style="white-space:nowrap;display:flex;gap:4px">
                 <button class="btn btn-blue btn-sm" onclick="openCustomerProfile('${uid}')">👤 詳細</button>
@@ -2604,6 +2607,13 @@ function renderCustomerProfile(data) {
   const cs = data.counseling || [];
   const name = f.name || f.display_name || '未設定';
 
+  const todayStr = new Date().toISOString().slice(0,10).replace(/-/g,'/');
+  const futureReservs = rs.filter(r =>
+    r.visit_date >= todayStr &&
+    !['キャンセル（顧客）','キャンセル（サロン）','無断キャンセル','会計済み'].includes(r.status)
+  ).sort((a,b) => a.visit_date.localeCompare(b.visit_date));
+  const nextVisit = futureReservs[0] || null;
+
   const reservRows = rs.length ? rs.map(r => `
     <tr>
       <td style="white-space:nowrap">${r.visit_date}</td>
@@ -2653,6 +2663,13 @@ function renderCustomerProfile(data) {
         <div style="font-size:11px;color:#888;margin-bottom:4px">友だち登録日</div>
         <div style="font-size:14px">${String(f.registered_at||'').substring(0,10) || '―'}</div>
         <div style="font-size:11px;color:#888;margin-top:4px">タグ: ${f.tags || 'なし'}</div>
+      </div>
+      <div style="flex:1;min-width:200px;background:${nextVisit ? '#f0fff4' : '#fafafa'};border-radius:10px;padding:14px;border:${nextVisit ? '1.5px solid #00b900' : '1.5px solid #eee'}">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">📅 次回予約日</div>
+        ${nextVisit
+          ? `<div style="font-size:18px;font-weight:700;color:#00b900">${nextVisit.visit_date}</div><div style="font-size:12px;color:#555;margin-top:3px">${nextVisit.menu || ''}</div>`
+          : `<div style="font-size:15px;color:#aaa">予約なし</div>`
+        }
       </div>
     </div>
 
