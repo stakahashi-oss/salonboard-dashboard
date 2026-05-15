@@ -1453,8 +1453,23 @@ function quickBroadcast(minDays, maxDays, label) {
   }, 600);
 }
 
-// ── 失客リスク 一括送信 ───────────
-const CHURN_MSG_TEMPLATE = `{name}様、こんにちは！\nSSIN STUDIO 藤沢です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nいつでもお気軽にご予約・ご相談をこちらのLINEからどうぞ🌸\n\nまたお会いできるのを楽しみにしております！`;
+// ── 失客リスク 一括送信（メニュー別テンプレート） ───────────
+const CHURN_MSGS = {
+  'まつ毛パーマ': `{name}様\n\nご無沙汰しております☺️\n前回のまつ毛パーマから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元の印象やビューラーの手間が\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
+  '眉毛ワックス': `{name}様\n\nご無沙汰しております☺️\n前回の眉毛ワックスから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ眉の形やお手入れの煩わしさが\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
+  'セット':       `{name}様\n\nご無沙汰しております☺️\n前回のセットメニューから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元と眉、両方のお手入れが\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nまつ毛パーマと眉毛ワックスを一緒にご利用いただくと、\nお顔全体の印象がぐっと整いますよ🌷\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
+  'マツエク':     `{name}様\n\nご無沙汰しております☺️\n前回のマツエクから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元のボリュームや\n朝のメイクの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
+  'default':      `{name}様\n\nご無沙汰しております☺️\nSSIN STUDIO 藤沢です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nいつでもお気軽にご予約・ご相談をこちらのLINEからどうぞ🌸\n\nまたお会いできるのを楽しみにしております！`,
+};
+
+function detectMenuType(tags) {
+  const t = tags.split(',').map(x => x.trim());
+  if (t.some(x => x.includes('マツエク') || x.includes('エクステ'))) return 'マツエク';
+  if (t.some(x => x.includes('セット'))) return 'セット';
+  if (t.some(x => x.includes('まつ毛パーマ') || x.includes('まつパ') || x.includes('まつげパーマ'))) return 'まつ毛パーマ';
+  if (t.some(x => x.includes('眉毛ワックス') || x.includes('眉ワックス') || x.includes('眉毛'))) return '眉毛ワックス';
+  return 'default';
+}
 
 async function quickChurnBroadcast() {
   const targets = (allFriends||[]).filter(f => {
@@ -1462,7 +1477,17 @@ async function quickChurnBroadcast() {
     return t.includes('失客リスク') && !t.includes('先予約あり');
   });
   if (!targets.length) { alert('対象者がいません（失客リスクタグがある方がいません）'); return; }
-  if (!confirm(`失客リスク顧客 ${targets.length}名に「そろそろどうですか」メッセージを送信します。\n（先予約ありの方は除外済み）\n\nよろしいですか？`)) return;
+
+  // メニュー別件数プレビュー
+  const counts = { 'まつ毛パーマ':0, '眉毛ワックス':0, 'セット':0, 'マツエク':0, 'その他':0 };
+  targets.forEach(f => {
+    const m = detectMenuType(f['タグ']||'');
+    if (m === 'default') counts['その他']++;
+    else counts[m]++;
+  });
+  const breakdown = Object.entries(counts).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}名`).join(' / ');
+
+  if (!confirm(`失客リスク顧客 ${targets.length}名にメニュー別メッセージを送信します。\n（先予約ありの方は除外済み）\n\n内訳: ${breakdown}\n\nよろしいですか？`)) return;
 
   const statusEl = document.getElementById('churnBroadcastStatus');
   if (statusEl) { statusEl.textContent = `送信中... 0/${targets.length}`; statusEl.style.color = '#888'; }
@@ -1470,8 +1495,9 @@ async function quickChurnBroadcast() {
   let success = 0;
   for (let i = 0; i < targets.length; i++) {
     const f = targets[i];
-    const name = (f['お名前'] || f['LINE表示名'] || 'お客様').trim();
-    const msg = CHURN_MSG_TEMPLATE.replace(/{name}/g, name);
+    const name    = (f['お名前'] || f['LINE表示名'] || 'お客様').trim();
+    const menuKey = detectMenuType(f['タグ']||'');
+    const msg     = (CHURN_MSGS[menuKey] || CHURN_MSGS['default']).replace(/{name}/g, name);
     try {
       await gasPost({action: 'send_push', line_uid: f['LINE_UID'], message: msg});
       success++;
