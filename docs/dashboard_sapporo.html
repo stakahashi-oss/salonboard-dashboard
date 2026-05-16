@@ -773,7 +773,11 @@ textarea.msg-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba
     <div class="card">
       <div class="card-header">
         <div class="card-title">⚠️ 失客リスク顧客（45日以上来店なし）</div>
-        <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="churnBroadcastStatus" style="font-size:12px;color:#888"></span>
+          <button class="btn btn-sm" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:700;white-space:nowrap" onclick="quickChurnBroadcast()">📤 この一覧に送信</button>
+          <button class="btn btn-green btn-sm" onclick="loadAnalysis()">🔄 更新</button>
+        </div>
       </div>
       <div style="font-size:12px;color:#e67e22;margin-bottom:12px">🚨 高リスク＝120日以上　⚠️ 中リスク＝90日以上　要注意＝45日以上</div>
       <div id="churnRiskTable"><div style="text-align:center;padding:20px;color:#999">読込中...</div></div>
@@ -1436,6 +1440,64 @@ function updateChurnKpi() {
   if (el2) el2.textContent = approaching40;
   const el3 = document.getElementById('kpi-over40');
   if (el3) el3.textContent = over40;
+}
+
+// ── 失客リスク 一括送信（メニュー別テンプレート） ───────────
+const CHURN_MSGS = {
+  'まつ毛パーマ': `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元の印象や\nビューラーの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\nアイトリートメント無料\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  '眉毛ワックス': `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ眉の形やお手入れの煩わしさが\n気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\n眉毛トリートメント無料\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'セット':       `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元と眉、両方のお手入れが\n気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\nセットご利用で ¥○○ OFF\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'マツエク':     `{name}様\n\nご無沙汰しております☺️\n前回のご来店から30日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元のボリュームや\n朝のメイクの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\n新規付け替え ¥○○ OFF\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'default':      `{name}様\n\nご無沙汰しております☺️\n{store}です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nお久しぶりのご来店、スタッフ一同\n心よりお待ちしております🌸\n\nご予約・ご相談はこちらのLINEからどうぞ！`,
+};
+
+function detectMenuType(tags) {
+  const t = tags.split(',').map(x => x.trim());
+  if (t.some(x => x.includes('マツエク') || x.includes('エクステ'))) return 'マツエク';
+  if (t.some(x => x.includes('セット'))) return 'セット';
+  if (t.some(x => x.includes('まつ毛パーマ') || x.includes('まつパ') || x.includes('まつげパーマ'))) return 'まつ毛パーマ';
+  if (t.some(x => x.includes('眉毛ワックス') || x.includes('眉ワックス') || x.includes('眉毛'))) return '眉毛ワックス';
+  return 'default';
+}
+
+async function quickChurnBroadcast() {
+  const targets = (allFriends||[]).filter(f => {
+    const t = (f['タグ']||'').split(',').map(x=>x.trim());
+    return t.includes('失客リスク') && !t.includes('先予約あり');
+  });
+  if (!targets.length) { alert('対象者がいません（失客リスクタグがある方がいません）'); return; }
+
+  const counts = { 'まつ毛パーマ':0, '眉毛ワックス':0, 'セット':0, 'マツエク':0, 'その他':0 };
+  targets.forEach(f => {
+    const m = detectMenuType(f['タグ']||'');
+    if (m === 'default') counts['その他']++;
+    else counts[m]++;
+  });
+  const breakdown = Object.entries(counts).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}名`).join(' / ');
+
+  if (!confirm(`失客リスク顧客 ${targets.length}名にメニュー別メッセージを送信します。\n（先予約ありの方は除外済み）\n\n内訳: ${breakdown}\n\nよろしいですか？`)) return;
+
+  const statusEl = document.getElementById('churnBroadcastStatus');
+  if (statusEl) { statusEl.textContent = `送信中... 0/${targets.length}`; statusEl.style.color = '#888'; }
+
+  let success = 0;
+  for (let i = 0; i < targets.length; i++) {
+    const f = targets[i];
+    const name    = (f['お名前'] || f['LINE表示名'] || 'お客様').trim();
+    const store   = (f['登録店舗'] || 'SSIN STUDIO 札幌').trim();
+    const menuKey = detectMenuType(f['タグ']||'');
+    const msg     = (CHURN_MSGS[menuKey] || CHURN_MSGS['default'])
+      .replace(/{name}/g, name)
+      .replace(/{store}/g, store);
+    try {
+      await gasPost({action: 'send_push', line_uid: f['LINE_UID'], message: msg});
+      success++;
+    } catch(e) {
+      console.error('churn send error:', f['LINE_UID'], e);
+    }
+    if (statusEl) statusEl.textContent = `送信中... ${i+1}/${targets.length}`;
+  }
+  if (statusEl) { statusEl.textContent = `✅ 完了: ${success}/${targets.length}件送信`; statusEl.style.color = '#15803d'; }
 }
 
 // ── 40日配信クイックアクション ───────────
@@ -3575,7 +3637,7 @@ const SCENARIO_STEPS = [
     defaultHour: 11,
     msgKey: 'メッセージ_新規40日後_LED',
     defaultTiming: 30,
-    defaultMsg: 'こんにちは^ ^\nSSIN STUDIO 札幌です♪\n\nエクステのばらつきや自まつ毛が伸びてきたら、リペアの時期です💙\n\nLUMISSでは40日以内のリペアがとってもお得です✨\n\n◎量が欲しい方\n30分つけ放題・60本保証\n通常¥6,400 → ¥5,400\n\n◎少し付け足したい方\n40本付け足し\n通常¥6,400 → ¥4,900\n\nご予約枠は埋まりやすいのでお早めに！\n\nSSIN STUDIO 札幌',
+    defaultMsg: 'こんにちは^ ^\n{store}です♪\n\nエクステのばらつきや自まつ毛が伸びてきたら、リペアの時期です💙\n\nLUMISSでは40日以内のリペアがとってもお得です✨\n\n◎量が欲しい方\n30分つけ放題・60本保証\n通常¥6,400 → ¥5,400\n\n◎少し付け足したい方\n40本付け足し\n通常¥6,400 → ¥4,900\n\nご予約枠は埋まりやすいのでお早めに！\n\n{store}',
     placeholder: '{name} {store}',
     defaultTag: 'LEDエクステ',
     note: '対象：来店1回目のみ（2回目以降・未来店は除外）。タグはGASも設定シートから読みます',
