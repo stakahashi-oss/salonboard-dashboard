@@ -1455,11 +1455,11 @@ function quickBroadcast(minDays, maxDays, label) {
 
 // ── 失客リスク 一括送信（メニュー別テンプレート） ───────────
 const CHURN_MSGS = {
-  'まつ毛パーマ': `{name}様\n\nご無沙汰しております☺️\n前回のまつ毛パーマから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元の印象やビューラーの手間が\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
-  '眉毛ワックス': `{name}様\n\nご無沙汰しております☺️\n前回の眉毛ワックスから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ眉の形やお手入れの煩わしさが\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
-  'セット':       `{name}様\n\nご無沙汰しております☺️\n前回のセットメニューから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元と眉、両方のお手入れが\n気になる頃ではないかと思い、ご連絡いたしました🌿\n\nまつ毛パーマと眉毛ワックスを一緒にご利用いただくと、\nお顔全体の印象がぐっと整いますよ🌷\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
-  'マツエク':     `{name}様\n\nご無沙汰しております☺️\n前回のマツエクから少しお時間が空いてしまいましたが、\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元のボリュームや\n朝のメイクの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nいつでもこちらのLINEからお気軽にご予約ください✨\n\nスタッフ一同、またお会いできる日を楽しみにしております🌷`,
-  'default':      `{name}様\n\nご無沙汰しております☺️\nSSIN STUDIO 藤沢です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nいつでもお気軽にご予約・ご相談をこちらのLINEからどうぞ🌸\n\nまたお会いできるのを楽しみにしております！`,
+  'まつ毛パーマ': `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元の印象や\nビューラーの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\nアイトリートメント無料\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  '眉毛ワックス': `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ眉の形やお手入れの煩わしさが\n気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\n眉毛トリートメント無料\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'セット':       `{name}様\n\nご無沙汰しております☺️\n前回のご来店から40日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元と眉、両方のお手入れが\n気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\nセットご利用で ¥○○ OFF\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'マツエク':     `{name}様\n\nご無沙汰しております☺️\n前回のご来店から30日以上が経ちました。\nお変わりなくお過ごしでしょうか?\n\nそろそろ目元のボリュームや\n朝のメイクの手間が気になる頃ではないかと思い、\nご連絡いたしました🌿\n\nお久しぶりのご来店を歓迎して、\n新しい特典をご用意しました✨\n\n🎁 おかえりなさい特典\n新規付け替え ¥○○ OFF\n\nご予約はこちらのLINEからお気軽にどうぞ🌸\n\nスタッフ一同、またお会いできる日を\n楽しみにしております🌷`,
+  'default':      `{name}様\n\nご無沙汰しております☺️\nSSIN STUDIO 藤沢です😊\n\n最近ご来店がないかと思い、ご連絡しました✨\n\n目元・眉まわりのご状態はいかがでしょうか？\n\nお久しぶりのご来店、スタッフ一同\n心よりお待ちしております🌸\n\nご予約・ご相談はこちらのLINEからどうぞ！`,
 };
 
 function detectMenuType(tags) {
@@ -3474,34 +3474,6 @@ const SCENARIO_STEPS = [
     placeholder: '{name} {store} {visit_date} {start_time} {menu}',
   },
   {
-    id: 'thanks',
-    label: 'お礼メッセージ（来店当日/翌日）',
-    icon: '🙏',
-    enableKey: '有効_会計後お礼',
-    timingKey: null,
-    timingUnit: null,
-    timeKey: '送信時間_お礼',
-    defaultHour: 18,
-    msgKey: 'メッセージ_お礼',
-    defaultTiming: null,
-    defaultMsg: '本日はご来店いただきありがとうございました🙏\n{store}スタッフ一同より\n\n{name}様にご満足いただけましたでしょうか？✨\n\n➡️ 次回のおすすめ\n「{next_menu}」\n目安は{next_timing}ごろです📅\n\nまたのご来店をお待ちしております🌸\nご予約・ご相談はこちらのLINEへ📱',
-    placeholder: '{name} {store} {next_menu} {next_timing}',
-  },
-  {
-    id: 'cancel',
-    label: 'キャンセル再予約促進',
-    icon: '💌',
-    enableKey: '有効_キャンセル再予約',
-    timingKey: null,
-    timingUnit: null,
-    timeKey: '送信時間_キャンセル',
-    defaultHour: 10,
-    msgKey: 'メッセージ_キャンセル再予約',
-    defaultTiming: null,
-    defaultMsg: '{store}です💝\n\n{name}様、このたびはご予約をキャンセルされたとのこと承知いたしました🙏\n\nまたご都合がよろしい時にぜひご来店ください✨\n\nご予約・ご相談はいつでもこちらのLINEへ🌸',
-    placeholder: '{name} {store}',
-  },
-  {
     id: 'step_booking_confirm',
     label: '予約確認（予約検知時）',
     icon: '📩',
@@ -3515,64 +3487,6 @@ const SCENARIO_STEPS = [
     defaultMsg: '{store}です🌸\n\n{name}様、ご予約ありがとうございます✨\n\n📅 来店日時: {visit_date}\n⏰ 開始時間: {start_time}\n💆 メニュー: {menu}\n\nご来店を楽しみにしております😊\n変更・キャンセルはこちらのLINEへ📱',
     placeholder: '{name} {store} {visit_date} {start_time} {menu}',
     note: '毎日N時に未送信の未来予約を検索→1予約につき1回のみ送信。複数店舗は各店のLINEトークンで送信',
-  },
-  {
-    id: 'step1',
-    label: 'ステップ1（14日後）',
-    icon: '💬',
-    enableKey: '有効_ステップ14日',
-    timingKey: 'タイミング_フォロー2',
-    timingUnit: '日後',
-    timeKey: '送信時間_ステップ',
-    defaultHour: 11,
-    msgKey: 'メッセージ_14日後',
-    defaultTiming: 14,
-    defaultMsg: '{store}です💬\n\nご来店から2週間が経ちました✨\nまつげの状態はいかがでしょうか？\n\nそろそろメンテナンスの時期が近づいています😊\nお気軽にご予約ください📅',
-    placeholder: '{name} {store}',
-  },
-  {
-    id: 'step2',
-    label: 'ステップ2（30日後）',
-    icon: '🌸',
-    enableKey: '有効_ステップ30日',
-    timingKey: 'タイミング_フォロー3',
-    timingUnit: '日後',
-    timeKey: '送信時間_ステップ',
-    defaultHour: 11,
-    msgKey: 'メッセージ_30日後',
-    defaultTiming: 30,
-    defaultMsg: '{store}です🌸\n\nご来店から1ヶ月が経ちました✨\nそろそろ整える時期です😊\n\n今月もご来店いただけると嬉しいです！\nご予約はこちらのLINEへ📱',
-    placeholder: '{name} {store}',
-  },
-  {
-    id: 'step3',
-    label: 'ステップ3（60日後）',
-    icon: '💝',
-    enableKey: '有効_ステップ60日',
-    timingKey: 'タイミング_フォロー4',
-    timingUnit: '日後',
-    timeKey: '送信時間_ステップ',
-    defaultHour: 11,
-    msgKey: 'メッセージ_60日後',
-    defaultTiming: 60,
-    defaultMsg: '{store}です💝\n\nご来店から2ヶ月が経ちました！\n{name}様にまた会いたいなとご連絡しました😊\n\nぜひまたご来店ください✨\nご予約・ご相談はこちらのLINEへ🌸',
-    placeholder: '{name} {store} {next_menu} {next_timing}',
-  },
-  {
-    id: 'step_revisit_40',
-    label: '再来店リマインド（最終来店N日後）',
-    icon: '🔄',
-    enableKey: '有効_再来店リマインド',
-    timingKey: 'タイミング_再来店リマインド',
-    timingUnit: '日後',
-    timingNote: '最終来店から何日後に送るか（推奨：30）',
-    timeKey: '送信時間_ステップ',
-    defaultHour: 11,
-    msgKey: 'メッセージ_再来店リマインド',
-    defaultTiming: 30,
-    defaultMsg: 'こんにちは^ ^\n{store}です✨\n\nそろそろお手入れの時期が近づいてきました😊\n\nまた{name}様にお会いできることを楽しみにしています🌸\n\nぜひお気軽にご予約ください📅\nご予約はこちらのLINEへ📱',
-    placeholder: '{name} {store} {timing}',
-    note: '全顧客対象（来店回数問わず）。タグで絞り込み可。複数店舗対応',
   },
   {
     id: 'step_new40_eyebrow',
@@ -3643,6 +3557,7 @@ const SCENARIO_STEPS = [
     note: '対象：来店1回目のみ（2回目以降・未来店は除外）。タグはGASも設定シートから読みます',
   },
 ];
+];
 
 let scenarioSettings = {};
 
@@ -3695,7 +3610,7 @@ function renderScenarioSteps() {
     const hourOptions = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].map(h =>
       `<option value="${h}" ${Number(hour) === h ? 'selected' : ''}>${String(h).padStart(2,'0')}:00</option>`
     ).join('');
-    const timeNote = (step.id === 'step1' || step.id === 'step2' || step.id === 'step3' || step.id === 'step_new40_eyebrow' || step.id === 'step_new40_lash' || step.id === 'step_new40_set') ? '（ステップ1〜4 共通）' : '';
+    const timeNote = (step.id === 'step_new40_eyebrow' || step.id === 'step_new40_lash' || step.id === 'step_new40_set') ? '（新覇01～03 共通）' : '';
 
     const timingRow = step.timingKey ? `
         <div class="scenario-timing-row">
@@ -3769,7 +3684,7 @@ function renderScenarioSteps() {
           <button class="btn btn-green" onclick="saveScenarioStep('${step.id}',${idx})">💾 保存</button>
           <button class="btn btn-blue btn-sm" onclick="previewScenarioStep('${step.id}')">👁 プレビュー</button>
           <button class="btn btn-gray btn-sm" onclick="resetScenarioStep('${step.id}',${idx})">↩ リセット</button>
-          ${step.id.startsWith('step_new40_') ? `<button class="btn btn-sm" style="background:#f59e0b;color:#fff;border:none" onclick="sendNew40Backlog('${step.id}',${idx})">📤 過去分を今すぐ送る</button>` : step.id === 'step_revisit_40' ? `<button class="btn btn-sm" style="background:#8b5cf6;color:#fff;border:none" onclick="sendRevisit40Backlog('${step.id}',${idx})">📤 過去分を今すぐ送る</button>` : ''}
+          ${step.id.startsWith('step_new40_') ? `<button class="btn btn-sm" style="background:#f59e0b;color:#fff;border:none" onclick="sendNew40Backlog('${step.id}',${idx})">📤 過去分を今すぐ送る</button>` : ''}
           <span id="save-status-${step.id}" style="font-size:12px;color:#888;align-self:center"></span>
         </div>
         <div class="scenario-preview" id="preview-${step.id}"></div>
