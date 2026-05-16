@@ -230,7 +230,7 @@ body { font-family:'Inter','Hiragino Sans','Meiryo',sans-serif; background:var(-
         <div class="q-label">お名前（フルネーム）<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_name" placeholder="例：山田 花子" autocomplete="name">
         <div class="q-label-sm">フリガナ（カタカナ）<span class="q-required">*</span></div>
-        <input class="gf-input" type="text" id="f_furigana" placeholder="例：ヤマダ ハナコ" autocomplete="off" oninput="this.value=toKatakana(this.value)">
+        <input class="gf-input" type="text" id="f_furigana" placeholder="例：ヤマダ ハナコ" autocomplete="off">
         <div class="q-label-sm">住所<span class="q-required">*</span></div>
         <input class="gf-input" type="text" id="f_address" placeholder="例：東京都新宿区...">
         <div class="q-label-sm">電話番号（携帯）<span class="q-required">*</span></div>
@@ -935,6 +935,15 @@ function startNew() {
 function toKatakana(str) {
   return str.replace(/[ぁ-ゖ]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
 }
+
+(function() {
+  var el = document.getElementById('f_furigana');
+  if (!el) return;
+  var composing = false;
+  el.addEventListener('compositionstart', function() { composing = true; });
+  el.addEventListener('compositionend', function() { composing = false; el.value = toKatakana(el.value); });
+  el.addEventListener('input', function() { if (!composing) el.value = toKatakana(el.value); });
+})();
 
 function showFormScreen() {
   const c = currentCustomer;
