@@ -1,10 +1,28 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec";
-const LINE_TOKEN = "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU=";
-const FORM_URL = "https://stakahashi-oss.github.io/salonboard-dashboard/counseling/";
+const FORM_URL = "https://salonboard-dashboard.vercel.app/counseling/";
+
+// 店舗別設定（新店舗追加はここだけ）
+const STORES = {
+  "fujisawa": {
+    gasUrl: "https://script.google.com/macros/s/AKfycbwwbux1fkwj7jdAKv-lqXyLpRjTxNEARvQYEs4T0Ir0lrypVq6vvzYjIOWgQEjVkV0Tyg/exec",
+    token:  "E0gasK7zfaVSi5SEFzmvbvZLOwAjvyxEatqHUzv2cFhIqNE4Pg8R8i5/139d9oKI6uExBLGieIqgN36szq1dWEZ5qXxU8T8paVtFhkBOwKESOZRb+muKxCmy8mrI1WyT8/VyJBsXpyYU+CKtRLo8uAdB04t89/1O/w1cDnyilFU="
+  },
+  "sapporo": {
+    gasUrl: "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruOSADhf6ZJyGYWIiSwy98VxUlLDnqC7JxywP29iPgzn43r1aMGp/exec",
+    token:  "OVWoRXHkZOEINMNOPly4BFq4fRPauohaxYpaQstRXbBc3apzMhqKgAKOzipFPJyQXxIlLpv9vv/U8rhnOTmtVqj8wet92Mzdj0ZxtLrL8+gA5iYx3kv7p83S/cNvWuIhQDxPkuLQDfDMv0vD5Mgo2o9PbdgDzCFqoOLOYbqAITQ="
+  }
+};
+
+// デフォルト（フォールバック用）
+const DEFAULT_STORE = "fujisawa";
+
+function getStore(storeName) {
+  return STORES[storeName] || STORES[DEFAULT_STORE];
+}
 
 export default {
   async fetch(request, env, ctx) {
     var url = new URL(request.url);
+    var storeName = url.searchParams.get("store") || DEFAULT_STORE;
 
     // コンバージョン追跡: /track?bid=配信ID&uid=LINE_UID&url=転送先URL
     if (url.pathname === "/track") {
@@ -12,7 +30,7 @@ export default {
       var uid = url.searchParams.get("uid") || "";
       var dest = url.searchParams.get("url") || "";
       if (bid && dest) {
-        ctx.waitUntil(fetch(GAS_URL, {
+        ctx.waitUntil(fetch(getStore(storeName).gasUrl, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -23,14 +41,14 @@ export default {
           redirect: "follow"
         }));
       }
-      return Response.redirect(dest || "https://stakahashi-oss.github.io/salonboard-dashboard/", 302);
+      return Response.redirect(dest || "https://salonboard-dashboard.vercel.app/", 302);
     }
 
     var body = null;
     if (request.method === "POST") {
       body = await request.json();
     }
-    ctx.waitUntil(forwardToGAS(body));
+    ctx.waitUntil(forwardToGAS(body, storeName));
     return new Response(JSON.stringify({status: "ok"}), {
       status: 200,
       headers: {"Content-Type": "application/json"}
@@ -38,9 +56,12 @@ export default {
   }
 };
 
-async function forwardToGAS(body) {
+async function forwardToGAS(body, storeName) {
   try {
     if (!body) return;
+    var store = getStore(storeName);
+    var gasUrl = store.gasUrl;
+    var token  = store.token;
     var events = body.events || [];
 
     for (var i = 0; i < events.length; i++) {
@@ -48,10 +69,9 @@ async function forwardToGAS(body) {
       var userId = event.source ? event.source.userId : "";
 
       if (event.type === "follow") {
-        var storeName = url.searchParams.get("store") || "";
-        var profile = await fetchLineProfile(userId);
+        var profile = await fetchLineProfile(userId, token);
         var displayName = profile ? (profile.displayName || "") : "";
-        await fetch(GAS_URL, {
+        await fetch(gasUrl, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -61,12 +81,12 @@ async function forwardToGAS(body) {
           }),
           redirect: "follow"
         });
-        await sendCounselingLink(userId, displayName, storeName);
+        await sendCounselingLink(userId, displayName, storeName, token);
       }
 
       if (event.type === "message") {
         var text = event.message ? (event.message.text || "[スタンプ/画像/ファイル]") : "[不明]";
-        await fetch(GAS_URL, {
+        await fetch(gasUrl, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -80,7 +100,7 @@ async function forwardToGAS(body) {
         // フルネーム＋電話番号の返信を自動検出してシートに反映
         var contact = parseContact(text);
         if (contact) {
-          await fetch(GAS_URL, {
+          await fetch(gasUrl, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -93,17 +113,17 @@ async function forwardToGAS(body) {
           // 登録完了の返信
           await fetch("https://api.line.me/v2/bot/message/push", {
             method: "POST",
-            headers: {"Authorization": "Bearer " + LINE_TOKEN, "Content-Type": "application/json"},
+            headers: {"Authorization": "Bearer " + token, "Content-Type": "application/json"},
             body: JSON.stringify({
               to: userId,
-              messages: [{type: "text", text: contact.name + "様、ありがとうございます\uD83D\uDE4F\nお名前と電話番号を登録しました\u2728\nご来店をお待ちしております\uD83C\uDF38"}]
+              messages: [{type: "text", text: contact.name + "様、ありがとうございます🙏\nお名前と電話番号を登録しました✨\nご来店をお待ちしております🌸"}]
             })
           });
         }
       }
 
       if (event.type === "unfollow") {
-        await fetch(GAS_URL, {
+        await fetch(gasUrl, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -124,7 +144,6 @@ async function forwardToGAS(body) {
 }
 
 // メッセージからフルネーム＋電話番号を抽出
-// 対応形式: 「山田 花子\n090-1234-5678」「090-1234-5678\n山田花子」など
 function parseContact(text) {
   if (!text) return null;
   var phonePattern = /0\d{1,4}[-\s]?\d{1,4}[-\s]?\d{4}/;
@@ -132,9 +151,7 @@ function parseContact(text) {
   if (!phoneMatch) return null;
 
   var phone = phoneMatch[0].replace(/[-\s]/g, "");
-  // 電話番号部分を除いた残りをフルネームとして取得
   var nameCandidate = text.replace(phoneMatch[0], "").replace(/[0-9\-\s　]/g, " ").trim();
-  // 行分割して最も長い日本語らしい行を名前とする
   var lines = nameCandidate.split(/[\n\r]+/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length >= 2; });
   if (!lines.length) return null;
 
@@ -144,10 +161,10 @@ function parseContact(text) {
   return {phone: phone, name: name};
 }
 
-async function fetchLineProfile(userId) {
+async function fetchLineProfile(userId, token) {
   try {
     var res = await fetch("https://api.line.me/v2/bot/profile/" + userId, {
-      headers: {"Authorization": "Bearer " + LINE_TOKEN}
+      headers: {"Authorization": "Bearer " + token}
     });
     return await res.json();
   } catch(e) {
@@ -155,10 +172,10 @@ async function fetchLineProfile(userId) {
   }
 }
 
-async function fetchBotName() {
+async function fetchBotName(token) {
   try {
     var res = await fetch("https://api.line.me/v2/bot/info", {
-      headers: {"Authorization": "Bearer " + LINE_TOKEN}
+      headers: {"Authorization": "Bearer " + token}
     });
     var data = await res.json();
     return data.displayName || "SSIN STUDIO / most eyes / LUMISS";
@@ -167,23 +184,23 @@ async function fetchBotName() {
   }
 }
 
-async function sendCounselingLink(userId, displayName, storeName) {
+async function sendCounselingLink(userId, displayName, storeName, token) {
   var formUrl = FORM_URL + "?uid=" + encodeURIComponent(userId) + (storeName ? "&store=" + encodeURIComponent(storeName) : "");
-  var botName = await fetchBotName();
+  var botName = await fetchBotName(token);
   var name = displayName ? displayName + "様、" : "";
-  var message = "友だち追加ありがとうございます！\uD83D\uDE0A\n" + botName + " です\u2728\n\n"
-    + name + "スムーズにご案内するため、お手数ですがこちらのLINEに以下をご返信ください\uD83D\uDE4F\n\n"
-    + "\u{1F4DD} \u300Eフルネーム\u300F\u3000\u4F8B\uff1a\u5C71\u7530 \u82B1\u5B50\n"
-    + "\uD83D\uDCF1 \u300E\u96FB\u8A71\u756A\u53F7\u300F\u3000\u4F8B\uff1a090-0000-0000\n\n"
-    + "\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\n"
-    + "\u307E\u305F\u3001\u30B4\u6765\u5E97\u524D\u306B\u4E0B\u8A18\u306E\u30AB\u30A6\u30F3\u30BB\u30EA\u30F3\u30B0\u30B7\u30FC\u30C8\u306B\u3054\u8A18\u5165\u3044\u305F\u3060\u3051\u308B\u3068\u3088\u308A\u30B9\u30E0\u30FC\u30BA\u306B\u3054\u6848\u5185\u3067\u304D\u307E\u3059\uD83D\uDCCB\n\n"
-    + "\u25BC \u30AB\u30A6\u30F3\u30BB\u30EA\u30F3\u30B0\u30B7\u30FC\u30C8\n" + formUrl + "\n\n"
-    + "\u3054\u4E0D\u660E\u70B9\u306F\u3053\u3061\u3089\u306ELINE\u3078\u304A\u6C17\u8EFD\u306B\uD83C\uDF38";
+  var message = "友だち追加ありがとうございます！😊\n" + botName + " です✨\n\n"
+    + name + "スムーズにご案内するため、お手数ですがこちらのLINEに以下をご返信ください🙏\n\n"
+    + "📝 『フルネーム』　例：山田 花子\n"
+    + "📱 『電話番号』　例：090-0000-0000\n\n"
+    + "――――――――――\n"
+    + "また、ゴ来店前に下記のカウンセリングシートにご記入いただけるとよりスムーズにご案内できます📋\n\n"
+    + "▼ カウンセリングシート\n" + formUrl + "\n\n"
+    + "ご不明点はこちらのLINEへお気軽に🌸";
 
   await fetch("https://api.line.me/v2/bot/message/push", {
     method: "POST",
     headers: {
-      "Authorization": "Bearer " + LINE_TOKEN,
+      "Authorization": "Bearer " + token,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
