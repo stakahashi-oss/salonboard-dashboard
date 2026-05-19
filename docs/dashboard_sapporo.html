@@ -2788,8 +2788,8 @@ function confirmBroadcast() { confirmHomeBroadcast(); }
 
 // ── Refresh ─────────────────────────────────────────
 async function refreshAll() {
-  Object.keys(localStorage).filter(k => k.startsWith('sgc_')).forEach(k => localStorage.removeItem(k));
-  localStorage.removeItem('lineFriendsCache_v2');
+  Object.keys(localStorage).filter(k => k.startsWith('sgc_sapporo_')).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem('lineFriendsCache_sapporo_v2');
   Object.keys(_loaded).forEach(k => delete _loaded[k]);
   allFriends = [];
   document.getElementById('updatedAt').textContent = '更新中...';
@@ -2803,7 +2803,7 @@ const DASH_GAS_URL = "https://script.google.com/macros/s/AKfycbzJRbpPVo1-bUa1ruO
 const DASH_SECRET  = "ssin2026";
 
 async function gasGet(action, extra = {}, ttlMin = 0) {
-  const cacheKey = 'sgc_' + action + '_' + JSON.stringify(extra);
+  const cacheKey = 'sgc_sapporo_' + action + '_' + JSON.stringify(extra);
   if (ttlMin > 0) {
     try {
       const cached = localStorage.getItem(cacheKey);
@@ -2853,7 +2853,7 @@ async function importFollowers() {
   }
 }
 
-const FRIENDS_CACHE_KEY = 'lineFriendsCache_v2';
+const FRIENDS_CACHE_KEY = 'lineFriendsCache_sapporo_v2';
 const FRIENDS_CACHE_TTL = 30 * 60 * 1000; // 30分
 
 function loadFriendsFromCache() {
