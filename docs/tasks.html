@@ -21,6 +21,7 @@
   --mid:#fb923c;--mid-bg:rgba(251,146,60,.12);--mid-glow:rgba(251,146,60,.3);
   --low:#34d399;--low-bg:rgba(52,211,153,.12);--low-glow:rgba(52,211,153,.3);
   --exec:#f59e0b;--exec-bg:rgba(245,158,11,.15);--exec-glow:rgba(245,158,11,.35);
+  --run:#a78bfa;--run-glow:rgba(167,139,250,.4);
   --r:14px;--r2:10px;--r3:8px;
 }
 html{background:var(--bg)}
@@ -147,7 +148,13 @@ body{
   background:var(--exec-bg);color:var(--exec);border:1px solid rgba(245,158,11,.25);
 }
 .exec-pill.queued {background:rgba(245,158,11,.2);box-shadow:0 0 8px var(--exec-glow);animation:pulse .9s ease-in-out infinite}
-.exec-pill.running{background:rgba(124,58,237,.2);color:#c4b5fd;border-color:rgba(124,58,237,.3);box-shadow:0 0 8px var(--accent-glow);animation:pulse .9s ease-in-out infinite}
+.exec-pill.running{
+  background:linear-gradient(90deg,rgba(124,58,237,.3),rgba(167,139,250,.3),rgba(124,58,237,.3));
+  background-size:200% 100%;
+  color:#c4b5fd;border-color:rgba(167,139,250,.4);
+  box-shadow:0 0 12px var(--run-glow);
+  animation:banner-slide 1.5s linear infinite;
+}
 .exec-pill.done   {background:var(--low-bg);color:var(--low);border-color:rgba(52,211,153,.2)}
 .exec-pill.failed {background:var(--high-bg);color:var(--high);border-color:rgba(244,63,94,.2)}
 .card-memo{font-size:11px;color:var(--text2);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--border)}
@@ -205,6 +212,28 @@ textarea{resize:none;height:72px;line-height:1.5}
 /* exec result box */
 .result-box{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:var(--r3);padding:12px;margin-top:8px;font-size:12px;line-height:1.6;color:var(--text2);white-space:pre-wrap;max-height:200px;overflow-y:auto}
 
+/* ── CLAUDE RUNNING BANNER ── */
+.run-banner{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  background:linear-gradient(90deg,#1e0a3c,#2d1a5c,#1e0a3c);
+  background-size:200% 100%;
+  animation:banner-slide 2s linear infinite;
+  padding:10px 18px;
+  display:none;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(167,139,250,.3);
+}
+.run-banner.on{display:flex}
+@keyframes banner-slide{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.run-spinner{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(167,139,250,.3);
+  border-top-color:#a78bfa;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.run-text{font-size:13px;font-weight:700;color:#c4b5fd;flex:1}
+.run-task{font-size:11px;color:rgba(196,181,253,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+
 /* ── SNACK ── */
 .snack{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(30px);background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);color:var(--text);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;transition:.25s cubic-bezier(.32,.72,0,1);opacity:0;pointer-events:none;white-space:nowrap}
 .snack.on{transform:translateX(-50%) translateY(0);opacity:1}
@@ -249,6 +278,13 @@ textarea{resize:none;height:72px;line-height:1.5}
     <span class="sync-lbl" id="synclbl"></span>
   </div>
 </header>
+
+<!-- CLAUDE RUNNING BANNER -->
+<div class="run-banner" id="run-banner">
+  <div class="run-spinner"></div>
+  <div class="run-text">⚡ Claude 実行中...</div>
+  <div class="run-task" id="run-task-name"></div>
+</div>
 
 <!-- KANBAN -->
 <div class="kanban" id="kview">
@@ -346,10 +382,26 @@ async function load() {
   try {
     const r = await fetch(API);
     tasks = await r.json();
-    render(); updateStats(); updateSub();
+    render(); updateStats(); updateSub(); updateRunBanner();
     document.getElementById('synclbl').textContent = '更新 '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
   } catch { snack('取得失敗 ⚠️') }
   spin(false);
+}
+
+function updateRunBanner() {
+  const running = tasks.filter(t => t.execution_status === 'running');
+  const banner  = document.getElementById('run-banner');
+  const nameEl  = document.getElementById('run-task-name');
+  if (running.length) {
+    banner.classList.add('on');
+    nameEl.textContent = running.map(t => t.title.slice(0,30)).join(' / ');
+    document.getElementById('kview').style.paddingTop = '46px';
+    document.getElementById('lview').style.paddingTop = '46px';
+  } else {
+    banner.classList.remove('on');
+    document.getElementById('kview').style.paddingTop = '';
+    document.getElementById('lview').style.paddingTop = '';
+  }
 }
 function spin(on){ const d=document.getElementById('rdot'); d.className='rdot'+(on?' spin':'') }
 
@@ -449,7 +501,7 @@ async function patch(id, data) {
     const r = await fetch(`${API}/${id}`,{method:'PATCH',headers:wh(),body:JSON.stringify(data)});
     const u = await r.json();
     const i = tasks.findIndex(t=>t.id===id); if (i!==-1) tasks[i]=u;
-    render(); updateStats(); updateSub();
+    render(); updateStats(); updateSub(); updateRunBanner();
   } catch { snack('更新失敗') }
 }
 
@@ -543,13 +595,23 @@ function openDet(id) {
     const resultHtml = t.execution_result
       ? `<div class="result-box">${t.execution_result}</div>`
       : '';
+    const spinnerHtml = exStatus === 'running'
+      ? `<div style="display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px;background:rgba(124,58,237,.1);border:1px solid rgba(167,139,250,.25);border-radius:10px">
+           <div class="run-spinner"></div>
+           <div>
+             <div style="font-size:13px;font-weight:700;color:#c4b5fd">Claude が処理しています...</div>
+             <div style="font-size:11px;color:var(--text3);margin-top:2px">完了したらSlack DMで結果を通知します</div>
+           </div>
+         </div>`
+      : '';
     claudeSection = `
       <div class="dfield">
-        <div class="dlbl">⚡ Claude実行</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+        <div class="dlbl">⚡ Claude自動実行</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
           <span class="exec-pill ${exStatus==='ready'?'':exStatus}">${exLabels[exStatus]||exStatus}</span>
         </div>
-        ${t.claude_prompt ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;padding:8px;background:var(--glass2);border-radius:var(--r3);line-height:1.5">${t.claude_prompt}</div>` : ''}
+        ${spinnerHtml}
+        ${t.claude_prompt ? `<div style="font-size:11px;color:var(--text3);margin-top:8px;padding:8px;background:var(--glass2);border-radius:var(--r3);line-height:1.6;border:1px solid var(--border)">${t.claude_prompt}</div>` : ''}
         ${resultHtml}
       </div>`;
   }
@@ -618,7 +680,14 @@ function snack(msg) {
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/tasks-sw.js').catch(()=>{});
 
 load();
-setInterval(load, 30000);
+// 通常は30秒ポーリング。running タスクがある間は10秒に縮める。
+let _pollTimer = null;
+function scheduleNext() {
+  clearTimeout(_pollTimer);
+  const hasRunning = tasks.some(t => t.execution_status === 'running' || t.execution_status === 'queued');
+  _pollTimer = setTimeout(async () => { await load(); scheduleNext(); }, hasRunning ? 10000 : 30000);
+}
+scheduleNext();
 </script>
 </body>
 </html>
