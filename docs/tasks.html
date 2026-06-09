@@ -13,335 +13,227 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#060913;
-  --g1:#0d1525;--g2:#0a0f1e;
-  --glass:rgba(255,255,255,.045);
-  --glass2:rgba(255,255,255,.07);
-  --glass3:rgba(255,255,255,.10);
-  --border:rgba(255,255,255,.09);
-  --border2:rgba(255,255,255,.14);
+  --glass:rgba(255,255,255,.045);--glass2:rgba(255,255,255,.07);--glass3:rgba(255,255,255,.10);
+  --border:rgba(255,255,255,.09);--border2:rgba(255,255,255,.14);
   --text:#e8eaf0;--text2:#a0a8c0;--text3:#606880;
-  --accent:#7c3aed;--accent2:#9d5bf4;
-  --accent-glow:rgba(124,58,237,.35);
+  --accent:#7c3aed;--accent2:#9d5bf4;--accent-glow:rgba(124,58,237,.35);
   --high:#f43f5e;--high-bg:rgba(244,63,94,.12);--high-glow:rgba(244,63,94,.3);
   --mid:#fb923c;--mid-bg:rgba(251,146,60,.12);--mid-glow:rgba(251,146,60,.3);
   --low:#34d399;--low-bg:rgba(52,211,153,.12);--low-glow:rgba(52,211,153,.3);
-  --s0:#334155;--s0t:#94a3b8;
-  --s1:rgba(124,58,237,.7);--s1t:#c4b5fd;
-  --s2:rgba(251,146,60,.7);--s2t:#fed7aa;
-  --s3:rgba(52,211,153,.7);--s3t:#a7f3d0;
+  --exec:#f59e0b;--exec-bg:rgba(245,158,11,.15);--exec-glow:rgba(245,158,11,.35);
   --r:14px;--r2:10px;--r3:8px;
 }
 html{background:var(--bg)}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
-  background:radial-gradient(ellipse 80% 60% at 20% -10%,rgba(124,58,237,.18) 0%,transparent 60%),
-             radial-gradient(ellipse 60% 50% at 80% 100%,rgba(56,189,248,.10) 0%,transparent 60%),
-             var(--bg);
-  color:var(--text);min-height:100vh;overflow-x:hidden;
-  background-attachment:fixed;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%,rgba(124,58,237,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%,rgba(56,189,248,.10) 0%,transparent 60%),
+    var(--bg);
+  color:var(--text);min-height:100vh;overflow-x:hidden;background-attachment:fixed;
 }
 
-/* ─── HERO HEADER ─── */
+/* ── HERO ── */
 .hero{
   padding:env(safe-area-inset-top,0) 0 0;
   background:linear-gradient(180deg,rgba(124,58,237,.12) 0%,transparent 100%);
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
 }
-.hero-inner{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px 12px;gap:12px;
-}
+.hero-row{display:flex;align-items:center;justify-content:space-between;padding:13px 18px 11px;gap:12px}
 .hero-left{display:flex;align-items:center;gap:10px}
-.hero-icon{
-  width:38px;height:38px;border-radius:10px;
+.hicon{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
   background:linear-gradient(135deg,var(--accent),#4f46e5);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
   box-shadow:0 0 16px var(--accent-glow);
 }
-.hero-title{font-size:19px;font-weight:800;letter-spacing:-.5px;
+.htitle{font-size:19px;font-weight:800;letter-spacing:-.5px;
   background:linear-gradient(90deg,#e8eaf0,#c4b5fd);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:11px;color:var(--text2);margin-top:1px;letter-spacing:.2px}
-.hero-actions{display:flex;align-items:center;gap:8px}
+.hsub{font-size:11px;color:var(--text2);margin-top:1px;letter-spacing:.2px}
+.hero-right{display:flex;align-items:center;gap:8px}
 .btn-add{
-  background:linear-gradient(135deg,var(--accent),#4f46e5);
-  color:#fff;border:none;border-radius:var(--r3);
-  padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;gap:5px;
-  box-shadow:0 0 14px var(--accent-glow);
-  transition:all .2s;
+  background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff;border:none;
+  border-radius:var(--r3);padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 0 14px var(--accent-glow);transition:.2s;display:flex;align-items:center;gap:5px;
 }
-.btn-add:active{transform:scale(.94);opacity:.85}
-.rdot{width:7px;height:7px;border-radius:50%;background:var(--low);flex-shrink:0;
-  box-shadow:0 0 6px var(--low-glow)}
-.rdot.loading{background:var(--mid);box-shadow:0 0 6px var(--mid-glow);animation:glow .9s ease-in-out infinite}
-@keyframes glow{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-add:active{transform:scale(.94)}
+.rdot{width:7px;height:7px;border-radius:50%;background:var(--low);box-shadow:0 0 6px var(--low-glow)}
+.rdot.spin{background:var(--mid);box-shadow:0 0 6px var(--mid-glow);animation:pulse .9s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ─── STATS ROW ─── */
-.stats-row{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:8px;padding:10px 18px 12px;
-}
-.stat-card{
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 18px 12px}
+.scard{
   background:var(--glass);border:1px solid var(--border);
   border-radius:var(--r2);padding:8px 10px;text-align:center;
-  transition:.2s;
 }
-.stat-card.active-col{background:var(--glass2);border-color:var(--border2)}
-.stat-num{font-size:22px;font-weight:800;line-height:1;letter-spacing:-1px}
-.stat-label{font-size:10px;color:var(--text3);margin-top:3px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
-.stat-card.s-未着手 .stat-num{color:var(--s0t)}
-.stat-card.s-進行中 .stat-num{color:#c4b5fd;text-shadow:0 0 12px var(--accent-glow)}
-.stat-card.s-保留   .stat-num{color:var(--mid);text-shadow:0 0 12px var(--mid-glow)}
-.stat-card.s-完了   .stat-num{color:var(--low);text-shadow:0 0 12px var(--low-glow)}
+.snum{font-size:22px;font-weight:800;line-height:1;letter-spacing:-1px}
+.slbl{font-size:10px;color:var(--text3);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.scard.s0 .snum{color:#94a3b8}
+.scard.s1 .snum{color:#c4b5fd;text-shadow:0 0 12px var(--accent-glow)}
+.scard.s2 .snum{color:var(--mid);text-shadow:0 0 12px var(--mid-glow)}
+.scard.s3 .snum{color:var(--low);text-shadow:0 0 12px var(--low-glow)}
 
-/* ─── FILTER BAR ─── */
-.filter-bar{
-  display:flex;gap:6px;padding:0 18px 10px;
-  overflow-x:auto;scrollbar-width:none;
-}
-.filter-bar::-webkit-scrollbar{display:none}
-.chip{
-  flex-shrink:0;padding:5px 12px;border-radius:99px;
-  font-size:11px;font-weight:700;letter-spacing:.2px;
-  border:1.5px solid var(--border);
-  background:transparent;color:var(--text2);cursor:pointer;transition:.15s;
-}
-.chip.on{
-  background:rgba(124,58,237,.2);border-color:var(--accent2);
-  color:#c4b5fd;box-shadow:0 0 10px var(--accent-glow);
-}
+/* ── FILTER ── */
+.fbar{display:flex;gap:6px;padding:0 18px 10px;overflow-x:auto;scrollbar-width:none}
+.fbar::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.2px;border:1.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:.15s}
+.chip.on{background:rgba(124,58,237,.2);border-color:var(--accent2);color:#c4b5fd;box-shadow:0 0 10px var(--accent-glow)}
 
-/* ─── VIEW TOGGLE ─── */
-.view-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:4px 18px 10px;
-}
-.view-group{display:flex;gap:0;background:var(--glass);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden}
-.vbtn{
-  background:transparent;border:none;color:var(--text3);
-  padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;
-}
+/* ── VIEW TOGGLE ── */
+.vrow{display:flex;align-items:center;justify-content:space-between;padding:4px 18px 10px}
+.vgrp{display:flex;background:var(--glass);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden}
+.vbtn{background:transparent;border:none;color:var(--text3);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
 .vbtn.on{background:var(--glass2);color:var(--text)}
-.last-sync{font-size:11px;color:var(--text3)}
+.sync-lbl{font-size:11px;color:var(--text3)}
 
-/* ─── KANBAN ─── */
-.kanban{
-  display:flex;gap:10px;padding:0 18px 100px;
-  overflow-x:auto;align-items:flex-start;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
-  min-height:calc(100vh - 260px);
-}
+/* ── KANBAN ── */
+.kanban{display:flex;gap:10px;padding:0 18px 100px;overflow-x:auto;align-items:flex-start;scrollbar-width:thin;scrollbar-color:var(--border) transparent;min-height:calc(100vh - 270px)}
 .kanban::-webkit-scrollbar{height:3px}
 .kanban::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .kcol{flex-shrink:0;width:270px}
-.kcol-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 12px;margin-bottom:8px;
-  background:var(--glass);border:1px solid var(--border);border-radius:var(--r2);
-}
-.kcol-label{font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
-.kcol-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.kcol-cnt{
-  background:var(--glass2);font-size:11px;font-weight:700;
-  padding:2px 8px;border-radius:99px;color:var(--text2);
-}
-.kcol-body{display:flex;flex-direction:column;gap:7px;min-height:40px}
+.khead{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:8px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r2)}
+.khlbl{font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+.kdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kcnt{background:var(--glass2);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:var(--text2)}
+.kbody{display:flex;flex-direction:column;gap:7px;min-height:40px}
 
-/* ─── LIST VIEW ─── */
-.list-view{padding:0 18px 100px;display:flex;flex-direction:column;gap:7px;display:none}
+/* ── LIST ── */
+.lview{padding:0 18px 100px;flex-direction:column;gap:7px;display:none}
 
-/* ─── TASK CARD ─── */
+/* ── TASK CARD ── */
 .tcard{
-  border-radius:var(--r);padding:13px 14px;
-  border:1px solid var(--border);cursor:pointer;
-  transition:transform .18s,box-shadow .18s,border-color .18s;
-  position:relative;overflow:hidden;
+  border-radius:var(--r);padding:13px 14px;border:1px solid var(--border);cursor:pointer;
+  transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;
 }
 .tcard:active{transform:scale(.97)}
-.tcard::before{
-  content:'';position:absolute;inset:0;
-  background:var(--glass);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  z-index:0;
-}
-.tcard > *{position:relative;z-index:1}
-/* priority glow border */
-.tcard.p-高{border-color:rgba(244,63,94,.25);box-shadow:0 0 0 1px rgba(244,63,94,.1),inset 0 0 20px rgba(244,63,94,.05)}
-.tcard.p-中{border-color:rgba(251,146,60,.2);box-shadow:0 0 0 1px rgba(251,146,60,.08),inset 0 0 20px rgba(251,146,60,.04)}
-.tcard.p-低{border-color:rgba(52,211,153,.15)}
-.tcard.p-高:hover{box-shadow:0 4px 24px rgba(244,63,94,.2),0 0 0 1px rgba(244,63,94,.3)}
-.tcard.p-中:hover{box-shadow:0 4px 24px rgba(251,146,60,.15),0 0 0 1px rgba(251,146,60,.25)}
-.tcard.p-低:hover{box-shadow:0 4px 24px rgba(52,211,153,.1)}
+.tcard::before{content:'';position:absolute;inset:0;background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:0}
+.tcard>*{position:relative;z-index:1}
+.tcard.ph{border-color:rgba(244,63,94,.25);box-shadow:0 0 0 1px rgba(244,63,94,.1),inset 0 0 20px rgba(244,63,94,.05)}
+.tcard.pm{border-color:rgba(251,146,60,.2)}
+.tcard.pl{border-color:rgba(52,211,153,.15)}
 .tcard.done{opacity:.4}
-
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
-.card-title{font-size:13px;font-weight:600;line-height:1.45;flex:1;color:var(--text)}
-.card-title.done-title{text-decoration:line-through;color:var(--text3)}
-
-/* priority pill */
-.pri-pill{
-  flex-shrink:0;width:20px;height:20px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:800;
-}
-.pri-高{background:var(--high-bg);color:var(--high);box-shadow:0 0 8px var(--high-glow)}
-.pri-中{background:var(--mid-bg);color:var(--mid)}
-.pri-低{background:var(--low-bg);color:var(--low)}
-
-.card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.ctag{
-  font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.2px;
-}
-.c-店舗施策  {background:rgba(99,102,241,.18);color:#a5b4fc}
-.c-システム開発{background:rgba(6,182,212,.15);color:#67e8f9}
-.c-MTGアクション{background:rgba(251,191,36,.15);color:#fcd34d}
-.c-日次作業  {background:rgba(16,185,129,.15);color:#6ee7b7}
-.c-突発      {background:rgba(236,72,153,.15);color:#f9a8d4}
-
-.sbadge{
-  flex-shrink:0;font-size:10px;font-weight:700;
-  padding:3px 8px;border-radius:99px;cursor:pointer;transition:.15s;
-  border:1px solid transparent;
-}
+/* claude task glow */
+.tcard.ct{border-color:rgba(245,158,11,.2);box-shadow:inset 0 0 20px rgba(245,158,11,.04)}
+.ctop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
+.ctitle{font-size:13px;font-weight:600;line-height:1.45;flex:1;color:var(--text)}
+.ctitle.done-t{text-decoration:line-through;color:var(--text3)}
+.cright{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.ppill{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+.pp-h{background:var(--high-bg);color:var(--high);box-shadow:0 0 8px var(--high-glow)}
+.pp-m{background:var(--mid-bg);color:var(--mid)}
+.pp-l{background:var(--low-bg);color:var(--low)}
+.sbadge{flex-shrink:0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;cursor:pointer;transition:.15s;border:1px solid transparent}
 .sbadge:active{transform:scale(.88)}
 .s-未着手{background:rgba(148,163,184,.12);color:#94a3b8;border-color:rgba(148,163,184,.2)}
 .s-進行中{background:rgba(124,58,237,.2);color:#c4b5fd;border-color:rgba(124,58,237,.3);box-shadow:0 0 8px var(--accent-glow)}
 .s-保留  {background:rgba(251,146,60,.15);color:#fed7aa;border-color:rgba(251,146,60,.25)}
 .s-完了  {background:rgba(52,211,153,.15);color:#a7f3d0;border-color:rgba(52,211,153,.2)}
-
+.cmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ctag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.c-店舗施策  {background:rgba(99,102,241,.18);color:#a5b4fc}
+.c-システム開発{background:rgba(6,182,212,.15);color:#67e8f9}
+.c-MTGアクション{background:rgba(251,191,36,.15);color:#fcd34d}
+.c-日次作業  {background:rgba(16,185,129,.15);color:#6ee7b7}
+.c-突発      {background:rgba(236,72,153,.15);color:#f9a8d4}
 .dl{font-size:10px;color:var(--text3)}
 .dl.od{color:var(--high);font-weight:700}
-.src{font-size:11px}
-.card-memo{
-  font-size:11px;color:var(--text2);margin-top:6px;line-height:1.5;
-  padding-top:6px;border-top:1px solid var(--border);
+.src-icon{font-size:11px}
+/* Claude実行バッジ */
+.exec-pill{
+  font-size:9px;font-weight:800;padding:2px 6px;border-radius:99px;letter-spacing:.2px;
+  background:var(--exec-bg);color:var(--exec);border:1px solid rgba(245,158,11,.25);
 }
-.empty-col{
-  background:var(--glass);border:1px dashed var(--border);border-radius:var(--r2);
-  color:var(--text3);font-size:12px;text-align:center;padding:20px;
-}
+.exec-pill.queued {background:rgba(245,158,11,.2);box-shadow:0 0 8px var(--exec-glow);animation:pulse .9s ease-in-out infinite}
+.exec-pill.running{background:rgba(124,58,237,.2);color:#c4b5fd;border-color:rgba(124,58,237,.3);box-shadow:0 0 8px var(--accent-glow);animation:pulse .9s ease-in-out infinite}
+.exec-pill.done   {background:var(--low-bg);color:var(--low);border-color:rgba(52,211,153,.2)}
+.exec-pill.failed {background:var(--high-bg);color:var(--high);border-color:rgba(244,63,94,.2)}
+.card-memo{font-size:11px;color:var(--text2);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--border)}
+.empty-col{background:var(--glass);border:1px dashed var(--border);border-radius:var(--r2);color:var(--text3);font-size:12px;text-align:center;padding:20px}
 
-/* ─── MODAL ─── */
-.overlay{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:.2s;
-}
+/* ── MODAL OVERLAY ── */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:.2s}
 .overlay.on{opacity:1;pointer-events:all}
-.sheet{
-  background:linear-gradient(180deg,rgba(13,21,37,.98),rgba(6,9,19,.99));
-  border:1px solid var(--border2);
-  border-bottom:none;
-  border-radius:22px 22px 0 0;
-  padding:20px 20px max(env(safe-area-inset-bottom,0px),20px);
-  width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
-  transform:translateY(100%);transition:.28s cubic-bezier(.32,.72,0,1);
-}
+.sheet{background:linear-gradient(180deg,rgba(13,21,37,.98),rgba(6,9,19,.99));border:1px solid var(--border2);border-bottom:none;border-radius:22px 22px 0 0;padding:20px 20px max(env(safe-area-inset-bottom,0px),20px);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;transform:translateY(100%);transition:.28s cubic-bezier(.32,.72,0,1)}
 .overlay.on .sheet{transform:translateY(0)}
-.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px;cursor:pointer}
-.sheet-title{font-size:17px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.x-btn{
-  background:var(--glass2);border:1px solid var(--border);color:var(--text2);
-  border-radius:50%;width:28px;height:28px;font-size:14px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
+.handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px;cursor:pointer}
+.stitle{font-size:17px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.xbtn{background:var(--glass2);border:1px solid var(--border);color:var(--text2);border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 label{font-size:11px;font-weight:700;color:var(--text3);display:block;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.5px}
-input,select,textarea{
-  width:100%;background:var(--glass2);border:1px solid var(--border);border-radius:var(--r3);
-  color:var(--text);font-size:14px;padding:10px 13px;outline:none;transition:.15s;
-  -webkit-appearance:none;
-}
+input[type=text],input[type=date],select,textarea{width:100%;background:var(--glass2);border:1px solid var(--border);border-radius:var(--r3);color:var(--text);font-size:14px;padding:10px 13px;outline:none;transition:.15s;-webkit-appearance:none}
 input:focus,select:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px var(--accent-glow)}
 select option{background:#0d1525}
 textarea{resize:none;height:72px;line-height:1.5}
-.btn-row{display:flex;gap:8px;margin-top:18px}
-.btn-save{
-  flex:1;background:linear-gradient(135deg,var(--accent),#4f46e5);
-  color:#fff;border:none;border-radius:var(--r2);
-  padding:13px;font-size:15px;font-weight:800;cursor:pointer;
-  box-shadow:0 0 20px var(--accent-glow);transition:.15s;
+/* toggle */
+.tog-row{display:flex;align-items:center;gap:12px;background:var(--glass2);border:1px solid var(--border);border-radius:var(--r3);padding:11px 13px;cursor:pointer;margin-top:14px;transition:.15s}
+.tog-row:active{opacity:.7}
+.tog-row.active{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.07);box-shadow:0 0 12px rgba(245,158,11,.15)}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.tslider{position:absolute;inset:0;background:var(--glass3);border-radius:10px;transition:.2s;cursor:pointer}
+.tslider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked + .tslider{background:var(--exec)}
+.toggle input:checked + .tslider::before{transform:translateX(16px)}
+.tog-text{font-size:13px;font-weight:600;color:var(--text2)}
+.tog-row.active .tog-text{color:var(--exec)}
+#claude-section{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.prompt-hint{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5}
+#f-prompt{height:90px}
+/* btn row */
+.brow{display:flex;gap:8px;margin-top:18px}
+.bsave{flex:1;background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 20px var(--accent-glow);transition:.15s}
+.bsave:active{opacity:.75;transform:scale(.97)}
+.bdel{background:rgba(244,63,94,.15);color:var(--high);border:1px solid rgba(244,63,94,.25);border-radius:var(--r2);padding:13px 16px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+.bdel:active{opacity:.7}
+.bghost{flex:1;background:var(--glass2);color:var(--text);border:1px solid var(--border2);border-radius:var(--r2);padding:13px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+/* exec btn */
+.bexec{
+  flex:1;background:linear-gradient(135deg,#d97706,#b45309);color:#fff;border:none;border-radius:var(--r2);
+  padding:13px;font-size:14px;font-weight:800;cursor:pointer;
+  box-shadow:0 0 18px var(--exec-glow);transition:.15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
 }
-.btn-save:active{opacity:.75;transform:scale(.97)}
-.btn-del{
-  background:rgba(244,63,94,.15);color:var(--high);
-  border:1px solid rgba(244,63,94,.25);border-radius:var(--r2);
-  padding:13px 16px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;
-}
-.btn-del:active{opacity:.7}
-.btn-ghost{
-  flex:1;background:var(--glass2);color:var(--text);
-  border:1px solid var(--border2);border-radius:var(--r2);
-  padding:13px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;
-}
-
+.bexec:active{transform:scale(.95)}
+.bexec:disabled{opacity:.4;pointer-events:none}
 /* detail */
 .dfield{margin-top:12px}
-.dlabel{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.dlbl{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
 .dval{font-size:14px;line-height:1.5;white-space:pre-wrap}
 .dtitle{font-size:18px;font-weight:800;line-height:1.4;margin:10px 0}
+/* exec result box */
+.result-box{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:var(--r3);padding:12px;margin-top:8px;font-size:12px;line-height:1.6;color:var(--text2);white-space:pre-wrap;max-height:200px;overflow-y:auto}
 
-/* ─── SNACK ─── */
-.snack{
-  position:fixed;bottom:90px;left:50%;
-  transform:translateX(-50%) translateY(30px);
-  background:rgba(255,255,255,.1);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.2);
-  color:var(--text);padding:10px 20px;border-radius:10px;
-  font-size:13px;font-weight:600;z-index:300;
-  transition:.25s cubic-bezier(.32,.72,0,1);
-  opacity:0;pointer-events:none;white-space:nowrap;
-}
+/* ── SNACK ── */
+.snack{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(30px);background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);color:var(--text);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;transition:.25s cubic-bezier(.32,.72,0,1);opacity:0;pointer-events:none;white-space:nowrap}
 .snack.on{transform:translateX(-50%) translateY(0);opacity:1}
 
-/* ─── FAB ─── */
-.fab{
-  position:fixed;bottom:max(env(safe-area-inset-bottom,0px)+24px,28px);right:20px;
-  z-index:150;width:54px;height:54px;
-  background:linear-gradient(135deg,var(--accent),#4f46e5);
-  border:none;border-radius:50%;color:#fff;font-size:22px;
-  cursor:pointer;box-shadow:0 4px 20px var(--accent-glow),0 0 0 1px rgba(124,58,237,.3);
-  display:flex;align-items:center;justify-content:center;transition:.15s;
-}
+/* ── FAB ── */
+.fab{position:fixed;bottom:max(calc(env(safe-area-inset-bottom,0px) + 24px),28px);right:20px;z-index:150;width:54px;height:54px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 20px var(--accent-glow),0 0 0 1px rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;transition:.15s}
 .fab:active{transform:scale(.88)}
-
-/* ─── BOTTOM SAFE AREA ─── */
-@media(display-mode:standalone){
-  .fab{bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
-}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
 <header class="hero">
-  <div class="hero-inner">
+  <div class="hero-row">
     <div class="hero-left">
-      <div class="hero-icon">📋</div>
-      <div>
-        <div class="hero-title">Tasks</div>
-        <div class="hero-sub" id="hero-sub">読み込み中...</div>
-      </div>
+      <div class="hicon">📋</div>
+      <div><div class="htitle">Tasks</div><div class="hsub" id="hsub">読み込み中...</div></div>
     </div>
-    <div class="hero-actions">
+    <div class="hero-right">
       <div class="rdot" id="rdot"></div>
       <button class="btn-add" onclick="openAdd()">＋ 追加</button>
     </div>
   </div>
-
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stat-card s-未着手"><div class="stat-num" id="st0">—</div><div class="stat-label">未着手</div></div>
-    <div class="stat-card s-進行中"><div class="stat-num" id="st1">—</div><div class="stat-label">進行中</div></div>
-    <div class="stat-card s-保留">  <div class="stat-num" id="st2">—</div><div class="stat-label">保留</div></div>
-    <div class="stat-card s-完了">  <div class="stat-num" id="st3">—</div><div class="stat-label">完了</div></div>
+  <div class="stats">
+    <div class="scard s0"><div class="snum" id="st0">—</div><div class="slbl">未着手</div></div>
+    <div class="scard s1"><div class="snum" id="st1">—</div><div class="slbl">進行中</div></div>
+    <div class="scard s2"><div class="snum" id="st2">—</div><div class="slbl">保留</div></div>
+    <div class="scard s3"><div class="snum" id="st3">—</div><div class="slbl">完了</div></div>
   </div>
-
-  <!-- FILTER -->
-  <div class="filter-bar" id="filter-bar">
+  <div class="fbar" id="fbar">
     <button class="chip on" data-cat="">ALL</button>
     <button class="chip" data-cat="店舗施策">🏪 店舗施策</button>
     <button class="chip" data-cat="システム開発">⚙️ システム</button>
@@ -349,102 +241,93 @@ textarea{resize:none;height:72px;line-height:1.5}
     <button class="chip" data-cat="日次作業">📅 日次</button>
     <button class="chip" data-cat="突発">⚡ 突発</button>
   </div>
-
-  <!-- VIEW TOGGLE -->
-  <div class="view-row">
-    <div class="view-group">
-      <button class="vbtn on" id="vb-k" onclick="setView('kanban')">カンバン</button>
-      <button class="vbtn" id="vb-l" onclick="setView('list')">リスト</button>
+  <div class="vrow">
+    <div class="vgrp">
+      <button class="vbtn on" id="vbk" onclick="setView('kanban')">カンバン</button>
+      <button class="vbtn"    id="vbl" onclick="setView('list')">リスト</button>
     </div>
-    <span class="last-sync" id="last-sync"></span>
+    <span class="sync-lbl" id="synclbl"></span>
   </div>
 </header>
 
 <!-- KANBAN -->
-<div class="kanban" id="kanban-view">
+<div class="kanban" id="kview">
   <div class="kcol" id="col-未着手">
-    <div class="kcol-head">
-      <span class="kcol-label"><span class="kcol-dot" style="background:#475569"></span>未着手</span>
-      <span class="kcol-cnt" id="cnt-未着手">0</span>
-    </div>
-    <div class="kcol-body" id="body-未着手"></div>
+    <div class="khead"><span class="khlbl"><span class="kdot" style="background:#475569"></span>未着手</span><span class="kcnt" id="cnt-未着手">0</span></div>
+    <div class="kbody" id="body-未着手"></div>
   </div>
   <div class="kcol" id="col-進行中">
-    <div class="kcol-head">
-      <span class="kcol-label"><span class="kcol-dot" style="background:#7c3aed;box-shadow:0 0 8px rgba(124,58,237,.6)"></span>進行中</span>
-      <span class="kcol-cnt" id="cnt-進行中">0</span>
-    </div>
-    <div class="kcol-body" id="body-進行中"></div>
+    <div class="khead"><span class="khlbl"><span class="kdot" style="background:#7c3aed;box-shadow:0 0 8px rgba(124,58,237,.6)"></span>進行中</span><span class="kcnt" id="cnt-進行中">0</span></div>
+    <div class="kbody" id="body-進行中"></div>
   </div>
   <div class="kcol" id="col-保留">
-    <div class="kcol-head">
-      <span class="kcol-label"><span class="kcol-dot" style="background:#fb923c;box-shadow:0 0 6px rgba(251,146,60,.5)"></span>保留</span>
-      <span class="kcol-cnt" id="cnt-保留">0</span>
-    </div>
-    <div class="kcol-body" id="body-保留"></div>
+    <div class="khead"><span class="khlbl"><span class="kdot" style="background:#fb923c;box-shadow:0 0 6px rgba(251,146,60,.5)"></span>保留</span><span class="kcnt" id="cnt-保留">0</span></div>
+    <div class="kbody" id="body-保留"></div>
   </div>
   <div class="kcol" id="col-完了">
-    <div class="kcol-head">
-      <span class="kcol-label"><span class="kcol-dot" style="background:#34d399;box-shadow:0 0 6px rgba(52,211,153,.4)"></span>完了</span>
-      <span class="kcol-cnt" id="cnt-完了">0</span>
-    </div>
-    <div class="kcol-body" id="body-完了"></div>
+    <div class="khead"><span class="khlbl"><span class="kdot" style="background:#34d399;box-shadow:0 0 6px rgba(52,211,153,.4)"></span>完了</span><span class="kcnt" id="cnt-完了">0</span></div>
+    <div class="kbody" id="body-完了"></div>
   </div>
 </div>
+<div class="lview" id="lview"></div>
 
-<!-- LIST -->
-<div class="list-view" id="list-view"></div>
-
-<!-- FAB -->
 <button class="fab" onclick="openAdd()">＋</button>
 
-<!-- ADD/EDIT SHEET -->
+<!-- ── ADD/EDIT SHEET ── -->
 <div class="overlay" id="add-ov" onclick="bgClose(event,'add-ov')">
   <div class="sheet">
-    <div class="sheet-handle" onclick="closeSheet('add-ov')"></div>
-    <div class="sheet-title">
-      <span id="form-title">タスク追加</span>
-      <button class="x-btn" onclick="closeSheet('add-ov')">✕</button>
+    <div class="handle" onclick="closeSheet('add-ov')"></div>
+    <div class="stitle">
+      <span id="form-ttl">タスク追加</span>
+      <button class="xbtn" onclick="closeSheet('add-ov')">✕</button>
     </div>
     <input type="hidden" id="eid">
     <label>タイトル *</label>
-    <input type="text" id="f-title" placeholder="何をする？" maxlength="100" autocomplete="off">
+    <input type="text" id="f-title" placeholder="何をする？" maxlength="120" autocomplete="off">
     <label>カテゴリ</label>
     <select id="f-cat">
       <option>突発</option><option>店舗施策</option><option>システム開発</option>
       <option>MTGアクション</option><option>日次作業</option>
     </select>
     <label>優先度</label>
-    <select id="f-pri">
-      <option>高</option><option selected>中</option><option>低</option>
-    </select>
+    <select id="f-pri"><option>高</option><option selected>中</option><option>低</option></select>
     <label>ステータス</label>
-    <select id="f-st">
-      <option>未着手</option><option>進行中</option><option>保留</option><option>完了</option>
-    </select>
+    <select id="f-st"><option>未着手</option><option>進行中</option><option>保留</option><option>完了</option></select>
     <label>期限</label>
     <input type="date" id="f-dl">
     <label>メモ</label>
     <textarea id="f-memo" placeholder="詳細・リンク・背景など"></textarea>
-    <div class="btn-row" id="form-btns">
-      <button class="btn-save" onclick="saveTask()">保存</button>
+
+    <!-- ⚡ Claude実行設定 -->
+    <div class="tog-row" id="claude-tog" onclick="toggleClaude()">
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" id="f-ct" onchange="toggleClaude()">
+        <span class="tslider"></span>
+      </label>
+      <div>
+        <div class="tog-text">⚡ Claudeで自動実行可能にする</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">ONにするとダッシュボードから1タップで実行できる</div>
+      </div>
+    </div>
+    <div id="claude-section" style="display:none">
+      <label>実行プロンプト（Claudeへの具体的な指示）</label>
+      <textarea id="f-prompt" placeholder="例: S藤沢の今月売上をCSVから集計して前月比をSlack DM で報告してください"></textarea>
+      <div class="prompt-hint">💡 「何のデータを使うか」「どんな形式で報告するか」まで書くとClaudeがより確実に動きます</div>
+    </div>
+
+    <div class="brow" id="form-btns">
+      <button class="bsave" onclick="saveTask()">保存</button>
     </div>
   </div>
 </div>
 
-<!-- DETAIL SHEET -->
+<!-- ── DETAIL SHEET ── -->
 <div class="overlay" id="det-ov" onclick="bgClose(event,'det-ov')">
   <div class="sheet">
-    <div class="sheet-handle" onclick="closeSheet('det-ov')"></div>
-    <div class="sheet-title">
-      <span>詳細</span>
-      <button class="x-btn" onclick="closeSheet('det-ov')">✕</button>
-    </div>
+    <div class="handle" onclick="closeSheet('det-ov')"></div>
+    <div class="stitle"><span>詳細</span><button class="xbtn" onclick="closeSheet('det-ov')">✕</button></div>
     <div id="det-body"></div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn-ghost" id="det-edit">編集</button>
-      <button class="btn-del"   id="det-del">削除</button>
-    </div>
+    <div class="brow" id="det-btns" style="margin-top:16px"></div>
   </div>
 </div>
 
@@ -453,218 +336,286 @@ textarea{resize:none;height:72px;line-height:1.5}
 <script>
 const API  = 'https://task-manager.t-miyawaki.workers.dev/api/tasks';
 const WKEY = 'n70aPjmlBpKhwA6YVA9hR4IBuI9D4XFrtzpjBxtZkAE';
-const STATUSES = ['未着手','進行中','保留','完了'];
+const SS = ['未着手','進行中','保留','完了'];
 let tasks=[], cat='', view='kanban', detId=null;
 
 const wh = () => ({'Content-Type':'application/json','X-API-Key':WKEY});
 
-async function load(){
+async function load() {
   spin(true);
-  try{
-    const r = await fetch(API); tasks = await r.json();
+  try {
+    const r = await fetch(API);
+    tasks = await r.json();
     render(); updateStats(); updateSub();
-    document.getElementById('last-sync').textContent = '更新 '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
-  }catch(e){snack('取得失敗 ⚠️')}
+    document.getElementById('synclbl').textContent = '更新 '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+  } catch { snack('取得失敗 ⚠️') }
   spin(false);
 }
-
-function spin(on){
-  const d=document.getElementById('rdot');
-  d.className='rdot'+(on?' loading':'');
-}
+function spin(on){ const d=document.getElementById('rdot'); d.className='rdot'+(on?' spin':'') }
 
 function updateSub(){
-  const active=tasks.filter(t=>t.status!=='完了').length;
-  const high=tasks.filter(t=>t.priority==='高'&&t.status!=='完了').length;
-  const today=new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'});
-  document.getElementById('hero-sub').textContent=
-    `${today} · アクティブ ${active}件${high?` · 🔴高優先${high}件`:''}`;
+  const active = tasks.filter(t=>t.status!=='完了').length;
+  const high   = tasks.filter(t=>t.priority==='高'&&t.status!=='完了').length;
+  const queued = tasks.filter(t=>t.is_claude_task&&t.execution_status==='queued').length;
+  const today  = new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'});
+  document.getElementById('hsub').textContent =
+    `${today} · アクティブ ${active}件${high?` · 🔴高${high}`:''}${queued?` · ⚡実行待ち${queued}`:''}`;
 }
-
 function updateStats(){
-  STATUSES.forEach((s,i)=>{
-    document.getElementById('st'+i).textContent=tasks.filter(t=>t.status===s).length;
-  });
+  SS.forEach((s,i) => document.getElementById('st'+i).textContent = tasks.filter(t=>t.status===s).length);
 }
 
-function td(){return new Date().toISOString().slice(0,10)}
-function fmt(d){if(!d)return'';const[,m,day]=d.split('-');return`${+m}/${+day}`}
-function od(d){return d&&d<td()}
+const td = () => new Date().toISOString().slice(0,10);
+const fmt = d => { if(!d)return''; const[,m,day]=d.split('-'); return`${+m}/${+day}` };
+const od  = d => d && d < td();
 
-function makeCard(t){
-  const dead=t.deadline?`<span class="dl ${od(t.deadline)&&t.status!=='完了'?'od':''}">${fmt(t.deadline)}</span>`:'';
-  const src=t.source==='Slack'?'💬':t.source==='Claude'?'🤖':'';
-  const memo=t.memo?`<div class="card-memo">${t.memo.slice(0,70)}${t.memo.length>70?'…':''}</div>`:'';
-  const c=document.createElement('div');
-  c.className=`tcard p-${t.priority}${t.status==='完了'?' done':''}`;
-  c.innerHTML=`
-    <div class="card-top">
-      <div class="card-title${t.status==='完了'?' done-title':''}">${t.title}</div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
-        <span class="pri-pill pri-${t.priority}">${t.priority}</span>
+function execStatusLabel(t) {
+  if (!t.is_claude_task) return '';
+  const s = t.execution_status || 'ready';
+  const labels = { ready:'⚡ 実行可', queued:'⚡ 実行待ち', running:'⚡ 実行中', done:'⚡ 完了', failed:'⚡ 失敗' };
+  return `<span class="exec-pill ${s==='ready'?'':s}">${labels[s]||'⚡'}</span>`;
+}
+
+function makeCard(t) {
+  const dead = t.deadline ? `<span class="dl ${od(t.deadline)&&t.status!=='完了'?'od':''}">${fmt(t.deadline)}</span>` : '';
+  const src  = {'Slack':'💬','Claude':'🤖'}[t.source]||'';
+  const memo = t.memo ? `<div class="card-memo">${t.memo.slice(0,60)}${t.memo.length>60?'…':''}</div>` : '';
+  const priC = {'高':'ph','中':'pm','低':'pl'}[t.priority]||'pm';
+  const priL = {'高':'高','中':'中','低':'低'}[t.priority]||'中';
+  const c = document.createElement('div');
+  c.className = `tcard ${priC}${t.status==='完了'?' done':''}${t.is_claude_task?' ct':''}`;
+  c.innerHTML = `
+    <div class="ctop">
+      <div class="ctitle${t.status==='完了'?' done-t':''}">${t.title}</div>
+      <div class="cright">
+        <div class="ppill pp-${priL[0].toLowerCase()}" style="background:var(--${{'高':'high','中':'mid','低':'low'}[t.priority]}-bg);color:var(--${{'高':'high','中':'mid','低':'low'}[t.priority]})">${priL}</div>
         <span class="sbadge s-${t.status}" onclick="cycleS(event,'${t.id}')">${t.status}</span>
       </div>
     </div>
-    <div class="card-meta">
+    <div class="cmeta">
       <span class="ctag c-${t.category}">${t.category}</span>
-      ${dead}${src?`<span class="src">${src}</span>`:''}
+      ${dead}${src?`<span class="src-icon">${src}</span>`:''}
+      ${execStatusLabel(t)}
     </div>
     ${memo}
   `;
-  c.addEventListener('click',()=>openDet(t.id));
+  c.addEventListener('click', () => openDet(t.id));
   return c;
 }
 
-function render(){
-  const list=cat?tasks.filter(t=>t.category===cat):tasks;
-  if(view==='kanban'){
-    STATUSES.forEach(s=>{
-      const body=document.getElementById('body-'+s);
-      const cnt=document.getElementById('cnt-'+s);
-      const col=list.filter(t=>t.status===s);
-      cnt.textContent=col.length;
-      body.innerHTML='';
-      if(!col.length){body.innerHTML='<div class="empty-col">なし</div>';return}
-      col.forEach(t=>body.appendChild(makeCard(t)));
+function render() {
+  const list = cat ? tasks.filter(t=>t.category===cat) : tasks;
+  if (view === 'kanban') {
+    SS.forEach(s => {
+      const body = document.getElementById('body-'+s);
+      const cnt  = document.getElementById('cnt-'+s);
+      const col  = list.filter(t=>t.status===s);
+      cnt.textContent = col.length;
+      body.innerHTML = '';
+      if (!col.length) { body.innerHTML='<div class="empty-col">なし</div>'; return }
+      col.forEach(t => body.appendChild(makeCard(t)));
     });
-  }else{
-    const lv=document.getElementById('list-view');
-    lv.innerHTML='';
-    if(!list.length){lv.innerHTML='<div class="empty-col" style="margin:20px 0">タスクなし</div>';return}
-    list.forEach(t=>lv.appendChild(makeCard(t)));
+  } else {
+    const lv = document.getElementById('lview');
+    lv.innerHTML = '';
+    if (!list.length) { lv.innerHTML='<div class="empty-col" style="margin:20px 0">タスクなし</div>'; return }
+    list.forEach(t => lv.appendChild(makeCard(t)));
   }
 }
 
-function setView(v){
-  view=v;
-  document.getElementById('kanban-view').style.display=v==='kanban'?'flex':'none';
-  document.getElementById('list-view').style.display=v==='list'?'flex':'none';
-  document.getElementById('vb-k').className='vbtn'+(v==='kanban'?' on':'');
-  document.getElementById('vb-l').className='vbtn'+(v==='list'?' on':'');
+function setView(v) {
+  view = v;
+  document.getElementById('kview').style.display = v==='kanban'?'flex':'none';
+  document.getElementById('lview').style.display = v==='list'?'flex':'none';
+  document.getElementById('vbk').className='vbtn'+(v==='kanban'?' on':'');
+  document.getElementById('vbl').className='vbtn'+(v==='list'?' on':'');
   render();
 }
 
-document.getElementById('filter-bar').addEventListener('click',e=>{
-  const ch=e.target.closest('.chip');if(!ch)return;
+document.getElementById('fbar').addEventListener('click', e => {
+  const ch = e.target.closest('.chip'); if (!ch) return;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  ch.classList.add('on');cat=ch.dataset.cat;render();
+  ch.classList.add('on'); cat = ch.dataset.cat; render();
 });
 
-async function cycleS(e,id){
+async function cycleS(e, id) {
   e.stopPropagation();
-  const t=tasks.find(x=>x.id===id);if(!t)return;
-  const nxt=STATUSES[(STATUSES.indexOf(t.status)+1)%STATUSES.length];
-  await patch(id,{status:nxt});
+  const t = tasks.find(x=>x.id===id); if (!t) return;
+  await patch(id, {status: SS[(SS.indexOf(t.status)+1)%SS.length]});
 }
 
-async function patch(id,data){
-  try{
-    const r=await fetch(`${API}/${id}`,{method:'PATCH',headers:wh(),body:JSON.stringify(data)});
-    const u=await r.json();
-    const i=tasks.findIndex(t=>t.id===id);if(i!==-1)tasks[i]=u;
-    render();updateStats();updateSub();
-  }catch{snack('更新失敗')}
+async function patch(id, data) {
+  try {
+    const r = await fetch(`${API}/${id}`,{method:'PATCH',headers:wh(),body:JSON.stringify(data)});
+    const u = await r.json();
+    const i = tasks.findIndex(t=>t.id===id); if (i!==-1) tasks[i]=u;
+    render(); updateStats(); updateSub();
+  } catch { snack('更新失敗') }
 }
 
-function openAdd(){
-  document.getElementById('form-title').textContent='タスク追加';
-  document.getElementById('eid').value='';
-  document.getElementById('f-title').value='';
-  document.getElementById('f-cat').value='突発';
-  document.getElementById('f-pri').value='中';
-  document.getElementById('f-st').value='未着手';
-  document.getElementById('f-dl').value='';
-  document.getElementById('f-memo').value='';
-  document.getElementById('form-btns').innerHTML='<button class="btn-save" onclick="saveTask()">保存</button>';
+// ── FORM ──
+function toggleClaude() {
+  const cb = document.getElementById('f-ct');
+  const tog = document.getElementById('claude-tog');
+  const sec = document.getElementById('claude-section');
+  // checkbox may have been clicked directly or via row click
+  const on = cb.checked;
+  cb.checked = on;
+  tog.className = 'tog-row' + (on ? ' active' : '');
+  sec.style.display = on ? 'block' : 'none';
+}
+
+function openAdd() {
+  document.getElementById('form-ttl').textContent = 'タスク追加';
+  document.getElementById('eid').value = '';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-cat').value = '突発';
+  document.getElementById('f-pri').value = '中';
+  document.getElementById('f-st').value = '未着手';
+  document.getElementById('f-dl').value = '';
+  document.getElementById('f-memo').value = '';
+  document.getElementById('f-ct').checked = false;
+  document.getElementById('f-prompt').value = '';
+  document.getElementById('claude-section').style.display = 'none';
+  document.getElementById('claude-tog').className = 'tog-row';
+  document.getElementById('form-btns').innerHTML = '<button class="bsave" onclick="saveTask()">保存</button>';
   openSheet('add-ov');
-  setTimeout(()=>document.getElementById('f-title').focus(),300);
+  setTimeout(() => document.getElementById('f-title').focus(), 300);
 }
 
-function openEdit(t){
-  document.getElementById('form-title').textContent='タスク編集';
-  document.getElementById('eid').value=t.id;
-  document.getElementById('f-title').value=t.title;
-  document.getElementById('f-cat').value=t.category;
-  document.getElementById('f-pri').value=t.priority;
-  document.getElementById('f-st').value=t.status;
-  document.getElementById('f-dl').value=t.deadline||'';
-  document.getElementById('f-memo').value=t.memo||'';
-  document.getElementById('form-btns').innerHTML='<button class="btn-save" onclick="saveTask()">保存</button>';
+function openEdit(t) {
+  document.getElementById('form-ttl').textContent = 'タスク編集';
+  document.getElementById('eid').value = t.id;
+  document.getElementById('f-title').value = t.title;
+  document.getElementById('f-cat').value = t.category;
+  document.getElementById('f-pri').value = t.priority;
+  document.getElementById('f-st').value = t.status;
+  document.getElementById('f-dl').value = t.deadline||'';
+  document.getElementById('f-memo').value = t.memo||'';
+  const ct = !!t.is_claude_task;
+  document.getElementById('f-ct').checked = ct;
+  document.getElementById('f-prompt').value = t.claude_prompt||'';
+  document.getElementById('claude-section').style.display = ct ? 'block' : 'none';
+  document.getElementById('claude-tog').className = 'tog-row' + (ct ? ' active' : '');
+  document.getElementById('form-btns').innerHTML = '<button class="bsave" onclick="saveTask()">保存</button>';
   closeSheet('det-ov');
   openSheet('add-ov');
 }
 
-async function saveTask(){
-  const title=document.getElementById('f-title').value.trim();
-  if(!title){snack('タイトルを入力してください');return}
-  const d={
-    title,
-    category:document.getElementById('f-cat').value,
-    priority:document.getElementById('f-pri').value,
-    status:document.getElementById('f-st').value,
-    deadline:document.getElementById('f-dl').value||null,
-    memo:document.getElementById('f-memo').value,
-    source:'手動',
+async function saveTask() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { snack('タイトルを入力してください'); return }
+  const isCT = document.getElementById('f-ct').checked;
+  const d = {
+    title, source: '手動',
+    category: document.getElementById('f-cat').value,
+    priority: document.getElementById('f-pri').value,
+    status:   document.getElementById('f-st').value,
+    deadline: document.getElementById('f-dl').value || null,
+    memo:     document.getElementById('f-memo').value,
+    is_claude_task: isCT,
+    claude_prompt:  isCT ? document.getElementById('f-prompt').value : '',
   };
-  const id=document.getElementById('eid').value;
-  try{
-    if(id){
-      await patch(id,d);snack('更新しました ✓');
-    }else{
-      const r=await fetch(API,{method:'POST',headers:wh(),body:JSON.stringify(d)});
-      const t=await r.json();
-      tasks.unshift(t);render();updateStats();updateSub();
+  if (!document.getElementById('eid').value) d.execution_status = 'ready';
+  const id = document.getElementById('eid').value;
+  try {
+    if (id) { await patch(id, d); snack('更新しました ✓') }
+    else {
+      const r = await fetch(API,{method:'POST',headers:wh(),body:JSON.stringify(d)});
+      const t = await r.json(); tasks.unshift(t); render(); updateStats(); updateSub();
       snack('追加しました ✓');
     }
     closeSheet('add-ov');
-  }catch{snack('保存失敗')}
+  } catch { snack('保存失敗') }
 }
 
-function openDet(id){
-  const t=tasks.find(x=>x.id===id);if(!t)return;
-  detId=id;
-  const overdue=od(t.deadline)&&t.status!=='完了';
-  const priColor=t.priority==='高'?'var(--high)':t.priority==='中'?'var(--mid)':'var(--low)';
-  document.getElementById('det-body').innerHTML=`
+// ── DETAIL ──
+function openDet(id) {
+  const t = tasks.find(x=>x.id===id); if (!t) return;
+  detId = id;
+  const overdue = od(t.deadline) && t.status!=='完了';
+  const priColor = {'高':'var(--high)','中':'var(--mid)','低':'var(--low)'}[t.priority]||'var(--mid)';
+  const exStatus = t.execution_status || 'ready';
+  const exLabels = {ready:'⚡ 実行準備完了', queued:'⚡ 実行キュー済み', running:'⚡ Claude実行中...', done:'⚡ 実行完了', failed:'⚡ 実行失敗'};
+
+  let claudeSection = '';
+  if (t.is_claude_task) {
+    const resultHtml = t.execution_result
+      ? `<div class="result-box">${t.execution_result}</div>`
+      : '';
+    claudeSection = `
+      <div class="dfield">
+        <div class="dlbl">⚡ Claude実行</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <span class="exec-pill ${exStatus==='ready'?'':exStatus}">${exLabels[exStatus]||exStatus}</span>
+        </div>
+        ${t.claude_prompt ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;padding:8px;background:var(--glass2);border-radius:var(--r3);line-height:1.5">${t.claude_prompt}</div>` : ''}
+        ${resultHtml}
+      </div>`;
+  }
+
+  document.getElementById('det-body').innerHTML = `
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
       <span class="ctag c-${t.category}">${t.category}</span>
       <span class="sbadge s-${t.status}" style="cursor:default">${t.status}</span>
       <span style="font-size:11px;color:${priColor};font-weight:800">${t.priority}優先</span>
     </div>
     <div class="dtitle">${t.title}</div>
-    ${t.deadline?`<div class="dfield"><div class="dlabel">期限</div><div class="dval ${overdue?'od':''}">${fmt(t.deadline)}${overdue?' ⚠️ 期限切れ':''}</div></div>`:''}
-    ${t.memo?`<div class="dfield"><div class="dlabel">メモ</div><div class="dval">${t.memo}</div></div>`:''}
-    <div class="dfield"><div class="dlabel">登録元 / 日時</div><div class="dval" style="font-size:12px;color:var(--text2)">${t.source} · ${new Date(t.createdAt).toLocaleDateString('ja-JP')}</div></div>
+    ${t.deadline ? `<div class="dfield"><div class="dlbl">期限</div><div class="dval ${overdue?'od':''}">${fmt(t.deadline)}${overdue?' ⚠️ 期限切れ':''}</div></div>` : ''}
+    ${t.memo      ? `<div class="dfield"><div class="dlbl">メモ</div><div class="dval">${t.memo}</div></div>` : ''}
+    ${claudeSection}
+    <div class="dfield"><div class="dlbl">登録元 / 日時</div><div class="dval" style="font-size:12px;color:var(--text2)">${t.source} · ${new Date(t.createdAt).toLocaleDateString('ja-JP')}</div></div>
   `;
-  document.getElementById('det-edit').onclick=()=>openEdit(t);
-  document.getElementById('det-del').onclick=()=>delTask(id);
+
+  // ボタン組み立て
+  const btns = document.getElementById('det-btns');
+  if (t.is_claude_task && (exStatus === 'ready' || exStatus === 'failed')) {
+    btns.innerHTML = `
+      <button class="bghost" onclick="openEdit(tasks.find(x=>x.id==='${id}'))">編集</button>
+      <button class="bexec" id="exec-btn" onclick="execWithClaude('${id}')">⚡ Claudeで実行</button>
+    `;
+  } else if (t.is_claude_task && exStatus === 'queued') {
+    btns.innerHTML = `
+      <button class="bghost" onclick="openEdit(tasks.find(x=>x.id==='${id}'))">編集</button>
+      <button class="bexec" disabled>⚡ 実行キュー中...</button>
+    `;
+  } else {
+    btns.innerHTML = `
+      <button class="bghost" onclick="openEdit(tasks.find(x=>x.id==='${id}'))">編集</button>
+      <button class="bdel" onclick="delTask('${id}')">削除</button>
+    `;
+  }
   openSheet('det-ov');
 }
 
-async function delTask(id){
-  if(!confirm('削除しますか？'))return;
-  try{
+async function execWithClaude(id) {
+  const t = tasks.find(x=>x.id===id); if (!t || !t.claude_prompt) { snack('プロンプトが設定されていません'); return }
+  snack('⚡ 実行キューに追加しました');
+  await patch(id, { execution_status: 'queued', status: '進行中' });
+  closeSheet('det-ov');
+}
+
+async function delTask(id) {
+  if (!confirm('削除しますか？')) return;
+  try {
     await fetch(`${API}/${id}`,{method:'DELETE',headers:wh()});
-    tasks=tasks.filter(t=>t.id!==id);
-    render();updateStats();updateSub();
-    closeSheet('det-ov');snack('削除しました');
-  }catch{snack('削除失敗')}
+    tasks = tasks.filter(t=>t.id!==id);
+    render(); updateStats(); updateSub();
+    closeSheet('det-ov'); snack('削除しました');
+  } catch { snack('削除失敗') }
 }
 
-function openSheet(id){document.getElementById(id).classList.add('on')}
-function closeSheet(id){document.getElementById(id).classList.remove('on')}
-function bgClose(e,id){if(e.target===document.getElementById(id))closeSheet(id)}
+function openSheet(id)  { document.getElementById(id).classList.add('on') }
+function closeSheet(id) { document.getElementById(id).classList.remove('on') }
+function bgClose(e, id) { if (e.target===document.getElementById(id)) closeSheet(id) }
 
-function snack(msg){
-  const el=document.getElementById('snack');
-  el.textContent=msg;el.classList.add('on');
-  clearTimeout(el._t);
-  el._t=setTimeout(()=>el.classList.remove('on'),2400);
+function snack(msg) {
+  const el = document.getElementById('snack');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('on'), 2400);
 }
 
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/tasks-sw.js').catch(()=>{});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/tasks-sw.js').catch(()=>{});
 
 load();
 setInterval(load, 30000);
