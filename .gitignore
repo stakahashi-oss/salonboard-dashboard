@@ -5,6 +5,7 @@ __pycache__/
 *.json
 !requirements.txt
 !docs/vercel.json
+!docs/tasks-manifest.json
 .env
 counseling_ss_id.txt
 lstep_*.json
