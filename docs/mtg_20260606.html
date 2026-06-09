@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>直営MTG 2026-06-06</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:1200px;margin:0 auto;padding:24px 28px}
+
+/* Header */
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:14px;padding:20px 28px;margin-bottom:20px;color:#fff}
+.header-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.header-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.header-meta{font-size:12px;color:rgba(255,255,255,.55);display:flex;flex-wrap:wrap;gap:12px}
+.header-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:2px 10px;font-size:11px}
+
+/* Nav */
+.page-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.nav-link{font-size:11px;font-weight:600;color:#64748b;text-decoration:none;padding:5px 12px;border-radius:6px;background:#fff;border:1px solid #e2e8f0;white-space:nowrap}
+.nav-link:hover{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+
+/* Section */
+.section-divider{display:block;background:linear-gradient(90deg,rgba(37,99,235,.08),transparent);border-left:3px solid #2563eb;border-radius:0 6px 6px 0;padding:8px 14px;margin:26px 0 12px;font-size:11px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:16px}
+
+/* 達成サマリー */
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.result-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.result-card.hit{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.05)}
+.result-card.miss{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04)}
+.result-card.near{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05)}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rc-label.hit{color:#059669}.rc-label.miss{color:#dc2626}.rc-label.near{color:#d97706}
+.rc-store{font-size:16px;font-weight:800;margin-bottom:4px}
+.rc-value{font-size:12px;font-weight:600;color:#334155}
+.rc-reason{font-size:11px;color:#64748b;margin-top:4px;line-height:1.5}
+.rc-rate{font-size:24px;font-weight:800;margin-bottom:2px}
+
+/* テーブル */
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid #e2e8f0;background:#f8fafc}
+thead th:first-child{text-align:left}
+tbody td{padding:9px 10px;text-align:right;border-bottom:1px solid #e2e8f0}
+tbody td:first-child{text-align:left;font-weight:600}
+tbody tr:hover{background:#f8fafc}
+tbody tr:last-child td{border-bottom:none}
+
+/* タグ */
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-left:4px}
+.tg{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
+.tr{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.ta{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.tb{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
+.tgy{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+
+/* 施策カード */
+.施策-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.施策-card{border-radius:10px;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0}
+.施策-title{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.施策-body{font-size:12px;color:#475569;line-height:1.6}
+.施策-body .lbl{font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;display:block;margin-top:8px}
+.chiprow{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.chip{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px;background:#fff;border:1px solid #e2e8f0;color:#475569}
+.chip.go{background:rgba(16,185,129,.1);color:#059669;border-color:rgba(16,185,129,.25)}
+.chip.hold{background:rgba(239,68,68,.06);color:#dc2626;border-color:rgba(239,68,68,.18)}
+
+/* 課題カード */
+.issue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.issue-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.issue-card.critical{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.03)}
+.issue-card.warning{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.03)}
+.issue-card.blue{border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.03)}
+.ic-store{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ic-store.critical{color:#dc2626}.ic-store.warning{color:#d97706}.ic-store.blue{color:#2563eb}
+.ic-item{font-size:12px;color:#475569;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);line-height:1.5}
+.ic-item:last-of-type{border-bottom:none}
+.ic-item strong{color:#1e293b}
+
+/* タイムライン */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:#e2e8f0}
+.tl-item{position:relative;padding:0 0 16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-26px;top:2px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb;background:#2563eb}
+.tl-dot.amber{box-shadow:0 0 0 2px #f59e0b;background:#f59e0b}
+.tl-date{font-size:11px;font-weight:800;color:#1d4ed8;letter-spacing:.04em}
+.tl-title{font-size:13px;font-weight:700;color:#1e293b;margin:2px 0}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.5}
+
+/* アクション */
+.action-item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
+.action-item:last-child{border-bottom:none}
+.anum{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.anum.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.anum.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.anum.b{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
+.abody{flex:1}
+.abody .t{font-weight:700;font-size:13px;margin-bottom:4px}
+.who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
+.who.me{background:#eff6ff;color:#1d4ed8}
+.who.team{background:#f0fdf4;color:#15803d}
+.who.other{background:#fafafa;color:#64748b;border:1px solid #e2e8f0}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
+.dr{background:rgba(239,68,68,.08);color:#dc2626}
+.da{background:rgba(245,158,11,.08);color:#d97706}
+.db{background:#eff6ff;color:#2563eb}
+
+/* note / insight */
+.insight-box{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.04));border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:12px;line-height:1.7;color:#334155}
+.insight-box strong{color:#1e293b}
+.note{background:#f8fafc;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#64748b;margin-top:12px;line-height:1.6}
+.note.green{border-left-color:#10b981}.note.red{border-left-color:#ef4444}.note.amber{border-left-color:#f59e0b}.note.blue{border-left-color:#3b82f6}
+.note strong{color:#1e293b}
+.link{color:#2563eb;font-weight:600;text-decoration:none}
+.link:hover{text-decoration:underline}
+
+.num-g{color:#059669;font-weight:700}
+.num-r{color:#dc2626;font-weight:700}
+.num-a{color:#d97706;font-weight:700}
+
+@media(max-width:900px){.result-grid,.施策-grid{grid-template-columns:1fr 1fr}.issue-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.result-grid{grid-template-columns:1fr 1fr}.施策-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-badge">直営 ／ 経営MTG</div>
+  <div class="header-title">直営MTG ― 5月振り返り & 6月実行計画</div>
+  <div class="header-meta">
+    <span class="header-chip">📅 2026-06-06</span>
+    <span class="header-chip">🏪 直営</span>
+    <span class="header-chip">💰 売上達成 95.73%</span>
+    <span class="header-chip">⚡ N/A 主締切 6/12</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="page-nav">
+  <a class="nav-link" href="#result">5月実績</a>
+  <a class="nav-link" href="#menu">追加施術導入</a>
+  <a class="nav-link" href="#rule">スタッフ対応ルール</a>
+  <a class="nav-link" href="#kiwi">Kiwi・システム</a>
+  <a class="nav-link" href="#refund">リファンドハブ</a>
+  <a class="nav-link" href="#imakoko">イマココ・日報</a>
+  <a class="nav-link" href="#actions">⚡ N/A</a>
+</nav>
+
+<!-- 5月実績 -->
+<div id="result" class="section-divider">5月 実績サマリー（直営）</div>
+<div class="result-grid">
+  <div class="result-card near">
+    <div class="rc-label near">💰 売上</div>
+    <div class="rc-rate num-a">95.73%</div>
+    <div class="rc-value">¥25,183,231 / ¥26,305,792</div>
+    <div class="rc-reason">ほぼ着地。あと <span class="num-a">約¥112万</span></div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">❌ 新規次回予約</div>
+    <div class="rc-rate num-r">71%</div>
+    <div class="rc-value">実 32.25% / 目標 45%</div>
+    <div class="rc-reason">目標まで <span class="num-r">-12.75%</span></div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">❌ 2回目 回数券販売率</div>
+    <div class="rc-rate num-r">34%</div>
+    <div class="rc-value">実 17% / 目標 50%</div>
+    <div class="rc-reason">最大の未達指標</div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">❌ 新規物販販売率</div>
+    <div class="rc-rate num-r">50%</div>
+    <div class="rc-value">実 10% / 目標 20%</div>
+    <div class="rc-reason">目標まで <span class="num-r">-10%</span></div>
+  </div>
+</div>
+<div class="section" style="padding:0">
+  <table>
+    <thead>
+      <tr><th style="text-align:left">指標</th><th>目標</th><th>実数値</th><th>達成率</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>売上</td><td>¥26,305,792</td><td>¥25,183,231</td><td class="num-a">95.73%</td></tr>
+      <tr><td>新規次回予約</td><td>45%</td><td>32.25%</td><td class="num-r">71%</td></tr>
+      <tr><td>2回目来店 回数券販売率</td><td>50%</td><td>17%</td><td class="num-r">34%</td></tr>
+      <tr><td>新規物販販売率</td><td>20%</td><td>10%</td><td class="num-r">50%</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="insight-box">
+  <strong>📊 総括：</strong>売上はほぼ着地（95.73%）。一方で <strong>回数券（34%）・物販（50%）・新規次回予約（71%）</strong> のSV領域が大きく未達。単価UPの打ち手として6月は「追加施術の全店導入」を進める。
+</div>
+
+<!-- 追加施術導入 -->
+<div id="menu" class="section-divider">追加施術導入（目的＝単価UPをしやすくする）</div>
+<div class="section">
+  <div class="施策-grid">
+    <div class="施策-card">
+      <div class="施策-title">🪮 下まつげパーマ</div>
+      <div class="施策-body">
+        <span class="lbl">今月導入確定（確認講師）</span>
+        <div class="chiprow">
+          <span class="chip go">札幌（あきほさん）</span>
+          <span class="chip go">藤沢＝大塚さん（内山さん）</span>
+          <span class="chip go">中野（林さん）</span>
+          <span class="chip go">高田馬場（林さん）</span>
+        </div>
+        <span class="lbl">今月は見送り</span>
+        <div class="chiprow">
+          <span class="chip hold">岐阜</span><span class="chip hold">金山</span>
+          <span class="chip hold">池袋</span><span class="chip hold">立川</span>
+        </div>
+        <span class="lbl">個別メモ</span>
+        札幌は遠藤さん以外実施済／下北沢はもあさんに持ちかけ／藤沢の義元さんは不可。<strong>熊本→梅田確認</strong>。研修＝オンライン。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">🎨 眉カラー</div>
+      <div class="施策-body">
+        <span class="lbl">今月中 導入</span>
+        <div class="chiprow">
+          <span class="chip go">札幌</span><span class="chip go">熊本</span><span class="chip go">藤沢</span>
+          <span class="chip go">立川</span><span class="chip go">池袋</span><span class="chip go">岐阜</span><span class="chip go">金山</span>
+        </div>
+        <span class="lbl">研修 / 技術確認</span>
+        研修＝オンライン。技術確認＝<strong>各店舗のエリマネ</strong>。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">👁 マツエク</div>
+      <div class="施策-body">
+        <span class="lbl">対象</span>
+        <div class="chiprow"><span class="chip">札幌（遠藤さん or 近藤さん）</span></div>
+        <span class="lbl">宿題</span>
+        <strong>研修スタッフをいつまでに決めるか</strong>を確定する（→ N/A：6/12までに対象者決定）。
+      </div>
+    </div>
+  </div>
+  <div class="note blue"><strong>狙い：</strong>メニューの選択肢を増やして単価UPの提案をしやすくする。未導入店の導入期限を確定するのが今回の決定事項。</div>
+</div>
+
+<!-- スタッフ対応ルール -->
+<div id="rule" class="section-divider">スタッフ問題行動時の対応ルール（共通認識化）</div>
+<div class="section">
+  <div class="note red"><strong>背景：</strong>二子玉川店で問題行動が発生（内山さん説明）。発覚時の対応を全員で一致させる。</div>
+  <div class="issue-grid" style="margin-top:14px">
+    <div class="issue-card critical">
+      <div class="ic-store critical">🔴 問題行動の例</div>
+      <div class="ic-item">1日に同じ人の予約を2件入れていた</div>
+      <div class="ic-item">受付予約を0件にして予約が入らないようにしていた</div>
+      <div class="ic-item">架空予約／キャンセル連絡を放置</div>
+      <div class="ic-item">予約が無いのに枠を切らず夜までいる（休日出勤含む）</div>
+      <div class="ic-item">次回予約を変な時間に取る・休憩を詰めない</div>
+      <div class="ic-item">休憩を10:00や18:00に入れ、早帰り・遅出勤</div>
+    </div>
+    <div class="issue-card warning">
+      <div class="ic-store warning">🟡 対応ルール（決定）</div>
+      <div class="ic-item">まず<strong>本人に原因と改善策を出させる</strong></div>
+      <div class="ic-item"><strong>1回目＝注意</strong></div>
+      <div class="ic-item"><strong>2回目＝希望休なし</strong>（勤怠系は修正なし）</div>
+      <div class="ic-item"><strong>3回目＝インセンカット</strong></div>
+      <div class="ic-item"><strong>一発アウト＝インセンカット＋受付可能数0件</strong>（架空予約等・損失度合いによる）</div>
+      <div class="ic-item">勤怠は確認。影響が出るものは欠勤扱い等で処理。エリマネは問題発生前にキャッチアップ・事前対策・共有</div>
+    </div>
+  </div>
+  <div class="note">店舗への落とし込み・罰則範囲の伝え方の文言は要すり合わせ（議事メモが一部不明瞭）。</div>
+</div>
+
+<!-- Kiwi・システム -->
+<div id="kiwi" class="section-divider">Kiwiサービス・システム導入スケジュール</div>
+<div class="section">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">6/15</div>
+      <div class="tl-title">一元管理システム 導入</div>
+      <div class="tl-desc">導入中＝熊本・岐阜</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-date">6/30</div>
+      <div class="tl-title">ミニモクーポン自動編集システム ＋ 全店舗導入</div>
+      <div class="tl-desc">6/30から全店展開。チェックリストで各店の進捗を追う → <a class="link" href="https://ssin-progress.pages.dev/" target="_blank">ssin-progress.pages.dev</a></div>
+    </div>
+  </div>
+  <div class="insight-box" style="margin-top:14px">
+    <strong>現状：</strong>カウンセリング＋リマインドはほぼ全店（札幌・藤沢・川崎・横浜・下北沢・中野・高田馬場・金山・岐阜・熊本）。<strong>LINE予約＝金山</strong>のみ稼働。一元管理は熊本・岐阜で導入中。
+  </div>
+</div>
+
+<!-- リファンドハブ -->
+<div id="refund" class="section-divider">キャンセル料回収 ― リファンドハブ（導入中）</div>
+<div class="section">
+  <div class="施策-body" style="font-size:13px">
+    <strong>目的：</strong>新規次回予約を獲得しても当日・無断キャンセルで損失が出るため、<strong>キャンセル料を請求して損失を回避</strong>する。
+    <span class="lbl">進め方</span>
+    仕組みを理解 → スタッフへ共有 → 運用開始。<strong>全部まとまったマニュアルを作成</strong>（〆6/12）。
+    <span class="lbl">ツール</span>
+    <a class="link" href="https://www.refundhub.jp/new_cancel" target="_blank">refundhub.jp</a>（ログイン情報はSlackで別途共有・本ページには非掲載）
+  </div>
+</div>
+
+<!-- イマココ・日報 -->
+<div id="imakoko" class="section-divider">イマココ記入 / 日報返信の改善</div>
+<div class="section">
+  <div class="issue-grid">
+    <div class="issue-card blue">
+      <div class="ic-store blue">📍 イマココ</div>
+      <div class="ic-item">担当施策の<strong>測定値</strong>を、施策ごとに決めた<strong>中間集計期間（最短7日）</strong>ごとに必ず記入</div>
+      <div class="ic-item">施策は「やって終わり」ではない。数値で効果を見て<strong>続ける／撤退する</strong>を判断するためのもの。記入が止まると判断できなくなる</div>
+      <div class="ic-item">🔗 <a class="link" href="https://sisaku-dashboard.pages.dev/" target="_blank">sisaku-dashboard.pages.dev</a>（PWはSlack共有）</div>
+    </div>
+    <div class="issue-card blue">
+      <div class="ic-store blue">📝 日報返信</div>
+      <div class="ic-item"><strong>毎日記入を確認</strong>する</div>
+      <div class="ic-item">返信はスタッフのモチベに応じて。ただし<strong>最低週1回</strong>は返信</div>
+      <div class="ic-item"><strong>月曜日に先週分の漏れ</strong>がないかチェック</div>
+      <div class="ic-item">🔗 <a class="link" href="https://staff-report.pages.dev/kanri/" target="_blank">staff-report.pages.dev/kanri</a></div>
+    </div>
+  </div>
+  <div class="note blue"><strong>スラック導入：</strong>スタッフへ導入アナウンス予定（福島さん×宮脇さんで話して決定後にアナウンス）。</div>
+</div>
+
+<!-- N/A -->
+<div id="actions" class="section-divider">N/A（ネクストアクション）― 主締切 6/12</div>
+<div class="section">
+  <div class="action-item">
+    <div class="anum a">1</div>
+    <div class="abody">
+      <div class="t">全まとめのマニュアル作成（リファンドハブ含む）</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who other">担当未定</span><span class="due da">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum a">2</div>
+    <div class="abody">
+      <div class="t">札幌 マツエク研修 対象者決定</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who other">担当未定</span><span class="due da">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum r">3</div>
+    <div class="abody">
+      <div class="t">ミニモ進捗チェックリスト入力（リストは高橋が作成）</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who me">タカショー</span><span class="due dr">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum r">4</div>
+    <div class="abody">
+      <div class="t">金額まとめ・ゲリラクーポンをまとめる</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who me">タカショー</span><span class="due dr">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum b">5</div>
+    <div class="abody">
+      <div class="t">特典も1つのページにまとめる</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who me">タカショー</span><span class="due db">6/12 目安</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum a">6</div>
+    <div class="abody">
+      <div class="t">下まつげパーマ 研修開始案内</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who other">エリマネ</span><span class="due da">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum a">7</div>
+    <div class="abody">
+      <div class="t">眉カラー 研修開始案内</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who other">エリマネ</span><span class="due da">〆 6/12</span></div>
+    </div>
+  </div>
+  <div class="action-item">
+    <div class="anum a">8</div>
+    <div class="abody">
+      <div class="t">スタッフへスラック導入アナウンス</div>
+      <div style="font-size:12px;color:#64748b;margin-top:3px">福島さんと宮脇さんが話して、決まった後に導入アナウンス</div>
+      <div style="display:flex;gap:6px;margin-top:5px"><span class="who other">福島さん×宮脇さん</span><span class="due da">〆 6/12</span></div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:10px">
+  直営MTG 議事録 ｜ 2026-06-06 ｜ SSIN STUDIO 直営
+</div>
+
+</body>
+</html>
