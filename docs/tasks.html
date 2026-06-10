@@ -241,6 +241,19 @@ textarea{resize:none;height:72px;line-height:1.5}
 /* ── FAB ── */
 .fab{position:fixed;bottom:max(calc(env(safe-area-inset-bottom,0px) + 24px),28px);right:20px;z-index:150;width:54px;height:54px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 20px var(--accent-glow),0 0 0 1px rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;transition:.15s}
 .fab:active{transform:scale(.88)}
+
+/* ── SHORTCUT HELP ── */
+.kbd-hint{font-size:10px;color:var(--text3);background:var(--glass2);border:1px solid var(--border);border-radius:5px;padding:2px 6px;cursor:pointer;letter-spacing:.2px;transition:.15s}
+.kbd-hint:hover{color:var(--text2);border-color:var(--border2)}
+.kbd-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s}
+.kbd-overlay.on{opacity:1;pointer-events:all}
+.kbd-panel{background:linear-gradient(180deg,rgba(13,21,37,.99),rgba(6,9,19,.99));border:1px solid var(--border2);border-radius:18px;padding:24px;width:min(360px,90vw);max-height:80vh;overflow-y:auto}
+.kbd-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.kbd-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.kbd-row:last-child{border-bottom:none}
+.kbd-desc{font-size:12px;color:var(--text2)}
+.kbd-keys{display:flex;gap:4px;flex-shrink:0}
+kbd{background:var(--glass3);border:1px solid var(--border2);border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700;color:var(--text);font-family:inherit;min-width:22px;text-align:center}
 </style>
 </head>
 <body>
@@ -275,7 +288,10 @@ textarea{resize:none;height:72px;line-height:1.5}
       <button class="vbtn on" id="vbk" onclick="setView('kanban')">カンバン</button>
       <button class="vbtn"    id="vbl" onclick="setView('list')">リスト</button>
     </div>
-    <span class="sync-lbl" id="synclbl"></span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sync-lbl" id="synclbl"></span>
+      <button class="kbd-hint" onclick="openKbd()" title="ショートカット一覧">⌨️ ?</button>
+    </div>
   </div>
 </header>
 
@@ -368,6 +384,28 @@ textarea{resize:none;height:72px;line-height:1.5}
 </div>
 
 <div class="snack" id="snack"></div>
+
+<!-- ── KEYBOARD SHORTCUT OVERLAY ── -->
+<div class="kbd-overlay" id="kbd-ov" onclick="closeKbd()">
+  <div class="kbd-panel" onclick="event.stopPropagation()">
+    <div class="kbd-title">
+      <span>⌨️ ショートカット</span>
+      <button class="xbtn" onclick="closeKbd()">✕</button>
+    </div>
+    <div class="kbd-row"><span class="kbd-desc">タスクを追加</span><span class="kbd-keys"><kbd>N</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">再読み込み</span><span class="kbd-keys"><kbd>R</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">カンバンビュー</span><span class="kbd-keys"><kbd>K</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">リストビュー</span><span class="kbd-keys"><kbd>L</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: ALL</span><span class="kbd-keys"><kbd>1</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: 店舗施策</span><span class="kbd-keys"><kbd>2</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: システム</span><span class="kbd-keys"><kbd>3</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: MTG</span><span class="kbd-keys"><kbd>4</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: 日次</span><span class="kbd-keys"><kbd>5</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">フィルター: 突発</span><span class="kbd-keys"><kbd>6</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">モーダルを閉じる</span><span class="kbd-keys"><kbd>Esc</kbd></span></div>
+    <div class="kbd-row"><span class="kbd-desc">このヘルプを開く</span><span class="kbd-keys"><kbd>?</kbd></span></div>
+  </div>
+</div>
 
 <script>
 const API  = 'https://task-manager.t-miyawaki.workers.dev/api/tasks';
@@ -676,6 +714,45 @@ function snack(msg) {
   el.textContent = msg; el.classList.add('on');
   clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('on'), 2400);
 }
+
+function openKbd()  { document.getElementById('kbd-ov').classList.add('on') }
+function closeKbd() { document.getElementById('kbd-ov').classList.remove('on') }
+
+const FILTER_CATS = ['', '店舗施策', 'システム開発', 'MTGアクション', '日次作業', '突発'];
+
+document.addEventListener('keydown', e => {
+  // input/textarea入力中は無視
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  // モーダル開いている時は Esc だけ受け付ける
+  const anyOpen = ['add-ov','det-ov','kbd-ov'].some(id => document.getElementById(id).classList.contains('on'));
+
+  if (e.key === 'Escape') {
+    ['add-ov','det-ov','kbd-ov'].forEach(id => closeSheet(id));
+    closeKbd();
+    return;
+  }
+  if (anyOpen) return;
+
+  switch (e.key.toLowerCase()) {
+    case 'n': openAdd(); break;
+    case 'r': load(); snack('更新中...'); break;
+    case 'k': setView('kanban'); snack('カンバンビュー'); break;
+    case 'l': setView('list');   snack('リストビュー'); break;
+    case '?': openKbd(); break;
+    case '1': case '2': case '3': case '4': case '5': case '6': {
+      const idx = parseInt(e.key) - 1;
+      cat = FILTER_CATS[idx];
+      document.querySelectorAll('.chip').forEach(c => {
+        c.classList.toggle('on', c.dataset.cat === cat);
+      });
+      render();
+      snack(cat ? `🔍 ${cat}` : '🔍 ALL');
+      break;
+    }
+  }
+});
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/tasks-sw.js').catch(()=>{});
 
