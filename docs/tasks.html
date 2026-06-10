@@ -254,6 +254,8 @@ textarea{resize:none;height:72px;line-height:1.5}
 .kbd-desc{font-size:12px;color:var(--text2)}
 .kbd-keys{display:flex;gap:4px;flex-shrink:0}
 kbd{background:var(--glass3);border:1px solid var(--border2);border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700;color:var(--text);font-family:inherit;min-width:22px;text-align:center}
+.kbd-tab{background:var(--glass2);border:1px solid var(--border);border-radius:var(--r3);padding:5px 12px;font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;transition:.15s}
+.kbd-tab.on{background:rgba(124,58,237,.2);border-color:var(--accent2);color:#c4b5fd}
 </style>
 </head>
 <body>
@@ -389,21 +391,42 @@ kbd{background:var(--glass3);border:1px solid var(--border2);border-radius:5px;p
 <div class="kbd-overlay" id="kbd-ov" onclick="closeKbd()">
   <div class="kbd-panel" onclick="event.stopPropagation()">
     <div class="kbd-title">
-      <span>⌨️ ショートカット</span>
+      <span>⌨️ ショートカット & コマンド</span>
       <button class="xbtn" onclick="closeKbd()">✕</button>
     </div>
-    <div class="kbd-row"><span class="kbd-desc">タスクを追加</span><span class="kbd-keys"><kbd>N</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">再読み込み</span><span class="kbd-keys"><kbd>R</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">カンバンビュー</span><span class="kbd-keys"><kbd>K</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">リストビュー</span><span class="kbd-keys"><kbd>L</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: ALL</span><span class="kbd-keys"><kbd>1</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: 店舗施策</span><span class="kbd-keys"><kbd>2</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: システム</span><span class="kbd-keys"><kbd>3</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: MTG</span><span class="kbd-keys"><kbd>4</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: 日次</span><span class="kbd-keys"><kbd>5</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">フィルター: 突発</span><span class="kbd-keys"><kbd>6</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">モーダルを閉じる</span><span class="kbd-keys"><kbd>Esc</kbd></span></div>
-    <div class="kbd-row"><span class="kbd-desc">このヘルプを開く</span><span class="kbd-keys"><kbd>?</kbd></span></div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="kbd-tab on" id="tab-keys" onclick="kbdTab('keys')">キーボード</button>
+      <button class="kbd-tab" id="tab-claude" onclick="kbdTab('claude')">/ Claudeコマンド</button>
+    </div>
+
+    <div id="kpane-keys">
+      <div class="kbd-row"><span class="kbd-desc">タスクを追加</span><span class="kbd-keys"><kbd>N</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">再読み込み</span><span class="kbd-keys"><kbd>R</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">カンバンビュー</span><span class="kbd-keys"><kbd>K</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">リストビュー</span><span class="kbd-keys"><kbd>L</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: ALL</span><span class="kbd-keys"><kbd>1</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: 店舗施策</span><span class="kbd-keys"><kbd>2</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: システム</span><span class="kbd-keys"><kbd>3</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: MTG</span><span class="kbd-keys"><kbd>4</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: 日次</span><span class="kbd-keys"><kbd>5</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">フィルター: 突発</span><span class="kbd-keys"><kbd>6</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">モーダルを閉じる</span><span class="kbd-keys"><kbd>Esc</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">このヘルプを開く</span><span class="kbd-keys"><kbd>?</kbd></span></div>
+    </div>
+
+    <div id="kpane-claude" style="display:none">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:10px;letter-spacing:.3px">Claude Codeターミナルで使えるコマンド</div>
+      <div class="kbd-row"><span class="kbd-desc">会話を圧縮（コスト節約）</span><span class="kbd-keys"><kbd>/compact</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">会話をリセット</span><span class="kbd-keys"><kbd>/clear</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">コスト確認</span><span class="kbd-keys"><kbd>/cost</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">モデル切替</span><span class="kbd-keys"><kbd>/model</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">Opus高速モード</span><span class="kbd-keys"><kbd>/fast</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">メモリ編集</span><span class="kbd-keys"><kbd>/memory</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">コードレビュー</span><span class="kbd-keys"><kbd>/review</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">多エージェント深層レビュー</span><span class="kbd-keys"><kbd>/ultrareview</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">シェルコマンド直接実行</span><span class="kbd-keys"><kbd>! cmd</kbd></span></div>
+      <div class="kbd-row"><span class="kbd-desc">環境診断</span><span class="kbd-keys"><kbd>/doctor</kbd></span></div>
+    </div>
   </div>
 </div>
 
@@ -717,6 +740,12 @@ function snack(msg) {
 
 function openKbd()  { document.getElementById('kbd-ov').classList.add('on') }
 function closeKbd() { document.getElementById('kbd-ov').classList.remove('on') }
+function kbdTab(t) {
+  document.getElementById('kpane-keys').style.display   = t==='keys'?'block':'none';
+  document.getElementById('kpane-claude').style.display = t==='claude'?'block':'none';
+  document.getElementById('tab-keys').className   = 'kbd-tab'+(t==='keys'?' on':'');
+  document.getElementById('tab-claude').className = 'kbd-tab'+(t==='claude'?' on':'');
+}
 
 const FILTER_CATS = ['', '店舗施策', 'システム開発', 'MTGアクション', '日次作業', '突発'];
 
