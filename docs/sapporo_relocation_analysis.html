@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S札幌 移転影響分析 | 2026-06-13</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card2: #222536;
+    --border: #2e3150;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --danger: #ff5f6d;
+    --warn: #ffc75f;
+    --text: #e8eaf6;
+    --sub: #8b93c4;
+    --good: #43e97b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Hiragino Sans', sans-serif; min-height: 100vh; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a1d27 0%, #16213e 50%, #0f3460 100%);
+    padding: 40px 32px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(108,99,255,0.15) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.2);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: #9b94ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; position: relative; }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub { color: var(--sub); font-size: 13px; position: relative; }
+  .hero-verdict {
+    margin-top: 20px;
+    background: rgba(67,233,123,0.1);
+    border: 1px solid rgba(67,233,123,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative;
+  }
+  .hero-verdict .icon { font-size: 28px; }
+  .hero-verdict .txt { font-size: 14px; font-weight: 600; color: var(--good); line-height: 1.5; }
+  .hero-verdict .sub { font-size: 12px; color: #7ec99b; margin-top: 2px; font-weight: 400; }
+
+  /* Layout */
+  .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--sub); text-transform: uppercase;
+    margin-bottom: 14px; padding-left: 4px;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media(max-width:700px) {
+    .grid2, .grid3, .grid4 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* KPI Cards */
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .kpi-card .label { font-size: 11px; color: var(--sub); margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px; }
+  .kpi-card .val { font-size: 30px; font-weight: 800; line-height: 1; }
+  .kpi-card .val.good { color: var(--good); }
+  .kpi-card .val.warn { color: var(--warn); }
+  .kpi-card .val.bad { color: var(--danger); }
+  .kpi-card .val.purple { color: var(--accent); }
+  .kpi-card .delta {
+    font-size: 12px; margin-top: 6px; display: flex; align-items: center; gap: 4px;
+    font-weight: 600;
+  }
+  .kpi-card .delta.up { color: var(--good); }
+  .kpi-card .delta.down { color: var(--danger); }
+  .kpi-card .delta.neut { color: var(--sub); }
+  .kpi-card .sub-val { font-size: 13px; color: var(--sub); margin-top: 4px; }
+
+  /* Section cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  /* Weekly Chart */
+  .chart-wrap { overflow-x: auto; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding: 0 4px; min-width: 500px; }
+  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 50px; }
+  .bar-outer { flex: 1; display: flex; align-items: flex-end; width: 100%; position: relative; }
+  .bar {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    transition: opacity 0.2s;
+    min-height: 4px;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-val {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 700; white-space: nowrap; color: var(--text);
+  }
+  .bar-label { font-size: 10px; color: var(--sub); margin-top: 6px; text-align: center; }
+  .bar-week { font-size: 9px; color: #555; margin-top: 2px; }
+
+  .divider-line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .reloc-marker {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  .reloc-tag {
+    font-size: 9px;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* Funnel / comparison */
+  .compare-row {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  }
+  .compare-label { font-size: 12px; color: var(--sub); width: 120px; flex-shrink: 0; }
+  .compare-bars { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .cbar-wrap { display: flex; align-items: center; gap: 8px; }
+  .cbar-bg { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+  .cbar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+  .cbar-val { font-size: 11px; font-weight: 700; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+  .cbar-period { font-size: 10px; color: var(--sub); width: 80px; flex-shrink: 0; }
+
+  /* Churn gauge */
+  .gauge-wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .donut-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+  .donut-wrap svg { transform: rotate(-90deg); }
+  .donut-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .donut-center .big { font-size: 26px; font-weight: 800; }
+  .donut-center .sm { font-size: 11px; color: var(--sub); }
+
+  .churn-legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-text .lv { font-size: 13px; font-weight: 700; }
+  .legend-text .ls { font-size: 11px; color: var(--sub); }
+
+  /* Action cards */
+  .action-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .action-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; flex-shrink: 0;
+  }
+  .action-num.urgent { background: rgba(255,95,109,0.2); color: var(--danger); border: 1px solid var(--danger); }
+  .action-num.mid { background: rgba(255,199,95,0.2); color: var(--warn); border: 1px solid var(--warn); }
+  .action-num.low { background: rgba(108,99,255,0.2); color: var(--accent); border: 1px solid var(--accent); }
+  .action-body .title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .action-body .desc { font-size: 12px; color: var(--sub); line-height: 1.6; }
+  .action-body .badge {
+    display: inline-block; margin-top: 6px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .badge-red { background: rgba(255,95,109,0.15); color: var(--danger); border: 1px solid rgba(255,95,109,0.3); }
+  .badge-yellow { background: rgba(255,199,95,0.15); color: var(--warn); border: 1px solid rgba(255,199,95,0.3); }
+  .badge-purple { background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--sub); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+       padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(46,49,80,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr.highlight td { background: rgba(108,99,255,0.08); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+  .tag-r { background: rgba(255,95,109,0.15); color: var(--danger); }
+  .tag-g { background: rgba(67,233,123,0.15); color: var(--good); }
+  .tag-y { background: rgba(255,199,95,0.15); color: var(--warn); }
+
+  .sep { height: 32px; }
+  .footer { text-align: center; color: #3a3f6e; font-size: 11px; padding: 24px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">RELOCATION IMPACT ANALYSIS</div>
+  <h1>S札幌 <span>移転影響</span> 分析</h1>
+  <p class="hero-sub">移転日: 2026-05-20 → 南1条西8丁目11-4ブランジェミス602 | 分析日: 2026-06-13</p>
+  <div class="hero-verdict">
+    <div class="icon">✅</div>
+    <div>
+      <div class="txt">移転ショックは軽微。むしろ旧立地でのサロンキャンセル問題（20.4%）が移転後に9.7%へ正常化。</div>
+      <div class="sub">直近週（6/1〜）の来店数は移転前平均の 93% まで回復。移転は正解の判断。</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPI Grid -->
+  <div class="section-label">📊 主要KPI 移転前後比較</div>
+  <div class="grid4" style="margin-bottom:28px;">
+    <div class="kpi-card">
+      <div class="label">週平均来店数（移転前）</div>
+      <div class="val purple">70.9<span style="font-size:16px;font-weight:500;color:var(--sub)">件/週</span></div>
+      <div class="sub-val">4/1〜5/19</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">週平均来店数（移転後）</div>
+      <div class="val warn">55.4<span style="font-size:16px;font-weight:500;color:var(--sub)">件/週</span></div>
+      <div class="delta down">▼ 22% — 但し直近70件に回復</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">サロンキャンセル率</div>
+      <div class="val good">9.7<span style="font-size:16px;font-weight:500;color:var(--sub)">%</span></div>
+      <div class="delta up">▲ 改善（移転前20.4%）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="label">新規次回予約率</div>
+      <div class="val bad">1.5<span style="font-size:16px;font-weight:500;color:var(--sub)">%</span></div>
+      <div class="delta down">▼ 55%悪化（移転前3.4%）</div>
+    </div>
+  </div>
+
+  <!-- Weekly Bar Chart -->
+  <div class="card">
+    <h3>📈 週別来店数トレンド（会計済み）</h3>
+    <div class="chart-wrap">
+      <div class="bar-chart" id="weeklyChart"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:var(--sub);">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#6c63ff;border-radius:3px;display:inline-block;"></span>移転前</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#00d4aa;border-radius:3px;display:inline-block;"></span>移転後</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:2px;height:12px;background:#9b94ff;display:inline-block;"></span>移転日(5/20)</span>
+    </div>
+  </div>
+
+  <!-- Churn + Channel -->
+  <div class="grid2">
+    <!-- Churn Donut -->
+    <div class="card">
+      <h3>👥 移転前来店顧客の戻り状況</h3>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:16px;">移転前2ヶ月（3/20〜5/19）来店のユニーク顧客 <strong style="color:var(--text);">434名</strong> を追跡</p>
+      <div class="gauge-wrap">
+        <div class="donut-wrap">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#1e2235" stroke-width="20"/>
+            <!-- Returned: 34.3% = 0.343 * 327 = 112 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#43e97b" stroke-width="20"
+              stroke-dasharray="112 215" stroke-linecap="round"/>
+            <!-- 60-90day: 10.8% = 35 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#ff5f6d" stroke-width="20"
+              stroke-dasharray="35 292" stroke-dashoffset="-112" stroke-linecap="round"/>
+            <!-- within60: 54.8% = 179 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#ffc75f" stroke-width="20"
+              stroke-dasharray="179 148" stroke-dashoffset="-147"/>
+          </svg>
+          <div class="donut-center">
+            <div class="big" style="color:var(--warn);">65.7<span style="font-size:14px">%</span></div>
+            <div class="sm">未来店</div>
+          </div>
+        </div>
+        <div class="churn-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--good);"></div>
+            <div class="legend-text">
+              <div class="lv">149名（34.3%）<span style="font-size:11px;font-weight:400;color:var(--sub)">— 来店済み ✅</span></div>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--warn);"></div>
+            <div class="legend-text">
+              <div class="lv">238名（54.8%）</div>
+              <div class="ls">60日以内 — 様子見</div>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--danger);"></div>
+            <div class="legend-text">
+              <div class="lv">47名（10.8%）</div>
+              <div class="ls">60〜90日 — <strong style="color:var(--danger);">今週フォロー必須</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px;background:rgba(255,95,109,0.08);border:1px solid rgba(255,95,109,0.25);border-radius:10px;padding:12px 14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">⚠️ 90日超離脱者は0名</div>
+        <div style="font-size:11px;color:#bb8b8e;line-height:1.6;">47名は今週〜来週がLINEフォローのラストチャンス。238名は次の来店サイクル到来で新店舗への定着が決まる。</div>
+      </div>
+    </div>
+
+    <!-- Channel comparison -->
+    <div class="card">
+      <h3>📡 予約経路 移転前→移転後</h3>
+      <div style="margin-bottom:14px;">
+        <div class="compare-row">
+          <div class="compare-label">HOT PEPPER</div>
+          <div class="compare-bars">
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転前</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:69.8%;background:rgba(108,99,255,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">69.8%</span></div></div>
+            </div>
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転後</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:67.7%;background:rgba(0,212,170,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">67.7%</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">電話（自社）</div>
+          <div class="compare-bars">
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転前</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:14.3%;background:rgba(108,99,255,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">14.3%</span></div></div>
+            </div>
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転後</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:16.7%;background:rgba(0,212,170,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">16.7%</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">再来次回予約</div>
+          <div class="compare-bars">
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転前</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:12.5%;background:rgba(108,99,255,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">12.5%</span></div></div>
+            </div>
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転後</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:14.1%;background:rgba(0,212,170,0.5);"><span style="font-size:10px;font-weight:700;color:#fff;">14.1%</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label" style="color:var(--danger);">新規次回予約</div>
+          <div class="compare-bars">
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転前</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:3.4%;background:rgba(108,99,255,0.5);min-width:32px;"><span style="font-size:10px;font-weight:700;color:#fff;">3.4%</span></div></div>
+            </div>
+            <div class="cbar-wrap">
+              <div class="cbar-period">移転後</div>
+              <div class="cbar-bg"><div class="cbar-fill" style="width:1.5%;background:rgba(255,95,109,0.7);min-width:24px;"><span style="font-size:10px;font-weight:700;color:#fff;">1.5%</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <h3 style="font-size:13px;margin-bottom:12px;">🆕 移転後の新規 vs 既存顧客</h3>
+        <div style="display:flex;gap:12px;">
+          <div style="flex:1;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--accent2);">54.7%</div>
+            <div style="font-size:11px;color:var(--sub);margin-top:4px;">既存顧客（151件）</div>
+          </div>
+          <div style="flex:1;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:10px;padding:14px;text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--accent);">45.3%</div>
+            <div style="font-size:11px;color:var(--sub);margin-top:4px;">新規顧客（125件）</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--sub);margin-top:10px;">新立地での新規集客は順調に立ち上がっている</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Rate Table -->
+  <div class="card">
+    <h3>🚫 キャンセル率 詳細分析</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>期間</th>
+          <th>総予約</th>
+          <th>来店(会計済み)</th>
+          <th>全キャンセル率</th>
+          <th>サロンキャンセル</th>
+          <th>客側キャンセル</th>
+          <th>評価</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>移転前 4/1〜5/19</td>
+          <td>721件</td>
+          <td>496件</td>
+          <td>30.5%</td>
+          <td><strong style="color:var(--danger);">147件（20.4%）</strong></td>
+          <td>73件</td>
+          <td><span class="tag tag-r">異常</span></td>
+        </tr>
+        <tr class="highlight">
+          <td>移転後 5/20〜6/13</td>
+          <td>279件</td>
+          <td>198件</td>
+          <td>22.6%</td>
+          <td><strong style="color:var(--good);">27件（9.7%）</strong></td>
+          <td>36件</td>
+          <td><span class="tag tag-g">正常化</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;background:rgba(67,233,123,0.08);border:1px solid rgba(67,233,123,0.2);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:12px;font-weight:700;color:var(--good);margin-bottom:4px;">💡 旧立地の問題が移転で解決された</div>
+      <div style="font-size:11px;color:#7ec99b;line-height:1.6;">移転前のサロンキャンセル20.4%（147件）は明らかな異常値。スタッフ体制の不安定さや旧施設の問題が原因と推定。移転後9.7%への正常化は移転の直接成果。</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="sep"></div>
+  <div class="section-label">🎯 緊急アクション（優先順）</div>
+
+  <div class="action-card">
+    <div class="action-num urgent">①</div>
+    <div class="action-body">
+      <div class="title">60〜90日未来店 47名に今週LINEフォロー</div>
+      <div class="desc">移転前に来ていたが60〜90日経過の顧客。このまま放置すると今週が離脱確定ライン。移転ご案内 + 移転記念クーポンをセットで送信。</div>
+      <span class="badge badge-red">📅 期限: 今週中（6/15まで）</span>
+      <span class="badge badge-red" style="margin-left:6px;">担当: タカショー</span>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-num mid">②</div>
+    <div class="action-body">
+      <div class="title">新規次回予約率の回復（1.5% → 3%以上）</div>
+      <div class="desc">移転後、新規客への次回予約獲得率が半減。移転のバタつきでスタッフのクロージングが甘くなっている可能性。次回予約トークの再指導とSalonBoard入力ルール確認。</div>
+      <span class="badge badge-yellow">📅 期限: 今週SV指導</span>
+      <span class="badge badge-yellow" style="margin-left:6px;">担当: SV</span>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-num low">③</div>
+    <div class="action-body">
+      <div class="title">HPBを新住所・新外観写真に更新</div>
+      <div class="desc">直近週(6/1〜)は移転前の93%まで回復中。HPBの店舗情報（住所・写真・アクセス）を新立地に合わせて更新し、回復トレンドを加速させる。</div>
+      <span class="badge badge-purple">📅 今週中</span>
+      <span class="badge badge-purple" style="margin-left:6px;">担当: タカショー</span>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+  <div class="footer">S札幌 移転影響分析 | データ: 宮脇 Supabase (reserve.reservations) | 2026-06-13</div>
+</div>
+
+<script>
+// Weekly bar chart
+const weeks = [
+  { label: '4/06', val: 74, post: false },
+  { label: '4/13', val: 75, post: false },
+  { label: '4/20', val: 74, post: false },
+  { label: '4/27', val: 86, post: false },
+  { label: '5/04', val: 75, post: false },
+  { label: '5/11', val: 56, post: false },
+  { label: '5/18', val: 73, post: false, reloc: true },
+  { label: '5/25', val: 62, post: true },
+  { label: '6/01', val: 70, post: true },
+];
+
+const max = Math.max(...weeks.map(w => w.val));
+const chart = document.getElementById('weeklyChart');
+
+weeks.forEach((w, i) => {
+  const h = Math.round((w.val / max) * 130);
+  const color = w.post ? '#00d4aa' : (w.reloc ? '#9b94ff' : '#6c63ff');
+  const opacity = w.label === '5/11' ? '0.5' : '1';
+
+  const group = document.createElement('div');
+  group.className = 'bar-group';
+  group.innerHTML = `
+    <div class="bar-outer">
+      <div class="bar" style="height:${h}px;background:${color};opacity:${opacity};">
+        <div class="bar-val">${w.val}</div>
+      </div>
+    </div>
+    <div class="bar-label">${w.label}${w.reloc ? '<br><span style="color:#9b94ff;font-size:9px;">移転↑</span>' : ''}</div>
+  `;
+  chart.appendChild(group);
+});
+
+// Avg line indicator
+const avgPre = 70.9;
+const avgPost = 65.3;
+</script>
+</body>
+</html>
