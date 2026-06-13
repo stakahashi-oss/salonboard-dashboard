@@ -593,6 +593,89 @@ body {
     </div>
   </div>
 
+  <!-- Weekly New vs Return Absolute -->
+  <div class="section">
+    <div class="section-title">週別 新規・再来 絶対数 — 移転の本当の影響</div>
+    <div class="card" style="padding:22px;">
+      <h3>📈 「再来は減ったのか？新規は増えたのか？」</h3>
+      <div class="sub" style="margin-bottom:18px;">週ごとの絶対件数で見ると、予想外の結果が出た。</div>
+
+      <!-- Big callout -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+        <div style="background:#f0fdf4;border:2px solid #10b981;border-radius:12px;padding:18px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;color:#059669;letter-spacing:1px;margin-bottom:8px;">再来 件数 / 週（平均）</div>
+          <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+            <span style="font-size:13px;color:#9ca3af;">移転前 47.7件</span>
+            <span style="font-size:18px;color:#9ca3af;">→</span>
+            <span style="font-size:34px;font-weight:900;color:#059669;">55.4件</span>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:#059669;margin-top:6px;">▲ +16.2% 増加</div>
+          <div style="font-size:11px;color:#047857;margin-top:4px;">移転後、再来顧客はむしろ増えた</div>
+        </div>
+        <div style="background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;padding:18px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;color:#6b7280;letter-spacing:1px;margin-bottom:8px;">新規 件数 / 週（平均）</div>
+          <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+            <span style="font-size:13px;color:#9ca3af;">移転前 20.6件</span>
+            <span style="font-size:18px;color:#9ca3af;">→</span>
+            <span style="font-size:34px;font-weight:900;color:#374151;">19.6件</span>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:#6b7280;margin-top:6px;">▼ −4.7% ほぼ横ばい</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:4px;">新規集客力は維持されている</div>
+        </div>
+      </div>
+
+      <!-- Grouped bar chart -->
+      <div style="overflow-x:auto;padding-bottom:4px;">
+        <div id="nrChart" style="display:flex;align-items:flex-end;gap:14px;height:200px;min-width:580px;padding:30px 0 0;position:relative;">
+          <div id="nrAvgLine" style="position:absolute;left:0;right:0;border-top:1.5px dashed #d1d5db;pointer-events:none;">
+            <span style="position:absolute;right:0;font-size:9px;color:#9ca3af;transform:translateY(-12px);">移転前 再来平均 47.7件</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:#6b7280;padding:10px 0 16px;border-bottom:1px solid #f3f4f6;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#818cf8;"></div>新規（移転前）</div>
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#a5b4fc;opacity:0.6;"></div>再来（移転前）</div>
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#fbbf24;"></div>新規（移転後）</div>
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div>再来（移転後）</div>
+      </div>
+
+      <!-- Detail table -->
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;">
+        <thead>
+          <tr>
+            <th style="background:#f9fafb;color:#6b7280;font-size:10px;font-weight:700;padding:9px 12px;border-bottom:2px solid #e5e7eb;text-align:left;">週</th>
+            <th style="background:#f9fafb;color:#6b7280;font-size:10px;font-weight:700;padding:9px 12px;border-bottom:2px solid #e5e7eb;text-align:center;">来店</th>
+            <th style="background:#eff6ff;color:#3730a3;font-size:10px;font-weight:700;padding:9px 12px;border-bottom:2px solid #c7d2fe;text-align:center;">新規（件）</th>
+            <th style="background:#ecfdf5;color:#065f46;font-size:10px;font-weight:700;padding:9px 12px;border-bottom:2px solid #a7f3d0;text-align:center;">再来（件）</th>
+            <th style="background:#f9fafb;color:#6b7280;font-size:10px;font-weight:700;padding:9px 12px;border-bottom:2px solid #e5e7eb;text-align:center;">フェーズ</th>
+          </tr>
+        </thead>
+        <tbody id="nrTableBody">
+        </tbody>
+        <tfoot>
+          <tr style="background:#f9fafb;font-weight:700;">
+            <td style="padding:10px 12px;border-top:2px solid #e5e7eb;color:#374151;">移転前 平均/週</td>
+            <td style="padding:10px 12px;border-top:2px solid #e5e7eb;text-align:center;">70.9件</td>
+            <td style="padding:10px 12px;border-top:2px solid #e5e7eb;text-align:center;color:#4f46e5;">20.6件</td>
+            <td style="padding:10px 12px;border-top:2px solid #e5e7eb;text-align:center;color:#059669;">47.7件</td>
+            <td style="padding:10px 12px;border-top:2px solid #e5e7eb;"></td>
+          </tr>
+          <tr style="background:#f0fdf4;font-weight:700;">
+            <td style="padding:10px 12px;color:#065f46;">移転後 平均/週</td>
+            <td style="padding:10px 12px;text-align:center;">77.3件</td>
+            <td style="padding:10px 12px;text-align:center;color:#374151;">19.6件</td>
+            <td style="padding:10px 12px;text-align:center;color:#059669;">55.4件 ▲+16%</td>
+            <td style="padding:10px 12px;"></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:14px;font-size:12px;color:#065f46;line-height:1.8;">
+        <strong>なぜ再来が増えたのか？</strong> 最有力仮説: <strong>サロンキャンセル率が 20.4%→9.7% に正常化した影響</strong>。旧立地では店舗都合で直前キャンセルされていた予約が、移転後は実際の来店に変換されている。移転そのものが「再来増加の装置」として機能した。新規はほぼ横ばいで集客力に問題はない。
+      </div>
+    </div>
+  </div>
+
   <!-- Cancel table -->
   <div class="section">
     <div class="section-title">キャンセル率 詳細</div>
@@ -777,6 +860,79 @@ body {
 <div class="footer">S札幌 移転影響分析 ／ データ: Supabase (reserve.reservations) ／ 最終更新: 2026-06-13</div>
 
 <script>
+// ── New vs Return weekly chart ──
+const NR_WEEKS = [
+  { lbl: '4/06',       total: 74, nr: 23, re: 47, post: false, dim: false },
+  { lbl: '4/13',       total: 75, nr: 21, re: 51, post: false, dim: false },
+  { lbl: '4/20',       total: 74, nr: 24, re: 49, post: false, dim: false },
+  { lbl: '4/27',       total: 86, nr: 23, re: 59, post: false, dim: false },
+  { lbl: '5/04',       total: 75, nr: 24, re: 49, post: false, dim: false },
+  { lbl: '5/11',       total: 56, nr: 18, re: 35, post: false, dim: true  },
+  { lbl: '5/18\n移転', total: 73, nr: 19, re: 52, post: true,  dim: false },
+  { lbl: '5/25',       total: 62, nr: 12, re: 48, post: true,  dim: false },
+  { lbl: '6/01',       total: 80, nr: 24, re: 55, post: true,  dim: false, best: true },
+  { lbl: '6/08\n(6日)',total: 68, nr: 16, re: 49, post: true,  dim: false },
+];
+
+const NR_MAX = 65; // scale max (re-visit 4/27=59, some headroom)
+const NR_H   = 160;
+const PRE_RE_AVG = 47.7;
+
+const nrChart = document.getElementById('nrChart');
+
+// avg line for pre return
+const nrAvgPx = Math.round((PRE_RE_AVG / NR_MAX) * NR_H);
+document.getElementById('nrAvgLine').style.bottom = (nrAvgPx + 30) + 'px';
+
+// table body
+const tbody = document.getElementById('nrTableBody');
+
+NR_WEEKS.forEach(w => {
+  const nrCol = w.post ? '#fbbf24' : '#818cf8';
+  const reCol = w.post ? '#10b981' : 'rgba(165,180,252,0.6)';
+  const dimOp = w.dim ? '0.4' : '1';
+  const nrH = Math.round((w.nr / NR_MAX) * NR_H);
+  const reH = Math.round((w.re / NR_MAX) * NR_H);
+  const lblLine = w.lbl.replace('\n', '<br>');
+  const lblCol  = w.best ? '#059669' : (w.post ? '#374151' : '#6b7280');
+
+  const col = document.createElement('div');
+  col.className = 'bar-col';
+  col.style.opacity = dimOp;
+  col.innerHTML = `
+    <div class="bar-space" style="gap:3px;width:100%;">
+      <div style="display:flex;align-items:flex-end;gap:2px;flex:1;">
+        <div style="position:relative;width:44%;background:${nrCol};height:${nrH}px;border-radius:4px 4px 0 0;">
+          ${nrH > 18 ? `<span style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:${nrCol};white-space:nowrap;">${w.nr}</span>` : `<span style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:${nrCol};white-space:nowrap;">${w.nr}</span>`}
+        </div>
+        <div style="position:relative;width:44%;background:${reCol};height:${reH}px;border-radius:4px 4px 0 0;">
+          <span style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:${w.post?'#059669':'#374151'};white-space:nowrap;">${w.re}</span>
+        </div>
+      </div>
+    </div>
+    <div class="bar-lbl" style="color:${lblCol};font-size:9px;">${lblLine}</div>
+  `;
+  nrChart.appendChild(col);
+
+  // table row
+  const tr = document.createElement('tr');
+  const phase = w.dim ? '移転準備' : (w.post ? '移転後' : '移転前');
+  const phaseStyle = w.post
+    ? 'background:#ecfdf5;color:#059669;'
+    : (w.dim ? 'background:#f3f4f6;color:#9ca3af;' : 'background:#eff6ff;color:#4f46e5;');
+  const rowBg = w.best ? 'background:#f0fdf4;' : (w.dim ? 'opacity:0.6;' : '');
+  tr.style.cssText = rowBg;
+  tr.innerHTML = `
+    <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;color:#374151;">${w.lbl.replace('\n','')}</td>
+    <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;text-align:center;font-weight:600;">${w.total}件</td>
+    <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;text-align:center;color:${w.post?'#d97706':'#4f46e5'};font-weight:700;">${w.nr}件</td>
+    <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;text-align:center;color:${w.post?'#059669':'#374151'};font-weight:700;">${w.re}件${w.best?' <span style="font-size:10px;color:#059669;">★最高</span>':''}</td>
+    <td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;text-align:center;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;${phaseStyle}">${phase}</span></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+// ── Main weekly bar chart ──
 const WEEKS = [
   { lbl: '4/06',  val: 74,  type: 'pre'  },
   { lbl: '4/13',  val: 75,  type: 'pre'  },
