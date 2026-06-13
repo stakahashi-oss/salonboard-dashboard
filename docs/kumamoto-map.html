@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSIN熊本 商圏マップ｜店舗移転検討</title>
+
+<!-- ============================================================
+     【Google Maps 版への切り替え手順】
+     本ファイルは OpenStreetMap タイルを使用しています。
+     Google Maps JavaScript API に切り替える場合：
+       1. <head> に下記を追加（YOUR_API_KEY を発行済みキーに）
+          <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+       2. Leaflet で Google タイルを使うプラグイン
+          (leaflet.gridlayer.googlemutant) を読み込む：
+          <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.0/dist/Leaflet.GoogleMutant.js"></script>
+       3. baseLayer 定義（下方 createBaseLayer()）を以下に差し替え：
+          return L.gridLayer.googleMutant({ type: 'roadmap' });
+     ※ Google Maps API は従量課金。OSM は無料だがレート/著作権表記に配慮。
+     ============================================================ -->
+
+<!-- Leaflet 本体（CDN: unpkg） -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- ヒートマップ プラグイン leaflet.heat -->
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    color: #1f2937;
+    background: #f8fafc;
+  }
+
+  /* ===== ヘッダー & コントロールバー ===== */
+  header {
+    background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+    color: #fff;
+    padding: 14px 20px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 19px; }
+  header p  { margin: 0; font-size: 12px; opacity: .85; }
+
+  #controlBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    align-items: center;
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
+  }
+  #controlBar .group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: #f3f4f6;
+  }
+  #controlBar label { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; }
+  #controlBar input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #9333ea; }
+  .swatch { width: 13px; height: 13px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #d1d5db; display: inline-block; }
+
+  /* ===== 地図 ===== */
+  #map { width: 100%; height: 80vh; }
+
+  /* ===== カスタムピン（円形＋白フチ＋数字） ===== */
+  .custom-pin { background: transparent; border: none; }
+  .pin {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.4);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 22px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pin.star { font-size: 16px; width: 34px; height: 34px; line-height: 28px; }
+  .pin.station { width: 22px; height: 22px; border: 2px solid #fff; background: #2563eb; font-size: 11px; }
+
+  /* ===== 凡例（右下固定） ===== */
+  .legend {
+    background: rgba(255,255,255,.95);
+    padding: 10px 12px;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.25);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .legend h4 { margin: 0 0 6px; font-size: 13px; }
+  .legend .row { display: flex; align-items: center; gap: 7px; }
+  .legend .ring { width: 14px; height: 14px; border-radius: 50%; }
+
+  /* ===== 距離計測パネル ===== */
+  #distancePanel {
+    padding: 14px 20px 30px;
+    background: #fff;
+  }
+  #distancePanel h2 { font-size: 15px; margin: 0 0 4px; }
+  #distancePanel .note { font-size: 12px; color: #6b7280; margin: 0 0 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid #e5e7eb; padding: 7px 10px; text-align: center; }
+  th { background: #f9fafb; font-weight: 600; }
+  td.area { text-align: left; }
+  tr.current td { background: #faf5ff; font-weight: 600; }
+  .pill { display: inline-block; min-width: 22px; padding: 1px 7px; border-radius: 10px; color: #fff; font-size: 12px; }
+  .pill.g300 { background: #f97316; }
+  .pill.g500 { background: #fb923c; }
+
+  .popup-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .popup-tag { display:inline-block; padding:1px 7px; border-radius:6px; color:#fff; font-size:11px; margin-bottom:4px; }
+  .popup-addr { font-size: 12px; color: #4b5563; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SSIN熊本 商圏マップ — 店舗移転検討用</h1>
+  <p>熊本市中央区 中心市街地（下通・上通・新市街）／現店舗・移転候補3地点・競合サロン20件</p>
+</header>
+
+<!-- 表示トグル -->
+<div id="controlBar">
+  <div class="group">
+    <label><input type="checkbox" id="tgCurrent" checked><span class="swatch" style="background:#8b5cf6"></span>現店舗</label>
+  </div>
+  <div class="group">
+    <label><input type="checkbox" id="tgCandidate" checked><span class="swatch" style="background:#22c55e"></span>移転候補①②③</label>
+  </div>
+  <div class="group">
+    <label><input type="checkbox" id="tgCompetitor" checked><span class="swatch" style="background:#f97316"></span>競合サロン 1–20</label>
+  </div>
+  <div class="group">
+    <label><input type="checkbox" id="tgCircle"><span>⭕ 商圏円 300m / 500m</span></label>
+  </div>
+  <div class="group">
+    <label><input type="checkbox" id="tgHeat"><span>🔥 競合ヒートマップ</span></label>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<!-- 距離計測パネル -->
+<div id="distancePanel">
+  <h2>📏 距離・競合密度（現店舗 vs 移転候補）</h2>
+  <p class="note">現店舗からの直線距離と、各地点を中心とした半径300m / 500m 圏内に入る競合サロン数。徒歩商圏での競合の濃さを比較できます。</p>
+  <table id="distanceTable">
+    <thead>
+      <tr><th>地点</th><th>座標</th><th>現店舗からの距離</th><th>300m圏内の競合</th><th>500m圏内の競合</th></tr>
+    </thead>
+    <tbody><!-- JSで生成 --></tbody>
+  </table>
+</div>
+
+<script>
+/* ============================================================
+   1. データ定義（座標は [緯度, 経度]）
+   ============================================================ */
+
+// --- 現店舗 ---
+const CURRENT_STORE = {
+  name: 'SSIN熊本',
+  address: '下通2-3-23 メゾンド.シャワー通り702（実位置は勝烈亭新市街本店の東・国道3号寄り）',
+  coord: [32.7980, 130.7068],
+};
+
+// --- 移転候補（①②③） ---
+const CANDIDATES = [
+  { no: 1, mark: '①', area: '上通・銀座ダイヤモンドシライシ付近', address: '上通町（銀座ダイヤモンドシライシ熊本本店 付近）', coord: [32.8041, 130.7107] },
+  { no: 2, mark: '②', area: '下通・武蔵小路',                     address: '下通 武蔵小路（安政町）',   coord: [32.80137, 130.70928] },
+  { no: 3, mark: '③', area: '新市街南・紺屋今町',                 address: '紺屋今町3-8 フォーエス紺屋今町', coord: [32.7968, 130.7058] },
+];
+
+/* --- 競合サロン（1〜20） ---
+   ※ 座標は地図画像からの目視推定の暫定値。店名が判明し次第
+     下方の geocodeCompetitors() で実座標に差し替える前提。
+     name を埋めておくと自動ジオコーディングの対象になる。 */
+// ★ HPB「自サロンと比較・検討されているサロン」上位5店のみ（2026-06-13）
+const COMPETITORS = [
+  { no: 1, name: 'レイ 上通(Rey) 4.86★/2901',       coord: [32.8040, 130.7099] },
+  { no: 2, name: 'ヘイリーブロウ 下通 4.7★/121',     coord: [32.8028, 130.7096] },
+  { no: 3, name: "エクレア 下通(E'CREA) 4.73★/441",  coord: [32.8020, 130.7093] },
+  { no: 4, name: 'ロレインブロウ 熊本 4.69★/117',    coord: [32.8025, 130.7090] },
+  { no: 5, name: 'ユーアイ 下通(Yuueye) 4.9★/969',   coord: [32.8002, 130.7072] },
+];
+
+// --- 主要駅（熊本市電 電停・中心部）---
+const MAJOR_STATIONS = [
+  { name: '通町筋',           coord: [32.8033, 130.7097] },
+];
+
+// --- 比較検討されている競合（HPB「自サロンと比較・検討」上位5件・2026-06-13）---
+//     SSIN熊本と実際に比較されている＝最重要の直接競合。
+const KEY_COMPETITORS = [];  // 競合(COMPETITORS)を比較検討5店に統一したため空
+
+// 色定義
+const COLOR = { current: '#8b5cf6', candidate: '#22c55e', competitor: '#f97316', key: '#dc2626', station: '#2563eb' };
+
+/* ============================================================
+   2. 地図初期化
+   ============================================================ */
+// ベースマップ（背景地図）
+// ★ Google Maps 版に切り替える場合は冒頭コメント参照（要APIキー・店名が最も豊富）
+// 日本語ラベル・店名/施設が見える OSM Japan をデフォルトに（標準OSMは店名が少ない）
+const baseOSMja = L.tileLayer('https://tile.openstreetmap.jp/{z}/{x}/{y}.png', {
+  maxZoom: 19, attribution: '&copy; OpenStreetMap Japan / contributors',
+});
+const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, attribution: '&copy; OpenStreetMap contributors',
+});
+
+const map = L.map('map', {
+  center: [32.7995, 130.7085],
+  zoom: 16,
+  scrollWheelZoom: true,
+  layers: [baseOSMja],   // 初期表示は日本語・店名が見える地図
+});
+
+// 背景地図の切替（右上）
+L.control.layers(
+  { '地図（日本語・店名表示）': baseOSMja, '地図（標準OSM）': baseOSM },
+  null, { position: 'topright', collapsed: false }
+).addTo(map);
+
+/* ============================================================
+   3. カスタムピン（円形＋白フチ＋数字）
+   ============================================================ */
+function makePin(color, label, isStar) {
+  return L.divIcon({
+    className: 'custom-pin',
+    html: `<div class="pin${isStar ? ' star' : ''}" style="background:${color}">${label}</div>`,
+    iconSize:   isStar ? [34, 34] : [28, 28],
+    iconAnchor: isStar ? [17, 17] : [14, 14],
+    popupAnchor: [0, isStar ? -17 : -14],
+  });
+}
+
+/* ============================================================
+   4. レイヤー作成（カテゴリごとに layerGroup 管理）
+   ============================================================ */
+
+// --- 現店舗 ---
+const currentLayer = L.layerGroup();
+L.marker(CURRENT_STORE.coord, { icon: makePin(COLOR.current, '★', true) })
+  .bindPopup(`
+    <div class="popup-title">${CURRENT_STORE.name}</div>
+    <span class="popup-tag" style="background:${COLOR.current}">現店舗</span>
+    <div class="popup-addr">${CURRENT_STORE.address}</div>
+  `)
+  .addTo(currentLayer);
+
+// --- 移転候補 ---
+const candidateLayer = L.layerGroup();
+CANDIDATES.forEach(c => {
+  L.marker(c.coord, { icon: makePin(COLOR.candidate, c.mark, false) })
+    .bindPopup(`
+      <div class="popup-title">移転候補 ${c.mark}</div>
+      <span class="popup-tag" style="background:${COLOR.candidate}">移転候補</span>
+      <div class="popup-addr"><b>${c.area}</b><br>${c.address}</div>
+    `)
+    .addTo(candidateLayer);
+});
+
+// --- 競合サロン ---
+const competitorLayer = L.layerGroup();
+function buildCompetitorMarkers() {
+  competitorLayer.clearLayers();
+  COMPETITORS.forEach(s => {
+    L.marker(s.coord, { icon: makePin(COLOR.competitor, String(s.no), false) })
+      .bindPopup(`
+        <div class="popup-title">競合 ${s.no}${s.name ? '：' + s.name : ''}</div>
+        <span class="popup-tag" style="background:${COLOR.competitor}">競合サロン</span>
+        <div class="popup-addr">${s.name ? s.name : '（店名未登録 / 座標は目視推定の暫定値）'}</div>
+      `)
+      .addTo(competitorLayer);
+  });
+}
+buildCompetitorMarkers();
+
+// --- 主要駅レイヤー（市電電停・青／ホバーで駅名）---
+const stationLayer = L.layerGroup();
+MAJOR_STATIONS.forEach(s => {
+  L.marker(s.coord, { icon: L.divIcon({
+      className: 'custom-pin',
+      html: '<div class="pin station">🚃</div>',
+      iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -11] }) })
+    .bindTooltip(s.name, { direction: 'top' })
+    .bindPopup(`<div class="popup-title">${s.name}（市電電停）</div>`)
+    .addTo(stationLayer);
+});
+
+// --- 比較検討されている競合（赤◎・口コミ等の情報付き／最前面）---
+const keyLayer = L.layerGroup();
+KEY_COMPETITORS.forEach(c => {
+  L.marker(c.coord, { icon: makePin(COLOR.key, '◎', false), zIndexOffset: 1000 })
+    .bindPopup(`
+      <div class="popup-title">${c.name}</div>
+      <span class="popup-tag" style="background:${COLOR.key}">比較検討されている競合</span>
+      <div class="popup-addr">
+        最寄: ${c.station}<br>
+        口コミ <b>${c.reviews}</b>件 ／ 評点 <b>${c.rating}</b><br>
+        ブログ ${c.blogs.toLocaleString()}本 ／ クーポン ${c.coupons}枚
+      </div>
+    `)
+    .addTo(keyLayer);
+});
+
+// --- 商圏円（現店舗＋各候補に 300m / 500m）---
+const circleLayer = L.layerGroup();
+function buildCircles() {
+  const points = [
+    { coord: CURRENT_STORE.coord, color: COLOR.current,  label: CURRENT_STORE.name },
+    ...CANDIDATES.map(c => ({ coord: c.coord, color: COLOR.candidate, label: '候補' + c.mark })),
+  ];
+  points.forEach(p => {
+    // 500m（薄い）
+    L.circle(p.coord, { radius: 500, color: p.color, weight: 1, fillColor: p.color, fillOpacity: 0.05, dashArray: '4 4' })
+      .bindTooltip(`${p.label} 500m圏`).addTo(circleLayer);
+    // 300m（濃いめ）
+    L.circle(p.coord, { radius: 300, color: p.color, weight: 1.5, fillColor: p.color, fillOpacity: 0.10 })
+      .bindTooltip(`${p.label} 300m圏`).addTo(circleLayer);
+  });
+}
+buildCircles();
+
+// --- ヒートマップ（競合密度）---
+let heatLayer = null;
+function buildHeat() {
+  const pts = COMPETITORS.map(s => [s.coord[0], s.coord[1], 0.8]); // [lat,lng,強度]
+  heatLayer = L.heatLayer(pts, { radius: 35, blur: 25, maxZoom: 17,
+    gradient: { 0.3: '#fde68a', 0.6: '#fb923c', 1.0: '#dc2626' } });
+}
+buildHeat();
+
+/* ============================================================
+   5. 初期表示（チェックボックス初期値に合わせる）
+   ============================================================ */
+currentLayer.addTo(map);
+candidateLayer.addTo(map);
+competitorLayer.addTo(map);
+keyLayer.addTo(map);
+stationLayer.addTo(map);
+// 商圏円・ヒートマップは初期OFF
+
+/* ============================================================
+   6. トグル制御
+   ============================================================ */
+function bindToggle(id, layer) {
+  document.getElementById(id).addEventListener('change', e => {
+    if (e.target.checked) map.addLayer(layer);
+    else map.removeLayer(layer);
+  });
+}
+bindToggle('tgCurrent', currentLayer);
+bindToggle('tgCandidate', candidateLayer);
+bindToggle('tgCompetitor', competitorLayer);
+bindToggle('tgCircle', circleLayer);
+document.getElementById('tgHeat').addEventListener('change', e => {
+  if (e.target.checked) map.addLayer(heatLayer);
+  else map.removeLayer(heatLayer);
+});
+
+/* ============================================================
+   7. 凡例（右下固定）
+   ============================================================ */
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function () {
+  const div = L.DomUtil.create('div', 'legend');
+  div.innerHTML = `
+    <h4>凡例</h4>
+    <div class="row"><span class="ring" style="background:${COLOR.current}"></span> 現店舗（★）</div>
+    <div class="row"><span class="ring" style="background:${COLOR.candidate}"></span> 移転候補 ①②③</div>
+    <div class="row"><span class="ring" style="background:${COLOR.competitor}"></span> 競合サロン 1–20</div>
+    <hr style="border:none;border-top:1px solid #e5e7eb;margin:6px 0">
+    <div class="row"><span class="ring" style="border:1.5px solid ${COLOR.candidate};background:rgba(34,197,94,.1)"></span> 300m 商圏（徒歩約4分）</div>
+    <div class="row"><span class="ring" style="border:1px dashed ${COLOR.candidate};background:rgba(34,197,94,.05)"></span> 500m 商圏（徒歩約7分）</div>
+  `;
+  return div;
+};
+legend.addTo(map);
+
+/* ============================================================
+   8. 距離・競合密度の計測テーブル
+   ============================================================ */
+function dist(a, b) {
+  // 直線距離（メートル）
+  return map.distance(L.latLng(a), L.latLng(b));
+}
+function countWithin(center, radius) {
+  return COMPETITORS.filter(s => dist(center, s.coord) <= radius).length;
+}
+function fmt(m) {
+  return m < 1000 ? Math.round(m) + ' m' : (m / 1000).toFixed(2) + ' km';
+}
+function buildDistanceTable() {
+  const tbody = document.querySelector('#distanceTable tbody');
+  const rows = [
+    { label: CURRENT_STORE.name + '（現店舗）', coord: CURRENT_STORE.coord, isCurrent: true },
+    ...CANDIDATES.map(c => ({ label: `候補${c.mark} ${c.area}`, coord: c.coord, isCurrent: false })),
+  ];
+  tbody.innerHTML = rows.map(r => {
+    const d = r.isCurrent ? '—' : fmt(dist(CURRENT_STORE.coord, r.coord));
+    const c300 = countWithin(r.coord, 300);
+    const c500 = countWithin(r.coord, 500);
+    return `<tr class="${r.isCurrent ? 'current' : ''}">
+      <td class="area">${r.label}</td>
+      <td>${r.coord[0].toFixed(4)}, ${r.coord[1].toFixed(4)}</td>
+      <td>${d}</td>
+      <td><span class="pill g300">${c300}</span></td>
+      <td><span class="pill g500">${c500}</span></td>
+    </tr>`;
+  }).join('');
+}
+buildDistanceTable();
+
+/* ============================================================
+   9.【オプション】Nominatim 自動ジオコーディング
+   ------------------------------------------------------------
+   競合の店名リストが入手でき次第、COMPETITORS の name を埋めて
+   下記 geocodeCompetitors() を実行すると、実座標へ自動置換します。
+
+   ★ レート制限：Nominatim は「1リクエスト/秒」が上限。
+     必ず各リクエスト間に 1秒以上の待機を入れること（下記 sleep 実装済み）。
+     大量実行は利用規約違反になるため、20件程度の単発利用に留める。
+   ★ CORS：ブラウザから直接叩くと弾かれる場合あり。その時は
+     ローカルプロキシ or サーバー側で実行し、結果JSONを貼り戻す。
+
+   使い方（DevTools コンソールで）:
+     await geocodeCompetitors();   // name 入りの競合を実座標化
+     buildCompetitorMarkers();     // ピン再描画
+     buildHeat(); buildDistanceTable();  // ヒート/表も更新
+
+   async function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+   async function geocodeOne(query){
+     const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q='
+                 + encodeURIComponent(query + ' 熊本市');
+     const res = await fetch(url, { headers: { 'Accept-Language': 'ja' } });
+     const json = await res.json();
+     if (json && json.length) return [parseFloat(json[0].lat), parseFloat(json[0].lon)];
+     return null;
+   }
+   async function geocodeCompetitors(){
+     for (const s of COMPETITORS) {
+       if (!s.name) continue;                 // 店名が無いものはスキップ
+       const c = await geocodeOne(s.name);
+       if (c) { s.coord = c; console.log('OK', s.no, s.name, c); }
+       else   { console.warn('NG', s.no, s.name); }
+       await sleep(1100);                      // ★ 1req/秒 制限を遵守
+     }
+     console.log('ジオコーディング完了。buildCompetitorMarkers() 等で再描画してください。');
+   }
+   ============================================================ */
+</script>
+</body>
+</html>

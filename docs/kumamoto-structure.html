@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>熊本中心市街地の競合構造｜SSIN熊本 移転検討</title>
+<style>
+  body { margin: 0; background: #fbf9f6;
+    font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    color: #3a3a3a; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 50px; }
+  .eyebrow { text-align: center; color: #c9a23a; font-size: 13px; letter-spacing: .15em; margin-bottom: 2px; }
+  h1 { text-align: center; font-size: 26px; margin: 0 0 6px; }
+  h1 .ul { display: inline-block; border-bottom: 3px solid #c9a23a; padding-bottom: 6px; }
+  .lead { text-align: center; color: #6b6b6b; font-size: 13px; margin: 8px auto 16px; max-width: 720px; line-height: 1.7; }
+  .figure { background: #f4efe9; border-radius: 14px; padding: 8px; }
+  svg { width: 100%; height: auto; display: block; }
+  .cols { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
+  .col { flex: 1; min-width: 280px; }
+  .card { background:#fff; border-radius:10px; padding:14px 16px; box-shadow:0 1px 5px rgba(0,0,0,.05); }
+  .card h3 { margin:0 0 10px; font-size:15px; }
+  .cand { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid #f0ece6; }
+  .cand:last-child { border-bottom:none; }
+  .badge { flex:none; width:26px; height:26px; border-radius:50%; color:#fff; font-weight:700; text-align:center; line-height:26px; font-size:14px; }
+  .cand .t { font-size:13.5px; line-height:1.5; }
+  .cand .t b { font-size:14px; }
+  .tag-win { display:inline-block; background:#fdf3d6; color:#9a7d1c; font-size:11px; padding:1px 7px; border-radius:6px; margin-left:4px; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th,td { border-bottom:1px solid #eee; padding:7px 6px; text-align:left; }
+  th { color:#888; font-weight:600; font-size:12px; }
+  .num { width:22px; height:22px; border-radius:50%; background:#c0392b; color:#fff; text-align:center; line-height:22px; font-size:12px; font-weight:700; display:inline-block; }
+  td.r { text-align:right; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">競合マップ</div>
+  <h1><span class="ul">熊本中心市街地の競合構造</span></h1>
+  <p class="lead">SSIN熊本 移転検討。HPB「自サロンと比較・検討されているサロン」上位5店だけを表示。円＝通町筋電停からの直線距離の目安。地図上は番号、店名・評点は下の一覧で。</p>
+
+  <div class="figure">
+    <svg id="map" viewBox="0 0 1000 760"></svg>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="card">
+        <h3>🏠 移転候補3地点（所属HPB検索エリア）</h3>
+        <div class="cand"><span class="badge" style="background:#22a06b">①</span><div class="t"><b>上通・銀座ダイヤモンドシライシ付近</b><br>HPBエリア「上通り・上乃裏・並木坂」<b style="color:#2563eb">競合28件</b>／物理的にも密集帯</div></div>
+        <div class="cand"><span class="badge" style="background:#22a06b">②</span><div class="t"><b>下通・武蔵小路</b><br>HPBエリア「下通り・新市街周辺」<b style="color:#c0392b">競合48件</b>／物理的にも密集帯</div></div>
+        <div class="cand"><span class="badge" style="background:#d4af37">③</span><div class="t"><b>紺屋今町（新市街南）</b><span class="tag-win">出店候補★</span><br>HPBエリア「下通り・新市街周辺」<b style="color:#c0392b">競合48件</b>だが、<span style="color:#9a7d1c">物理的には5店から離れた空白</span></div></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h3>⚔️ 比較検討される競合5店（HPB）</h3>
+        <table>
+          <tr><th>#</th><th>店名</th><th class="r">評点／口コミ</th><th class="r">予約の埋まり</th></tr>
+          <tr><td><span class="num">1</span></td><td>レイ 上通(Rey)</td><td class="r">4.86★ ／ 2,901</td><td class="r" style="color:#22a06b">空席あり</td></tr>
+          <tr><td><span class="num">2</span></td><td>ヘイリーブロウ 下通</td><td class="r">4.7★ ／ 121</td><td class="r" style="color:#c0392b;font-weight:700">満席率56%</td></tr>
+          <tr><td><span class="num">3</span></td><td>エクレア 下通(E'CREA)</td><td class="r">4.73★ ／ 441</td><td class="r" style="color:#22a06b">満席率24%</td></tr>
+          <tr><td><span class="num">4</span></td><td>ロレインブロウ 熊本</td><td class="r">4.69★ ／ 117</td><td class="r" style="color:#d97706">満席率47%</td></tr>
+          <tr><td><span class="num">5</span></td><td>ユーアイ 下通(Yuueye)</td><td class="r">4.9★ ／ 969</td><td class="r" style="color:#d97706">満席率38%</td></tr>
+        </table>
+        <div style="font-size:11px;color:#999;margin-top:6px">予約の埋まり＝HPBトップ直近7日カレンダーの満席(×)比率（2026-06-13時点）。レイは日別表示で全日空席あり。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>📊 予約の埋まり率 全店比較（自店含む・HPB直近7日 2026-06-13）</h3>
+    <table>
+      <tr><th>店舗</th><th>エリア</th><th class="r">満席率</th></tr>
+      <tr><td>ヘイリーブロウ 下通</td><td>下通アーケード</td><td class="r" style="color:#c0392b;font-weight:700">56%</td></tr>
+      <tr><td>ロレインブロウ</td><td>下通</td><td class="r" style="color:#d97706;font-weight:700">47%</td></tr>
+      <tr style="background:#faf5ff"><td><b>★SSIN熊本（自店）</b></td><td>辛島町</td><td class="r" style="font-weight:700">33%</td></tr>
+      <tr><td>ユーアイ 下通</td><td>辛島町</td><td class="r">32%</td></tr>
+      <tr><td>エクレア 下通</td><td>下通</td><td class="r">24%</td></tr>
+      <tr><td>アイドット i.</td><td>辛島町</td><td class="r">20%</td></tr>
+      <tr><td>ミエル 辛島町</td><td>辛島町</td><td class="r">20%</td></tr>
+      <tr><td>レイ 上通</td><td>上通</td><td class="r" style="color:#22a06b">空席あり</td></tr>
+    </table>
+    <div style="font-size:12.5px;line-height:1.7;margin-top:8px">自店SSIN熊本(33%)は<b>辛島町エリアでは上位</b>(ユーアイ32%・アイドット/ミエル20%より上)。ただし<b style="color:#b5532e">中心部の繁盛店(ヘイリー56%・ロレイン47%)には届かず</b>＝中心部の予約需要をまだ取り切れていない。移転で下通・上通に出れば予約を伸ばせる余地。</div>
+  </div>
+
+  <div class="card" style="margin-top:16px;border-left:5px solid #c9a23a">
+    <h3>📌 結論：比較される5店は全て「上通・下通アーケード」に集中</h3>
+    <div style="font-size:14px;line-height:1.8">実際に比較検討される強豪5店は<b style="color:#b5532e">すべて通町筋まわりのアーケード帯</b>に密集。候補①②はこの激戦区のド真ん中。<b style="color:#b5532e">候補③ 紺屋今町は5店すべてから離れた競合空白</b>＝直接ぶつからずに戦える。</div>
+  </div>
+</div>
+
+<script>
+/* 緯度経度 → SVG座標に投影 */
+const CENTER = [32.8033, 130.7097];
+const cx = 500, cy = 340, SCALE = 0.62;
+const COSLAT = Math.cos(CENTER[0] * Math.PI / 180);
+function xy(lat, lon) {
+  const dN = (lat - CENTER[0]) * 111000, dE = (lon - CENTER[1]) * 111000 * COSLAT;
+  return [cx + dE * SCALE, cy - dN * SCALE];
+}
+const GOLD = '#d4af37', KEY = '#c0392b', CAND = '#22a06b';
+
+const COMP = [
+  { n:1, coord:[32.8040,130.7099] }, // レイ
+  { n:2, coord:[32.8028,130.7096] }, // ヘイリー
+  { n:3, coord:[32.8020,130.7093] }, // エクレア
+  { n:4, coord:[32.8025,130.7090] }, // ロレイン
+  { n:5, coord:[32.8002,130.7072] }, // ユーアイ
+];
+const CURRENT = [32.7980,130.7068];
+const CANDS = [
+  { mark:'①', coord:[32.8041,130.7107], win:false },
+  { mark:'②', coord:[32.80137,130.70928], win:false },
+  { mark:'③', coord:[32.7968,130.7058], win:true },
+];
+
+const svg = document.getElementById('map'), NS='http://www.w3.org/2000/svg';
+function el(t,a,x){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;svg.appendChild(e);return e;}
+const defs=document.createElementNS(NS,'defs');svg.appendChild(defs);
+defs.innerHTML='<marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="6" orient="auto"><path d="M0,0 L8,0 L4,8 z" fill="#888"/></marker>';
+
+// 同心円
+[200,400,600].forEach(m=>{
+  el('circle',{cx,cy,r:m*SCALE,fill:'none',stroke:'#cfc4b6','stroke-width':1.2,'stroke-dasharray':'5 5'});
+  el('text',{x:cx,y:cy-m*SCALE-6,fill:'#a99','font-size':13,'text-anchor':'middle'},m+'m');
+});
+// N
+el('line',{x1:60,y1:110,x2:60,y2:70,stroke:'#888','stroke-width':2,'marker-end':'url(#arrow)'});
+el('text',{x:60,y:60,fill:'#888','font-size':16,'text-anchor':'middle','font-weight':'bold'},'N');
+
+// 競合密集帯
+const pts=COMP.map(c=>xy(c.coord[0],c.coord[1]));
+const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+el('ellipse',{cx:(Math.min(...xs)+Math.max(...xs))/2,cy:(Math.min(...ys)+Math.max(...ys))/2,
+  rx:(Math.max(...xs)-Math.min(...xs))/2+50,ry:(Math.max(...ys)-Math.min(...ys))/2+42,
+  fill:KEY,'fill-opacity':.07,stroke:KEY,'stroke-opacity':.35,'stroke-width':1.3});
+el('text',{x:(Math.min(...xs)+Math.max(...xs))/2,y:Math.min(...ys)-50,fill:KEY,'font-size':14,'font-weight':'bold','text-anchor':'middle'},'競合5店 密集帯（上通・下通アーケード）');
+
+// 候補③ 空白帯
+const c3=xy(CANDS[2].coord[0],CANDS[2].coord[1]);
+el('ellipse',{cx:c3[0],cy:c3[1],rx:82,ry:60,fill:GOLD,'fill-opacity':.12,stroke:GOLD,'stroke-opacity':.55,'stroke-width':1.4,'stroke-dasharray':'6 4'});
+el('text',{x:c3[0],y:c3[1]+80,fill:'#b59020','font-size':13,'font-weight':'bold','text-anchor':'middle'},'新市街南（競合空白）');
+
+// 駅（通町筋＝中心基準、辛島町＝現店舗の最寄）
+const st=xy(CENTER[0],CENTER[1]);
+el('rect',{x:st[0]-10,y:st[1]-10,width:20,height:20,fill:'#8a8a8a',rx:3});
+el('text',{x:st[0]+15,y:st[1]+5,fill:'#555','font-size':13,'font-weight':'bold'},'通町筋駅');
+const ks=xy(32.7992,130.7054);
+el('rect',{x:ks[0]-10,y:ks[1]-10,width:20,height:20,fill:'#8a8a8a',rx:3});
+el('text',{x:ks[0]-15,y:ks[1]+5,fill:'#555','font-size':13,'font-weight':'bold','text-anchor':'end'},'辛島町駅');
+
+// 競合（番号のみ）
+COMP.forEach(c=>{
+  const [x,y]=xy(c.coord[0],c.coord[1]);
+  el('circle',{cx:x,cy:y,r:13,fill:KEY,stroke:'#fff','stroke-width':2});
+  el('text',{x:x,y:y+5,fill:'#fff','font-size':13,'font-weight':'bold','text-anchor':'middle'},c.n);
+});
+
+// 現店舗（菱形＋ラベル）
+const cur=xy(CURRENT[0],CURRENT[1]);
+el('rect',{x:cur[0]-8,y:cur[1]-8,width:16,height:16,fill:'#8b5cf6',transform:'rotate(45 '+cur[0]+' '+cur[1]+')',stroke:'#fff','stroke-width':1.5});
+el('text',{x:cur[0],y:cur[1]+26,fill:'#7c3aed','font-size':12.5,'font-weight':'bold','text-anchor':'middle'},'現SSIN熊本（現店舗）');
+
+// 候補①②
+CANDS.filter(c=>!c.win).forEach(c=>{
+  const [x,y]=xy(c.coord[0],c.coord[1]);
+  el('circle',{cx:x,cy:y,r:15,fill:'#fff',stroke:CAND,'stroke-width':3});
+  el('text',{x:x,y:y+6,fill:CAND,'font-size':16,'font-weight':'bold','text-anchor':'middle'},c.mark);
+});
+// 候補③ 金の星
+function star(scx,scy,r,fill){let p='';for(let i=0;i<10;i++){const a=Math.PI/5*i-Math.PI/2,rr=i%2===0?r:r*0.45;p+=(i?'L':'M')+(scx+rr*Math.cos(a))+','+(scy+rr*Math.sin(a));}el('path',{d:p+'Z',fill:fill,stroke:'#fff','stroke-width':2});}
+star(c3[0],c3[1],20,GOLD);
+el('text',{x:c3[0],y:c3[1]+5,fill:'#fff','font-size':13,'font-weight':'bold','text-anchor':'middle'},'③');
+el('text',{x:c3[0]+26,y:c3[1]+4,fill:'#b59020','font-size':12.5,'font-weight':'bold'},'出店候補');
+</script>
+</body>
+</html>

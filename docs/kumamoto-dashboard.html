@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSIN熊本 移転検討ダッシュボード</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#f4f2ef; color:#2b2b2b;
+    font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 16px 60px; }
+  .hero { background:linear-gradient(135deg,#6d28d9,#9333ea); color:#fff; padding:30px 30px 26px; border-radius:0 0 20px 20px; margin-bottom:22px; }
+  .hero .eyebrow { font-size:12px; letter-spacing:.18em; opacity:.85; }
+  .hero h1 { margin:6px 0 4px; font-size:26px; }
+  .hero p { margin:0; font-size:13px; opacity:.9; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .kpi { background:#fff; border-radius:14px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .kpi .label { font-size:12px; color:#777; }
+  .kpi .val { font-size:30px; font-weight:800; margin:4px 0 2px; }
+  .kpi .sub { font-size:12px; }
+  .up { color:#16a34a; } .down { color:#dc2626; } .mid { color:#d97706; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; box-shadow:0 2px 8px rgba(0,0,0,.06); margin-bottom:22px; }
+  .card h2 { font-size:16px; margin:0 0 4px; }
+  .card .desc { font-size:12.5px; color:#777; margin:0 0 16px; }
+  .bar-row { display:grid; grid-template-columns:150px 1fr 54px; align-items:center; gap:10px; margin:7px 0; font-size:13px; }
+  .bar-track { background:#eef0f2; border-radius:6px; height:20px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:6px; }
+  .bar-row.self .nm { font-weight:800; }
+  .bar-row .vv { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+  table { border-collapse:collapse; width:100%; font-size:13.5px; }
+  th,td { border-bottom:1px solid #eee; padding:9px 8px; text-align:center; }
+  th { background:#faf9f8; color:#666; font-weight:600; font-size:12px; }
+  td.l { text-align:left; }
+  tr.win td { background:#fdf8e8; }
+  .pill { display:inline-block; padding:2px 9px; border-radius:11px; font-size:12px; color:#fff; font-weight:700; }
+  .verdict { background:#fff; border-radius:14px; padding:20px 22px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .verdict h2 { font-size:16px; margin:0 0 12px; }
+  .vrow { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid #f1eee9; font-size:13.5px; line-height:1.6; }
+  .vrow:last-child { border-bottom:none; }
+  .vrow .ic { flex:none; font-size:18px; }
+  .vrow b { color:#b5532e; }
+  @media(max-width:760px){ .kpis{grid-template-columns:repeat(2,1fr);} .bar-row{grid-template-columns:110px 1fr 46px;} }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">熊本中心市街地 競合・移転検討</div>
+  <h1>SSIN熊本 移転検討ダッシュボード</h1>
+  <p>HPB実データ（2026-06-13）｜比較検討競合5店＋辛島町エリア＋自店の差分 ｜ 出典：ホットペッパービューティー</p>
+</div>
+
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="label">自店 口コミ評点</div>
+      <div class="val">4.85</div>
+      <div class="sub up">競合中3位（ユーアイ4.9/レイ4.86に次ぐ）</div>
+    </div>
+    <div class="kpi">
+      <div class="label">自店 口コミ件数</div>
+      <div class="val">365</div>
+      <div class="sub down">レイ2901・ユーアイ969に大差（露出不足）</div>
+    </div>
+    <div class="kpi">
+      <div class="label">自店 予約満席率</div>
+      <div class="val">33%</div>
+      <div class="sub mid">辛島町は上位／中心部繁盛店比 −14〜23pt</div>
+    </div>
+    <div class="kpi">
+      <div class="label">候補③ 500m圏 競合</div>
+      <div class="val">1<span style="font-size:16px">店</span></div>
+      <div class="sub up">中心部①②は12〜19店（空白＝候補③）</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>① 予約の埋まり率 全店比較（満席率）</h2>
+    <p class="desc">HPBトップ直近7日カレンダーの満席(×)比率。自店は紫。中心部アーケード(赤)ほど予約が埋まる＝需要が濃い。</p>
+    <div id="fillBars"></div>
+  </div>
+
+  <div class="card">
+    <h2>② 評点 × 口コミ件数（自店 vs 競合）</h2>
+    <p class="desc">自店は「評点（質）は競合トップ級だが、口コミ件数（露出・集客量）で中心部の人気店に劣る」構図。</p>
+    <table>
+      <tr><th class="l">店舗</th><th>エリア</th><th>評点</th><th>口コミ</th><th>満席率</th></tr>
+      <tr class="win"><td class="l"><b>★SSIN熊本（自店）</b></td><td>辛島町</td><td><b>4.85</b></td><td><b>365</b></td><td><b>33%</b></td></tr>
+      <tr><td class="l">レイ 上通(Rey)</td><td>上通</td><td>4.86</td><td>2,901</td><td>空席あり</td></tr>
+      <tr><td class="l">ユーアイ 下通(Yuueye)</td><td>辛島町</td><td>4.9</td><td>969</td><td>32%</td></tr>
+      <tr><td class="l">エクレア 下通(E'CREA)</td><td>下通</td><td>4.73</td><td>441</td><td>24%</td></tr>
+      <tr><td class="l">ヘイリーブロウ 下通</td><td>下通</td><td>4.7</td><td>121</td><td>56%</td></tr>
+      <tr><td class="l">ロレインブロウ</td><td>下通</td><td>4.69</td><td>117</td><td>47%</td></tr>
+      <tr><td class="l">ミエル 辛島町</td><td>辛島町</td><td>4.67</td><td>124</td><td>20%</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>③ 移転候補3地点の差分</h2>
+    <p class="desc">候補で「HPB検索の母数」と「物理的な競合の濃さ」が変わる。③は物理空白だがHPB母数は下通り48件側。</p>
+    <table>
+      <tr><th class="l">比較軸</th><th>① 上通・銀座ダイヤ</th><th>② 下通・武蔵小路</th><th>③ 紺屋今町（候補★）</th></tr>
+      <tr><td class="l">HPB検索エリア</td><td>上通り(28件)</td><td>下通り新市街(48件)</td><td>下通り新市街(48件)</td></tr>
+      <tr><td class="l">物理競合 300m圏</td><td><span class="pill" style="background:#dc2626">12店</span></td><td><span class="pill" style="background:#dc2626">11店</span></td><td><span class="pill" style="background:#16a34a">1店</span></td></tr>
+      <tr><td class="l">物理競合 500m圏</td><td><span class="pill" style="background:#dc2626">16店</span></td><td><span class="pill" style="background:#dc2626">19店</span></td><td><span class="pill" style="background:#16a34a">3店</span></td></tr>
+      <tr><td class="l">立地集客</td><td>アーケード強</td><td>アーケード強</td><td>中心動線から外れ</td></tr>
+      <tr class="win"><td class="l">総合</td><td>激戦・母数小</td><td>激戦・母数大</td><td><b>競合空白★</b></td></tr>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <h2>📌 差分から見た結論</h2>
+    <div class="vrow"><span class="ic">✅</span><div><b>質では勝てる</b>：自店評点4.85は競合トップ級（3位）。技術・満足度は中心部の人気店と互角。</div></div>
+    <div class="vrow"><span class="ic">⚠️</span><div><b>量で負けている</b>：口コミ365件はレイ2901・ユーアイ969に大差。露出・新規集客の差が予約満席率の差(自店33% vs ヘイリー56%)に直結。</div></div>
+    <div class="vrow"><span class="ic">📍</span><div><b>立地の選択</b>：候補③は物理競合空白で消耗戦を避けられるが、HPB検索は下通り48件側＆中心動線から外れる。①②は集客強だが激戦。</div></div>
+    <div class="vrow"><span class="ic">🎯</span><div><b>打ち手</b>：移転で中心部の需要を取りに行くなら、弱点の「量（口コミ・露出）」をHPBクーポン設計＋LINE再来導線で底上げ。質は既にあるので、入口の数を増やせば満席率は中心部水準(47〜56%)に届く余地。</div></div>
+  </div>
+
+</div>
+
+<script>
+var fill = [
+  ['ヘイリーブロウ 下通', 56, '#dc2626', false],
+  ['ロレインブロウ',      47, '#ea580c', false],
+  ['★SSIN熊本(自店)',     33, '#9333ea', true],
+  ['ユーアイ 下通',        32, '#f59e0b', false],
+  ['エクレア 下通',        24, '#f59e0b', false],
+  ['アイドット i.',        20, '#fbbf24', false],
+  ['ミエル 辛島町',        20, '#fbbf24', false],
+  ['レイ 上通',             0, '#22a06b', false]
+];
+var box = document.getElementById('fillBars');
+fill.forEach(function(it) {
+  var nm = it[0], v = it[1], c = it[2], self = it[3];
+  var row = document.createElement('div');
+  row.className = 'bar-row' + (self ? ' self' : '');
+  var label = v === 0 ? '空席' : v + '%';
+  row.innerHTML =
+    '<div class="nm">' + nm + '</div>' +
+    '<div class="bar-track"><div class="bar-fill" style="width:' + Math.max(v,3) + '%;background:' + c + '"></div></div>' +
+    '<div class="vv">' + label + '</div>';
+  box.appendChild(row);
+});
+</script>
+</body>
+</html>
