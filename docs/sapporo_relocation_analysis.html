@@ -453,54 +453,65 @@ body {
       <div class="sub" style="margin-bottom:20px;">データソース: groupB kaikei CSV（〜5/22）+ Supabase raw_json（5/20〜6/13）。CSVとSupabaseの4月数値が28.1% vs 28.2%で一致し、信頼性確認済み。</div>
 
       <!-- Table -->
-      <table class="data-table" style="margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px;">
         <thead>
           <tr>
-            <th>期間</th>
-            <th>来店件数</th>
-            <th>新規 件数</th>
-            <th>新規 比率</th>
-            <th>再来 件数</th>
-            <th>再来 比率</th>
-            <th>評価</th>
+            <th style="background:#f9fafb;color:#6b7280;font-size:11px;font-weight:700;letter-spacing:.5px;padding:12px 16px;border-bottom:2px solid #e5e7eb;text-align:left;">期間</th>
+            <th style="background:#f9fafb;color:#6b7280;font-size:11px;font-weight:700;letter-spacing:.5px;padding:12px 16px;border-bottom:2px solid #e5e7eb;text-align:center;">来店数</th>
+            <th style="background:#eff6ff;color:#3730a3;font-size:11px;font-weight:700;letter-spacing:.5px;padding:12px 16px;border-bottom:2px solid #c7d2fe;text-align:center;">新規</th>
+            <th style="background:#f9fafb;color:#6b7280;font-size:11px;font-weight:700;letter-spacing:.5px;padding:12px 16px;border-bottom:2px solid #e5e7eb;text-align:center;">再来</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>4月（移転前）</td>
-            <td>323件</td>
-            <td><strong>91件</strong></td>
-            <td>28.2%</td>
-            <td><strong>221件</strong></td>
-            <td>68.4%</td>
-            <td><span class="pill" style="background:#f3f4f6;color:#6b7280;">基準値</span></td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;color:#374151;font-weight:600;">4月（基準）</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;font-weight:700;">323件</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;background:#fafbff;">
+              <span style="font-size:16px;font-weight:800;color:#4f46e5;">91件</span>
+              <span style="font-size:12px;color:#818cf8;margin-left:4px;">（28.2%）</span>
+            </td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;">
+              <span style="font-size:16px;font-weight:800;color:#374151;">221件</span>
+              <span style="font-size:12px;color:#9ca3af;margin-left:4px;">（68.4%）</span>
+            </td>
           </tr>
           <tr>
-            <td>5月前半 移転前（〜5/19）</td>
-            <td>173件</td>
-            <td><strong>53件</strong></td>
-            <td>30.6%</td>
-            <td><strong>113件</strong></td>
-            <td>65.3%</td>
-            <td><span class="pill" style="background:#f3f4f6;color:#6b7280;">安定</span></td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;color:#374151;font-weight:600;">5月前半・移転前（〜5/19）</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;font-weight:700;">173件</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;background:#fafbff;">
+              <span style="font-size:16px;font-weight:800;color:#4f46e5;">53件</span>
+              <span style="font-size:12px;color:#818cf8;margin-left:4px;">（30.6%）</span>
+            </td>
+            <td style="padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:center;">
+              <span style="font-size:16px;font-weight:800;color:#374151;">113件</span>
+              <span style="font-size:12px;color:#9ca3af;margin-left:4px;">（65.3%）</span>
+            </td>
           </tr>
-          <tr style="background:#fef9f0;">
-            <td><strong>5月後半 移転直後（5/20〜5/31）</strong></td>
-            <td>128件</td>
-            <td style="color:#d97706;font-weight:700;">30件</td>
-            <td style="color:#d97706;font-weight:700;">23.4% ▼</td>
-            <td style="font-weight:700;">94件</td>
-            <td style="font-weight:700;">73.4% ▲</td>
-            <td><span class="pill pill-amber">新規一時減</span></td>
+          <tr style="background:#fffbeb;">
+            <td style="padding:14px 16px;border-bottom:1px solid #fde68a;font-weight:700;color:#92400e;">5月後半・移転直後（5/20〜5/31）</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #fde68a;text-align:center;font-weight:700;">128件</td>
+            <td style="padding:14px 16px;border-bottom:1px solid #fde68a;text-align:center;background:#fef3c7;">
+              <span style="font-size:16px;font-weight:800;color:#d97706;">30件</span>
+              <span style="font-size:12px;color:#d97706;margin-left:4px;">（23.4%）</span>
+              <span style="font-size:13px;margin-left:2px;">▼</span>
+            </td>
+            <td style="padding:14px 16px;border-bottom:1px solid #fde68a;text-align:center;">
+              <span style="font-size:16px;font-weight:800;color:#374151;">94件</span>
+              <span style="font-size:12px;color:#9ca3af;margin-left:4px;">（73.4%）</span>
+            </td>
           </tr>
           <tr style="background:#f0fdf4;">
-            <td><strong>6月（移転後）</strong></td>
-            <td>148件</td>
-            <td style="color:#059669;font-weight:700;">40件</td>
-            <td style="color:#059669;font-weight:700;">27.0% ↗</td>
-            <td style="font-weight:700;">104件</td>
-            <td style="font-weight:700;">70.3%</td>
-            <td><span class="pill pill-green">回復 ✓</span></td>
+            <td style="padding:14px 16px;font-weight:700;color:#065f46;">6月・移転後</td>
+            <td style="padding:14px 16px;text-align:center;font-weight:700;">148件</td>
+            <td style="padding:14px 16px;text-align:center;background:#dcfce7;">
+              <span style="font-size:16px;font-weight:800;color:#059669;">40件</span>
+              <span style="font-size:12px;color:#059669;margin-left:4px;">（27.0%）</span>
+              <span style="font-size:13px;margin-left:2px;">↗</span>
+            </td>
+            <td style="padding:14px 16px;text-align:center;">
+              <span style="font-size:16px;font-weight:800;color:#374151;">104件</span>
+              <span style="font-size:12px;color:#9ca3af;margin-left:4px;">（70.3%）</span>
+            </td>
           </tr>
         </tbody>
       </table>
