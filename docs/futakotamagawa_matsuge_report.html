@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSIN二子玉川 まつげパーマ値上げ効果レポート</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif; background:#f4f6f8; color:#1f2937; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:980px; margin:0 auto; padding:0 16px 64px; }
+
+  /* Hero */
+  .hero { background:linear-gradient(135deg,#0f766e 0%,#14b8a6 60%,#2dd4bf 100%); color:#fff; border-radius:0 0 24px 24px; padding:38px 32px 32px; box-shadow:0 8px 30px rgba(15,118,110,.25); }
+  .hero .emoji { font-size:52px; line-height:1; }
+  .hero h1 { font-size:26px; font-weight:800; margin:10px 0 6px; letter-spacing:.5px; }
+  .hero .sub { font-size:15px; opacity:.95; }
+  .hero .meta { margin-top:14px; font-size:12.5px; opacity:.9; display:flex; flex-wrap:wrap; gap:8px 18px; }
+  .hero .meta span { background:rgba(255,255,255,.16); padding:4px 12px; border-radius:20px; }
+
+  /* Conclusion */
+  .verdict { background:#fff; border-left:6px solid #0f766e; border-radius:14px; padding:22px 26px; margin:24px 0; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+  .verdict .tag { display:inline-block; background:#0f766e; color:#fff; font-size:12px; font-weight:700; padding:3px 12px; border-radius:6px; margin-bottom:10px; }
+  .verdict p { font-size:16px; font-weight:600; color:#111827; }
+  .verdict b { color:#0f766e; }
+
+  /* KPI cards */
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:24px 0; }
+  .kpi { border-radius:16px; padding:18px 16px; color:#fff; box-shadow:0 6px 18px rgba(0,0,0,.10); }
+  .kpi .label { font-size:12.5px; opacity:.95; font-weight:600; }
+  .kpi .num { font-size:30px; font-weight:800; margin:6px 0 2px; letter-spacing:.5px; }
+  .kpi .note { font-size:11.5px; opacity:.92; }
+  .kpi.k1 { background:linear-gradient(135deg,#0ea5e9,#0284c7); }
+  .kpi.k2 { background:linear-gradient(135deg,#14b8a6,#0d9488); }
+  .kpi.k3 { background:linear-gradient(135deg,#f59e0b,#d97706); }
+  .kpi.k4 { background:linear-gradient(135deg,#8b5cf6,#6d28d9); }
+
+  /* Sections */
+  .sec { background:#fff; border-radius:16px; padding:24px 26px; margin:20px 0; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+  .sec h2 { font-size:18px; font-weight:800; color:#0f766e; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+  .sec h2 .ico { font-size:22px; }
+  .sec .desc { font-size:13px; color:#6b7280; margin-bottom:16px; }
+
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:11px 12px; text-align:right; border-bottom:1px solid #eef0f2; }
+  th:first-child,td:first-child { text-align:left; }
+  thead th { background:#f0fdfa; color:#0f766e; font-weight:700; border-bottom:2px solid #ccfbf1; }
+  tbody tr:hover { background:#fafdfc; }
+  tfoot td { font-weight:800; background:#f8fafc; border-top:2px solid #e5e7eb; }
+  .up { color:#dc2626; font-weight:700; }
+  .down { color:#2563eb; font-weight:700; }
+  .flat { color:#6b7280; font-weight:600; }
+  .hl { background:#fffbeb !important; }
+  .hl td { font-weight:700; }
+  .pill { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:12px; }
+  .pill.a { background:#e0f2fe; color:#0369a1; }
+  .pill.b { background:#fef3c7; color:#b45309; }
+
+  .chartbox { position:relative; height:300px; margin-top:8px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid2 .chartbox { height:260px; }
+  .chart-cap { text-align:center; font-size:13px; font-weight:700; color:#374151; margin-bottom:6px; }
+
+  ul.act { list-style:none; }
+  ul.act li { padding:12px 0 12px 14px; border-left:3px solid #14b8a6; margin-bottom:10px; background:#f0fdfa; border-radius:0 10px 10px 0; padding:12px 16px; }
+  ul.act li b { color:#0f766e; }
+
+  .note { font-size:12px; color:#9ca3af; margin-top:18px; text-align:center; }
+  @media (max-width:760px){ .kpis{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;} .hero h1{font-size:21px;} }
+  @media print { body{background:#fff;} .sec,.verdict,.kpi{box-shadow:none; border:1px solid #e5e7eb;} }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="emoji">💹</div>
+  <h1>SSIN二子玉川 まつげパーマ単品 値上げ効果レポート</h1>
+  <div class="sub">5/26 +200円値上げ ／ 値上げ前後の中間報告</div>
+  <div class="meta">
+    <span>📍 SSIN STUDIO 二子玉川店</span>
+    <span>🗓 比較：5/1–5/25 → 5/26–6/11</span>
+    <span>📊 データ源：事業部売上集計10期マスター（6/12時点・〜6/11実績）</span>
+    <span>✍️ 報告：髙橋</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="verdict">
+    <span class="tag">結論</span>
+    <p>5/26にまつげパーマ単品を<b>+200円</b>値上げ。<b>客離れは起きておらず</b>、むしろ単価の高いSETメニューへ顧客が流れ、<b>まつげ系全体の収益構造が改善</b>。値上げは成功と判断します。</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi k1">
+      <div class="label">まつげ系 総客数/日</div>
+      <div class="num">6.00→5.94</div>
+      <div class="note">ほぼ横ばい＝客離れなし</div>
+    </div>
+    <div class="kpi k2">
+      <div class="label">単品 平均単価</div>
+      <div class="num">+¥176</div>
+      <div class="note">¥4,318 → ¥4,494</div>
+    </div>
+    <div class="kpi k3">
+      <div class="label">SET 件数/日</div>
+      <div class="num">+14%</div>
+      <div class="note">1.54 → 1.75件/日</div>
+    </div>
+    <div class="kpi k4">
+      <div class="label">SET 売上構成比</div>
+      <div class="num">+6.5pt</div>
+      <div class="note">30.1% → 36.6%（1位浮上）</div>
+    </div>
+  </div>
+
+  <!-- 実施内容 -->
+  <div class="sec">
+    <h2><span class="ico">🏷️</span>① 実施内容（5/26〜）</h2>
+    <div class="desc">単品とその派生のみ値上げ。SET・学割は据え置き。</div>
+    <table>
+      <thead><tr><th>メニュー</th><th>変更前</th><th>変更後</th><th>増減</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>まつげパーマ単品（各種）</td><td>¥4,400</td><td>¥4,600</td><td class="up">+¥200</td></tr>
+        <tr><td>2周年記念枠</td><td>¥4,200</td><td>¥4,400</td><td class="up">+¥200</td></tr>
+        <tr><td>SET（眉Wax+まつげ）</td><td>¥7,600</td><td>¥7,600</td><td class="flat">据え置き</td></tr>
+        <tr><td>学割U24</td><td>¥4,000</td><td>¥4,000</td><td class="flat">据え置き</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 前後サマリー -->
+  <div class="sec">
+    <h2><span class="ico">📐</span>② 値上げ前後サマリー（1日あたりに正規化）</h2>
+    <div class="desc">営業日数が違うため（前24日／後16日）、1日あたりの件数で比較しています。</div>
+    <table>
+      <thead><tr><th>指標</th><th><span class="pill a">前 5/1–5/25</span></th><th><span class="pill b">後 5/26–6/11</span></th><th>増減</th></tr></thead>
+      <tbody>
+        <tr><td>まつげ系 総客数 / 日</td><td>6.00件</td><td>5.94件</td><td class="flat">−0.06（横ばい）</td></tr>
+        <tr class="hl"><td>単品 平均単価</td><td>¥4,318</td><td>¥4,494</td><td class="up">+¥176（+4.1%）</td></tr>
+        <tr><td>単品 件数 / 日</td><td>2.33件</td><td>2.25件</td><td class="flat">−0.08（誤差範囲）</td></tr>
+        <tr class="hl"><td>SET 件数 / 日</td><td>1.54件</td><td>1.75件</td><td class="up">+0.21（+14%）</td></tr>
+        <tr><td>SET 平均単価</td><td>¥7,008</td><td>¥7,175</td><td class="up">+¥167</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 構成比チャート -->
+  <div class="sec">
+    <h2><span class="ico">📊</span>③ メニュー構成のシフト</h2>
+    <div class="desc">単品が逃げた分を上回ってSETが増加。売上構成ではSETが値上げ後に1位へ浮上。</div>
+    <div class="grid2">
+      <div>
+        <div class="chart-cap">1日あたり件数（前→後）</div>
+        <div class="chartbox"><canvas id="cntChart"></canvas></div>
+      </div>
+      <div>
+        <div class="chart-cap">売上構成比（前→後）</div>
+        <div class="chartbox"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 件数・売上テーブル -->
+  <div class="sec">
+    <h2><span class="ico">🧾</span>④ 区分別 実数（件数・売上）</h2>
+    <table>
+      <thead><tr><th>区分</th><th>前 件数</th><th>前 売上</th><th>後 件数</th><th>後 売上</th><th>売上構成 前→後</th></tr></thead>
+      <tbody>
+        <tr><td>単品まつげパーマ</td><td>56</td><td>¥241,800</td><td>36</td><td>¥161,800</td><td>28.1% → 29.5%</td></tr>
+        <tr class="hl"><td>SET（眉+まつげ）</td><td>37</td><td>¥259,300</td><td>28</td><td>¥200,900</td><td class="up">30.1% → 36.6%</td></tr>
+        <tr><td>回数券・コース</td><td>40</td><td>¥332,900</td><td>27</td><td>¥168,100</td><td>38.6% → 30.6%</td></tr>
+        <tr><td>その他（下/マスカラ等）</td><td>11</td><td>¥27,500</td><td>4</td><td>¥17,700</td><td>3.2% → 3.2%</td></tr>
+      </tbody>
+      <tfoot><tr><td>合計</td><td>144</td><td>¥861,500</td><td>95</td><td>¥548,500</td><td>100%</td></tr></tfoot>
+    </table>
+  </div>
+
+  <!-- 週別単価推移 -->
+  <div class="sec">
+    <h2><span class="ico">📈</span>⑤ 単品 週別 平均単価の推移</h2>
+    <div class="desc">5/26週を境に平均単価が段階的に上昇。移行完了で直近6/9週は¥4,560まで到達。</div>
+    <div class="chartbox"><canvas id="weekChart"></canvas></div>
+  </div>
+
+  <!-- 月別メニュー比率 -->
+  <div class="sec">
+    <h2><span class="ico">🥧</span>⑥ 月別メニュー比率（4月→6月）</h2>
+    <div class="desc">来店時の主メニュー（メニュー付クーポン）件数ベース。LEDマツエク(LUMISS)は別ジャンルのため分離。6月は6/11まで。</div>
+    <table>
+      <thead><tr><th>区分</th><th>4月</th><th>5月</th><th>6月(〜6/11)</th></tr></thead>
+      <tbody>
+        <tr><td>眉毛ワックス</td><td>26件 (13.1%)</td><td>31件 (14.1%)</td><td>10件 (13.3%)</td></tr>
+        <tr class="hl"><td>まつげパーマ</td><td>91件 (45.7%)</td><td>87件 (39.5%)</td><td>29件 (38.7%)</td></tr>
+        <tr class="hl"><td>セット（眉+まつげ）</td><td>49件 (24.6%)</td><td>56件 (25.5%)</td><td>22件 (29.3%)</td></tr>
+        <tr><td>マツエク(LED)</td><td>33件 (16.6%)</td><td>45件 (20.5%)</td><td>14件 (18.7%)</td></tr>
+        <tr><td>その他</td><td>0件</td><td>1件 (0.5%)</td><td>0件</td></tr>
+      </tbody>
+      <tfoot><tr><td>合計</td><td>199件</td><td>220件</td><td>75件</td></tr></tfoot>
+    </table>
+    <div style="margin-top:12px; font-size:13px; color:#374151; background:#f0fdfa; border-radius:10px; padding:10px 14px;">
+      <b>眉毛／まつげ／セットのみで再計算：</b><br>
+      4月 眉15.7%・まつげ54.8%・セット29.5% → 5月 眉17.8%・まつげ50.0%・セット32.2% → 6月 眉16.4%・まつげ47.5%・<b>セット36.1%</b><br>
+      ➡ まつげ単品が比率を落とし、<b>セットが着実に上昇</b>。料金を変えずともメニュー構成で客単価が上がっている。
+    </div>
+    <div class="chartbox" style="margin-top:14px;"><canvas id="mixChart"></canvas></div>
+  </div>
+
+  <!-- 考察 -->
+  <div class="sec">
+    <h2><span class="ico">🔍</span>⑦ 考察</h2>
+    <p>単品を¥4,600に上げたことで単品とSET（¥7,600）の<b>価格差が縮まり、相対的にSETの割安感が増した</b>ことでアップセルが自然発生。値上げが「客離れ」ではなく「上位メニュー誘導」に作用しています。単品→SET移行1件で<b>+約2,700円</b>（単品+176円の約15倍の効果）。</p>
+  </div>
+
+  <!-- 打ち手 -->
+  <div class="sec">
+    <h2><span class="ico">🎯</span>⑧ 今後の打ち手</h2>
+    <ul class="act">
+      <li><b>現行価格を維持（追加の値上げはしない）</b>。単品¥4,600で客離れがなく、料金を変えずともメニュー誘導で客単価が上がっているため、これ以上の価格変更は不要。</li>
+      <li><b>SET比率を店舗KPIに設定</b>し、カウンセリングで単品予約者へのSET提案を仕組み化する（料金は据え置きのまま客単価UP）。</li>
+      <li><b>6月フル（〜6/30）で再集計</b>し、まつげ単品→セットのシフトが定着するかを確認（梅雨需要の影響も切り分け）。</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    ※ 値上げ後は16営業日・95件の中間データに基づく速報値です。6月締め後に確定値を共有します。<br>
+    データ源：事業部売上集計10期マスター（gid=50056376・6/12取得）／単品・SET・回数券・その他に区分して集計。
+  </div>
+
+</div>
+
+<script>
+const COL = { tanpin:'#0ea5e9', set:'#f59e0b', kaisu:'#14b8a6', other:'#cbd5e1' };
+Chart.defaults.font.family = "-apple-system,'Hiragino Sans',sans-serif";
+Chart.defaults.font.size = 12;
+
+// ③-1 件数/日 前後（単品 vs SET）
+new Chart(document.getElementById('cntChart'), {
+  type:'bar',
+  data:{ labels:['単品まつげ','SET(眉+まつげ)','回数券・コース'],
+    datasets:[
+      {label:'前 5/1–5/25', data:[2.33,1.54,1.67], backgroundColor:'#94a3b8', borderRadius:6},
+      {label:'後 5/26–6/11', data:[2.25,1.75,1.69], backgroundColor:'#0f766e', borderRadius:6}
+    ]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'件/日'}} },
+    scales:{ y:{beginAtZero:true, title:{display:true,text:'件/日'}} } }
+});
+
+// ③-2 売上構成比 前後（100%積み上げ横棒）
+new Chart(document.getElementById('revChart'), {
+  type:'bar',
+  data:{ labels:['前 5/1–5/25','後 5/26–6/11'],
+    datasets:[
+      {label:'単品', data:[28.1,29.5], backgroundColor:COL.tanpin},
+      {label:'SET', data:[30.1,36.6], backgroundColor:COL.set},
+      {label:'回数券・コース', data:[38.6,30.6], backgroundColor:COL.kaisu},
+      {label:'その他', data:[3.2,3.2], backgroundColor:COL.other}
+    ]},
+  options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.x+'%'}} },
+    scales:{ x:{stacked:true, max:100, title:{display:true,text:'%'}}, y:{stacked:true} } }
+});
+
+// ⑤ 週別平均単価
+new Chart(document.getElementById('weekChart'), {
+  type:'line',
+  data:{ labels:['5/1–4','5/5–11','5/12–18','5/19–25','5/26–6/1','6/2–8','6/9–11'],
+    datasets:[{ label:'単品 平均単価', data:[4380,4309,4296,4336,4494,4427,4560],
+      borderColor:'#0f766e', backgroundColor:'rgba(20,184,166,.12)', borderWidth:3, fill:true, tension:.3,
+      pointRadius:5, pointBackgroundColor:['#94a3b8','#94a3b8','#94a3b8','#94a3b8','#dc2626','#dc2626','#dc2626'] }]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>'¥'+c.parsed.y.toLocaleString()+(c.dataIndex>=4?'（値上げ後）':'（値上げ前）')}} },
+    scales:{ y:{min:4100, max:4700, ticks:{callback:v=>'¥'+v.toLocaleString()}} } }
+});
+
+// ⑥ 月別メニュー比率（100%積み上げ）
+new Chart(document.getElementById('mixChart'), {
+  type:'bar',
+  data:{ labels:['4月','5月','6月(〜11)'],
+    datasets:[
+      {label:'眉毛ワックス', data:[13.1,14.1,13.3], backgroundColor:'#84cc16'},
+      {label:'まつげパーマ', data:[45.7,39.5,38.7], backgroundColor:'#0ea5e9'},
+      {label:'セット', data:[24.6,25.5,29.3], backgroundColor:'#f59e0b'},
+      {label:'マツエク(LED)', data:[16.6,20.5,18.7], backgroundColor:'#8b5cf6'},
+      {label:'その他', data:[0,0.5,0], backgroundColor:'#cbd5e1'}
+    ]},
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+'%'}} },
+    scales:{ x:{stacked:true}, y:{stacked:true, max:100, title:{display:true,text:'構成比 %'}} } }
+});
+</script>
+</body>
+</html>
