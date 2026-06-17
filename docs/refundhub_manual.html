@@ -148,7 +148,8 @@
     </div>
     <div class="rule-body">
       ・キャンセル料：予約金額の<b>100%</b>（金額未定の場合は0円）<br>
-      ・請求：キャンセルの<b>1時間後</b>に自動請求
+      ・自動検知：キャンセルの<b>1時間後〜翌朝</b>までにシステムが検知<br>
+      ・請求：キャンセル料案内SMSを配信。お支払いまで<b>2ヶ月で最大7回</b>リマインド
     </div>
   </div>
 
@@ -158,8 +159,9 @@
       <h4 style="color:#b45309;">100%・再予約なければ6日目に請求</h4>
     </div>
     <div class="rule-body">
-      ・キャンセル料：予約金額の<b>100%</b>（金額未定の場合は0円）<br>
-      ・請求：キャンセル日を含め<b>5日以内に再予約しない場合、6日目</b>に自動請求
+      ・まず<b>再予約案内SMS</b>を配信（同じ電話番号・名前で再予約がなければ）<br>
+      ・キャンセル日を含め<b>5日以内に再予約しない場合、6日目</b>にキャンセル料（<b>100%</b>・未定は0円）を案内<br>
+      ・お支払いまで<b>2ヶ月で最大7回</b>リマインド
     </div>
   </div>
 
@@ -170,7 +172,26 @@
     </div>
     <div class="rule-body">
       ・キャンセルポリシーなし（<b>請求なし</b>）<br>
-      ・案内：当日中に再予約がなければ<b>翌日以降に再予約案内</b>を送信
+      ・当日中に再予約がなければ<b>翌日以降に再予約案内</b>を配信<br>
+      ・再予約があるまで<b>2週間で最大4回</b>リマインド
+    </div>
+  </div>
+
+  <!-- なぜキャンセル料 -->
+  <div class="s-head">
+    <div class="s-head-icon" style="background:var(--yellow);">💡</div>
+    <h3>なぜキャンセル料をいただくのか</h3>
+  </div>
+  <div class="grid2">
+    <div class="fcard">
+      <div class="tag" style="color:var(--rose);">理由①</div>
+      <div class="t">ドタキャンの抑止</div>
+      <div class="d">当日・無断キャンセルはスタッフの負担・モチベ低下に直結。キャンセル料は抑止力になり、請求する店舗ではドタキャンが減る傾向。</div>
+    </div>
+    <div class="fcard">
+      <div class="tag" style="color:var(--rose);">理由②</div>
+      <div class="t">機会損失・売上減の防止</div>
+      <div class="d">直前キャンセルの枠は他のお客様に案内しづらく売上の機会損失に。キャンセル料で損失を一部補填（HPB等の予約手数料の補填にも充当）。</div>
     </div>
   </div>
 
@@ -181,18 +202,63 @@
   </div>
   <div class="callout auto" style="margin-bottom:10px;">
     <span class="lbl">✅ 基本は操作不要（全自動）</span>
-    キャンセル料の請求・リマインド・再来案内はすべて自動で行われます。通常はスタッフの操作は必要ありません。
+    キャンセル処理さえすれば、キャンセル料の請求・再予約案内・リマインドまですべて自動。通常スタッフの操作は不要です。ただし下の<b>メモ欄の入力2点</b>だけは必ずお願いします。
   </div>
-  <div class="callout todo">
-    <span class="lbl">🙋 請求する／しないは選べます</span>
-    請求するお客様・金額は<b>予約管理画面で自由に設定できます</b>（ポリシー違反者は自動リストアップ＋手動選択も可能）。「このお客様には請求しない」場合は、<b>請求の明細リストで対象から外して</b>送信してください。
+
+  <div class="callout todo" style="background:#fff1f2;border-color:#fecdd3;color:#9f1239;">
+    <span class="lbl">💰【最重要】サロンコネクトで次回予約を取るときは、メモ欄に「金額」も入力</span>
+    キャンセル者の情報は<b>サロンコネクトから取得</b>されます（サロンコネクトとRefundHubが連携）。手動でサロンコネクトに登録した予約は<b>金額が不明確</b>になり、そのままだと<b>キャンセル料が0円扱い＝100%請求できません</b>。<br>
+    👉 <b>メモ欄に金額を入れておけば、その金額でキャンセル料を請求できます。</b>次回予約を取るときは必ず金額を記入してください。
   </div>
-  <div class="callout auto" style="margin-top:10px;">
-    <span class="lbl">📲 お客様にはこう伝える（再予約案内）</span>
-    再予約案内SMSは自動送信されます。スタッフからは「<b>前回と同じ内容なら1クリックで再予約できるご案内をお送りしています</b>」と一言添えると再来につながりやすくなります。
+
+  <div class="callout todo" style="margin-top:10px;">
+    <span class="lbl">🙅 A. SMS案内を送りたくないお客様がいるとき</span>
+    キャンセル処理の<b>前に、メモ欄へ「サロン都合」と入力</b>してからキャンセル処理 → 自動で対象から除外されます。<br>
+    ・サロンコネクト：<b>メモ欄</b>に「サロン都合」<br>
+    ・サロンボード（サロンコネクト未使用の場合のみ）：<b>予約時メモ</b>に「サロン都合」
   </div>
-  <div class="editflag">
-    📝 編集メモ：「請求しないお客様」の<b>正確なボタン操作</b>はスタッフ向けガイドPDF（ver2）2ページ目が出典です。PDFが公開Notion経由でDLできず未取込のため、現在は請求フロー画面から読み取れる範囲で記載。PDF入手後に正式手順へ差し替え予定。
+
+  <div class="callout todo" style="margin-top:10px;background:#fff7ed;border-color:#fed7aa;color:#9a3412;">
+    <span class="lbl">🆘 B. 間違えて送ってしまったとき</span>
+    下の<b>専用問い合わせチャット</b>で誤送信したキャンセル料の取消を依頼。または<b>管理画面の「取消する」ボタン</b>でも送信を取り消せます。
+  </div>
+
+  <div class="shot">
+    <img src="images/refundhub_pdf_p2_staff.png" alt="スタッフがやること（メモ欄の使い方）" loading="lazy">
+    <div class="cap">メモ欄に「サロン都合」＝SMS案内から除外／次回予約時は金額もメモ欄へ＝正しい金額でキャンセル料を請求</div>
+  </div>
+
+  <!-- 専用問い合わせチャット -->
+  <div class="s-head">
+    <div class="s-head-icon" style="background:var(--teal);">💬</div>
+    <h3>専用問い合わせチャット</h3>
+  </div>
+  <div class="card">
+    迷ったら、まずここ。<br>
+    <a href="https://rxh.jp/Ypp5AA" target="_blank" rel="noopener" style="color:var(--rose);font-weight:800;">https://rxh.jp/Ypp5AA</a><br>
+    <span style="font-size:12px;color:var(--muted);">使い方の質問／誤送信したキャンセル料の取消依頼／クレーム対応の相談</span>
+  </div>
+  <div class="shot">
+    <img src="images/refundhub_pdf_p3_chat.png" alt="専用問い合わせチャット" loading="lazy">
+    <div class="cap">リファンドハブAIチャットボット（チームによるサポートも可）。請求の取り消しもここから依頼できます</div>
+  </div>
+
+  <!-- 管理画面の見方 -->
+  <div class="s-head">
+    <div class="s-head-icon" style="background:var(--navy);">🖥️</div>
+    <h3>管理画面の見方</h3>
+  </div>
+  <div class="card">
+    <a href="https://refundhub.jp" target="_blank" rel="noopener" style="color:var(--rose);font-weight:800;">https://refundhub.jp</a>（担当者に共有されているIDでログイン）<br><br>
+    ・<b>店舗切り替え</b>：複数店舗がある場合<br>
+    ・<b>同期ボタン</b>：押すと最新表示（押さなくても定期的に同期）<br>
+    ・<b>キャンセル料案内</b>：請求開始＝「請求済」、回収されると「回収済」へ<br>
+    ・<b>再予約案内</b>：未送付／送付済／再予約済 で管理<br>
+    ・<b>取消する</b>：案内を開始したお客様への送信を取り消す
+  </div>
+  <div class="shot">
+    <img src="images/refundhub_pdf_p9_admin.png" alt="管理画面 キャンセル情報一覧" loading="lazy">
+    <div class="cap">キャンセル情報一覧：未請求／請求済／回収済、再予約案内の状況、各行の「取消する」</div>
   </div>
 
   <div class="note">
