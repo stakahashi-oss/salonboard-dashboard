@@ -535,6 +535,10 @@ body { font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif; 
     <span class="t-icon">📅</span>
     <span class="t-label">次回予約</span>
   </button>
+  <button class="tbtn" onclick="go('refund',this)">
+    <span class="t-icon">💸</span>
+    <span class="t-label">RefundHub</span>
+  </button>
 </div>
 
 
@@ -1492,6 +1496,132 @@ body { font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif; 
       <div class="bs-title">理想の状態</div>
       <div class="bs-sub" style="margin-top:8px;font-size:14px;font-weight:700;">次回予約を取らないと予約が取りにくい環境<br>（忙しい店であることをお客様にアピール）</div>
     </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  RefundHub                                                    -->
+<!-- ============================================================ -->
+<div class="tab-pane" id="pane-refund">
+  <div class="hero" style="background:linear-gradient(135deg,#f43f5e 0%,#881337 100%);">
+    <div class="hero-icon">💸</div>
+    <h2>RefundHub</h2>
+    <p>キャンセル料の請求と、キャンセル後の再来促進を<br>自動でおこなうSMSツール。</p>
+  </div>
+
+  <div class="body-section">
+
+    <!-- とは -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--teal);">❓</div>
+      <h3>RefundHubとは？</h3>
+    </div>
+    <div style="background:white;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.07);font-size:13px;color:#334155;line-height:1.7;">
+      ボタンワンクリックで<b>キャンセル料の請求</b>ができ、<b>キャンセル後の再来を自動で促す</b>ショート（SMS）メッセージツールです。予約管理サービスと連携し、対象者の抽出・請求・リマインドまで自動で行います。
+    </div>
+
+    <!-- 数値ハイライト -->
+    <div class="stat-row">
+      <div class="stat-box" style="background:linear-gradient(135deg,#f43f5e,#881337);">
+        <div class="stat-num">1</div>
+        <div class="stat-unit">クリック</div>
+        <div class="stat-label">キャンセル料を請求</div>
+      </div>
+      <div class="stat-box" style="background:linear-gradient(135deg,#8B5CF6,#4c1d95);">
+        <div class="stat-num">100%</div>
+        <div class="stat-unit">請求率</div>
+        <div class="stat-label">無断・直前キャンセル料</div>
+      </div>
+      <div class="stat-box" style="background:linear-gradient(135deg,#2AABB0,#155e63);">
+        <div class="stat-num">自動</div>
+        <div class="stat-unit">SMS</div>
+        <div class="stat-label">再来促進も全自動</div>
+      </div>
+    </div>
+
+    <!-- できること -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--green);">⚙️</div>
+      <h3>このツールでできること</h3>
+    </div>
+    <div class="grid2">
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:11px;font-weight:800;color:#f43f5e;margin-bottom:6px;">① 請求〜回収を自動化</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px;">ボタン1クリックで請求</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">キャンセルポリシー違反の方が予約管理サービスと連携して自動でリストアップされ、請求メッセージがSMSで自動通知。以後お支払いまで一定期間、自動でリマインド（機械学習で最適化）。</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+        <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">② 再来を自動案内</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px;">キャンセル客に再予約案内</div>
+        <div style="font-size:12px;color:#475569;line-height:1.6;">キャンセル当日に再予約しなかったお客様へ、翌日以降に再予約（日程変更）案内を自動送信。再予約まで様々なパターンで案内。<b style="color:var(--green);">完全自動のため操作不要。</b></div>
+      </div>
+    </div>
+
+    <!-- 配信ルール -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--yellow);">📋</div>
+      <h3>配信ルール</h3>
+    </div>
+
+    <div class="timing-card">
+      <div class="timing-head" style="background:#fef2f2;">
+        <span class="timing-tag" style="background:#ef4444;color:white;">無断キャンセル</span>
+        <h4 style="color:#b91c1c;">予約金額の100%を請求</h4>
+      </div>
+      <div class="timing-body">
+        <div style="font-size:12px;color:#475569;line-height:1.7;">
+          ・キャンセル料：予約金額の<b>100%</b>（金額未定の場合は0円）<br>
+          ・請求：キャンセルの<b>1時間後</b>に自動請求
+        </div>
+      </div>
+    </div>
+
+    <div class="timing-card">
+      <div class="timing-head" style="background:#fff7ed;">
+        <span class="timing-tag" style="background:#f59e0b;color:white;">当日／前日19時以降</span>
+        <h4 style="color:#b45309;">100%・再予約なければ6日目に請求</h4>
+      </div>
+      <div class="timing-body">
+        <div style="font-size:12px;color:#475569;line-height:1.7;">
+          ・キャンセル料：予約金額の<b>100%</b>（金額未定の場合は0円）<br>
+          ・請求：キャンセル日を含め<b>5日以内に再予約しない場合、6日目</b>に自動請求
+        </div>
+      </div>
+    </div>
+
+    <div class="timing-card">
+      <div class="timing-head" style="background:#f0fdf4;">
+        <span class="timing-tag" style="background:#22c55e;color:white;">2日以上前</span>
+        <h4 style="color:#15803d;">請求なし・再来案内のみ</h4>
+      </div>
+      <div class="timing-body">
+        <div style="font-size:12px;color:#475569;line-height:1.7;">
+          ・キャンセルポリシーなし（<b>請求なし</b>）<br>
+          ・案内：当日中に再予約がなければ<b>翌日以降に再予約案内</b>を送信
+        </div>
+      </div>
+    </div>
+
+    <!-- スタッフがやること -->
+    <div class="s-head">
+      <div class="s-head-icon" style="background:var(--purple);">🙋</div>
+      <h3>スタッフがやること</h3>
+    </div>
+    <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:14px;padding:14px;font-size:13px;color:#5b21b6;line-height:1.7;">
+      基本は<b>全自動で操作は不要</b>です。<br>
+      ただし「<b>このお客様には請求しない</b>」という場合の対応方法は、<b>スタッフ様向け活用ガイド（PDF）の2ページ目</b>を確認してください。
+    </div>
+
+    <!-- 詳細リンク -->
+    <a href="https://refundhub-help.notion.site/LIME-RefundHub-381cf9febd6d81ebaaedeaa70c502549" target="_blank" rel="noopener" style="text-decoration:none;">
+      <div class="banner-strip" style="background:linear-gradient(135deg,#f43f5e,#881337);margin-top:14px;">
+        <span class="bs-icon">📖</span>
+        <div class="bs-title">スターターガイド全文・スライドを見る</div>
+        <div class="bs-sub" style="margin-top:6px;font-size:12px;">スクリーンショット・スタッフ向けガイドPDFはこちら（タップで開く）</div>
+      </div>
+    </a>
 
   </div>
 </div>
