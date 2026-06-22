@@ -77,18 +77,18 @@
   .up{color:#7df0c0}.down{color:#ff9a9a}.flat{color:var(--sub)}
 
   /* MIZUKARAフレーム */
-  .frame-band{display:grid;grid-template-columns:120px 2.6fr 2.4fr;gap:6px;
+  .frame-band{display:grid;grid-template-columns:1fr 1fr;gap:6px;
     padding:0 16px;margin-top:6px}
   .band{position:relative;text-align:center;font-weight:900;font-size:15px;
     padding:9px 6px;color:#1a1a1a;background:var(--gold);
     clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
   .band.lead{background:#7a8aa6;color:#11203b}
-  .band-era{display:grid;grid-template-columns:120px 2.6fr 2.4fr;gap:6px;
+  .band-era{display:grid;grid-template-columns:1fr 1fr;gap:6px;
     padding:4px 16px 0;font-size:12px;font-weight:800;color:var(--sub);letter-spacing:.05em}
-  .band-era span:nth-child(2){text-align:center;color:#9fc0ff}
-  .band-era span:nth-child(3){text-align:center;color:#ffb0a0}
+  .band-era span:nth-child(1){text-align:center;color:#9fc0ff}
+  .band-era span:nth-child(2){text-align:center;color:#ffb0a0}
 
-  .frame{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px 16px 22px;
+  .frame{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 16px 22px;
     overflow-x:auto}
   .cell{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:10px;
     overflow:hidden;min-width:130px;display:flex;flex-direction:column}
@@ -110,7 +110,7 @@
     .kpis{grid-template-columns:repeat(3,1fr)}
     .frame-band,.band-era{grid-template-columns:1fr}
     .band{clip-path:none;border-radius:8px}
-    .frame{grid-template-columns:repeat(7,minmax(150px,1fr))}
+    .frame{grid-template-columns:repeat(6,minmax(150px,1fr))}
   }
 </style>
 </head>
@@ -282,15 +282,13 @@ document.getElementById("stores").innerHTML = D.map(d=>{
       <div class="kpi"><div class="k">新規(月次推移)</div><div class="v" style="font-size:14px;line-height:1.4">${d.trend[4]}<span style="font-size:11px;color:var(--sub)">→6月見込${Math.round(d.shinki*30/21)}</span></div><div class="spark" style="margin:0">${spk}</div></div>
     </div>
 
-    <div class="band-era"><span></span><span>◀ 過去（フィードバック）＝特定</span><span>未来（フィードフォワード）＝改善 ▶</span></div>
+    <div class="band-era"><span>◀ 過去（フィードバック）＝特定</span><span>未来（フィードフォワード）＝改善 ▶</span></div>
     <div class="frame-band">
-      <div class="band lead">非効果的</div>
       <div class="band">特 定</div>
       <div class="band">改 善</div>
     </div>
 
     <div class="frame">
-      <div class="cell"><div class="ch why">②理由<small>Why</small></div><div class="cb">${d.why}</div></div>
       <div class="cell"><div class="ch prob">①問題<small>Problem</small></div><div class="cb">${d.prob}</div></div>
       <div class="cell"><div class="ch fact">②事実<small>Fact</small></div><div class="cb">${d.fact}</div></div>
       <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><ol>${d.what.map(w=>`<li>${w}</li>`).join("")}</ol></div></div>
