@@ -105,6 +105,10 @@
   .ch.what{background:var(--red)}.ch.goal{background:var(--red2)}.ch.plan{background:var(--red2)}.ch.act{background:var(--red2)}
   .cell .cb{padding:11px 10px;font-size:12.5px;color:#dfe8fb;flex:1}
   .cell .cb b{color:#fff}
+  .krbox{background:rgba(242,194,0,.08);border:1px solid rgba(242,194,0,.28);border-radius:8px;padding:8px 10px;margin-bottom:9px}
+  .krbox .krh{display:block;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.04em;margin-bottom:2px}
+  .krbox .krrow{margin-top:4px;font-size:11px;color:#cdd9f0;line-height:1.6}
+  .krbox b.up{color:#7df0c0}.krbox b.down{color:#ff9a9a}.krbox b.flat{color:var(--sub)}
   .cell .cb .num{color:#ffd66b;font-weight:800}
   .cell .cb ol{margin:0;padding-left:16px}
   .cell .cb li{margin-bottom:5px}
@@ -157,7 +161,7 @@
 <script>
 const D = [
  {key:"m横浜",brand:"most",ach:112.3,proj:4546243,tgt:4048000,visit:323,shinki:54,sa:269,tanka:9853,setr:53.3,tenpan:713640,shT:8747,saT:10074,
-  trend:[79,84,62,71,79], status:"g", pain:"店販減トレンド＋新規の薄さ（守りの一手）",
+  trend:[79,84,62,71,79], status:"g", kr:{n:-70400,r:79200,t:485433,main:"単価で大幅達成・新規が唯一の弱点"}, pain:"店販減トレンド＋新規の薄さ（守りの一手）",
   oneliner:"達成は盤石。だが店販−¥504,000減・新規54（再来比17%）の薄さが“静かな先細り”サイン。",
   why:"高LTVの再来モデルが完成。新規供給が細く、長期では再来基盤の自然減耗リスク。店販は提案頻度の低下。",
   prob:"達成112%で盤石。ただし新規が薄く（54件／再来比17%）、店販が3Qで大幅減。",
@@ -168,7 +172,7 @@ const D = [
   quadrant:"VIP（高単価×再来）",actsrc:"council",act:[{t:"新規54は高単価セット（朝メイク時短セット等）で獲得し単価¥9,800を維持",tgt:"新規",star:4},{t:"回数券の継続購入率を死守＋新規回数券3回券の導線強化",tgt:"再来×単価",star:4},{t:"物販の声かけを全員復活（構成比5.0%→8%へ）",tgt:"単価",star:3}]},
 
  {key:"S札幌",brand:"ssin",ach:100.2,proj:2204493,tgt:2200700,visit:246,shinki:82,sa:164,tanka:6273,setr:64.2,tenpan:486655,shT:5988,saT:6416,
-  trend:[59,111,166,119,114], status:"g", pain:"新規の漸減トレンド（質型ゆえ供給網が弱い）",
+  trend:[59,111,166,119,114], status:"g", kr:{n:-112100,r:-17700,t:130923,main:"新規不足を客単価で相殺し均衡"}, pain:"新規の漸減トレンド（質型ゆえ供給網が弱い）",
   oneliner:"唯一の達成SSIN。再来×セットの“質”で勝つが、新規が3月ピーク比で漸減＝将来の供給リスク。",
   why:"移転による認知再構築の途上＋HPB新規流入の頭打ち。質モデルが完成している分、量（新規）の供給網が相対的に弱い。",
   prob:"達成は100.2%で健全。ただ新規が3月166→5月114と漸減し、質頼みの構造に先細りリスク。",
@@ -179,7 +183,7 @@ const D = [
   quadrant:"優良新規（高単価×新規強化）",act:[{t:"打ち出し（記載）を工夫＝デザイン別訴求",tgt:"新規",star:4},{t:"口コミ特典クーポンの作成",tgt:"新規",star:4},{t:"回数券販売",tgt:"単価",star:4}]},
 
  {key:"m川崎",brand:"most",ach:97.6,proj:2171786,tgt:2226000,visit:198,shinki:49,sa:149,tanka:7678,setr:63.6,tenpan:125670,shT:6123,saT:8189,
-  trend:[59,53,51,48,62], status:"y", pain:"再来離脱（次回予約＝LTV設計の弱さ）",
+  trend:[59,53,51,48,62], status:"y", kr:{n:67200,r:84000,t:-204326,main:"客単価のみが穴（回数券壊滅で−¥204,326）"}, pain:"再来離脱（次回予約＝LTV設計の弱さ）",
   oneliner:"ほぼ達成。単価・セットの質は高いが、3Qで再来−70件の離脱。次回予約の取りこぼしが病巣。",
   why:"施術・単価の質は高いが、次回予約の仕組み化が弱く再来サイクルが伸びている。物販も¥125,670と薄い。",
   prob:"達成97.6%でほぼ射程。ただ3Qで再来が−70件離脱しLTVが削られている。",
@@ -190,7 +194,7 @@ const D = [
   quadrant:"VIP（高単価×再来）",actsrc:"council",act:[{t:"★回数券の再建＝次回予約で歩幅固定→LED導線→回数券の二段階（現状2件¥19,500）",tgt:"再来×単価",star:5},{t:"LEDマツエク再来の次回予約定着（付替サイクルに次回予約）",tgt:"再来",star:4},{t:"再来149の離脱掘り起こしLINE配信",tgt:"再来",star:3}]},
 
  {key:"S熊本",brand:"ssin",ach:78.1,proj:1171871,tgt:1500000,visit:162,shinki:43,sa:119,tanka:5064,setr:60.5,tenpan:150910,shT:5406,saT:4940,
-  trend:[54,80,109,89,57], status:"r", pain:"新規の急減＋低単価クーポン依存",
+  trend:[54,80,109,89,57], status:"r", kr:{n:-114000,r:0,t:-216216,main:"客単価＋新規不足のダブル"}, pain:"新規の急減＋低単価クーポン依存",
   oneliner:"新規が3月109→5月57と急減、客単価¥5,064も低位。量と質の両面で削られている。",
   why:"HPB新規の枯渇傾向＋低単価クーポン中心の集客構造。ミニモで経路は広げたが単価が乗らない。",
   prob:"達成78.1%。新規が急減し、客単価¥5,064と低く、安売り依存で単価が上がらない。",
@@ -201,7 +205,7 @@ const D = [
   quadrant:"リピーター（低単価×再来）",act:[{t:"眉カラー導入",tgt:"単価",star:5},{t:"クロスセル割引（眉毛⇆まつ毛のセット訴求）",tgt:"単価",star:4},{t:"当日限定のゲリラクーポン運用",tgt:"新規",star:4}]},
 
  {key:"m下北沢",brand:"most",ach:76.1,proj:1757229,tgt:2310000,visit:163,shinki:14,sa:149,tanka:7546,setr:69.3,tenpan:201850,shT:6564,saT:7639,
-  trend:[57,65,26,14,14], status:"r", pain:"★新規が壊滅（新規比率6%＝将来の崖）",
+  trend:[57,65,26,14,14], status:"r", kr:{n:-346500,r:-169400,t:-35882,main:"新規不足が圧倒的＋再来も流出"}, pain:"★新規が壊滅（新規比率6%＝将来の崖）",
   oneliner:"質は直営トップ級。だが新規14が壊滅（比率6%）。再来149だけで支える“再来食い潰し”で将来の崖。",
   why:"HPBサロンページのPV/露出 or クーポン構成の崩壊で新規入口が閉じた。質モデルが完成している分、売上は当面維持され危機が見えにくい罠。",
   prob:"達成76.1%。新規が3月26→14→14→14で壊滅（比率6%）、再来基盤の食い潰しで売上を維持中。",
@@ -212,7 +216,7 @@ const D = [
   quadrant:"VIP（高単価×再来）※新規入口が枯渇",actsrc:"council",act:[{t:"★HPB新規入口の緊急復旧（露出/掲載順位/新規セットクーポンを点検）",tgt:"新規",star:5},{t:"眉毛（ハリウッドブロウリフト）の強みを新規で前面訴求＝安売りでなく強み可視化",tgt:"新規",star:4},{t:"物販2.5%の底上げ（再来149基盤に物販提案）",tgt:"単価",star:3}]},
 
  {key:"S岐阜",brand:"ssin",ach:74.9,proj:542757,tgt:725000,visit:81,shinki:29,sa:52,tanka:4690,setr:23.5,tenpan:18100,shT:4773,saT:4644,
-  trend:[22,20,42,31,34], status:"r", pain:"セット率23.5%（直営最低）＋物販ほぼゼロ",
+  trend:[22,20,42,31,34], status:"r", kr:{n:-170000,r:20000,t:-35650,main:"ほぼ新規不足の一点"}, pain:"セット率23.5%（直営最低）＋物販ほぼゼロ",
   oneliner:"セット率23.5%が直営最低、物販¥18,100でほぼゼロ。単価を積む仕組みが未実装。1名体制で稼働天井も。",
   why:"オープン間もなく単価メニュー/物販オペが未整備。1名（Yuki）体制で提案に手が回らず、稼働も天井に近い。",
   prob:"達成74.9%。セット率23.5%・物販ほぼゼロで単価が積めず、1名体制で稼働も頭打ち。",
@@ -223,7 +227,7 @@ const D = [
   quadrant:"リピーター（低単価×再来）",act:[{t:"セットメニュー数を5つ以上（ワード対策の上）",tgt:"単価",star:4},{t:"オプションセット割（800円）",tgt:"単価",star:4},{t:"眉カラー導入",tgt:"単価",star:5}]},
 
  {key:"S藤沢",brand:"ssin",ach:70.2,proj:981029,tgt:1398000,visit:113,shinki:34,sa:79,tanka:6077,setr:40.7,tenpan:227720,shT:5124,saT:6488,
-  trend:[104,97,104,125,100], status:"r", pain:"来店総量の不足（量が薄い）",
+  trend:[104,97,104,125,100], status:"r", kr:{n:-354000,r:-72000,t:12474,main:"新規不足が圧倒的"}, pain:"来店総量の不足（量が薄い）",
   oneliner:"客単価¥6,077・再来単価¥6,488と“質”は足りている。足りないのは“量”＝来店総量の不足。",
   why:"新規流入（HPB）の弱さ＋目標が3Q実績（月¥1,200,000前後）から引き上げられたギャップ。母数が薄い。",
   prob:"達成70.2%（直営ワースト2）。来店113・新規34と母数が薄く、単価は健闘も総量で大幅未達。",
@@ -234,7 +238,7 @@ const D = [
   quadrant:"VIP（高単価×再来）※来店量が不足",act:[{t:"新規割引クーポン（限定訴求）",tgt:"新規",star:4},{t:"紹介割",tgt:"新規",star:4},{t:"〇日以内の再来限定クーポン",tgt:"再来",star:4}]},
 
  {key:"S二子玉川",brand:"ssin",ach:61.6,proj:1016929,tgt:1651200,visit:146,shinki:37,sa:109,tanka:4876,setr:46.6,tenpan:168720,shT:5896,saT:4529,
-  trend:[77,69,149,65,73], status:"r", pain:"★客単価崩壊（再来単価＜新規単価の異常）",
+  trend:[77,69,149,65,73], status:"r", kr:{n:-172800,r:-140800,t:-318516,main:"新規・再来・客単価の三重苦"}, pain:"★客単価崩壊（再来単価＜新規単価の異常）",
   oneliner:"直営最大の未達。来店はあるのに単価が乗らない。再来単価¥4,529が新規¥5,896を下回る異常＝再来が安メニューに流出。",
   why:"3Qでセット率が69.4%→51.8%へ崩壊した流れが6月も継続。メニュー提案オペの形骸化で再来が低単価メニューに固定化。",
   prob:"達成61.6%（直営ワースト）。来店146はあるのに客単価¥4,876と低く、特に再来単価が新規を下回る。",
@@ -246,6 +250,8 @@ const D = [
 ];
 
 const yen = n => "¥"+n.toLocaleString();
+const fmt = n => (n>0?"+¥":n<0?"−¥":"±¥")+Math.abs(n).toLocaleString();
+const cc = n => n>0?"up":n<0?"down":"flat";
 const bcls = s => s==="g"?"b-g":s==="y"?"b-y":"b-r";
 
 // ヒーロー集計
@@ -300,7 +306,7 @@ document.getElementById("stores").innerHTML = D.map(d=>{
     <div class="frame">
       <div class="cell"><div class="ch prob">①問題<small>Problem</small></div><div class="cb">${d.prob}</div></div>
       <div class="cell"><div class="ch fact">②事実<small>Fact</small></div><div class="cb">${d.fact}</div></div>
-      <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><ol>${d.what.map(w=>`<li>${w}</li>`).join("")}</ol></div></div>
+      <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><div class="krbox"><span class="krh">根本課題＝KPI分解（売上GAPの要因）</span>主因：<b>${d.kr.main}</b><div class="krrow">新規 <b class="${cc(d.kr.n)}">${fmt(d.kr.n)}</b> ／ 再来 <b class="${cc(d.kr.r)}">${fmt(d.kr.r)}</b> ／ 客単価 <b class="${cc(d.kr.t)}">${fmt(d.kr.t)}</b></div></div><ol>${d.what.map(w=>`<li>${w}</li>`).join("")}</ol></div></div>
       <div class="cell"><div class="ch goal">④理想<small>GOAL</small></div><div class="cb">${d.goal}</div></div>
       <div class="cell"><div class="ch plan">⑤方針<small>Plan</small></div><div class="cb">${d.plan}</div></div>
       <div class="cell"><div class="ch act">⑥行動<small>Action ｜ ${d.actsrc==="council"?"most戦略（理事会）":"SSIN BP施策"}</small></div><div class="cb"><ol>${d.act.map(a=>`<li>${a.t}<span class="bptag ${d.actsrc==="council"?"mt":""}">${a.tgt}</span><span class="bp">${"★".repeat(a.star)}</span></li>`).join("")}</ol></div></div>
