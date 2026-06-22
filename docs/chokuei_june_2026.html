@@ -71,6 +71,8 @@
     background:#39305c;color:#dac9ff;border:1px solid #6b54a8;letter-spacing:.02em}
   .cell .cb li .bptag{display:inline-block;font-size:10px;color:#bcd0f5;background:rgba(120,150,220,.18);
     border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:700;white-space:nowrap}
+  .cell .cb li .bptag.mt{color:#ffd0f2;background:rgba(200,120,190,.2)}
+  .ch.act-mt{background:#6a2a62 !important}
   .cell .cb li .bp{color:var(--gold);font-weight:800;margin-left:6px;font-size:11px;letter-spacing:-1.5px;white-space:nowrap}
 
   /* KPIカード */
@@ -148,7 +150,7 @@
     数値の正本：<b>~/.salonboard_dashboard/downloads/sheets/20260621_売上情報csv</b>（毎日更新・6/21まで）／目標：事業部売上集計10期 - 目標(1).csv 202606<br>
     店舗分離はcol[1]正式名（SSIN STUDIO＋地名／most eyes＋地名）で実施しLUMISS・Patra混入を除外。新規/再来は会計IDユニーク・col[21]判定。<br>
     着地見込＝6/21までの実績 ×30/21（単純日割り）。客単価・セット率・店販は確定実績ベース。<br>
-    ⑥行動は<b>SSINベストプラクティスマニュアル「施策一覧表」</b>に準拠（顧客象限別／タグ＝施策対象／★＝重要度）。象限はお試し層／優良新規／リピーター／VIPの4分類。生成：2026-06-22
+    ⑥行動は、<b>SSIN店＝ベストプラクティスマニュアル「施策一覧表」準拠（★＝重要度）</b>／<b>most店＝理事会で導いたmost専用戦略（★＝優先度）</b>。mostはVIP維持・LTV最大化が軸で、SSINの低単価集客施策は当てない（値引きで新規を増やさず、高単価のまま“通う理由”を増やす）。タグ＝施策対象。象限はお試し層／優良新規／リピーター／VIPの4分類。生成：2026-06-22
   </div>
 </div>
 
@@ -163,7 +165,7 @@ const D = [
   what:["再来269×高単価¥10,074の厚い再来基盤で達成を実現。","リスクは新規54の薄さ（3Qで−38件）と店販−¥504,000の減トレンド。","“勝っている今”のうちに守りの布石を打つ局面。"],
   goal:"達成110%維持＋新規月80件回復＋店販¥900,000回復で持続的成長。",
   plan:"守り重視。再来基盤の維持＋店販テコ入れ＋新規の細りを監視。6月内に着手。",
-  quadrant:"VIP（高単価×再来）",act:[{t:"回数券購入者限定の物販割引",tgt:"単価",star:5},{t:"メッセージ配信で回数券の配信",tgt:"再来×単価",star:4},{t:"口コミインセンティブの導入→ACR増加",tgt:"新規",star:3}]},
+  quadrant:"VIP（高単価×再来）",actsrc:"council",act:[{t:"新規54は高単価セット（朝メイク時短セット等）で獲得し単価¥9,800を維持",tgt:"新規",star:4},{t:"回数券の継続購入率を死守＋新規回数券3回券の導線強化",tgt:"再来×単価",star:4},{t:"物販の声かけを全員復活（構成比5.0%→8%へ）",tgt:"単価",star:3}]},
 
  {key:"S札幌",brand:"ssin",ach:100.2,proj:2204493,tgt:2200700,visit:246,shinki:82,sa:164,tanka:6273,setr:64.2,tenpan:486655,shT:5988,saT:6416,
   trend:[59,111,166,119,114], status:"g", pain:"新規の漸減トレンド（質型ゆえ供給網が弱い）",
@@ -185,7 +187,7 @@ const D = [
   what:["客単価¥7,678・セット63.6%は良好、新規49も回復基調。","課題は再来149（3Qで−70件の離脱トレンド）。","次回予約獲得が弱く再来サイクルが伸びている。"],
   goal:"再来180件回復・次回予約率35%で達成100%超へ。",
   plan:"次回予約獲得を最大レバーに。6月内に次回予約専用メニューを徹底。",
-  quadrant:"VIP（高単価×再来）",act:[{t:"〇日以内の再来限定クーポン",tgt:"再来",star:4},{t:"LINEショップカード導入",tgt:"再来",star:4},{t:"次回予約で◯円割引（前日リマインド＋RefundHub必須）",tgt:"再来×単価",star:2}]},
+  quadrant:"VIP（高単価×再来）",actsrc:"council",act:[{t:"★回数券の再建＝次回予約で歩幅固定→LED導線→回数券の二段階（現状2件¥19,500）",tgt:"再来×単価",star:5},{t:"LEDマツエク再来の次回予約定着（付替サイクルに次回予約）",tgt:"再来",star:4},{t:"再来149の離脱掘り起こしLINE配信",tgt:"再来",star:3}]},
 
  {key:"S熊本",brand:"ssin",ach:78.1,proj:1171871,tgt:1500000,visit:162,shinki:43,sa:119,tanka:5064,setr:60.5,tenpan:150910,shT:5406,saT:4940,
   trend:[54,80,109,89,57], status:"r", pain:"新規の急減＋低単価クーポン依存",
@@ -207,7 +209,7 @@ const D = [
   what:["セット69.3%・客単価¥7,546と“質”は直営トップクラス。","新規14は3月26→14→14と壊滅、新規比率わずか6%。","再来149の自然減耗を補充できず、いずれ基盤が枯れる崖。"],
   goal:"新規を月40件以上に回復させ、再来基盤の拡大再生産を再起動する。",
   plan:"新規入口（HPB PV/クーポン）の緊急復旧を最優先。6月内にHPB診断を実施。",
-  quadrant:"VIP（高単価×再来）※新規入口が枯渇",act:[{t:"打ち出し（記載）を工夫＝デザイン別訴求",tgt:"新規",star:4},{t:"新規割引クーポン（限定訴求）",tgt:"新規",star:4},{t:"当日限定ゲリラクーポン（空きが多い日に掲載）",tgt:"新規",star:4}]},
+  quadrant:"VIP（高単価×再来）※新規入口が枯渇",actsrc:"council",act:[{t:"★HPB新規入口の緊急復旧（露出/掲載順位/新規セットクーポンを点検）",tgt:"新規",star:5},{t:"眉毛（ハリウッドブロウリフト）の強みを新規で前面訴求＝安売りでなく強み可視化",tgt:"新規",star:4},{t:"物販2.5%の底上げ（再来149基盤に物販提案）",tgt:"単価",star:3}]},
 
  {key:"S岐阜",brand:"ssin",ach:74.9,proj:542757,tgt:725000,visit:81,shinki:29,sa:52,tanka:4690,setr:23.5,tenpan:18100,shT:4773,saT:4644,
   trend:[22,20,42,31,34], status:"r", pain:"セット率23.5%（直営最低）＋物販ほぼゼロ",
@@ -301,7 +303,7 @@ document.getElementById("stores").innerHTML = D.map(d=>{
       <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><ol>${d.what.map(w=>`<li>${w}</li>`).join("")}</ol></div></div>
       <div class="cell"><div class="ch goal">④理想<small>GOAL</small></div><div class="cb">${d.goal}</div></div>
       <div class="cell"><div class="ch plan">⑤方針<small>Plan</small></div><div class="cb">${d.plan}</div></div>
-      <div class="cell"><div class="ch act">⑥行動<small>Action ｜ SSIN BP施策</small></div><div class="cb"><ol>${d.act.map(a=>`<li>${a.t}<span class="bptag">${a.tgt}</span><span class="bp">${"★".repeat(a.star)}</span></li>`).join("")}</ol></div></div>
+      <div class="cell"><div class="ch act">⑥行動<small>Action ｜ ${d.actsrc==="council"?"most戦略（理事会）":"SSIN BP施策"}</small></div><div class="cb"><ol>${d.act.map(a=>`<li>${a.t}<span class="bptag ${d.actsrc==="council"?"mt":""}">${a.tgt}</span><span class="bp">${"★".repeat(a.star)}</span></li>`).join("")}</ol></div></div>
     </div>
   </div>`;
 }).join("");
