@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>直営8店 6月着地見込み診断｜特定→改善フレーム</title>
+<style>
+  :root{
+    --navy:#11203b; --navy2:#172a4d; --navy3:#1f3a66;
+    --past:#1f3a66; --pastline:#2a4f8f;
+    --red:#9b2030; --red2:#c0392b;
+    --gold:#f2c200; --ink:#0d1830;
+    --green:#19a974; --yellow:#e8a200; --danger:#e23b3b;
+    --txt:#eaf0fb; --sub:#9fb2d4; --card:#16294a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(160deg,#0b1426,#11203b 55%,#0c1730);color:var(--txt);
+    line-height:1.7;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* ヒーロー */
+  .hero{padding:46px 18px 36px;text-align:center}
+  .hero .eyebrow{color:var(--gold);font-weight:800;letter-spacing:.18em;font-size:13px}
+  .hero h1{font-size:30px;font-weight:900;margin:10px 0 6px;letter-spacing:.01em}
+  .hero .sub{color:var(--sub);font-size:14px}
+  .hero .total{margin:22px auto 0;display:inline-flex;align-items:baseline;gap:14px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:16px 26px}
+  .hero .total .big{font-size:40px;font-weight:900;color:#fff}
+  .hero .total .lbl{font-size:13px;color:var(--sub)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+  .chip{font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.14)}
+  .chip.g{background:rgba(25,169,116,.16);color:#7df0c0;border-color:rgba(25,169,116,.4)}
+  .chip.r{background:rgba(226,59,59,.14);color:#ff9a9a;border-color:rgba(226,59,59,.4)}
+
+  /* サマリー表 */
+  .section-h{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.14em;
+    margin:42px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-h::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .summary{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
+    border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);font-size:14px}
+  .summary th{background:rgba(255,255,255,.05);color:var(--sub);font-weight:700;
+    padding:13px 12px;text-align:right;font-size:12px;letter-spacing:.03em}
+  .summary th:first-child,.summary td:first-child{text-align:left}
+  .summary td{padding:13px 12px;text-align:right;border-top:1px solid rgba(255,255,255,.06)}
+  .summary tr:hover td{background:rgba(255,255,255,.03)}
+  .store-tag{font-weight:800}
+  .bdg{display:inline-block;min-width:62px;text-align:center;font-weight:800;
+    padding:4px 8px;border-radius:8px;font-size:13px}
+  .b-g{background:rgba(25,169,116,.18);color:#7df0c0}
+  .b-y{background:rgba(232,162,0,.2);color:#ffd66b}
+  .b-r{background:rgba(226,59,59,.18);color:#ff9a9a}
+
+  /* 店舗ブロック */
+  .store{margin-top:30px;background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden}
+  .store-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;background:linear-gradient(90deg,rgba(31,58,102,.55),rgba(22,41,74,.25))}
+  .store-head .name{font-size:21px;font-weight:900}
+  .brand{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.05em}
+  .brand.ssin{background:#23406f;color:#cfe0ff}
+  .brand.most{background:#5a2a55;color:#ffd0f2}
+  .store-head .ach{margin-left:auto;text-align:right}
+  .store-head .ach .v{font-size:26px;font-weight:900;line-height:1}
+  .store-head .ach .l{font-size:11px;color:var(--sub)}
+  .one-liner{padding:12px 22px 0;color:#ffe8a3;font-weight:700;font-size:14.5px}
+
+  /* KPIカード */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:16px 22px 20px}
+  .kpi{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 12px}
+  .kpi .k{font-size:11px;color:var(--sub);font-weight:700}
+  .kpi .v{font-size:19px;font-weight:900;margin-top:3px}
+  .kpi .d{font-size:11px;margin-top:2px}
+  .up{color:#7df0c0}.down{color:#ff9a9a}.flat{color:var(--sub)}
+
+  /* MIZUKARAフレーム */
+  .frame-band{display:grid;grid-template-columns:120px 2.6fr 2.4fr;gap:6px;
+    padding:0 16px;margin-top:6px}
+  .band{position:relative;text-align:center;font-weight:900;font-size:15px;
+    padding:9px 6px;color:#1a1a1a;background:var(--gold);
+    clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+  .band.lead{background:#7a8aa6;color:#11203b}
+  .band-era{display:grid;grid-template-columns:120px 2.6fr 2.4fr;gap:6px;
+    padding:4px 16px 0;font-size:12px;font-weight:800;color:var(--sub);letter-spacing:.05em}
+  .band-era span:nth-child(2){text-align:center;color:#9fc0ff}
+  .band-era span:nth-child(3){text-align:center;color:#ffb0a0}
+
+  .frame{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px 16px 22px;
+    overflow-x:auto}
+  .cell{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:10px;
+    overflow:hidden;min-width:130px;display:flex;flex-direction:column}
+  .cell .ch{padding:9px 8px;text-align:center;font-weight:800;font-size:12.5px;color:#fff;line-height:1.3}
+  .cell .ch small{display:block;font-size:10px;font-weight:600;opacity:.8;margin-top:1px}
+  .ch.why{background:#1c2f5a}.ch.prob{background:#243a66}.ch.fact{background:var(--red)}
+  .ch.what{background:var(--red)}.ch.goal{background:var(--red2)}.ch.plan{background:var(--red2)}.ch.act{background:var(--red2)}
+  .cell .cb{padding:11px 10px;font-size:12.5px;color:#dfe8fb;flex:1}
+  .cell .cb b{color:#fff}
+  .cell .cb .num{color:#ffd66b;font-weight:800}
+  .cell .cb ol{margin:0;padding-left:16px}
+  .cell .cb li{margin-bottom:5px}
+  .arrowdown{color:#ff9a9a;font-weight:900;text-align:center;margin:4px 0}
+  .spark{font-size:11px;color:var(--sub);margin-top:6px}
+  .spark b{color:#ffd66b}
+
+  .note{color:var(--sub);font-size:12px;text-align:center;margin-top:40px;line-height:1.8}
+  @media(max-width:880px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .frame-band,.band-era{grid-template-columns:1fr}
+    .band{clip-path:none;border-radius:8px}
+    .frame{grid-template-columns:repeat(7,minmax(150px,1fr))}
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">SSIN STUDIO ／ 最強理事会</div>
+  <h1>直営8店舗 6月着地見込み診断</h1>
+  <div class="sub">過去（特定）→ 未来（改善）フレームで全店を分解 ｜ データ：6/1〜6/21実績 → 月末日割り換算（×30/21）</div>
+  <div class="total">
+    <div><div class="big" id="totAch">—</div><div class="lbl">直営8店 合計着地達成率</div></div>
+    <div><div class="big" id="totSales" style="font-size:24px">—</div><div class="lbl">合計着地見込 / 目標</div></div>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+
+<div class="wrap">
+  <div class="section-h">全店サマリー（着地達成率 順）</div>
+  <table class="summary">
+    <thead><tr>
+      <th>店舗</th><th>着地見込</th><th>目標</th><th>達成率</th>
+      <th>来店</th><th>新規</th><th>再来</th><th>客単価</th><th>セット率</th><th>最大の病巣</th>
+    </tr></thead>
+    <tbody id="sumBody"></tbody>
+  </table>
+
+  <div class="section-h">店舗別 特定→改善フレーム</div>
+  <div id="stores"></div>
+
+  <div class="note">
+    数値の正本：<b>~/.salonboard_dashboard/downloads/sheets/20260621_売上情報csv</b>（毎日更新・6/21まで）／目標：事業部売上集計10期 - 目標(1).csv 202606<br>
+    店舗分離はcol[1]正式名（SSIN STUDIO＋地名／most eyes＋地名）で実施しLUMISS・Patra混入を除外。新規/再来は会計IDユニーク・col[21]判定。<br>
+    着地見込＝6/21までの実績 ×30/21（単純日割り）。客単価・セット率・店販は確定実績ベース。生成：2026-06-22
+  </div>
+</div>
+
+<script>
+const D = [
+ {key:"m横浜",brand:"most",ach:112.3,proj:4546243,tgt:4048000,visit:323,shinki:54,sa:269,tanka:9853,setr:53.3,tenpan:713640,shT:8747,saT:10074,
+  trend:[79,84,62,71,79], status:"g", pain:"店販減トレンド＋新規の薄さ（守りの一手）",
+  oneliner:"達成は盤石。だが店販−¥504K減・新規54（再来比17%）の薄さが“静かな先細り”サイン。",
+  why:"高LTVの再来モデルが完成。新規供給が細く、長期では再来基盤の自然減耗リスク。店販は提案頻度の低下。",
+  prob:"達成112%で盤石。ただし新規が薄く（54件／再来比17%）、店販が3Qで大幅減。",
+  fact:'着地<span class="num">¥4,546,243</span>／目標¥4,048,000＝<b>112.3%</b>。来店323・新規54・再来269。客単価<span class="num">¥9,853</span>（直営最高）・再来単価¥10,074。店販¥713,640。',
+  what:["再来269×高単価¥10,074の厚い再来基盤で達成を実現。","リスクは新規54の薄さ（3Qで−38件）と店販−¥504Kの減トレンド。","“勝っている今”のうちに守りの布石を打つ局面。"],
+  goal:"達成110%維持＋新規月80件回復＋店販¥900K回復で持続的成長。",
+  plan:"守り重視。再来基盤の維持＋店販テコ入れ＋新規の細りを監視。6月内に着手。",
+  act:["店販の声かけ頻度を全員ルール化","HPB新規導線（写真/順位）の点検","再来の次回予約を徹底し基盤維持"]},
+
+ {key:"S札幌",brand:"ssin",ach:100.2,proj:2204493,tgt:2200700,visit:246,shinki:82,sa:164,tanka:6273,setr:64.2,tenpan:486655,shT:5988,saT:6416,
+  trend:[59,111,166,119,114], status:"g", pain:"新規の漸減トレンド（質型ゆえ供給網が弱い）",
+  oneliner:"唯一の達成SSIN。再来×セットの“質”で勝つが、新規が3月ピーク比で漸減＝将来の供給リスク。",
+  why:"移転による認知再構築の途上＋HPB新規流入の頭打ち。質モデルが完成している分、量（新規）の供給網が相対的に弱い。",
+  prob:"達成は100.2%で健全。ただ新規が3月166→5月114と漸減し、質頼みの構造に先細りリスク。",
+  fact:'着地<span class="num">¥2,204,493</span>／目標¥2,200,700＝<b>100.2%</b>。来店246・新規82・再来164。客単価¥6,273・セット<b>64.2%</b>・店販¥486,655。再来単価¥6,416。',
+  what:["達成は再来164（単価¥6,416）×セット64%の質で成立。","新規82は母数確保も3月ピーク166比で漸減・移転後は横ばい。","質型ゆえ新規供給が細ると再来の自然減耗を補えない。"],
+  goal:"達成100%を維持しつつ、新規月120件を安定供給し再来基盤を拡大再生産。",
+  plan:"“守りの質”＋“攻めの新規”の両輪。HPB露出と移転後フォローで新規回復。6月内。",
+  act:["移転47名フォローの完了確認","HPBクーポン/写真の鮮度更新で新規回復","次回予約率を再来軸でKPI化"]},
+
+ {key:"m川崎",brand:"most",ach:97.6,proj:2171786,tgt:2226000,visit:198,shinki:49,sa:149,tanka:7678,setr:63.6,tenpan:125670,shT:6123,saT:8189,
+  trend:[59,53,51,48,62], status:"y", pain:"再来離脱（次回予約＝LTV設計の弱さ）",
+  oneliner:"ほぼ達成。単価・セットの質は高いが、3Qで再来−70件の離脱。次回予約の取りこぼしが病巣。",
+  why:"施術・単価の質は高いが、次回予約の仕組み化が弱く再来サイクルが伸びている。物販も¥125Kと薄い。",
+  prob:"達成97.6%でほぼ射程。ただ3Qで再来が−70件離脱しLTVが削られている。",
+  fact:'着地<span class="num">¥2,171,786</span>／目標¥2,226,000＝<b>97.6%</b>。来店198・新規49・再来149。客単価¥7,678・セット<b>63.6%</b>・再来単価¥8,189。店販¥125,670。',
+  what:["客単価¥7,678・セット63.6%は良好、新規49も回復基調。","課題は再来149（3Qで−70件の離脱トレンド）。","次回予約獲得が弱く再来サイクルが伸びている。"],
+  goal:"再来180件回復・次回予約率35%で達成100%超へ。",
+  plan:"次回予約獲得を最大レバーに。6月内に次回予約専用メニューを徹底。",
+  act:["次回予約率を店内で見える化","再来離脱客の掘り起こしLINE配信","物販¥125K→¥250Kへ提案強化"]},
+
+ {key:"S熊本",brand:"ssin",ach:78.1,proj:1171871,tgt:1500000,visit:162,shinki:43,sa:119,tanka:5064,setr:60.5,tenpan:150910,shT:5406,saT:4940,
+  trend:[54,80,109,89,57], status:"r", pain:"新規の急減＋低単価クーポン依存",
+  oneliner:"新規が3月109→5月57と急減、客単価¥5,064も低位。量と質の両面で削られている。",
+  why:"HPB新規の枯渇傾向＋低単価クーポン中心の集客構造。ミニモで経路は広げたが単価が乗らない。",
+  prob:"達成78.1%。新規が急減し、客単価¥5,064と低く、安売り依存で単価が上がらない。",
+  fact:'着地<span class="num">¥1,171,871</span>／目標¥1,500,000＝<b>78.1%</b>。来店162・新規43・再来119。客単価<span class="num">¥5,064</span>（低位）・セット60.5%・新規単価¥5,406。店販¥150,910。',
+  what:["セット60.5%は健全だが客単価¥5,064は直営でも低い。","新規43（5月57からさらに減ペース）＝3月109比で半減。","3Q客単価−¥380＝低単価クーポン依存の疑い。"],
+  goal:"新規月80件回復・客単価¥5,500で売上¥1.5M達成。",
+  plan:"新規回復＋クーポン単価の底上げ。6月内にHPB/ミニモのメニュー単価を見直す。",
+  act:["HPBクーポン構成を高単価導線に再設計","ミニモ新規をセット/次回予約へ転換","再来119の単価UP（オプション提案）"]},
+
+ {key:"m下北沢",brand:"most",ach:76.1,proj:1757229,tgt:2310000,visit:163,shinki:14,sa:149,tanka:7546,setr:69.3,tenpan:201850,shT:6564,saT:7639,
+  trend:[57,65,26,14,14], status:"r", pain:"★新規が壊滅（新規比率6%＝将来の崖）",
+  oneliner:"質は直営トップ級。だが新規14が壊滅（比率6%）。再来149だけで支える“再来食い潰し”で将来の崖。",
+  why:"HPBサロンページのPV/露出 or クーポン構成の崩壊で新規入口が閉じた。質モデルが完成している分、売上は当面維持され危機が見えにくい罠。",
+  prob:"達成76.1%。新規が3月26→14→14→14で壊滅（比率6%）、再来基盤の食い潰しで売上を維持中。",
+  fact:'着地¥1,757,229／目標¥2,310,000＝<b>76.1%</b>。来店163・<span class="num">新規14</span>（直営最少）・再来149。客単価¥7,546・セット<b>69.3%</b>（直営最高）・再来単価¥7,639。',
+  what:["セット69.3%・客単価¥7,546と“質”は直営トップクラス。","新規14は3月26→14→14と壊滅、新規比率わずか6%。","再来149の自然減耗を補充できず、いずれ基盤が枯れる崖。"],
+  goal:"新規を月40件以上に回復させ、再来基盤の拡大再生産を再起動する。",
+  plan:"新規入口（HPB PV/クーポン）の緊急復旧を最優先。6月内にHPB診断を実施。",
+  act:["HPBサロンページのPV/掲載順位/クーポンを緊急監査","クーポン再設計＋写真刷新で露出回復","新規→次回予約で確実に定着させる"]},
+
+ {key:"S岐阜",brand:"ssin",ach:74.9,proj:542757,tgt:725000,visit:81,shinki:29,sa:52,tanka:4690,setr:23.5,tenpan:18100,shT:4773,saT:4644,
+  trend:[22,20,42,31,34], status:"r", pain:"セット率23.5%（直営最低）＋物販ほぼゼロ",
+  oneliner:"セット率23.5%が直営最低、物販¥18,100でほぼゼロ。単価を積む仕組みが未実装。1名体制で稼働天井も。",
+  why:"オープン間もなく単価メニュー/物販オペが未整備。1名（Yuki）体制で提案に手が回らず、稼働も天井に近い。",
+  prob:"達成74.9%。セット率23.5%・物販ほぼゼロで単価が積めず、1名体制で稼働も頭打ち。",
+  fact:'着地¥542,757／目標¥725,000＝<b>74.9%</b>。来店81・新規29・再来52。客単価¥4,690・<span class="num">セット23.5%</span>（直営最低）・<span class="num">店販¥18,100</span>（ほぼゼロ）。',
+  what:["客単価¥4,690・セット23.5%・物販ほぼ皆無＝単価を積む仕組みが無い。","1名（Yuki）体制で来店81が物理上限に近い。","単価設計の欠如＋稼働キャパ制約のダブルパンチ。"],
+  goal:"セット率40%・物販¥150K・客単価¥5,300で売上¥725K達成。",
+  plan:"1名でも回るセット標準化＋物販導線。6月内に提案テンプレを整備。",
+  act:["セットメニューを既定提案化（黙っても出る形）","物販1点提案を全来店ルール化","2名目採用/応援で稼働枠の拡大を検討"]},
+
+ {key:"S藤沢",brand:"ssin",ach:70.2,proj:981029,tgt:1398000,visit:113,shinki:34,sa:79,tanka:6077,setr:40.7,tenpan:227720,shT:5124,saT:6488,
+  trend:[104,97,104,125,100], status:"r", pain:"来店総量の不足（量が薄い）",
+  oneliner:"客単価¥6,077・再来単価¥6,488と“質”は足りている。足りないのは“量”＝来店総量の不足。",
+  why:"新規流入（HPB）の弱さ＋目標が3Q実績（月¥1.2M前後）から引き上げられたギャップ。母数が薄い。",
+  prob:"達成70.2%（直営ワースト2）。来店113・新規34と母数が薄く、単価は健闘も総量で大幅未達。",
+  fact:'着地¥981,029／目標¥1,398,000＝<b>70.2%</b>。来店113・新規34・再来79。客単価¥6,077・セット40.7%・新規単価¥5,124（再来¥6,488より低）。店販¥227,720。',
+  what:["客単価¥6,077・再来単価¥6,488は良好＝質は足りている。","足りないのは量。来店113は3Q月平均（約230）から半減ペース。","新規34も薄く、来店総量（新規＋再来回転）の不足が病巣。"],
+  goal:"来店月230件・新規100件回復で売上¥1.3M超。",
+  plan:"新規入口（HPB）強化＋再来回転率UP（次回予約）。6月内に新規導線を見直す。",
+  act:["HPBクーポン/フリーワード順位を確認・強化","セット率40%→50%へ提案を底上げ","次回予約で再来サイクルを短縮"]},
+
+ {key:"S二子玉川",brand:"ssin",ach:61.6,proj:1016929,tgt:1651200,visit:146,shinki:37,sa:109,tanka:4876,setr:46.6,tenpan:168720,shT:5896,saT:4529,
+  trend:[77,69,149,65,73], status:"r", pain:"★客単価崩壊（再来単価＜新規単価の異常）",
+  oneliner:"直営最大の未達。来店はあるのに単価が乗らない。再来単価¥4,529が新規¥5,896を下回る異常＝再来が安メニューに流出。",
+  why:"3Qでセット率69.4%→51.8%（−17.6pt）と崩壊した流れが6月も継続。メニュー提案オペの形骸化で再来が低単価メニューに固定化。",
+  prob:"達成61.6%（直営ワースト）。来店146はあるのに客単価¥4,876と低く、特に再来単価が新規を下回る。",
+  fact:'着地¥1,016,929／目標¥1,651,200＝<b>61.6%</b>。来店146・新規37・再来109。客単価<span class="num">¥4,876</span>・セット46.6%・<span class="num">再来単価¥4,529＜新規単価¥5,896</span>。',
+  what:["3Qでセット率−17.6pt・客単価−¥534の崩壊が6月も継続。","再来が単品/安メニューに流れ、セット・回数券・物販が積めない。","来店146（回転）はあるのに単価が乗らない＝単価設計の崩壊。"],
+  goal:"セット率65%回復・客単価¥5,500で売上¥1.5M。",
+  plan:"セット率回復が最大レバー（+¥500K〜¥800K余地）。6月内にカウンセリング/メニュー提案を立て直す。",
+  act:["再来客の単品→セット転換トークを標準化","次回予約専用メニューを活用し単価固定","物販¥168K→¥300Kへ提案強化"]},
+];
+
+const yen = n => "¥"+n.toLocaleString();
+const bcls = s => s==="g"?"b-g":s==="y"?"b-y":"b-r";
+
+// ヒーロー集計
+let tp=0,tt=0; D.forEach(d=>{tp+=d.proj;tt+=d.tgt;});
+document.getElementById("totAch").textContent = (tp/tt*100).toFixed(1)+"%";
+document.getElementById("totSales").textContent = yen(tp)+" / "+yen(tt);
+const g=D.filter(d=>d.ach>=100), r=D.filter(d=>d.ach<95);
+document.getElementById("chips").innerHTML =
+  `<span class="chip g">達成圏 ${g.length}店：${g.map(d=>d.key+" "+d.ach+"%").join(" ／ ")}</span>`+
+  `<span class="chip r">未達 ${r.length}店：${r.map(d=>d.key+" "+d.ach+"%").join(" ／ ")}</span>`;
+
+// サマリー表
+document.getElementById("sumBody").innerHTML = D.map(d=>`
+  <tr>
+    <td><span class="store-tag">${d.key}</span> <span class="brand ${d.brand}">${d.brand==="ssin"?"SSIN":"most"}</span></td>
+    <td>${yen(d.proj)}</td><td>${yen(d.tgt)}</td>
+    <td><span class="bdg ${bcls(d.status)}">${d.ach}%</span></td>
+    <td>${d.visit}</td><td>${d.shinki}</td><td>${d.sa}</td>
+    <td>${yen(d.tanka)}</td><td>${d.setr}%</td>
+    <td style="text-align:left;font-size:12.5px;color:#ffd0c0">${d.pain}</td>
+  </tr>`).join("");
+
+// 店舗ブロック
+const months=["1月","2月","3月","4月","5月"];
+document.getElementById("stores").innerHTML = D.map(d=>{
+  const spk = d.trend.map((v,i)=>`${months[i]}<b>${v}</b>`).join(" → ");
+  return `
+  <div class="store">
+    <div class="store-head">
+      <span class="name">${d.key}</span>
+      <span class="brand ${d.brand}">${d.brand==="ssin"?"SSIN STUDIO":"most eyes"}</span>
+      <span class="bdg ${bcls(d.status)}" style="font-size:14px">${d.pain.includes("★")?"🔴 ":""}${d.status==="g"?"🟢":d.status==="y"?"🟡":"🔴"}</span>
+      <div class="ach"><div class="v" style="color:${d.status==="g"?"#7df0c0":d.status==="y"?"#ffd66b":"#ff9a9a"}">${d.ach}%</div><div class="l">着地達成率</div></div>
+    </div>
+    <div class="one-liner">▶ ${d.oneliner}</div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">着地見込</div><div class="v">${yen(d.proj)}</div><div class="d flat">目標 ${yen(d.tgt)}</div></div>
+      <div class="kpi"><div class="k">来店数(MTD)</div><div class="v">${d.visit}</div><div class="d flat">新規${d.shinki}/再来${d.sa}</div></div>
+      <div class="kpi"><div class="k">客単価</div><div class="v">${yen(d.tanka)}</div><div class="d flat">新${yen(d.shT)}/再${yen(d.saT)}</div></div>
+      <div class="kpi"><div class="k">セット率</div><div class="v">${d.setr}%</div><div class="d ${d.setr>=55?"up":d.setr>=40?"flat":"down"}">${d.setr>=55?"良好":d.setr>=40?"中位":"要改善"}</div></div>
+      <div class="kpi"><div class="k">店販</div><div class="v">${yen(d.tenpan)}</div><div class="d ${d.tenpan>=300000?"up":d.tenpan>=150000?"flat":"down"}">${d.tenpan>=300000?"厚い":d.tenpan>=150000?"中位":"薄い"}</div></div>
+      <div class="kpi"><div class="k">新規(月次推移)</div><div class="v" style="font-size:14px;line-height:1.4">${d.trend[4]}<span style="font-size:11px;color:var(--sub)">→6月見込${Math.round(d.shinki*30/21)}</span></div><div class="spark" style="margin:0">${spk}</div></div>
+    </div>
+
+    <div class="band-era"><span></span><span>◀ 過去（フィードバック）＝特定</span><span>未来（フィードフォワード）＝改善 ▶</span></div>
+    <div class="frame-band">
+      <div class="band lead">非効果的</div>
+      <div class="band">特 定</div>
+      <div class="band">改 善</div>
+    </div>
+
+    <div class="frame">
+      <div class="cell"><div class="ch why">②理由<small>Why</small></div><div class="cb">${d.why}</div></div>
+      <div class="cell"><div class="ch prob">①問題<small>Problem</small></div><div class="cb">${d.prob}</div></div>
+      <div class="cell"><div class="ch fact">②事実<small>Fact</small></div><div class="cb">${d.fact}</div></div>
+      <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><ol>${d.what.map(w=>`<li>${w}</li>`).join("")}</ol></div></div>
+      <div class="cell"><div class="ch goal">④理想<small>GOAL</small></div><div class="cb">${d.goal}</div></div>
+      <div class="cell"><div class="ch plan">⑤方針<small>Plan</small></div><div class="cb">${d.plan}</div></div>
+      <div class="cell"><div class="ch act">⑥行動<small>Action</small></div><div class="cb"><ol>${d.act.map(a=>`<li>${a}</li>`).join("")}</ol></div></div>
+    </div>
+  </div>`;
+}).join("");
+</script>
+</body>
+</html>
