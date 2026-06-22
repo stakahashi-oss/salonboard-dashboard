@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>直営MTG 2026-06-22 ― 6月締めラストスパート</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.6;max-width:1200px;margin:0 auto;padding:24px 28px}
+
+/* Header */
+.page-header{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:14px;padding:20px 28px;margin-bottom:20px;color:#fff}
+.header-badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.header-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.header-meta{font-size:12px;color:rgba(255,255,255,.55);display:flex;flex-wrap:wrap;gap:12px}
+.header-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:2px 10px;font-size:11px}
+
+/* Nav */
+.page-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.nav-link{font-size:11px;font-weight:600;color:#64748b;text-decoration:none;padding:5px 12px;border-radius:6px;background:#fff;border:1px solid #e2e8f0;white-space:nowrap}
+.nav-link:hover{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+
+/* 今日の論点ブロック */
+.ronten{background:#0f172a;border-radius:14px;padding:18px 22px;margin-bottom:18px;color:#e2e8f0}
+.ronten-head{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fb923c;margin-bottom:6px}
+.ronten-sub{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:12px}
+.ronten-item{display:flex;gap:10px;padding:8px 0;font-size:13px;line-height:1.65;border-bottom:1px solid rgba(255,255,255,.07)}
+.ronten-item:last-child{border-bottom:none}
+.rb{flex-shrink:0;width:22px;height:22px;border-radius:6px;background:#fb923c;color:#0f172a;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ronten-item strong{color:#fff}
+
+/* Section */
+.section-divider{display:block;background:linear-gradient(90deg,rgba(37,99,235,.08),transparent);border-left:3px solid #2563eb;border-radius:0 6px 6px 0;padding:8px 14px;margin:26px 0 12px;font-size:11px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;text-transform:uppercase;overflow:hidden}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.tbadge{float:right;font-size:10px;font-weight:700;padding:1px 9px;border-radius:20px;background:#1a5a8a;color:#fff;letter-spacing:.02em}
+.tbadge.share{background:#64748b}
+
+/* 達成サマリー */
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.result-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.result-card.hit{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.05)}
+.result-card.miss{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04)}
+.result-card.near{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05)}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rc-label.hit{color:#059669}.rc-label.miss{color:#dc2626}.rc-label.near{color:#d97706}
+.rc-store{font-size:16px;font-weight:800;margin-bottom:4px}
+.rc-value{font-size:12px;font-weight:600;color:#334155}
+.rc-reason{font-size:11px;color:#64748b;margin-top:4px;line-height:1.5}
+.rc-rate{font-size:24px;font-weight:800;margin-bottom:2px}
+
+/* テーブル */
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:#64748b;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid #e2e8f0;background:#f8fafc}
+thead th:first-child{text-align:left}
+tbody td{padding:9px 10px;text-align:right;border-bottom:1px solid #e2e8f0}
+tbody td:first-child{text-align:left;font-weight:600}
+tbody tr:hover{background:#f8fafc}
+tbody tr:last-child td{border-bottom:none}
+td.l{text-align:left!important;font-weight:400!important;color:#475569}
+
+/* タグ */
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-left:4px}
+.tr{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.ta{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.tg{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
+
+/* 施策カード */
+.施策-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.施策-card{border-radius:10px;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0}
+.施策-title{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.施策-body{font-size:12px;color:#475569;line-height:1.6}
+.施策-body .lbl{font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;display:block;margin-top:8px}
+.owner{font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:auto}
+.owner.me{background:#eff6ff;color:#1d4ed8}
+.owner.sv{background:#f0fdf4;color:#15803d}
+
+/* 課題カード */
+.issue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.issue-card{border-radius:10px;padding:14px 16px;border:1px solid}
+.issue-card.critical{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.03)}
+.issue-card.warning{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.03)}
+.issue-card.blue{border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.03)}
+.ic-store{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ic-store.critical{color:#dc2626}.ic-store.warning{color:#d97706}.ic-store.blue{color:#2563eb}
+.ic-item{font-size:12px;color:#475569;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);line-height:1.5}
+.ic-item:last-of-type{border-bottom:none}
+.ic-item strong{color:#1e293b}
+
+/* タイムライン */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:#e2e8f0}
+.tl-item{position:relative;padding:0 0 16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-26px;top:2px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb;background:#2563eb}
+.tl-dot.amber{box-shadow:0 0 0 2px #f59e0b;background:#f59e0b}
+.tl-date{font-size:11px;font-weight:800;color:#1d4ed8;letter-spacing:.04em}
+.tl-title{font-size:13px;font-weight:700;color:#1e293b;margin:2px 0}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.5}
+
+/* アクション */
+.action-item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
+.action-item:last-child{border-bottom:none}
+.anum{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.anum.r{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+.anum.a{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.anum.b{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
+.abody{flex:1}
+.abody .t{font-weight:700;font-size:13px;margin-bottom:4px}
+.who{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
+.who.me{background:#eff6ff;color:#1d4ed8}
+.who.team{background:#f0fdf4;color:#15803d}
+.who.other{background:#fafafa;color:#64748b;border:1px solid #e2e8f0}
+.due{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block}
+.dr{background:rgba(239,68,68,.08);color:#dc2626}
+.da{background:rgba(245,158,11,.08);color:#d97706}
+.db{background:#eff6ff;color:#2563eb}
+
+/* note / insight / commit */
+.insight-box{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.04));border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:12px;line-height:1.7;color:#334155}
+.insight-box strong{color:#1e293b}
+.note{background:#f8fafc;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#64748b;margin-top:12px;line-height:1.6}
+.note.green{border-left-color:#10b981}.note.red{border-left-color:#ef4444}.note.amber{border-left-color:#f59e0b}.note.blue{border-left-color:#3b82f6}
+.note strong{color:#1e293b}
+.output{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:11px 15px;margin-top:14px;font-size:12px;line-height:1.65;color:#065f46}
+.output .ot{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#059669;display:block;margin-bottom:3px}
+.commit-box{border:2px dashed #cbd5e1;border-radius:7px;min-height:30px;padding:6px 10px;font-size:11px;color:#94a3b8}
+.link{color:#2563eb;font-weight:600;text-decoration:none}
+.link:hover{text-decoration:underline}
+
+.num-g{color:#059669;font-weight:700}
+.num-r{color:#dc2626;font-weight:700}
+.num-a{color:#d97706;font-weight:700}
+
+@media(max-width:900px){.result-grid,.施策-grid{grid-template-columns:1fr 1fr}.issue-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.result-grid{grid-template-columns:1fr 1fr}.施策-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-badge">直営 ／ 6月締めラストスパート</div>
+  <div class="header-title">直営MTG ― 残り8日で6月着地を引き上げる</div>
+  <div class="header-meta">
+    <span class="header-chip">📅 2026-06-22（残り8日）</span>
+    <span class="header-chip">🏪 直営8店</span>
+    <span class="header-chip">📉 着地見込 89.6%</span>
+    <span class="header-chip">⚡ あと ¥1,666,563</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="page-nav">
+  <a class="nav-link" href="#ronten">今日の論点</a>
+  <a class="nav-link" href="#genjo">① 現状と残ギャップ</a>
+  <a class="nav-link" href="#iriguchi">② 入口を開く</a>
+  <a class="nav-link" href="#sekkyaku">③ 接客で締める</a>
+  <a class="nav-link" href="#reigai">④ 例外2店</a>
+  <a class="nav-link" href="#system">⑤ 前回宿題・システム</a>
+  <a class="nav-link" href="#commit">⑥ コミット</a>
+</nav>
+
+<!-- 今日の論点 -->
+<div id="ronten" class="ronten">
+  <div class="ronten-head">今日の論点 ― 振り返りでなく「今日から何をやるか」を決める</div>
+  <div class="ronten-sub">目的：6月着地を 89.6% から1%でも上へ。残り8日、全店が「今日やる1つ」を決めて出る。</div>
+  <div class="ronten-item"><span class="rb">1</span><div>未達の主因は、ほぼ全店<strong>「新規不足」</strong>。新規はほぼ100%ホットペッパー経由なので、<strong>入口（露出 × 予約率 × クーポン）</strong>を残り8日で開けに行く。</div></div>
+  <div class="ronten-item"><span class="rb">2</span><div>例外は<strong>2店だけ</strong>。<strong>m川崎</strong>＝回数券が止まって客単価ダウン／<strong>S二子玉川</strong>＝客単価が崩れて三重苦。この2店は単価対策で別建て。</div></div>
+  <div class="ronten-item"><span class="rb">3</span><div>役割分担：<strong>入口＝タカショー</strong>（ホットペッパー・LINE・クーポン）／<strong>接客＝SV・店舗</strong>（次回予約・キャンセル防止・セット・物販）。</div></div>
+</div>
+
+<!-- ① 現状と残ギャップ -->
+<div id="genjo" class="section-divider">① 現状と残ギャップ<span class="tbadge share">共有 5分</span></div>
+<div class="result-grid">
+  <div class="result-card miss">
+    <div class="rc-label miss">📉 直営合計 着地見込</div>
+    <div class="rc-rate num-r">89.6%</div>
+    <div class="rc-value">¥14,392,337 / ¥16,058,900</div>
+    <div class="rc-reason">残り8日であと <span class="num-r">¥1,666,563</span></div>
+  </div>
+  <div class="result-card hit">
+    <div class="rc-label hit">✅ 着地できる店</div>
+    <div class="rc-rate num-g">2店</div>
+    <div class="rc-value">m横浜 112.3% / S札幌 100.2%</div>
+    <div class="rc-reason">ここは守り。崩さない</div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">🔴 最大ギャップ</div>
+    <div class="rc-rate num-r">S二子玉川</div>
+    <div class="rc-value">61.6% ／ あと ¥634,271</div>
+    <div class="rc-reason">客単価崩壊（再来 ＜ 新規）</div>
+  </div>
+  <div class="result-card miss">
+    <div class="rc-label miss">🔴 最危険</div>
+    <div class="rc-rate num-r">m下北沢</div>
+    <div class="rc-value">76.1% ／ あと ¥552,771</div>
+    <div class="rc-reason">新規が壊滅（新規比率6%）</div>
+  </div>
+</div>
+<div class="section" style="padding:0">
+  <table>
+    <thead>
+      <tr><th style="text-align:left">店舗</th><th>着地見込</th><th>目標</th><th>達成率</th><th>残ギャップ</th><th style="text-align:left">主因</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>S二子玉川</td><td>¥1,016,929</td><td>¥1,651,200</td><td class="num-r">61.6%</td><td class="num-r">−634,271</td><td class="l">客単価崩壊（再来¥4,529＜新規¥5,896）</td></tr>
+      <tr><td>m下北沢</td><td>¥1,757,229</td><td>¥2,310,000</td><td class="num-r">76.1%</td><td class="num-r">−552,771</td><td class="l">新規壊滅（新規比率6%）</td></tr>
+      <tr><td>S藤沢</td><td>¥981,029</td><td>¥1,398,000</td><td class="num-r">70.2%</td><td class="num-r">−416,971</td><td class="l">来店総量が不足</td></tr>
+      <tr><td>S熊本</td><td>¥1,171,871</td><td>¥1,500,000</td><td class="num-r">78.1%</td><td class="num-r">−328,129</td><td class="l">新規急減＋低単価依存</td></tr>
+      <tr><td>S岐阜</td><td>¥542,757</td><td>¥725,000</td><td class="num-r">74.9%</td><td class="num-r">−182,243</td><td class="l">セット率最低23.5%・物販ほぼ0</td></tr>
+      <tr><td>m川崎</td><td>¥2,171,786</td><td>¥2,226,000</td><td class="num-a">97.6%</td><td class="num-r">−54,214</td><td class="l">回数券が止まった</td></tr>
+      <tr><td>S札幌</td><td>¥2,204,493</td><td>¥2,200,700</td><td class="num-g">100.2%</td><td class="num-g">+3,793</td><td class="l">ほぼ着地（新規は漸減）</td></tr>
+      <tr><td>m横浜</td><td>¥4,546,243</td><td>¥4,048,000</td><td class="num-g">112.3%</td><td class="num-g">+498,243</td><td class="l">達成（守り・新規は薄い）</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note"><strong>データ：</strong>着地見込＝6/1〜6/21の実績 × 30/21（毎日更新CSV・6/21時点）。店舗別は正式店名で集計し、LUMISS・Patra分は除外。<strong>未達の合計 ¥1,666,563 のうち、新規不足だけで 約¥110万分</strong>（藤沢−354,000／下北沢−346,500／岐阜−170,000／熊本−114,000／札幌−112,100）。</div>
+
+<!-- ② 入口を開く -->
+<div id="iriguchi" class="section-divider">② 入口を開く ― 新規の取りこぼしを止める（タカショー領域）<span class="tbadge">決定 12分</span></div>
+<div class="section">
+  <div class="施策-grid">
+    <div class="施策-card">
+      <div class="施策-title">🎯 ホットペッパーのクーポン強化<span class="owner me">タカショー</span></div>
+      <div class="施策-body">
+        着地が遠い店（藤沢・下北沢・熊本・岐阜）のホットペッパークーポンを、残り8日だけ強化（即予約しやすい入口・限定特典）。新規はほぼ100%ホットペッパー経由。
+        <span class="lbl">決めること</span>どの店に・どのクーポンを・今日〜明日入れるか。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">💬 LINEで再来の掘り起こし<span class="owner me">タカショー</span></div>
+      <div class="施策-body">
+        しばらく来ていない再来のお客様へLINE配信（例：下北沢の再来149名）。クーポン画像はホットペッパーの予約へ。
+        <span class="lbl">決めること</span>配信する店・対象・文面。今日中に着手。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">⚡ ゲリラクーポン（空き枠埋め）<span class="owner me">タカショー</span></div>
+      <div class="施策-body">
+        空き枠が多い日に即日でゲリラクーポンを投下。
+        <span class="lbl">決めること</span>各店が「空いてる枠」を今日中に共有 → タカショーが打つ、の運用を確定。
+      </div>
+    </div>
+  </div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>残り8日、入口（ホットペッパー・LINE・ゲリラ）はタカショーが<strong>今日着手</strong>。各店は「空き枠」を<strong>今日中に共有</strong>する。</div>
+</div>
+
+<!-- ③ 接客で締める -->
+<div id="sekkyaku" class="section-divider">③ 接客で締める ― 来た客を逃さず単価を上げる（SV・店舗領域）<span class="tbadge">決定 12分</span></div>
+<div class="section">
+  <div class="施策-grid">
+    <div class="施策-card">
+      <div class="施策-title">📅 次回予約を全員に提案<span class="owner sv">SV・店舗</span></div>
+      <div class="施策-body">
+        新規の次回予約は5月実績32%（目標45%）。<strong>残り8日は全員に必ず一声</strong>。来てくれた客を次につなぐ最短の手。
+        <span class="lbl">決めること</span>「会計前に必ず次回提案」を全店で再徹底。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">🛡 キャンセルを止める<span class="owner sv">SV・店舗</span></div>
+      <div class="施策-body">
+        取った予約を当日・無断キャンセルで落とさない。リマインド徹底＋<strong>リファンドハブ</strong>でキャンセル損失を回収。
+        <span class="lbl">決めること</span>リマインドの運用とリファンドハブの請求フローを確認。
+      </div>
+    </div>
+    <div class="施策-card">
+      <div class="施策-title">💎 客単価を上げる<span class="owner sv">SV・店舗</span></div>
+      <div class="施策-body">
+        セット提案・追加施術（下まつげパーマ・眉カラー）・物販。特に低単価の二子玉川・熊本・岐阜。
+        <span class="lbl">決めること</span>残り8日の「一声メニュー」を店ごとに1つ決める。
+      </div>
+    </div>
+  </div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>残り8日、<strong>次回予約とセット提案を全員徹底</strong>。キャンセルはリマインド＋リファンドハブで守る。</div>
+</div>
+
+<!-- ④ 例外2店 -->
+<div id="reigai" class="section-divider">④ 例外2店の単価対策 ― 新規でなく単価が病巣<span class="tbadge">決定 10分</span></div>
+<div class="section">
+  <div class="issue-grid">
+    <div class="issue-card warning">
+      <div class="ic-store warning">🟡 m川崎 ― 97.6%（あと ¥54,214）</div>
+      <div class="ic-item">病巣は新規ではなく<strong>客単価</strong>。<strong>回数券が止まっている</strong>（回数券2件・¥19,500＝構成比1.3%。横浜は15.5%）。</div>
+      <div class="ic-item">再来単価¥8,189と高いのに、LTVを伸ばす回数券が機能していない＝再来の取りこぼし。</div>
+      <div class="ic-item"><strong>残8日：</strong>次回予約で来店の歩幅を固定＋セットで単価維持。</div>
+      <div class="ic-item"><strong>本筋（7月へ）：</strong>次回予約 → LED導線 → 回数券、の二段階で回数券を再建。</div>
+    </div>
+    <div class="issue-card critical">
+      <div class="ic-store critical">🔴 S二子玉川 ― 61.6%（あと ¥634,271）</div>
+      <div class="ic-item">最大ギャップ。病巣は<strong>客単価崩壊</strong>＝<strong>再来単価¥4,529 ＜ 新規単価¥5,896</strong>（再来の方が安い異常）。</div>
+      <div class="ic-item">新規・再来・客単価の三重苦（うち客単価のマイナスが最大−318,516）。</div>
+      <div class="ic-item"><strong>残8日：</strong>再来のお客様にセット・追加メニュー（下まつげ・眉カラー）を<strong>必ず提案</strong>して単価を戻す。</div>
+      <div class="ic-item">担当エリマネが残り8日リードし、毎日単価をチェック。</div>
+    </div>
+  </div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>川崎＝<strong>次回予約＋セット</strong>／二子玉川＝<strong>再来にセット必須提案</strong>。2店とも担当エリマネが残り8日リード。</div>
+</div>
+
+<!-- ⑤ 前回宿題・システム -->
+<div id="system" class="section-divider">⑤ 前回(6/6)宿題・システム進捗の確認<span class="tbadge share">確認 8分</span></div>
+<div class="section">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">6/15</div>
+      <div class="tl-title">一元管理システム 導入</div>
+      <div class="tl-desc">導入＝熊本・岐阜。稼働状況を確認 → <a class="link" href="https://ssin-progress.pages.dev/" target="_blank">ssin-progress.pages.dev</a></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-date">6/30</div>
+      <div class="tl-title">ミニモクーポン自動編集システム ＋ 全店導入</div>
+      <div class="tl-desc">6/30から全店展開。各店の準備状況を確認。</div>
+    </div>
+  </div>
+  <div class="note blue" style="margin-top:14px"><strong>追加施術（単価UP）：</strong>下まつげパーマ・眉カラー・マツエクの導入／研修の稼働を確認。残り8日で「使える店」は接客③のセット提案に組み込む。<br><strong>リファンドハブ：</strong>マニュアルの周知とキャンセル料請求フローの稼働を確認。</div>
+  <div style="margin-top:14px">
+    <div class="action-item">
+      <div class="anum b">★</div>
+      <div class="abody">
+        <div class="t">タカショー前回宿題の進捗確認（②の入口づくりと直結）</div>
+        <div style="font-size:12px;color:#64748b;margin-top:3px">①ミニモ進捗チェックリスト入力　②金額・ゲリラクーポンまとめ　③特典を1ページに集約</div>
+        <div style="display:flex;gap:6px;margin-top:5px"><span class="who me">タカショー</span><span class="due db">6/6 N/A</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑥ コミット -->
+<div id="commit" class="section-divider">⑥ 各店コミット ― 残り8日の打ち手と「今日やる1つ」<span class="tbadge">宣言 10分</span></div>
+<div class="section" style="padding:0">
+  <table>
+    <thead>
+      <tr><th style="text-align:left">店舗</th><th>残ギャップ</th><th style="text-align:left">残り8日の打ち手</th><th style="text-align:left">今日やる1つ（記入）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>S二子玉川</td><td class="num-r">−634,271</td><td class="l">再来にセット・追加メニューを必ず提案して単価を戻す</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m下北沢</td><td class="num-r">−552,771</td><td class="l">ホットペッパー新規入口の緊急復旧＋再来149名へ掘り起こしLINE</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S藤沢</td><td class="num-r">−416,971</td><td class="l">ホットペッパークーポン強化＋空き枠を電話/LINEで埋める</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S熊本</td><td class="num-r">−328,129</td><td class="l">ホットペッパー入口＋セット提案で単価を上げる</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S岐阜</td><td class="num-r">−182,243</td><td class="l">ホットペッパークーポン＋セット/物販を必ず一声</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m川崎</td><td class="num-r">−54,214</td><td class="l">次回予約で歩幅固定＋セットで単価維持</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S札幌</td><td class="num-g">+3,793</td><td class="l">着地維持＋物販を上積み</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m横浜</td><td class="num-g">+498,243</td><td class="l">守り：高単価セット維持・質の高い新規をキープ</td><td class="l"><div class="commit-box"></div></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="output"><span class="ot">このMTGのゴール</span>各店が「残り8日の上積み目標」と「今日やる1つ」を宣言して退出する。入口（タカショー）と接客（SV）の両輪で、89.6%を1%でも押し上げる。</div>
+
+<div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:10px">
+  直営MTG アジェンダ ｜ 2026-06-22 ｜ 6月締めラストスパート（残り8日）｜ SSIN STUDIO 直営
+</div>
+
+</body>
+</html>
