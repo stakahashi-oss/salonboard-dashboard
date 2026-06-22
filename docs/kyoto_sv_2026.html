@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>SSIN STUDIO京都店 SV分析（〜5月）</title>
+<style>
+  :root{--navy:#11203b;--gold:#f2c200;--red:#9b2030;--red2:#c0392b;
+    --green:#19a974;--txt:#eaf0fb;--sub:#9fb2d4;--card:#16294a;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(160deg,#0b1426,#11203b 55%,#0c1730);color:var(--txt);
+    line-height:1.7;padding-bottom:80px}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+  .hero{padding:44px 18px 30px;text-align:center}
+  .hero .eyebrow{color:var(--gold);font-weight:800;letter-spacing:.18em;font-size:13px}
+  .hero h1{font-size:28px;font-weight:900;margin:10px 0 6px}
+  .hero .sub{color:var(--sub);font-size:14px}
+  .hero .quad{display:inline-block;margin-top:14px;font-size:12px;font-weight:800;padding:5px 14px;
+    border-radius:999px;background:#39305c;color:#dac9ff;border:1px solid #6b54a8}
+  .section-h{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.14em;
+    margin:40px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-h::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .kpi{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px}
+  .kpi .k{font-size:11px;color:var(--sub);font-weight:700}
+  .kpi .v{font-size:21px;font-weight:900;margin-top:3px}
+  .kpi .d{font-size:11px;margin-top:2px}
+  .up{color:#7df0c0}.down{color:#ff9a9a}.flat{color:var(--sub)}
+  .krbox{background:rgba(242,194,0,.08);border:1px solid rgba(242,194,0,.3);border-radius:14px;
+    padding:18px 20px;margin-top:6px}
+  .krbox .h{font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.05em;margin-bottom:10px}
+  .krbox .main{font-size:17px;font-weight:900;margin-bottom:14px}
+  .krgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .krcell{background:var(--card);border-radius:10px;padding:13px;text-align:center}
+  .krcell .l{font-size:12px;color:var(--sub);font-weight:700}
+  .krcell .v{font-size:22px;font-weight:900;margin:4px 0}
+  .krcell .s{font-size:11px;color:var(--sub)}
+  .band-era{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 2px 0;font-size:12px;font-weight:800;color:var(--sub)}
+  .band-era span{text-align:center}.band-era span:nth-child(1){color:#9fc0ff}.band-era span:nth-child(2){color:#ffb0a0}
+  .frame-band{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+  .band{text-align:center;font-weight:900;font-size:15px;padding:9px 6px;color:#1a1a1a;background:var(--gold);
+    clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+  .frame{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px;overflow-x:auto}
+  .cell{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;min-width:150px;display:flex;flex-direction:column}
+  .cell .ch{padding:9px 8px;text-align:center;font-weight:800;font-size:12.5px;color:#fff}
+  .cell .ch small{display:block;font-size:10px;font-weight:600;opacity:.8;margin-top:1px}
+  .ch.prob{background:#243a66}.ch.fact{background:var(--red)}.ch.what{background:var(--red)}
+  .ch.goal{background:var(--red2)}.ch.plan{background:var(--red2)}.ch.act{background:var(--red2)}
+  .cell .cb{padding:11px 10px;font-size:12.5px;color:#dfe8fb;flex:1}
+  .cell .cb b{color:#fff}.cell .cb .num{color:#ffd66b;font-weight:800}
+  .cell .cb ol{margin:0;padding-left:16px}.cell .cb li{margin-bottom:6px}
+  .cell .cb li .tag{display:inline-block;font-size:10px;color:#bcd0f5;background:rgba(120,150,220,.18);border-radius:4px;padding:1px 6px;margin-left:5px;font-weight:700}
+  .cell .cb li .st{color:var(--gold);font-weight:800;margin-left:5px;font-size:11px;letter-spacing:-1.5px}
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);font-size:13px}
+  th{background:rgba(255,255,255,.05);color:var(--sub);font-weight:700;padding:11px 10px;text-align:right;font-size:11.5px}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:11px 10px;text-align:right;border-top:1px solid rgba(255,255,255,.06)}
+  tr:hover td{background:rgba(255,255,255,.03)}
+  .note{color:var(--sub);font-size:12px;text-align:center;margin-top:40px;line-height:1.8}
+  @media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}.krgrid{grid-template-columns:1fr}
+    .frame{grid-template-columns:repeat(6,minmax(140px,1fr))}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">SSIN STUDIO ／ 最強理事会 ｜ 加盟店・注力店舗</div>
+  <h1>SSIN STUDIO 京都店 SV分析</h1>
+  <div class="sub">SV集計シート（〜2026年5月確定）｜2名体制（t.kasumi／mana）</div>
+  <div class="quad">象限：VIP（高単価×再来）｜1床売上 ¥702,500（ベストライン¥700,000超）</div>
+</div>
+
+<div class="wrap">
+  <div class="section-h">5月 実績サマリー（達成率 94.9%）</div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">総売上</div><div class="v">¥1,405,000</div><div class="d flat">目標 ¥1,480,000</div></div>
+    <div class="kpi"><div class="k">総客数</div><div class="v">253</div><div class="d down">目標 270（−17）</div></div>
+    <div class="kpi"><div class="k">新規</div><div class="v">77</div><div class="d down">目標 80（−3）</div></div>
+    <div class="kpi"><div class="k">再来</div><div class="v">176</div><div class="d down">目標 190（−14）</div></div>
+    <div class="kpi"><div class="k">客単価</div><div class="v">¥5,553</div><div class="d up">目標 ¥5,481（+¥72）</div></div>
+    <div class="kpi"><div class="k">再来率(3月確定)</div><div class="v">59.7%</div><div class="d flat">4-5月は判定ラグで未成熟</div></div>
+    <div class="kpi"><div class="k">セット率</div><div class="v">30.5%</div><div class="d flat">眉35.5%/まつ34.0%</div></div>
+    <div class="kpi"><div class="k">稼働率</div><div class="v">67.8%</div><div class="d flat">2名・安全圏</div></div>
+  </div>
+
+  <div class="section-h">根本課題＝KPI分解（売上GAP −¥75,000 の要因）</div>
+  <div class="krbox">
+    <div class="h">どのKPIが未達を作っているか（新規・再来・客単価に金額分解）</div>
+    <div class="main">主因：<span style="color:#ff9a9a">再来不足</span>（次回予約・再来定着の取りこぼし）</div>
+    <div class="krgrid">
+      <div class="krcell"><div class="l">新規要因</div><div class="v down">−¥16,443</div><div class="s">新規 77 / 目標 80（−3名）</div></div>
+      <div class="krcell"><div class="l">再来要因</div><div class="v down">−¥76,734</div><div class="s">再来 176 / 目標 190（−14名）★主因</div></div>
+      <div class="krcell"><div class="l">客単価要因</div><div class="v up">+¥18,216</div><div class="s">¥5,553 / 目標 ¥5,481（健全）</div></div>
+    </div>
+  </div>
+
+  <div class="section-h">特定 → 改善フレーム</div>
+  <div class="band-era"><span>◀ 過去（フィードバック）＝特定</span><span>未来（フィードフォワード）＝改善 ▶</span></div>
+  <div class="frame-band"><div class="band">特 定</div><div class="band">改 善</div></div>
+  <div class="frame">
+    <div class="cell"><div class="ch prob">①問題<small>Problem</small></div><div class="cb">5月達成94.9%。客単価・新規は健全だが、<b>再来が目標−14名</b>で未達。再来の積み上げが頭打ち。</div></div>
+    <div class="cell"><div class="ch fact">②事実<small>Fact</small></div><div class="cb">売上<span class="num">¥1,405,000</span>／目標¥1,480,000。客数253(新規77/再来176)・客単価<b>¥5,553</b>(目標超)・再来率3月59.7%(2月69.0%から低下)・セット30.5%。</div></div>
+    <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div><div class="cb"><div style="background:rgba(242,194,0,.1);border:1px solid rgba(242,194,0,.3);border-radius:8px;padding:7px 9px;margin-bottom:8px;font-size:11.5px">根本課題：<b>再来不足</b><br>新規 <b class="down">−¥16,443</b>／再来 <b class="down">−¥76,734</b>／客単価 <b class="up">+¥18,216</b></div><ol><li>再来176は目標190に14名不足。次回予約・再来定着が弱い（4月HPB ACR5.6%・次回予約獲得率3.8%）。</li><li>再来率が2月69.0%→3月59.7%へ低下。</li><li>客単価¥5,553・新規77は健全＝伸びしろは再来一点。</li></ol></div></div>
+    <div class="cell"><div class="ch goal">④理想<small>GOAL</small></div><div class="cb">再来190回復・再来率65%維持で売上<b>¥1,480,000</b>達成。客単価・新規は現状維持でよい。</div></div>
+    <div class="cell"><div class="ch plan">⑤方針<small>Plan</small></div><div class="cb">再来定着（次回予約獲得）が最大レバー。特に再来率の低いmanaの次回予約を底上げ。6月内に着手。</div></div>
+    <div class="cell"><div class="ch act">⑥行動<small>Action ｜ SSIN BP施策</small></div><div class="cb"><ol><li>次回予約で新規と同価格<span class="tag">再来</span><span class="st">★★★★</span></li><li>〇日以内の再来限定クーポン<span class="tag">再来</span><span class="st">★★★★</span></li><li>LINEショップカード導入<span class="tag">再来</span><span class="st">★★★★</span></li></ol></div></div>
+  </div>
+
+  <div class="section-h">月別トレンド（2026年）</div>
+  <table>
+    <thead><tr><th>月</th><th>総客</th><th>新規</th><th>再来</th><th>客単価</th><th>再来率</th><th>セット率</th><th>売上</th></tr></thead>
+    <tbody id="trendBody"></tbody>
+  </table>
+
+  <div class="section-h">スタッフ別（5月）</div>
+  <table>
+    <thead><tr><th>スタッフ</th><th>総客</th><th>新規</th><th>再来</th><th>売上</th><th>再来率(3月確定)</th><th>特徴</th></tr></thead>
+    <tbody id="staffBody"></tbody>
+  </table>
+  <div style="color:var(--sub);font-size:12px;margin-top:10px;line-height:1.8">
+    ▶ <b style="color:#7df0c0">t.kasumi</b> は再来定着が強い（再来率70.2%・再来97名）。<b style="color:#ffd66b">mana</b> は新規を多く取る（新規42名）が再来定着が弱い（57.6%・再来79名）。<b>京都の伸びしろ＝manaの次回予約獲得</b>。t.kasumiの再来導線をmanaに横展開するのが具体策。
+  </div>
+
+  <div class="note">
+    データ：SV集計シート_京都（基本数値集計／スタッフ別／再来率計算・〜2026年5月確定）／目標：事業部売上集計10期 202605。<br>
+    再来率の4-5月は再来判定ラグで未成熟（確定は3月まで）。⑥行動はSSINベストプラクティスマニュアル「施策一覧表」準拠（★＝重要度）。<br>
+    KPI分解：新規要因=(新規−目標)×目標客単価／再来要因=同／客単価要因=総客×(実績−目標単価)。生成：2026-06-22
+  </div>
+</div>
+
+<script>
+const yen=n=>"¥"+n.toLocaleString();
+const M=["1月","2月","3月","4月","5月"];
+const t={visit:[249,232,254,258,253],shinki:[64,67,73,81,77],sa:[185,165,181,177,176],
+  tanka:[5297,5901,5888,5768,5553],revisit:["64.3%","69.0%","59.7%","43.8%*","—*"],
+  setrate:[31.9,28.8,34.2,28.2,30.5],sales:[1319050,1369120,1495650,1488150,1405000]};
+document.getElementById("trendBody").innerHTML=M.map((m,i)=>`
+  <tr><td><b>${m}</b></td><td>${t.visit[i]}</td><td>${t.shinki[i]}</td><td>${t.sa[i]}</td>
+  <td>${yen(t.tanka[i])}</td><td>${t.revisit[i]}</td><td>${t.setrate[i]}%</td><td>${yen(t.sales[i])}</td></tr>`).join("");
+const staff=[
+  {n:"t.kasumi",v:132,s:35,r:97,sales:759380,rev:"70.2%",c:"再来定着が強い・売上トップ"},
+  {n:"mana",v:121,s:42,r:79,sales:642165,rev:"57.6%",c:"新規を多く取るが再来定着が弱い"},
+];
+document.getElementById("staffBody").innerHTML=staff.map(s=>`
+  <tr><td><b>${s.n}</b></td><td>${s.v}</td><td>${s.s}</td><td>${s.r}</td><td>${yen(s.sales)}</td><td>${s.rev}</td>
+  <td style="text-align:left;font-size:12px;color:#cdd9f0">${s.c}</td></tr>`).join("");
+</script>
+</body>
+</html>
