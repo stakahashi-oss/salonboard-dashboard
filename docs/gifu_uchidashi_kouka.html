@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>S岐阜 先週の打ち出し変更 効果検証｜特定→改善フレーム</title>
+<style>
+  :root{
+    --navy:#11203b;--navy2:#172a4d;--navy3:#1f3a66;
+    --red:#9b2030;--red2:#c0392b;--gold:#f2c200;
+    --green:#19a974;--yellow:#e8a200;--danger:#e23b3b;
+    --txt:#eaf0fb;--sub:#9fb2d4;--card:#16294a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(160deg,#0b1426,#11203b 55%,#0c1730);color:var(--txt);
+    line-height:1.7;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+  .hero{padding:40px 18px 10px;text-align:center}
+  .hero .eyebrow{color:var(--gold);font-weight:800;letter-spacing:.18em;font-size:13px}
+  .hero h1{font-size:27px;font-weight:900;margin:10px 0 6px}
+  .hero .sub{color:var(--sub);font-size:13.5px}
+
+  .store{margin-top:24px;background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden}
+  .store-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;background:linear-gradient(90deg,rgba(31,58,102,.55),rgba(22,41,74,.25))}
+  .store-head .name{font-size:21px;font-weight:900}
+  .brand{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.05em}
+  .brand.ssin{background:#23406f;color:#cfe0ff}
+  .store-head .ach{margin-left:auto;text-align:right}
+  .store-head .ach .v{font-size:26px;font-weight:900;line-height:1;color:#7df0c0}
+  .store-head .ach .l{font-size:11px;color:var(--sub)}
+  .quad{font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px;
+    background:#39305c;color:#dac9ff;border:1px solid #6b54a8}
+  .dot{font-size:14px}
+  .one-liner{padding:12px 22px 0;color:#ffe8a3;font-weight:700;font-size:14.5px}
+
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:16px 22px 20px}
+  .kpi{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
+  .kpi .k{font-size:11px;color:var(--sub);font-weight:700}
+  .kpi .v{font-size:19px;font-weight:900;margin-top:3px}
+  .kpi .d{font-size:11px;margin-top:2px}
+  .up{color:#7df0c0}.down{color:#ff9a9a}.flat{color:var(--sub)}
+
+  .frame-band{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 16px;margin-top:6px}
+  .band{position:relative;text-align:center;font-weight:900;font-size:15px;padding:9px 6px;
+    color:#1a1a1a;background:var(--gold);
+    clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+  .band-era{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 16px 0;
+    font-size:12px;font-weight:800;color:var(--sub);letter-spacing:.05em}
+  .band-era span:nth-child(1){text-align:center;color:#9fc0ff}
+  .band-era span:nth-child(2){text-align:center;color:#ffb0a0}
+
+  .frame{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 16px 22px;overflow-x:auto}
+  .cell{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:10px;
+    overflow:hidden;min-width:130px;display:flex;flex-direction:column}
+  .cell .ch{padding:9px 8px;text-align:center;font-weight:800;font-size:12.5px;color:#fff;line-height:1.3}
+  .cell .ch small{display:block;font-size:10px;font-weight:600;opacity:.8;margin-top:1px}
+  .ch.prob{background:#243a66}.ch.fact{background:var(--red)}.ch.what{background:var(--red)}
+  .ch.goal{background:var(--red2)}.ch.plan{background:var(--red2)}.ch.act{background:var(--red2)}
+  .cell .cb{padding:11px 10px;font-size:12.5px;color:#dfe8fb;flex:1}
+  .cell .cb b{color:#fff}
+  .krbox{background:rgba(242,194,0,.08);border:1px solid rgba(242,194,0,.28);border-radius:8px;padding:8px 10px;margin-bottom:9px}
+  .krbox .krh{display:block;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.04em;margin-bottom:2px}
+  .krbox .krrow{margin-top:4px;font-size:11px;color:#cdd9f0;line-height:1.6}
+  .krbox b.up{color:#7df0c0}.krbox b.down{color:#ff9a9a}.krbox b.flat{color:var(--sub)}
+  .cell .cb .num{color:#ffd66b;font-weight:800}
+  .cell .cb ol{margin:0;padding-left:16px}
+  .cell .cb li{margin-bottom:5px}
+  .cell .cb li .bptag{display:inline-block;font-size:10px;color:#bcd0f5;background:rgba(120,150,220,.18);
+    border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:700;white-space:nowrap}
+  .cell .cb li .bp{color:var(--gold);font-weight:800;margin-left:6px;font-size:11px;letter-spacing:-1.5px}
+  .note{color:var(--sub);font-size:12px;text-align:center;margin-top:30px;line-height:1.8}
+  @media(max-width:880px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .frame-band,.band-era{grid-template-columns:1fr}
+    .band{clip-path:none;border-radius:8px}
+    .frame{grid-template-columns:repeat(6,minmax(150px,1fr))}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">SSIN STUDIO ／ 最強理事会</div>
+  <h1>S岐阜 先週の打ち出し変更 効果検証</h1>
+  <div class="sub">変更後 6/15-21 vs 変更前 6/8-14（1営業日あたり）／ データ：6/21時点 完了売上 ／ 作成 2026-06-22</div>
+</div>
+
+<div class="wrap">
+ <div class="store">
+  <div class="store-head">
+    <span class="name">S岐阜</span>
+    <span class="brand ssin">SSIN STUDIO</span>
+    <span class="quad">先週の打ち出し変更 効果検証（6/15-21）</span>
+    <span class="dot">🟡</span>
+    <div class="ach"><div class="v">+20%</div><div class="l">新規/日（唯一の前向き）</div></div>
+  </div>
+
+  <div class="one-liner">▶ 先週は打ち出しを仕掛けた週。紹介クーポン0件・学割横ばいで会計には未反映。本判定は予約件数(6/30)と再来率(7月下旬)で。</div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">新規 / 日</div><div class="v">2.2人</div><div class="d up">前週1.8人 ／ +20%</div></div>
+    <div class="kpi"><div class="k">客単価</div><div class="v">¥4,358</div><div class="d down">前週¥5,131 ／ −15%</div></div>
+    <div class="kpi"><div class="k">売上 / 日</div><div class="v">¥23,538</div><div class="d down">前週¥27,367 ／ −14%</div></div>
+    <div class="kpi"><div class="k">紹介クーポン</div><div class="v">0件</div><div class="d flat">立ち上げ直後</div></div>
+    <div class="kpi"><div class="k">学割メニュー</div><div class="v">11件</div><div class="d flat">前週11件 ／ 横ばい</div></div>
+    <div class="kpi"><div class="k">来店 / 日</div><div class="v">5.4人</div><div class="d flat">前週5.3人 ／ ±0</div></div>
+  </div>
+
+  <div class="band-era"><span>◀ 過去（フィードバック）＝特定</span><span>未来（フィードフォワード）＝改善 ▶</span></div>
+  <div class="frame-band"><div class="band">特 定</div><div class="band">改 善</div></div>
+
+  <div class="frame">
+    <div class="cell"><div class="ch prob">①問題<small>Problem</small></div>
+      <div class="cb">先週「学割検索対策・学生紹介・次回予約割引」を投入。完了売上は前週比で下振れて見えるが、打ち出しが効いているのか判断できない。</div></div>
+
+    <div class="cell"><div class="ch fact">②事実<small>Fact</small></div>
+      <div class="cb">1営業日あたり 新規<span class="num">1.8→2.2人(+20%)</span>・客単価¥5,131→¥4,358(−15%)・売上¥27,367→¥23,538(−14%)。<b>紹介クーポン0件・学割11→11件横ばい</b>。予約経路はHPB中心で新チャネル増なし。6/15・20は店休。</div></div>
+
+    <div class="cell"><div class="ch what">③課題<small>1〜5 What</small></div>
+      <div class="cb">
+        <div class="krbox"><span class="krh">根本＝効果判定は時期尚早（仕込み週）</span>主因：<b>打ち出し経由の来店が会計に未計上</b>
+        <div class="krrow">紹介 <b class="down">0件</b> ／ 学割 <b class="flat">横ばい</b> ／ 客単価 <b class="down">−¥773</b></div></div>
+        <ol>
+          <li>新規/日+20%は誤差幅（n=1〜2件・1名体制）。</li>
+          <li>客単価−¥773は¥1,000引きの希薄化＝値引き集客の典型。</li>
+          <li>将来予約CSVが手元になく会計のみが根拠＝先行効果を捉えられていない。</li>
+        </ol>
+      </div></div>
+
+    <div class="cell"><div class="ch goal">④理想<small>GOAL</small></div>
+      <div class="cb">紹介・学割経由の新規予約が増加し、再来率26%→35%・2回目で客単価が通常へ回復する。</div></div>
+
+    <div class="cell"><div class="ch plan">⑤方針<small>Plan</small></div>
+      <div class="cb">会計でなく「予約件数」と「再来率」で正しい時期に判定。6/30に予約件数 → 7月下旬に再来率。</div></div>
+
+    <div class="cell"><div class="ch act">⑥行動<small>Action ｜ 効果測定</small></div>
+      <div class="cb"><ol>
+        <li>HPB/サロボで先週入った新規予約件数を直接確認<span class="bptag">新規</span><span class="bp">★★★★★</span></li>
+        <li>学割・紹介で入った新規の2回目転換＝客単価が戻るか個別追跡<span class="bptag">再来×単価</span><span class="bp">★★★★</span></li>
+        <li>6/30予約件数・7月下旬再来率の測定セットを用意<span class="bptag">測定</span><span class="bp">★★★★</span></li>
+        <li>（継続）セット5メニュー/オプションセット割/眉カラーで客単価底上げ<span class="bptag">単価</span><span class="bp">★★★</span></li>
+      </ol></div></div>
+  </div>
+ </div>
+
+ <div class="note">出典：~/.salonboard_dashboard/downloads/sheets/20260621_売上情報csv ／ 専門用語なし・1営業日あたりで正規化</div>
+</div>
+</body>
+</html>
