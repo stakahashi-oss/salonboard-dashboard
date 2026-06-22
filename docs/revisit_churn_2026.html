@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>再来離脱分析｜LUMISS札幌・S熊本（〜6月）</title>
+<style>
+  :root{
+    --navy:#11203b; --navy2:#172a4d; --navy3:#1f3a66;
+    --past:#1f3a66; --pastline:#2a4f8f;
+    --red:#9b2030; --red2:#c0392b;
+    --gold:#f2c200; --ink:#0d1830;
+    --green:#19a974; --yellow:#e8a200; --danger:#e23b3b;
+    --txt:#eaf0fb; --sub:#9fb2d4; --card:#16294a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(160deg,#0b1426,#11203b 55%,#0c1730);color:var(--txt);
+    line-height:1.7;padding-bottom:80px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* ヒーロー */
+  .hero{padding:46px 18px 36px;text-align:center}
+  .hero .eyebrow{color:var(--gold);font-weight:800;letter-spacing:.18em;font-size:13px}
+  .hero h1{font-size:30px;font-weight:900;margin:10px 0 6px;letter-spacing:.01em}
+  .hero .sub{color:var(--sub);font-size:14px}
+  .hero .total{margin:22px auto 0;display:inline-flex;align-items:baseline;gap:14px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:16px 26px}
+  .hero .total .big{font-size:40px;font-weight:900;color:#fff}
+  .hero .total .lbl{font-size:13px;color:var(--sub)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+  .chip{font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.14)}
+  .chip.g{background:rgba(25,169,116,.16);color:#7df0c0;border-color:rgba(25,169,116,.4)}
+  .chip.r{background:rgba(226,59,59,.14);color:#ff9a9a;border-color:rgba(226,59,59,.4)}
+
+  /* サマリー表 */
+  .section-h{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.14em;
+    margin:42px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-h::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .summary{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
+    border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);font-size:14px}
+  .summary th{background:rgba(255,255,255,.05);color:var(--sub);font-weight:700;
+    padding:13px 12px;text-align:right;font-size:12px;letter-spacing:.03em}
+  .summary th:first-child,.summary td:first-child{text-align:left}
+  .summary td{padding:13px 12px;text-align:right;border-top:1px solid rgba(255,255,255,.06)}
+  .summary tr:hover td{background:rgba(255,255,255,.03)}
+  .store-tag{font-weight:800}
+  .bdg{display:inline-block;min-width:62px;text-align:center;font-weight:800;
+    padding:4px 8px;border-radius:8px;font-size:13px}
+  .b-g{background:rgba(25,169,116,.18);color:#7df0c0}
+  .b-y{background:rgba(232,162,0,.2);color:#ffd66b}
+  .b-r{background:rgba(226,59,59,.18);color:#ff9a9a}
+
+  /* 店舗ブロック */
+  .store{margin-top:30px;background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden}
+  .store-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;background:linear-gradient(90deg,rgba(31,58,102,.55),rgba(22,41,74,.25))}
+  .store-head .name{font-size:21px;font-weight:900}
+  .brand{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.05em}
+  .brand.ssin{background:#23406f;color:#cfe0ff}
+  .brand.most{background:#5a2a55;color:#ffd0f2}
+  .store-head .ach{margin-left:auto;text-align:right}
+  .store-head .ach .v{font-size:26px;font-weight:900;line-height:1}
+  .store-head .ach .l{font-size:11px;color:var(--sub)}
+  .one-liner{padding:12px 22px 0;color:#ffe8a3;font-weight:700;font-size:14.5px}
+  .quad{font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px;
+    background:#39305c;color:#dac9ff;border:1px solid #6b54a8;letter-spacing:.02em}
+  .cell .cb li .bptag{display:inline-block;font-size:10px;color:#bcd0f5;background:rgba(120,150,220,.18);
+    border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:700;white-space:nowrap}
+  .cell .cb li .bptag.mt{color:#ffd0f2;background:rgba(200,120,190,.2)}
+  .ch.act-mt{background:#6a2a62 !important}
+  .cell .cb li .bp{color:var(--gold);font-weight:800;margin-left:6px;font-size:11px;letter-spacing:-1.5px;white-space:nowrap}
+
+  /* KPIカード */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:16px 22px 20px}
+  .kpi{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 12px}
+  .kpi .k{font-size:11px;color:var(--sub);font-weight:700}
+  .kpi .v{font-size:19px;font-weight:900;margin-top:3px}
+  .kpi .d{font-size:11px;margin-top:2px}
+  .up{color:#7df0c0}.down{color:#ff9a9a}.flat{color:var(--sub)}
+
+  /* MIZUKARAフレーム */
+  .frame-band{display:grid;grid-template-columns:1fr 1fr;gap:6px;
+    padding:0 16px;margin-top:6px}
+  .band{position:relative;text-align:center;font-weight:900;font-size:15px;
+    padding:9px 6px;color:#1a1a1a;background:var(--gold);
+    clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+  .band.lead{background:#7a8aa6;color:#11203b}
+  .band-era{display:grid;grid-template-columns:1fr 1fr;gap:6px;
+    padding:4px 16px 0;font-size:12px;font-weight:800;color:var(--sub);letter-spacing:.05em}
+  .band-era span:nth-child(1){text-align:center;color:#9fc0ff}
+  .band-era span:nth-child(2){text-align:center;color:#ffb0a0}
+
+  .frame{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 16px 22px;
+    overflow-x:auto}
+  .cell{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:10px;
+    overflow:hidden;min-width:130px;display:flex;flex-direction:column}
+  .cell .ch{padding:9px 8px;text-align:center;font-weight:800;font-size:12.5px;color:#fff;line-height:1.3}
+  .cell .ch small{display:block;font-size:10px;font-weight:600;opacity:.8;margin-top:1px}
+  .ch.why{background:#1c2f5a}.ch.prob{background:#243a66}.ch.fact{background:var(--red)}
+  .ch.what{background:var(--red)}.ch.goal{background:var(--red2)}.ch.plan{background:var(--red2)}.ch.act{background:var(--red2)}
+  .cell .cb{padding:11px 10px;font-size:12.5px;color:#dfe8fb;flex:1}
+  .cell .cb b{color:#fff}
+  .krbox{background:rgba(242,194,0,.08);border:1px solid rgba(242,194,0,.28);border-radius:8px;padding:8px 10px;margin-bottom:9px}
+  .krbox .krh{display:block;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.04em;margin-bottom:2px}
+  .krbox .krrow{margin-top:4px;font-size:11px;color:#cdd9f0;line-height:1.6}
+  .krbox b.up{color:#7df0c0}.krbox b.down{color:#ff9a9a}.krbox b.flat{color:var(--sub)}
+  .cell .cb .num{color:#ffd66b;font-weight:800}
+  .cell .cb ol{margin:0;padding-left:16px}
+  .cell .cb li{margin-bottom:5px}
+  .arrowdown{color:#ff9a9a;font-weight:900;text-align:center;margin:4px 0}
+  .spark{font-size:11px;color:var(--sub);margin-top:6px}
+  .spark b{color:#ffd66b}
+
+  .note{color:var(--sub);font-size:12px;text-align:center;margin-top:40px;line-height:1.8}
+  @media(max-width:880px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .frame-band,.band-era{grid-template-columns:1fr}
+    .band{clip-path:none;border-radius:8px}
+    .frame{grid-template-columns:repeat(6,minmax(150px,1fr))}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">SSIN / LUMISS ・ 再来離脱分析</div>
+    <h1>どこで離脱しているか — LUMISS札幌 ・ S熊本</h1>
+    <div class="sub">観測期間 2026-04-01〜06-22（約2.7ヶ月／右側打ち切りあり・経過コホートで補正）</div>
+    <div class="total">
+      <span class="big">F1→F2</span>
+      <span class="lbl">が最大の離脱ポイント<br>両店共通・「周期が伸びて遅れる」のではなく初回で消える</span>
+    </div>
+    <div class="chips">
+      <span class="chip r">LUMISS札幌 F2 ≈ 28–29%</span>
+      <span class="chip r">S熊本 F2 ≈ 49%(4月コホート)</span>
+      <span class="chip g">戻る人は 30–33日周期</span>
+      <span class="chip g">45日が離脱の断崖</span>
+      <span class="chip g">再来配信#21-25が着弾中</span>
+    </div>
+  </div>
+
+  <!-- 共通結論 -->
+  <div class="section-h">共通の結論</div>
+  <table class="summary">
+    <tr><th>観点</th><th>LUMISS札幌</th><th>S熊本</th></tr>
+    <tr><td>最大の離脱点</td><td><span class="bdg b-r">F1→F2</span></td><td><span class="bdg b-r">F1→F2</span></td></tr>
+    <tr><td>F2転換率（補正後）</td><td>≈ 28–29%</td><td>≈ 49%</td></tr>
+    <tr><td>来店周期 中央値</td><td>29日</td><td>33日</td></tr>
+    <tr><td>〜45日で戻る割合</td><td>86%</td><td>84%</td></tr>
+    <tr><td>離脱の断崖</td><td>45日超でほぼ0</td><td>61日超でほぼ0</td></tr>
+  </table>
+  <p style="color:#ffe8a3;font-weight:700;font-size:14.5px;margin-top:16px">
+    戻る人は健全に1ヶ月前後で戻っている。途切れる人は「遅れて離脱」ではなく<b style="color:#fff">最初から2回目が発生しない</b>。
+    ＝ 初回〜45日の間に再来導線を当てられるかが全て。
+  </p>
+
+  <!-- LUMISS札幌 -->
+  <div class="store">
+    <div class="store-head">
+      <span class="name">LUMISS 札幌</span>
+      <span class="brand most">LUMISS ・ マツエク</span>
+      <div class="ach"><div class="v">≈28–29%</div><div class="l">F2転換（補正）</div></div>
+    </div>
+    <div class="one-liner">離脱の7割超は2回目に来る前（F1→F2）。45日超でほぼ0＝マツエクの3〜4週リペア周期と一致。</div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">実会計</div><div class="v">118</div><div class="d flat">件（ダミー枠970除外）</div></div>
+      <div class="kpi"><div class="k">ユニーク顧客</div><div class="v">96</div><div class="d flat">名</div></div>
+      <div class="kpi"><div class="k">F2転換(生)</div><div class="v down">17.7%</div><div class="d down">打切り込み</div></div>
+      <div class="kpi"><div class="k">F2転換(補正)</div><div class="v up">28–29%</div><div class="d up">45日+経過層</div></div>
+      <div class="kpi"><div class="k">周期 中央値</div><div class="v">29日</div><div class="d flat">平均27.9日</div></div>
+      <div class="kpi"><div class="k">91日+で復帰</div><div class="v down">0%</div><div class="d down">45日が生死線</div></div>
+    </div>
+    <div style="padding:0 22px 20px">
+      <table class="summary" style="margin-bottom:14px">
+        <tr><th>リテンション</th><th>到達</th><th>前回比</th></tr>
+        <tr><td>F1（新規）</td><td>96</td><td>基準</td></tr>
+        <tr><td>F2（2回目）</td><td>17</td><td><span class="bdg b-r">17.7%</span></td></tr>
+        <tr><td>F3（3回目）</td><td>3</td><td>17.6%</td></tr>
+        <tr><td>F4 / F5</td><td>1 / 1</td><td>—</td></tr>
+        <tr><td>補正：初回から45日+経過の新規</td><td>54→15</td><td><span class="bdg b-y">27.8%</span></td></tr>
+        <tr><td>補正：初回から60日+経過の新規</td><td>31→9</td><td><span class="bdg b-y">29.0%</span></td></tr>
+      </table>
+      <table class="summary">
+        <tr><th>来店周期（再来者の前回からの日数・n=22）</th><th>件数</th><th>比率</th></tr>
+        <tr><td>〜30日</td><td>14</td><td><span class="bdg b-g">63.6%</span></td></tr>
+        <tr><td>31–45日</td><td>5</td><td>22.7%</td></tr>
+        <tr><td>46–60日</td><td>2</td><td>9.1%</td></tr>
+        <tr><td>61–90日</td><td>1</td><td>4.5%</td></tr>
+        <tr><td>91日+</td><td>0</td><td>0%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- S熊本 -->
+  <div class="store">
+    <div class="store-head">
+      <span class="name">SSIN STUDIO 熊本</span>
+      <span class="brand ssin">SSIN ・ 眉/まつ毛</span>
+      <div class="ach"><div class="v">49%</div><div class="l">F2転換（4月コホート）</div></div>
+    </div>
+    <div class="one-liner">初回客の51%＝半数強がそのまま消える。再来する人は33日周期で健全に戻る＝病巣は周期でなく初回→2回目の壁。</div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">レコード</div><div class="v">966</div><div class="d flat">件（reservations）</div></div>
+      <div class="kpi"><div class="k">4月コホート F1</div><div class="v">256</div><div class="d flat">信頼値の母数</div></div>
+      <div class="kpi"><div class="k">F2転換</div><div class="v up">49%</div><div class="d down">51%が2回目来ない</div></div>
+      <div class="kpi"><div class="k">F2→F3</div><div class="v">36%</div><div class="d flat">F2比</div></div>
+      <div class="kpi"><div class="k">周期 中央値</div><div class="v">33日</div><div class="d flat">平均34日</div></div>
+      <div class="kpi"><div class="k">新規HPB経由</div><div class="v down">80%</div><div class="d down">LINE未登録多い</div></div>
+    </div>
+    <div style="padding:0 22px 20px">
+      <table class="summary" style="margin-bottom:14px">
+        <tr><th>リテンション（4月コホート＝最も信頼できる）</th><th>到達</th><th>前段比</th></tr>
+        <tr><td>F1（初回）</td><td>256</td><td>—</td></tr>
+        <tr><td>F2（2回目）</td><td>125</td><td><span class="bdg b-y">49%</span></td></tr>
+        <tr><td>F3（3回目）</td><td>45</td><td>36%</td></tr>
+        <tr><td>（参考）全期間 生 F1→F2</td><td>—</td><td><span class="bdg b-r">31.6%</span>※打切り込みの汚れ値</td></tr>
+      </table>
+      <table class="summary" style="margin-bottom:14px">
+        <tr><th>来店周期（前回からの日数・n=200）</th><th>件数</th><th>比率</th></tr>
+        <tr><td>〜30日</td><td>89</td><td><span class="bdg b-g">44%</span></td></tr>
+        <tr><td>31–45日</td><td>79</td><td>40%</td></tr>
+        <tr><td>46–60日</td><td>24</td><td>12%</td></tr>
+        <tr><td>61–90日</td><td>8</td><td>4%</td></tr>
+        <tr><td>91日+</td><td>0</td><td>0%</td></tr>
+      </table>
+      <table class="summary">
+        <tr><th>初回メニュー別 F2（4月コホート）</th><th>F1</th><th>F2率</th><th>中央周期</th></tr>
+        <tr><td>まつ毛パーマ系</td><td>95</td><td><span class="bdg b-g">51%</span></td><td>33日</td></tr>
+        <tr><td>眉毛ワックス系</td><td>79</td><td>48%</td><td>30日</td></tr>
+        <tr><td>セット</td><td>75</td><td><span class="bdg b-r">44%</span> 最弱</td><td>36日</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 打ち手 -->
+  <div class="section-h">打ち手（課題 → 原因 → 施策 → 期待効果）</div>
+  <table class="summary">
+    <tr><th style="width:20%">課題</th><th style="text-align:left">原因 → 施策 → 期待効果</th><th style="width:14%">担当</th></tr>
+    <tr>
+      <td style="text-align:left"><b>① F1→F2 を底上げ</b><br>（最大レバー）</td>
+      <td style="text-align:left">原因＝新規の8割がHPB経由・初回にLINE登録/次回予約なしで帰る → 30日周期で背中を押す接点ゼロ。<br>
+        施策＝<b>再来配信 #21/#24（+21/+30日）点火済</b>＋初回会計時のLINE友だち化導線（登録特典）で配信母数を増やす。<br>
+        期待＝札幌 F2 28→<b>40%</b>／熊本 49→<b>60%</b>（4月256人ベースで2回目+約25人/月）。</td>
+      <td><span class="bdg b-g">タカショー</span></td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><b>② セット初回の弱さ</b><br>（S熊本 F2 44%）</td>
+      <td style="text-align:left">原因＝セットは単価高く周期到来時の予約ハードルが上がる。<br>
+        施策＝【SV】次回予約その場獲得＋回数券提案を会計時必須化／【タカショー】+40日配信をセット客タグ別文面に出し分け。<br>
+        期待＝セット F2 44→50%（単価高く1人の回復インパクト大）。</td>
+      <td><span class="bdg b-y">SV+配信</span></td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><b>③ 45日断崖の引き戻し</b></td>
+      <td style="text-align:left">原因＝30日で戻らなかった層へのセカンドタッチが無く45日超で失客。<br>
+        施策＝#22/#23/#25 の +30/+41 がこの層をカバー済。札幌に40日フォロー横展開。<br>
+        期待＝46–90日帯のサルベージ・失客の歯止め。</td>
+      <td><span class="bdg b-g">タカショー</span></td>
+    </tr>
+  </table>
+
+  <!-- 配信連動 -->
+  <div style="margin-top:26px;background:rgba(25,169,116,.1);border:1px solid rgba(25,169,116,.4);border-radius:14px;padding:18px 22px">
+    <div style="color:#7df0c0;font-weight:900;font-size:15px;margin-bottom:6px">✅ 施策は既に稼働中</div>
+    <div style="font-size:14px;color:#dfe8fb">
+      2026-06-22に点火した<b style="color:#fff">再来促進ステップ配信 #21-25（+21/+30/+41日・次回予約なしのみ・他店混入ゼロ）</b>は、
+      この分析が示す<b style="color:#fff">F1→F2離脱（30日前後・45日断崖の手前）に着弾</b>します。
+      両店とも campaign_live ON 済で明日12:00 JSTから自動配信。札幌中央値29日／熊本33日＝<b style="color:#fff">+30日トリガーが的中</b>。
+    </div>
+  </div>
+
+  <div class="note">
+    データ留保：両店とも観測期間 約2.7ヶ月・右側打ち切りが強く、F2は経過コホートで補正した方向値（札幌 n=118会計と薄い／熊本は4月256人で頑健）。F3以降は数値断定せず。<br>
+    正本＝Supabase reserve.reservations（store_short絞り・customer_phone名寄せ）。札幌は1〜3月kaikei履歴が未取得（Akamaiブロック・CDP9222接続が唯一手段）＝確度UPは別タスク。<br>
+    再来離脱分析 ｜ 2026-06-22 高橋
+  </div>
+
+</div>
+</body>
+</html>
