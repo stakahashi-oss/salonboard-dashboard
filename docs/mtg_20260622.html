@@ -64,6 +64,7 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
 .tr{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
 .ta{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
 .tg{background:rgba(16,185,129,.1);color:#059669;border:1px solid rgba(16,185,129,.25)}
+.tb{background:rgba(59,130,246,.1);color:#2563eb;border:1px solid rgba(59,130,246,.25)}
 
 /* 施策カード */
 .施策-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -128,12 +129,26 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
 .link{color:#2563eb;font-weight:600;text-decoration:none}
 .link:hover{text-decoration:underline}
 
+/* タイプ別バンド */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.type-card{border-radius:10px;padding:14px 16px;border:1px solid #e2e8f0;background:#f8fafc}
+.type-card .tt{font-size:11px;font-weight:800;letter-spacing:.04em;margin-bottom:4px}
+.type-card .tv{font-size:22px;font-weight:800}
+.type-card .ts{font-size:11px;color:#64748b;margin-top:4px;line-height:1.5}
+.type-card.shinki{border-color:rgba(37,99,235,.3)}
+.type-card.shinki .tt{color:#1d4ed8}
+.type-card.tanka{border-color:rgba(124,58,237,.3)}
+.type-card.tanka .tt{color:#7c3aed}
+.type-card.saigai{border-color:rgba(245,158,11,.35)}
+.type-card.saigai .tt{color:#d97706}
+
 .num-g{color:#059669;font-weight:700}
 .num-r{color:#dc2626;font-weight:700}
 .num-a{color:#d97706;font-weight:700}
+.num-p{color:#7c3aed;font-weight:700}
 
-@media(max-width:900px){.result-grid,.施策-grid{grid-template-columns:1fr 1fr}.issue-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.result-grid{grid-template-columns:1fr 1fr}.施策-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.result-grid,.施策-grid,.type-grid{grid-template-columns:1fr 1fr}.issue-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.result-grid,.type-grid{grid-template-columns:1fr 1fr}.施策-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -143,11 +158,11 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
   <div class="header-badge">直営 ／ 6月締めラストスパート</div>
   <div class="header-title">直営MTG ― 残り8日で6月着地を引き上げる</div>
   <div class="header-meta">
-    <span class="header-chip">📅 2026-06-22（残り8日）</span>
-    <span class="header-chip">🏪 直営8店</span>
-    <span class="header-chip">📉 着地見込 89.6%</span>
-    <span class="header-chip">⚡ あと ¥1,666,563</span>
-    <span class="header-chip">📋 直営先予約 655件・¥2,928,030</span>
+    <span class="header-chip">📅 2026-06-22（経過22/30日・残り8日）</span>
+    <span class="header-chip">🏪 直営16店（目標あり）＋LUMISS/Patra</span>
+    <span class="header-chip">📉 着地見込 94.1%</span>
+    <span class="header-chip">⚡ あと ¥1,672,123</span>
+    <span class="header-chip">📋 出典：公式「着地見込」CSV（6/23・毎日更新）</span>
   </div>
 </div>
 
@@ -155,49 +170,50 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
 <nav class="page-nav">
   <a class="nav-link" href="#ronten">今日の論点</a>
   <a class="nav-link" href="#genjo">① 現状と残ギャップ</a>
-  <a class="nav-link" href="#senyoyaku">①-2 先予約</a>
-  <a class="nav-link" href="#iriguchi">② 入口を開く</a>
-  <a class="nav-link" href="#sekkyaku">③ 接客で締める</a>
-  <a class="nav-link" href="#reigai">④ 例外2店</a>
-  <a class="nav-link" href="#system">⑤ 前回宿題・システム</a>
-  <a class="nav-link" href="#commit">⑥ コミット</a>
+  <a class="nav-link" href="#kpi">② どのKPIが遅れているか</a>
+  <a class="nav-link" href="#senyoyaku">③ 先予約</a>
+  <a class="nav-link" href="#iriguchi">④ 入口を開く（新規）</a>
+  <a class="nav-link" href="#sekkyaku">⑤ 接客で締める（再来・単価）</a>
+  <a class="nav-link" href="#juten">⑥ 重点店の深掘り</a>
+  <a class="nav-link" href="#system">⑦ 前回宿題・システム</a>
+  <a class="nav-link" href="#commit">⑧ コミット</a>
 </nav>
 
 <!-- 今日の論点 -->
 <div id="ronten" class="ronten">
   <div class="ronten-head">今日の論点 ― 振り返りでなく「今日から何をやるか」を決める</div>
-  <div class="ronten-sub">目的：6月着地を 89.6% から1%でも上へ。残り8日、全店が「今日やる1つ」を決めて出る。</div>
-  <div class="ronten-item"><span class="rb">1</span><div>未達の主因は、ほぼ全店<strong>「新規不足」</strong>。新規はほぼ100%ホットペッパー経由なので、<strong>入口（露出 × 予約率 × クーポン）</strong>を残り8日で開けに行く。</div></div>
-  <div class="ronten-item"><span class="rb">2</span><div>例外は<strong>2店だけ</strong>。<strong>m川崎</strong>＝回数券が止まって客単価ダウン／<strong>S二子玉川</strong>＝客単価が崩れて三重苦。この2店は単価対策で別建て。</div></div>
-  <div class="ronten-item"><span class="rb">3</span><div>役割分担：<strong>入口＝タカショー</strong>（ホットペッパー・LINE・クーポン）／<strong>接客＝SV・店舗</strong>（次回予約・キャンセル防止・セット・物販）。</div></div>
+  <div class="ronten-sub">目的：直営の6月着地 94.1% を、残り8日で目標（あと¥1,672,123）まで押し上げる。全店が「今日やる1つ」を決めて出る。</div>
+  <div class="ronten-item"><span class="rb">1</span><div>未達12店の穴 <strong>−¥2,509,264</strong> は<strong>3タイプ</strong>に割れる。<strong>新規型7店 −¥120万（48%）</strong>／客単価型3店 −¥74万（29%）／再来型2店 −¥57万（23%）。<strong>最大レバーはやはり新規</strong>。達成4店の貯金 +¥83.7万では穴を埋めきれず、差し引き−¥167万。</div></div>
+  <div class="ronten-item"><span class="rb">2</span><div>最も遅れているのは<strong>S金山63.0%・S池袋P69.3%・S立川70.5%</strong>。円ロス最大は<strong>S熊本（客単価¥4,974まで崩壊・−¥353,714）</strong>。<strong>S立川は再来−43件（−¥262,300）</strong>が病巣。三重苦のS二子玉川は客単価¥5,222が主因。</div></div>
+  <div class="ronten-item"><span class="rb">3</span><div>役割分担：<strong>入口（新規）＝タカショー</strong>（ホットペッパー・LINE・クーポン）／<strong>接客（再来・次回予約・客単価）＝SV・店舗</strong>。達成4店（札幌・横浜・川崎・高田馬場）は守りつつ勝ちパターンを未達店へ横展開。</div></div>
 </div>
 
 <!-- ① 現状と残ギャップ -->
-<div id="genjo" class="section-divider">① 現状と残ギャップ<span class="tbadge share">共有 5分</span></div>
+<div id="genjo" class="section-divider">① 現状と残ギャップ（公式着地見込・6/23）<span class="tbadge share">共有 5分</span></div>
 <div class="result-grid">
   <div class="result-card miss">
     <div class="rc-label miss">📉 直営合計 着地見込</div>
-    <div class="rc-rate num-r">89.6%</div>
-    <div class="rc-value">¥14,392,337 / ¥16,058,900</div>
-    <div class="rc-reason">残り8日であと <span class="num-r">¥1,666,563</span></div>
+    <div class="rc-rate num-r">94.1%</div>
+    <div class="rc-value">¥26,628,777 / ¥28,300,900</div>
+    <div class="rc-reason">残り8日であと <span class="num-r">¥1,672,123</span></div>
   </div>
   <div class="result-card hit">
     <div class="rc-label hit">✅ 着地できる店</div>
-    <div class="rc-rate num-g">2店</div>
-    <div class="rc-value">m横浜 112.3% / S札幌 100.2%</div>
+    <div class="rc-rate num-g">4店</div>
+    <div class="rc-value">札幌112.7%／横浜109.4%／川崎103.4%／高田馬場102.9%</div>
     <div class="rc-reason">ここは守り。崩さない</div>
   </div>
   <div class="result-card miss">
-    <div class="rc-label miss">🔴 最大ギャップ</div>
-    <div class="rc-rate num-r">S二子玉川</div>
-    <div class="rc-value">61.6% ／ あと ¥634,271</div>
-    <div class="rc-reason">客単価崩壊（再来 ＜ 新規）</div>
+    <div class="rc-label miss">🔴 円ロス最大</div>
+    <div class="rc-rate num-r">S熊本</div>
+    <div class="rc-value">76.4% ／ あと ¥353,714</div>
+    <div class="rc-reason">客単価¥4,974に崩壊（目標¥6,000）</div>
   </div>
   <div class="result-card miss">
-    <div class="rc-label miss">🔴 最危険</div>
-    <div class="rc-rate num-r">m下北沢</div>
-    <div class="rc-value">76.1% ／ あと ¥552,771</div>
-    <div class="rc-reason">新規が壊滅（新規比率6%）</div>
+    <div class="rc-label miss">🔴 達成率最低</div>
+    <div class="rc-rate num-r">S金山</div>
+    <div class="rc-value">63.0% ／ あと ¥259,418</div>
+    <div class="rc-reason">再来0の新店・新規が全て</div>
   </div>
 </div>
 <div class="section" style="padding:0">
@@ -206,24 +222,82 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
       <tr><th style="text-align:left">店舗</th><th>着地見込</th><th>目標</th><th>達成率</th><th>残ギャップ</th><th style="text-align:left">主因</th></tr>
     </thead>
     <tbody>
-      <tr><td>S二子玉川</td><td>¥1,016,929</td><td>¥1,651,200</td><td class="num-r">61.6%</td><td class="num-r">−634,271</td><td class="l">客単価崩壊（再来¥4,529＜新規¥5,896）</td></tr>
-      <tr><td>m下北沢</td><td>¥1,757,229</td><td>¥2,310,000</td><td class="num-r">76.1%</td><td class="num-r">−552,771</td><td class="l">新規壊滅（新規比率6%）</td></tr>
-      <tr><td>S藤沢</td><td>¥981,029</td><td>¥1,398,000</td><td class="num-r">70.2%</td><td class="num-r">−416,971</td><td class="l">来店総量が不足</td></tr>
-      <tr><td>S熊本</td><td>¥1,171,871</td><td>¥1,500,000</td><td class="num-r">78.1%</td><td class="num-r">−328,129</td><td class="l">新規急減＋低単価依存</td></tr>
-      <tr><td>S岐阜</td><td>¥542,757</td><td>¥725,000</td><td class="num-r">74.9%</td><td class="num-r">−182,243</td><td class="l">セット率最低23.5%・物販ほぼ0</td></tr>
-      <tr><td>m川崎</td><td>¥2,171,786</td><td>¥2,226,000</td><td class="num-a">97.6%</td><td class="num-r">−54,214</td><td class="l">回数券が止まった</td></tr>
-      <tr><td>S札幌</td><td>¥2,204,493</td><td>¥2,200,700</td><td class="num-g">100.2%</td><td class="num-g">+3,793</td><td class="l">ほぼ着地（新規は漸減）</td></tr>
-      <tr><td>m横浜</td><td>¥4,546,243</td><td>¥4,048,000</td><td class="num-g">112.3%</td><td class="num-g">+498,243</td><td class="l">達成（守り・新規は薄い）</td></tr>
+      <tr><td>S金山 <span class="tag tb">新規型</span></td><td>¥442,582</td><td>¥702,000</td><td class="num-r">63.0%</td><td class="num-r">−259,418</td><td class="l">新規不足（再来0の新店・新規が全て）</td></tr>
+      <tr><td>S池袋P <span class="tag tb">新規型</span></td><td>¥494,864</td><td>¥714,000</td><td class="num-r">69.3%</td><td class="num-r">−219,136</td><td class="l">新規不足（Patra・新規依存）</td></tr>
+      <tr><td>S立川 <span class="tag ta">再来型</span></td><td>¥752,564</td><td>¥1,067,500</td><td class="num-r">70.5%</td><td class="num-r">−314,936</td><td class="l">再来−43件（−¥262,300）が病巣＋単価も低下</td></tr>
+      <tr><td>S熊本 <span class="tag tr">客単価型</span></td><td>¥1,146,286</td><td>¥1,500,000</td><td class="num-r">76.4%</td><td class="num-r">−353,714</td><td class="l">客単価¥4,974に崩壊＋新規−19件</td></tr>
+      <tr><td>S岐阜 <span class="tag tb">新規型</span></td><td>¥565,268</td><td>¥725,000</td><td class="num-r">78.0%</td><td class="num-r">−159,732</td><td class="l">新規−31件（目標75→着地44）</td></tr>
+      <tr><td>S中野 <span class="tag tb">新規型</span></td><td>¥830,250</td><td>¥1,008,000</td><td class="num-r">82.4%</td><td class="num-r">−177,750</td><td class="l">新規−53件と大量未達（再来は+22件で健闘）</td></tr>
+      <tr><td>S二子玉川 <span class="tag tr">客単価型</span></td><td>¥1,360,023</td><td>¥1,651,200</td><td class="num-r">82.4%</td><td class="num-r">−291,177</td><td class="l">客単価¥5,222に崩壊（目標¥6,400）</td></tr>
+      <tr><td>m所沢 <span class="tag ta">再来型</span></td><td>¥1,247,495</td><td>¥1,504,000</td><td class="num-r">82.9%</td><td class="num-r">−256,505</td><td class="l">再来−17件が最大＋新規・単価も全方位で不足</td></tr>
+      <tr><td>m下北沢 <span class="tag tb">新規型</span></td><td>¥2,069,836</td><td>¥2,310,000</td><td class="num-a">89.6%</td><td class="num-r">−240,164</td><td class="l">新規−17件（次回予約66.7%は◎）</td></tr>
+      <tr><td>m立川 <span class="tag tb">新規型</span></td><td>¥1,706,400</td><td>¥1,793,500</td><td class="num-a">95.1%</td><td class="num-r">−87,100</td><td class="l">新規−7件（次回予約0%＝来月の再来が危険）</td></tr>
+      <tr><td>S藤沢 <span class="tag tb">新規型</span></td><td>¥1,338,845</td><td>¥1,398,000</td><td class="num-a">95.8%</td><td class="num-r">−59,155</td><td class="l">新規・再来とも小幅未達（単価は+）</td></tr>
+      <tr><td>m川崎 <span class="tag tr">客単価型</span></td><td>¥2,135,523</td><td>¥2,226,000</td><td class="num-a">95.9%</td><td class="num-r">−90,477</td><td class="l">客単価−¥530（回数券が止まり単価ダウン）</td></tr>
+      <tr><td>S高田馬場 <span class="tag tg">達成</span></td><td>¥1,692,477</td><td>¥1,645,000</td><td class="num-g">102.9%</td><td class="num-g">+47,477</td><td class="l">達成（新規+27件が牽引）</td></tr>
+      <tr><td>S川崎 <span class="tag tg">達成</span></td><td>¥3,936,470</td><td>¥3,808,000</td><td class="num-g">103.4%</td><td class="num-g">+128,470</td><td class="l">達成（再来+62件が牽引・但し次回予約5.4%）</td></tr>
+      <tr><td>m横浜 <span class="tag tg">達成</span></td><td>¥4,428,641</td><td>¥4,048,000</td><td class="num-g">109.4%</td><td class="num-g">+380,641</td><td class="l">達成（客単価¥9,841が牽引）</td></tr>
+      <tr><td>S札幌 <span class="tag tg">達成</span></td><td>¥2,481,252</td><td>¥2,200,700</td><td class="num-g">112.7%</td><td class="num-g">+280,552</td><td class="l">達成（新規・再来・単価すべて+）</td></tr>
+      <tr style="background:#f8fafc;font-weight:700"><td>直営合計（目標あり16店）</td><td>¥26,628,777</td><td>¥28,300,900</td><td class="num-r">94.1%</td><td class="num-r">−1,672,123</td><td class="l">未達12店 −¥2,509,264 ／ 達成4店 +¥837,140</td></tr>
     </tbody>
   </table>
 </div>
-<div class="note"><strong>データ：</strong>着地見込＝6/1〜6/21の実績 × 30/21（毎日更新CSV・6/21時点）。店舗別は正式店名で集計し、LUMISS・Patra分は除外。<strong>未達の合計 ¥1,666,563 のうち、新規不足だけで 約¥110万分</strong>（藤沢−354,000／下北沢−346,500／岐阜−170,000／熊本−114,000／札幌−112,100）。</div>
+<div class="note"><strong>データ：</strong>公式「着地見込」CSV（経過22/30日・6/23取得・毎日更新）。着地見込＝当月実績×(30日/22日)。店舗は正式店名で集計。<strong>LUMISS直営（L川崎+110万／L札幌+33万／L高田馬場+37万／L二子玉川+33万）とP下北沢+36万／P所沢+29万は目標外の純上乗せ</strong>（合計約+¥247万）で、上表の直営目標には含めない。</div>
 
-<!-- ①-2 先予約 -->
-<div id="senyoyaku" class="section-divider">①-2 先予約 ― 残り8日に既に入っている予約<span class="tbadge share">共有 4分</span></div>
+<!-- ② どのKPIが遅れているか -->
+<div id="kpi" class="section-divider">② どのKPIが遅れているか ― 新規／再来／客単価を円で分解<span class="tbadge share">共有 7分</span></div>
+<div class="type-grid">
+  <div class="type-card shinki">
+    <div class="tt">🔵 新規型 7店</div>
+    <div class="tv num-r">−¥1,202,455</div>
+    <div class="ts">穴の48%。S金山・S池袋P・S岐阜・S中野・m下北沢・m立川・S藤沢。<br>担当＝タカショー（入口）</div>
+  </div>
+  <div class="type-card tanka">
+    <div class="tt">🟣 客単価型 3店</div>
+    <div class="tv num-r">−¥735,368</div>
+    <div class="ts">穴の29%。S熊本・S二子玉川・m川崎。<br>担当＝SV・店舗（セット/回数券/物販）</div>
+  </div>
+  <div class="type-card saigai">
+    <div class="tt">🟠 再来型 2店</div>
+    <div class="tv num-r">−¥571,441</div>
+    <div class="ts">穴の23%。S立川・m所沢。<br>担当＝SV・店舗（次回予約）</div>
+  </div>
+</div>
+<div class="section" style="padding:0">
+  <table>
+    <thead>
+      <tr><th style="text-align:left">店舗</th><th>新規(円)</th><th>再来(円)</th><th>客単価(円)</th><th style="text-align:left">主因</th><th>残8日で要る額</th><th>次回予約率</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>S金山</td><td class="num-r">−243,000</td><td>±0</td><td class="num-r">−14,025</td><td class="l"><span class="tag tb">新規</span>再来0の新店</td><td>+377,440</td><td class="num-r">16.3%</td></tr>
+      <tr><td>S池袋P</td><td class="num-r">−214,200</td><td class="num-g">+40,800</td><td class="num-r">−47,382</td><td class="l"><span class="tag tb">新規</span>新規依存</td><td>+351,100</td><td class="num-r">0.0%</td></tr>
+      <tr><td>S立川</td><td class="num-g">+30,500</td><td class="num-r">−262,300</td><td class="num-r">−87,768</td><td class="l"><span class="tag ta">再来</span>再来−43件</td><td>+515,620</td><td class="num-r">21.7%</td></tr>
+      <tr><td>S熊本</td><td class="num-r">−114,000</td><td class="num-r">−6,000</td><td class="num-r">−235,980</td><td class="l"><span class="tag tr">客単価</span>¥4,974に崩壊</td><td>+659,390</td><td>50.0%</td></tr>
+      <tr><td>S岐阜</td><td class="num-r">−31件</td><td class="num-g">+9件</td><td class="l">—</td><td class="l"><span class="tag tb">新規</span>客単価目標未設定</td><td>+310,470</td><td>25.0%</td></tr>
+      <tr><td>S中野</td><td class="num-r">−318,000</td><td class="num-g">+132,000</td><td class="num-g">+12,104</td><td class="l"><span class="tag tb">新規</span>新規−53件</td><td>+399,150</td><td>54.5%</td></tr>
+      <tr><td>S二子玉川</td><td class="num-r">−6,400</td><td class="num-g">+19,200</td><td class="num-r">−306,280</td><td class="l"><span class="tag tr">客単価</span>¥5,222に崩壊</td><td>+653,850</td><td>41.4%</td></tr>
+      <tr><td>m所沢</td><td class="num-r">−64,000</td><td class="num-r">−136,000</td><td class="num-r">−61,664</td><td class="l"><span class="tag ta">再来</span>全方位不足</td><td>+589,170</td><td class="num-r">26.2%</td></tr>
+      <tr><td>m下北沢</td><td class="num-r">−130,900</td><td class="num-r">−53,900</td><td class="num-r">−51,150</td><td class="l"><span class="tag tb">新規</span>新規−17件</td><td>+792,120</td><td class="num-g">66.7%</td></tr>
+      <tr><td>m立川</td><td class="num-r">−59,500</td><td class="num-r">−42,500</td><td class="num-g">+14,129</td><td class="l"><span class="tag tb">新規</span>次予0%要注意</td><td>+542,140</td><td class="num-r">0.0%</td></tr>
+      <tr><td>S藤沢</td><td class="num-r">−48,000</td><td class="num-r">−48,000</td><td class="num-g">+37,975</td><td class="l"><span class="tag tb">新規</span>新規・再来拮抗</td><td>+416,180</td><td>38.9%</td></tr>
+      <tr><td>m川崎</td><td class="num-g">+25,200</td><td class="num-g">+25,200</td><td class="num-r">−143,630</td><td class="l"><span class="tag tr">客単価</span>回数券停止</td><td>+659,950</td><td class="num-r">23.1%</td></tr>
+      <tr><td>S高田馬場</td><td class="num-g">+161,000</td><td class="num-g">+14,000</td><td class="num-r">−130,520</td><td class="l"><span class="tag tg">達成</span>新規牽引</td><td>+403,850</td><td>33.3%</td></tr>
+      <tr><td>S川崎</td><td class="num-r">−25,600</td><td class="num-g">+396,800</td><td class="num-r">−243,569</td><td class="l"><span class="tag tg">達成</span>再来牽引・次予5.4%🔴</td><td>+921,255</td><td class="num-r">5.4%</td></tr>
+      <tr><td>m横浜</td><td class="num-r">−52,800</td><td class="num-r">−35,200</td><td class="num-g">+468,450</td><td class="l"><span class="tag tg">達成</span>客単価牽引</td><td>+800,330</td><td>40.0%</td></tr>
+      <tr><td>S札幌</td><td class="num-g">+53,100</td><td class="num-g">+82,600</td><td class="num-g">+147,730</td><td class="l"><span class="tag tg">達成</span>全項目+</td><td>+381,115</td><td>41.0%</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note"><strong>読み方：</strong>各KPIの円＝（着地見込−目標）×目標客単価で売上ロスに換算（客単価は単価差×着地客数）。マイナスが最も大きいKPIがその店の「病巣」。<strong>「残8日で要る額」＝目標−当月実績</strong>（残り8日で売る必要がある総額）。<strong>次回予約率は再来の先行指標</strong>：m立川0%・S川崎5.4%は今は売れていても来月の再来が枯れるサイン。</div>
+<div class="insight-box">
+  <strong>結論：</strong> 直営の穴の<strong>半分（48%）は新規</strong>＝タカショーの入口づくりが最大レバー。新規型7店の入口（ホットペッパー露出×クーポン）を残り8日で開ける。次に<strong>客単価型（S熊本・二子玉川）で約−¥54万</strong>＝SVのセット/回数券指導。再来型（S立川・m所沢）は<strong>次回予約とその場予約</strong>で締める。この3タイプを役割分担で同時に動かせば、達成圏に乗る。
+</div>
+
+<!-- ③ 先予約 -->
+<div id="senyoyaku" class="section-divider">③ 先予約 ― 残り8日に既に入っている予約<span class="tbadge share">共有 4分</span></div>
 <div class="result-grid">
   <div class="result-card hit">
-    <div class="rc-label hit">📋 直営8店 先予約合計</div>
+    <div class="rc-label hit">📋 取得済み店 先予約合計</div>
     <div class="rc-rate num-g">655件</div>
     <div class="rc-value">¥2,928,030（6/22〜6/30）</div>
     <div class="rc-reason">6/23 0:08 予約一覧から取得</div>
@@ -238,47 +312,25 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
     <div class="rc-label miss">🔴 先予約が薄い</div>
     <div class="rc-rate num-r">m下北沢</div>
     <div class="rc-value">78件 ／ ¥223,100（1件¥2,860）</div>
-    <div class="rc-reason">最大ギャップ。残り枠に積む必要</div>
+    <div class="rc-reason">残り枠に積む必要</div>
   </div>
   <div class="result-card near">
     <div class="rc-label near">⚠️ 今回取得できず</div>
-    <div class="rc-rate num-a" style="font-size:18px;margin-top:4px">S金山・P下北沢</div>
+    <div class="rc-rate num-a" style="font-size:18px;margin-top:4px">S金山・S立川・S中野ほか</div>
     <div class="rc-value">ログイン未追加</div>
     <div class="rc-reason">次回取得に追加</div>
   </div>
 </div>
-<div class="section" style="padding:0">
-  <table>
-    <thead>
-      <tr><th style="text-align:left">店舗</th><th>実績 6/1-21</th><th>先予約(件)</th><th>先予約金額</th><th>確定ライン</th><th>着地見込</th><th>目標</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>S二子玉川</td><td>¥711,850</td><td>92</td><td>¥369,700</td><td>¥1,081,550</td><td>¥1,016,929</td><td>¥1,651,200</td></tr>
-      <tr><td>m下北沢</td><td>¥1,230,060</td><td class="num-r">78</td><td class="num-r">¥223,100</td><td>¥1,453,160</td><td>¥1,757,229</td><td>¥2,310,000</td></tr>
-      <tr><td>S藤沢</td><td>¥686,720</td><td>73</td><td>¥196,500</td><td>¥883,220</td><td>¥981,029</td><td>¥1,398,000</td></tr>
-      <tr><td>S熊本</td><td>¥820,310</td><td>64</td><td>¥338,340</td><td>¥1,158,650</td><td>¥1,171,871</td><td>¥1,500,000</td></tr>
-      <tr><td>S岐阜 <span class="tag ta">実績16日</span></td><td>¥379,930</td><td>47</td><td>¥244,890</td><td>¥624,820</td><td>¥542,757</td><td>¥725,000</td></tr>
-      <tr><td>m川崎</td><td>¥1,526,250</td><td>43</td><td>¥314,000</td><td>¥1,840,250</td><td>¥2,171,786</td><td>¥2,226,000</td></tr>
-      <tr><td>S札幌</td><td>¥1,543,145</td><td class="num-g">127</td><td>¥376,400</td><td>¥1,919,545</td><td>¥2,204,493</td><td>¥2,200,700</td></tr>
-      <tr><td>m横浜</td><td>¥3,182,370</td><td class="num-g">131</td><td>¥865,100</td><td class="num-g">¥4,047,470</td><td>¥4,546,243</td><td>¥4,048,000</td></tr>
-      <tr style="background:#f8fafc;font-weight:700"><td>直営8店 計</td><td>¥10,080,635</td><td>655</td><td>¥2,928,030</td><td>¥13,008,665</td><td>¥14,392,337</td><td>¥16,058,900</td></tr>
-    </tbody>
-  </table>
-</div>
-<div class="note amber"><strong>注意：</strong>先予約金額は「予約時に金額が入っている分」だけの<strong>最低ライン</strong>（未入力は¥0で集計）。<strong>件数が確実な指標</strong>で、実際の見込みはこれより上。確定ライン＝実績(6/1-21)＋先予約金額。S岐阜の実績は16日分のみ。</div>
-<div class="insight-box">
-  <strong>読み：</strong> <strong>m横浜・S札幌</strong>は先予約が厚く着地確定圏（守りに徹する）。<strong>m下北沢（78件・1件¥2,860）・S藤沢（73件・¥196,500）</strong>は先予約が薄く、<strong>残り枠に新規/再来を積めるかが着地を直接左右</strong>（＝②の入口づくりが効く店）。<strong>S二子玉川（先予約1件¥4,018）</strong>は予約段階から低単価＝<strong>入った予約にセット・追加メニューを必ず乗せる</strong>（＝③の単価対策が効く店）。
-</div>
-
-<details style="margin-top:14px">
-  <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#1d4ed8;padding:6px 0">▶ 参考：全店 先予約一覧（6/22〜6/30・21店）</summary>
+<div class="note amber"><strong>注意：</strong>先予約金額は「予約時に金額が入っている分」だけの<strong>最低ライン</strong>（未入力は¥0で集計）。<strong>件数が確実な指標</strong>で、実際の見込みはこれより上。下の一覧は予約一覧を取得できた店の実数（着地見込CSVとは別系統のデータ）。</div>
+<details style="margin-top:14px" open>
+  <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#1d4ed8;padding:6px 0">▶ 先予約一覧（6/22〜6/30・取得できた店）</summary>
   <div class="section" style="padding:0;margin-top:8px">
     <table>
       <thead><tr><th style="text-align:left">店舗</th><th>先予約(件)</th><th>先予約金額</th></tr></thead>
       <tbody>
         <tr><td>m横浜 <span class="tag tg">直営</span></td><td>131</td><td>¥865,100</td></tr>
         <tr><td>L札幌</td><td>128</td><td>¥198,400</td></tr>
-        <tr><td>S川崎</td><td>127</td><td>¥441,400</td></tr>
+        <tr><td>S川崎 <span class="tag tg">直営</span></td><td>127</td><td>¥441,400</td></tr>
         <tr><td>S札幌 <span class="tag tg">直営</span></td><td>127</td><td>¥376,400</td></tr>
         <tr><td>L川崎</td><td>127</td><td>¥212,400</td></tr>
         <tr><td>S二子玉川 <span class="tag tg">直営</span></td><td>92</td><td>¥369,700</td></tr>
@@ -287,14 +339,14 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
         <tr><td>S藤沢 <span class="tag tg">直営</span></td><td>73</td><td>¥196,500</td></tr>
         <tr><td>L藤沢</td><td>73</td><td>¥92,400</td></tr>
         <tr><td>S熊本 <span class="tag tg">直営</span></td><td>64</td><td>¥338,340</td></tr>
-        <tr><td>S高田馬場</td><td>58</td><td>¥271,800</td></tr>
+        <tr><td>S高田馬場 <span class="tag tg">直営</span></td><td>58</td><td>¥271,800</td></tr>
         <tr><td>L高田馬場</td><td>58</td><td>¥40,400</td></tr>
         <tr><td>S岐阜 <span class="tag tg">直営</span></td><td>47</td><td>¥244,890</td></tr>
         <tr><td>S中野</td><td>47</td><td>¥239,300</td></tr>
         <tr><td>m川崎 <span class="tag tg">直営</span></td><td>43</td><td>¥314,000</td></tr>
-        <tr><td>m立川</td><td>42</td><td>¥255,200</td></tr>
-        <tr><td>S立川</td><td>42</td><td>¥235,680</td></tr>
-        <tr><td>m所沢</td><td>38</td><td>¥34,500</td></tr>
+        <tr><td>m立川 <span class="tag tg">直営</span></td><td>42</td><td>¥255,200</td></tr>
+        <tr><td>S立川 <span class="tag tg">直営</span></td><td>42</td><td>¥235,680</td></tr>
+        <tr><td>m所沢 <span class="tag tg">直営</span></td><td>38</td><td>¥34,500</td></tr>
         <tr><td>P所沢</td><td>38</td><td>¥203,000</td></tr>
         <tr><td>L池袋</td><td>34</td><td>¥149,100</td></tr>
       </tbody>
@@ -302,43 +354,44 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
   </div>
 </details>
 
-<!-- ② 入口を開く -->
-<div id="iriguchi" class="section-divider">② 入口を開く ― 新規の取りこぼしを止める（タカショー領域）<span class="tbadge">決定 12分</span></div>
+<!-- ④ 入口を開く -->
+<div id="iriguchi" class="section-divider">④ 入口を開く ― 新規型7店の取りこぼしを止める（タカショー領域・穴の48%）<span class="tbadge">決定 12分</span></div>
 <div class="section">
-  <div class="施策-grid">
+  <div class="note blue" style="margin-top:0">対象：<strong>S金山・S池袋P・S岐阜・S中野・m下北沢・m立川・S藤沢</strong>。新規はほぼ100%ホットペッパー経由。露出 × 予約率 × クーポンを残り8日で開ける。</div>
+  <div class="施策-grid" style="margin-top:14px">
     <div class="施策-card">
       <div class="施策-title">🎯 ホットペッパーのクーポン強化<span class="owner me">タカショー</span></div>
       <div class="施策-body">
-        着地が遠い店（藤沢・下北沢・熊本・岐阜）のホットペッパークーポンを、残り8日だけ強化（即予約しやすい入口・限定特典）。新規はほぼ100%ホットペッパー経由。
+        新規型の店（金山・池袋P・中野・岐阜・下北沢）のクーポン不足キーワードを補完し、上位クーポンの写真・文面を残り8日だけ強化。新店の金山・池袋Pは新規限定の入口クーポンを最優先。
         <span class="lbl">決めること</span>どの店に・どのクーポンを・今日〜明日入れるか。
       </div>
     </div>
     <div class="施策-card">
       <div class="施策-title">💬 LINEで再来の掘り起こし<span class="owner me">タカショー</span></div>
       <div class="施策-body">
-        しばらく来ていない再来のお客様へLINE配信（例：下北沢の再来149名）。クーポン画像はホットペッパーの予約へ。
+        しばらく来ていない再来のお客様へLINE配信。クーポン画像はホットペッパーの予約へ。再来型のS立川・m所沢へも同時に再来促進ステップ配信を点火。
         <span class="lbl">決めること</span>配信する店・対象・文面。今日中に着手。
       </div>
     </div>
     <div class="施策-card">
       <div class="施策-title">⚡ ゲリラクーポン（空き枠埋め）<span class="owner me">タカショー</span></div>
       <div class="施策-body">
-        空き枠が多い日に即日でゲリラクーポンを投下。
-        <span class="lbl">決めること</span>各店が「空いてる枠」を今日中に共有 → タカショーが打つ、の運用を確定。
+        空き枠が多い日に即日でゲリラクーポンを投下。先予約が薄いm下北沢・S藤沢は残り枠を直接埋めるのが効く。
+        <span class="lbl">決めること</span>各店が「空いてる枠」を今日中に共有 → タカショーが打つ運用を確定。
       </div>
     </div>
   </div>
-  <div class="output"><span class="ot">このセクションのアウトプット</span>残り8日、入口（ホットペッパー・LINE・ゲリラ）はタカショーが<strong>今日着手</strong>。各店は「空き枠」を<strong>今日中に共有</strong>する。</div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>新規型7店の入口（ホットペッパー・LINE・ゲリラ）はタカショーが<strong>今日着手・6/24〜25で点検と差し替え完了</strong>。各店は「空き枠」を<strong>今日中に共有</strong>する。</div>
 </div>
 
-<!-- ③ 接客で締める -->
-<div id="sekkyaku" class="section-divider">③ 接客で締める ― 来た客を逃さず単価を上げる（SV・店舗領域）<span class="tbadge">決定 12分</span></div>
+<!-- ⑤ 接客で締める -->
+<div id="sekkyaku" class="section-divider">⑤ 接客で締める ― 再来と客単価を締める（SV・店舗領域・穴の52%）<span class="tbadge">決定 12分</span></div>
 <div class="section">
   <div class="施策-grid">
     <div class="施策-card">
       <div class="施策-title">📅 次回予約を全員に提案<span class="owner sv">SV・店舗</span></div>
       <div class="施策-body">
-        新規の次回予約は5月実績32%（目標45%）。<strong>残り8日は全員に必ず一声</strong>。来てくれた客を次につなぐ最短の手。
+        再来型のS立川（次予21.7%）・m所沢（26.2%）が病巣。さらに<strong>S川崎5.4%・m立川0%</strong>は来月の再来が枯れるサイン。<strong>残り8日は全員に必ず一声</strong>。
         <span class="lbl">決めること</span>「会計前に必ず次回提案」を全店で再徹底。
       </div>
     </div>
@@ -352,38 +405,48 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
     <div class="施策-card">
       <div class="施策-title">💎 客単価を上げる<span class="owner sv">SV・店舗</span></div>
       <div class="施策-body">
-        セット提案・追加施術（下まつげパーマ・眉カラー）・物販。特に低単価の二子玉川・熊本・岐阜。
+        客単価型のS熊本（¥4,974）・S二子玉川（¥5,222）・m川崎（回数券停止）が対象。セット提案・追加施術（下まつげ・眉カラー）・物販・回数券。
         <span class="lbl">決めること</span>残り8日の「一声メニュー」を店ごとに1つ決める。
       </div>
     </div>
   </div>
-  <div class="output"><span class="ot">このセクションのアウトプット</span>残り8日、<strong>次回予約とセット提案を全員徹底</strong>。キャンセルはリマインド＋リファンドハブで守る。</div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>再来型2店＝次回予約のその場獲得を即日徹底。客単価型3店＝セット/回数券を一声必須。キャンセルはリマインド＋リファンドハブで守る。</div>
 </div>
 
-<!-- ④ 例外2店 -->
-<div id="reigai" class="section-divider">④ 例外2店の単価対策 ― 新規でなく単価が病巣<span class="tbadge">決定 10分</span></div>
+<!-- ⑥ 重点店の深掘り -->
+<div id="juten" class="section-divider">⑥ 重点店の深掘り ― 病巣タイプ別<span class="tbadge">決定 12分</span></div>
 <div class="section">
   <div class="issue-grid">
-    <div class="issue-card warning">
-      <div class="ic-store warning">🟡 m川崎 ― 97.6%（あと ¥54,214）</div>
-      <div class="ic-item">病巣は新規ではなく<strong>客単価</strong>。<strong>回数券が止まっている</strong>（回数券2件・¥19,500＝構成比1.3%。横浜は15.5%）。</div>
-      <div class="ic-item">再来単価¥8,189と高いのに、LTVを伸ばす回数券が機能していない＝再来の取りこぼし。</div>
-      <div class="ic-item"><strong>残8日：</strong>次回予約で来店の歩幅を固定＋セットで単価維持。</div>
-      <div class="ic-item"><strong>本筋（7月へ）：</strong>次回予約 → LED導線 → 回数券、の二段階で回数券を再建。</div>
+    <div class="issue-card critical">
+      <div class="ic-store critical">🟣 客単価型 ― S熊本 76.4%（あと ¥353,714）</div>
+      <div class="ic-item">円ロス最大の店。客単価が<strong>目標¥6,000→着地¥4,974</strong>に崩壊（−¥235,980）。新規も−19件（−¥114,000）。</div>
+      <div class="ic-item"><strong>残8日：</strong>来た客にセット・追加メニューを必ず提案して単価を戻す。新規はホットペッパー入口を並行強化。</div>
+      <div class="ic-item"><strong>担当：</strong>客単価＝SV／新規＝タカショー。毎日単価をチェック。</div>
     </div>
     <div class="issue-card critical">
-      <div class="ic-store critical">🔴 S二子玉川 ― 61.6%（あと ¥634,271）</div>
-      <div class="ic-item">最大ギャップ。病巣は<strong>客単価崩壊</strong>＝<strong>再来単価¥4,529 ＜ 新規単価¥5,896</strong>（再来の方が安い異常）。</div>
-      <div class="ic-item">新規・再来・客単価の三重苦（うち客単価のマイナスが最大−318,516）。</div>
-      <div class="ic-item"><strong>残8日：</strong>再来のお客様にセット・追加メニュー（下まつげ・眉カラー）を<strong>必ず提案</strong>して単価を戻す。</div>
-      <div class="ic-item">担当エリマネが残り8日リードし、毎日単価をチェック。</div>
+      <div class="ic-store critical">🟣 客単価型 ― S二子玉川 82.4%（あと ¥291,177）</div>
+      <div class="ic-item">客単価<strong>目標¥6,400→着地¥5,222</strong>（−¥306,280）が病巣。新規・再来はほぼ目標通りで、単価だけが穴。</div>
+      <div class="ic-item"><strong>残8日：</strong>入った予約に必ずセット・追加メニューを乗せる（先予約も1件¥4,018と低い＝予約段階から低単価）。</div>
+      <div class="ic-item"><strong>担当：</strong>SV・店舗が単価をリード。</div>
+    </div>
+    <div class="issue-card warning">
+      <div class="ic-store warning">🟠 再来型 ― S立川 70.5%（あと ¥314,936）</div>
+      <div class="ic-item">病巣は<strong>再来−43件（−¥262,300）</strong>。新規は+5件で達成しているのに再来が落ちている。次回予約率21.7%と低い。</div>
+      <div class="ic-item"><strong>残8日：</strong>次回予約のその場獲得を徹底＋次回予約なし客へ再来促進LINE。客単価（−¥636）もセットで底上げ。</div>
+      <div class="ic-item"><strong>担当：</strong>SV・店舗（次回予約）＋タカショー（再来配信）。</div>
+    </div>
+    <div class="issue-card blue">
+      <div class="ic-store blue">🔵 新規最遅 ― S金山63.0%・S池袋P69.3%</div>
+      <div class="ic-item">どちらも<strong>再来の土台がない新店/新規依存店</strong>。S金山は再来0で新規が全て（新規−¥243,000）、S池袋Pも新規−¥214,200。</div>
+      <div class="ic-item"><strong>残8日：</strong>新規限定の入口クーポンを最優先で投下。次回予約率（金山16.3%・池袋P0%）を上げて再来の土台を作る。</div>
+      <div class="ic-item"><strong>担当：</strong>新規＝タカショー／次回予約＝SV・店舗。</div>
     </div>
   </div>
-  <div class="output"><span class="ot">このセクションのアウトプット</span>川崎＝<strong>次回予約＋セット</strong>／二子玉川＝<strong>再来にセット必須提案</strong>。2店とも担当エリマネが残り8日リード。</div>
+  <div class="output"><span class="ot">このセクションのアウトプット</span>客単価型（熊本・二子玉川）＝セット必須提案／再来型（立川・所沢）＝次回予約徹底／新規最遅（金山・池袋P）＝入口クーポン最優先。各店とも担当を決めて残り8日リード。</div>
 </div>
 
-<!-- ⑤ 前回宿題・システム -->
-<div id="system" class="section-divider">⑤ 前回(6/6)宿題・システム進捗の確認<span class="tbadge share">確認 8分</span></div>
+<!-- ⑦ 前回宿題・システム -->
+<div id="system" class="section-divider">⑦ 前回(6/6)宿題・システム進捗の確認<span class="tbadge share">確認 8分</span></div>
 <div class="section">
   <div class="timeline">
     <div class="tl-item">
@@ -399,12 +462,12 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
       <div class="tl-desc">6/30から全店展開。各店の準備状況を確認。</div>
     </div>
   </div>
-  <div class="note blue" style="margin-top:14px"><strong>追加施術（単価UP）：</strong>下まつげパーマ・眉カラー・マツエクの導入／研修の稼働を確認。残り8日で「使える店」は接客③のセット提案に組み込む。<br><strong>リファンドハブ：</strong>マニュアルの周知とキャンセル料請求フローの稼働を確認。</div>
+  <div class="note blue" style="margin-top:14px"><strong>追加施術（単価UP）：</strong>下まつげパーマ・眉カラー・マツエクの導入／研修の稼働を確認。残り8日で「使える店」は接客⑤のセット提案に組み込む（特に客単価型の熊本・二子玉川・川崎）。<br><strong>リファンドハブ：</strong>マニュアルの周知とキャンセル料請求フローの稼働を確認。</div>
   <div style="margin-top:14px">
     <div class="action-item">
       <div class="anum b">★</div>
       <div class="abody">
-        <div class="t">タカショー前回宿題の進捗確認（②の入口づくりと直結）</div>
+        <div class="t">タカショー前回宿題の進捗確認（④の入口づくりと直結）</div>
         <div style="font-size:12px;color:#64748b;margin-top:3px">①ミニモ進捗チェックリスト入力　②金額・ゲリラクーポンまとめ　③特典を1ページに集約</div>
         <div style="display:flex;gap:6px;margin-top:5px"><span class="who me">タカショー</span><span class="due db">6/6 N/A</span></div>
       </div>
@@ -412,29 +475,37 @@ td.l{text-align:left!important;font-weight:400!important;color:#475569}
   </div>
 </div>
 
-<!-- ⑥ コミット -->
-<div id="commit" class="section-divider">⑥ 各店コミット ― 残り8日の打ち手と「今日やる1つ」<span class="tbadge">宣言 10分</span></div>
+<!-- ⑧ コミット -->
+<div id="commit" class="section-divider">⑧ 各店コミット ― 残り8日の打ち手と「今日やる1つ」<span class="tbadge">宣言 12分</span></div>
 <div class="section" style="padding:0">
   <table>
     <thead>
-      <tr><th style="text-align:left">店舗</th><th>残ギャップ</th><th style="text-align:left">残り8日の打ち手</th><th style="text-align:left">今日やる1つ（記入）</th></tr>
+      <tr><th style="text-align:left">店舗</th><th>残ギャップ</th><th style="text-align:left">遅れKPI</th><th style="text-align:left">残り8日の打ち手</th><th style="text-align:left">今日やる1つ（記入）</th></tr>
     </thead>
     <tbody>
-      <tr><td>S二子玉川</td><td class="num-r">−634,271</td><td class="l">再来にセット・追加メニューを必ず提案して単価を戻す</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>m下北沢</td><td class="num-r">−552,771</td><td class="l">ホットペッパー新規入口の緊急復旧＋再来149名へ掘り起こしLINE</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>S藤沢</td><td class="num-r">−416,971</td><td class="l">ホットペッパークーポン強化＋空き枠を電話/LINEで埋める</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>S熊本</td><td class="num-r">−328,129</td><td class="l">ホットペッパー入口＋セット提案で単価を上げる</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>S岐阜</td><td class="num-r">−182,243</td><td class="l">ホットペッパークーポン＋セット/物販を必ず一声</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>m川崎</td><td class="num-r">−54,214</td><td class="l">次回予約で歩幅固定＋セットで単価維持</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>S札幌</td><td class="num-g">+3,793</td><td class="l">着地維持＋物販を上積み</td><td class="l"><div class="commit-box"></div></td></tr>
-      <tr><td>m横浜</td><td class="num-g">+498,243</td><td class="l">守り：高単価セット維持・質の高い新規をキープ</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S金山</td><td class="num-r">−259,418</td><td class="l"><span class="tag tb">新規</span></td><td class="l">新規限定の入口クーポン投下＋次回予約で再来の土台づくり</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S池袋P</td><td class="num-r">−219,136</td><td class="l"><span class="tag tb">新規</span></td><td class="l">ホットペッパー新規クーポン強化＋次回予約0%を改善</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S立川</td><td class="num-r">−314,936</td><td class="l"><span class="tag ta">再来</span></td><td class="l">次回予約その場獲得＋再来促進LINE＋セットで単価底上げ</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S熊本</td><td class="num-r">−353,714</td><td class="l"><span class="tag tr">客単価</span></td><td class="l">セット・追加メニュー必須提案で単価を戻す＋新規入口強化</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S岐阜</td><td class="num-r">−159,732</td><td class="l"><span class="tag tb">新規</span></td><td class="l">ホットペッパークーポン＋セット/物販を必ず一声</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S中野</td><td class="num-r">−177,750</td><td class="l"><span class="tag tb">新規</span></td><td class="l">新規−53件の入口を緊急強化（再来は好調なので新規に集中）</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S二子玉川</td><td class="num-r">−291,177</td><td class="l"><span class="tag tr">客単価</span></td><td class="l">入った予約にセット・追加メニューを必ず乗せる</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m所沢</td><td class="num-r">−256,505</td><td class="l"><span class="tag ta">再来</span></td><td class="l">次回予約徹底＋再来促進LINE＋空き枠を埋める</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m下北沢</td><td class="num-r">−240,164</td><td class="l"><span class="tag tb">新規</span></td><td class="l">ホットペッパー新規入口の緊急復旧＋再来掘り起こしLINE</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m立川</td><td class="num-r">−87,100</td><td class="l"><span class="tag tb">新規</span></td><td class="l">新規クーポン＋次回予約0%を必ず改善（来月の再来を守る）</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S藤沢</td><td class="num-r">−59,155</td><td class="l"><span class="tag tb">新規</span></td><td class="l">ホットペッパークーポン強化＋空き枠を電話/LINEで埋める</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m川崎</td><td class="num-r">−90,477</td><td class="l"><span class="tag tr">客単価</span></td><td class="l">次回予約で歩幅固定＋セット/回数券で単価維持</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S高田馬場</td><td class="num-g">+47,477</td><td class="l"><span class="tag tg">達成</span></td><td class="l">着地維持。客単価のマイナス分は物販で上積み</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S川崎</td><td class="num-g">+128,470</td><td class="l"><span class="tag tg">達成</span></td><td class="l">守り＋次回予約5.4%を改善し来月の再来を確保</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>m横浜</td><td class="num-g">+380,641</td><td class="l"><span class="tag tg">達成</span></td><td class="l">守り：高単価セット維持・質の高い新規をキープ</td><td class="l"><div class="commit-box"></div></td></tr>
+      <tr><td>S札幌</td><td class="num-g">+280,552</td><td class="l"><span class="tag tg">達成</span></td><td class="l">守り＋勝ちパターンを未達店へ共有</td><td class="l"><div class="commit-box"></div></td></tr>
     </tbody>
   </table>
 </div>
-<div class="output"><span class="ot">このMTGのゴール</span>各店が「残り8日の上積み目標」と「今日やる1つ」を宣言して退出する。入口（タカショー）と接客（SV）の両輪で、89.6%を1%でも押し上げる。</div>
+<div class="output"><span class="ot">このMTGのゴール</span>各店が「残り8日の上積み目標」と「今日やる1つ」を宣言して退出する。入口（タカショー・穴の48%）と接客（SV・穴の52%）の両輪で、94.1%を目標達成圏（あと¥1,672,123）まで押し上げる。</div>
 
 <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:10px">
-  直営MTG アジェンダ ｜ 2026-06-22 ｜ 6月締めラストスパート（残り8日）｜ SSIN STUDIO 直営
+  直営MTG アジェンダ ｜ 2026-06-22 ｜ 6月締めラストスパート（残り8日）｜ 公式着地見込CSV（6/23）｜ SSIN STUDIO 直営16店
 </div>
 
 </body>
