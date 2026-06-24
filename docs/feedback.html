@@ -128,7 +128,7 @@ const STORES = {
 // しきい値：★5（大変満足）のみ口コミ誘導。それ以外は意見フォーム。
 const REVIEW_MIN = 5;
 // 送信先＝ssin-line-linker worker /api/feedback（Supabase reserve.feedback 保存＋★1-4 Slack）
-const SUBMIT_ENDPOINT = "https://ssin-line-linker.t-miyawaki.workers.dev/api/feedback";
+const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxO4hsh4vrRy5JuXR7FJMNPPgntpdVnLvyCyaHlfWeDjtUUSUs3Fp-vapZsq416-EzPEw/exec";
 
 const params = new URLSearchParams(location.search);
 const storeKey = params.get("store") || "fujisawa";
