@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>ご利用満足度アンケート｜SSIN STUDIO</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  :root{--ink:#3a342e;--sub:#9a8f82;--line:#ece6df;--accent:#b89878;--accent2:#a07e5c;--bg:#f6f1ea;--ok:#15a05a;--card:#fff}
+  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding:0 0 50px}
+  .wrap{max-width:440px;margin:0 auto;min-height:100vh;background:var(--card)}
+  .hero{background:linear-gradient(135deg,#c9ad8e,#a07e5c);color:#fff;padding:30px 24px 26px;text-align:center}
+  .hero .brand{font-size:12px;letter-spacing:.22em;opacity:.92;font-weight:700}
+  .hero h1{font-size:20px;font-weight:800;margin-top:8px;line-height:1.45}
+  .hero .store{font-size:12.5px;opacity:.9;margin-top:8px;background:rgba(255,255,255,.16);display:inline-block;padding:3px 12px;border-radius:999px}
+  .body{padding:26px 24px}
+  .lead{font-size:14.5px;color:#5a5249;margin-bottom:22px}
+  .q{font-size:16px;font-weight:800;margin-bottom:14px}
+  /* 満足度 */
+  .rates{display:flex;flex-direction:column;gap:9px}
+  .rate{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:13px;padding:13px 15px;cursor:pointer;transition:.15s;background:#fff}
+  .rate:hover{border-color:var(--accent)}
+  .rate.sel{border-color:var(--accent2);background:#faf5ee}
+  .rate .st{font-size:17px;color:#e8b84a;letter-spacing:1px;min-width:92px}
+  .rate .lb{font-size:14.5px;font-weight:700}
+  .rate .lb small{display:block;font-size:11px;color:var(--sub);font-weight:500}
+  /* ボタン */
+  .btn{display:block;width:100%;text-align:center;border:none;border-radius:13px;padding:15px;font-size:15.5px;font-weight:800;cursor:pointer;margin-top:22px;text-decoration:none}
+  .btn.primary{background:var(--accent2);color:#fff}
+  .btn.primary:disabled{opacity:.4;cursor:not-allowed}
+  .btn.line{background:#06c755;color:#fff}
+  .btn.ghost{background:#f0ebe4;color:#6a6157}
+  /* 不満フォーム */
+  .checks{display:flex;flex-direction:column;gap:18px;margin-top:6px}
+  .cat .ct{font-size:12px;font-weight:800;color:var(--accent2);margin-bottom:7px;letter-spacing:.04em}
+  .chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f3eee7;font-size:14px;cursor:pointer}
+  .chk input{width:19px;height:19px;accent-color:var(--accent2);flex-shrink:0}
+  textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:14px;font-family:inherit;min-height:96px;margin-top:6px;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .step{display:none}.step.on{display:block;animation:f .3s}
+  @keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .done{text-align:center;padding:40px 10px}
+  .done .ic{font-size:46px}
+  .done h2{font-size:19px;margin:12px 0 8px}
+  .done p{font-size:14px;color:#6a6157}
+  .review-note{font-size:12.5px;color:var(--sub);margin-top:14px;text-align:center}
+  .preview-flag{background:#fff4e0;color:#b9760a;font-size:11px;font-weight:700;text-align:center;padding:6px}
+  .small{font-size:11px;color:var(--sub);text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="preview-flag" id="previewFlag">⚠ プレビュー（自社版・本番未接続）</div>
+<div class="wrap">
+  <div class="hero">
+    <div class="brand">SSIN STUDIO</div>
+    <h1>本日はご来店<br>ありがとうございました</h1>
+    <div class="store" id="storeName">— 店</div>
+  </div>
+  <div class="body">
+
+    <!-- STEP1: 満足度 -->
+    <div class="step on" id="step1">
+      <div class="lead">サービス向上のため、ご利用の満足度をお聞かせください（約1分）。</div>
+      <div class="q">本日の仕上がり・ご満足度はいかがでしたか？</div>
+      <div class="rates" id="rates"></div>
+      <button class="btn primary" id="next1" disabled onclick="afterRate()">次へ</button>
+    </div>
+
+    <!-- STEP2A: 高評価→口コミ誘導 -->
+    <div class="step" id="step2a">
+      <div class="done">
+        <div class="ic">🌷</div>
+        <h2>うれしいお声をありがとうございます！</h2>
+        <p>よろしければ、口コミで他のお客様にもサロンを教えていただけると大きな励みになります。</p>
+      </div>
+      <div id="reviewBtns"></div>
+      <div class="review-note">★5の口コミが何よりの応援になります。</div>
+      <button class="btn ghost" onclick="reset()">最初に戻る</button>
+    </div>
+
+    <!-- STEP2B: 低評価→意見フォーム -->
+    <div class="step" id="step2b">
+      <div class="q">差し支えなければ、気になった点を教えてください。</div>
+      <div class="lead" style="margin-bottom:14px">いただいたご意見は<strong>店内で改善に活用</strong>します（公開されません）。</div>
+      <div class="checks" id="checks"></div>
+      <div style="margin-top:18px">
+        <div class="cat"><div class="ct">自由記述（任意）</div></div>
+        <textarea id="comment" placeholder="ご感想・ご要望をご自由にお書きください"></textarea>
+      </div>
+      <button class="btn primary" onclick="submitNeg()">送信する</button>
+      <button class="btn ghost" onclick="reset()">最初に戻る</button>
+    </div>
+
+    <!-- DONE -->
+    <div class="step" id="done">
+      <div class="done">
+        <div class="ic">✅</div>
+        <h2>ご回答ありがとうございました</h2>
+        <p>いただいたご意見を真摯に受け止め、サービス改善に努めてまいります。</p>
+      </div>
+    </div>
+
+    <!-- 既に回答済み（来店ごとに1回） -->
+    <div class="step" id="already">
+      <div class="done">
+        <div class="ic">🙏</div>
+        <h2>この度のご回答は受付済みです</h2>
+        <p>ご協力ありがとうございました。<br>次回ご来店の際に、またお聞かせください。</p>
+      </div>
+    </div>
+
+    <div class="small" id="cfgline"></div>
+  </div>
+</div>
+
+<script>
+// ===== 店舗コンフィグ（店舗別に専用URL＝他店流用を構造的に防ぐ）=====
+const STORES = {
+  fujisawa: {
+    name: "まつ毛パーマ＆眉毛サロン SSIN STUDIO 藤沢店",
+    review: {
+      ssin:   "https://beauty.hotpepper.jp/kr/slnH000680190/review/",
+      lumiss: "https://beauty.hotpepper.jp/kr/slnH000796805/review/",
+    },
+  },
+};
+// しきい値：★5（大変満足）のみ口コミ誘導。それ以外は意見フォーム。
+const REVIEW_MIN = 5;
+// 送信先（未設定＝プレビュー）。本番はSupabase/worker or GAS/Sheet のURLを入れる。
+const SUBMIT_ENDPOINT = "";
+
+const params = new URLSearchParams(location.search);
+const storeKey = params.get("store") || "fujisawa";
+const brandParam = params.get("brand") || ""; // ssin / lumiss（LINEから付与可）
+const visitToken = params.get("v") || ""; // ★来店ごとの一意トークン(予約番号/署名)。これで「来店1回1回答」を担保
+const store = STORES[storeKey] || STORES.fujisawa;
+const dedupKey = "fb_" + storeKey + "_" + (visitToken || "");
+document.getElementById("storeName").textContent = store.name;
+document.getElementById("cfgline").textContent = `store=${storeKey}${brandParam?" / brand="+brandParam:""} / v=${visitToken||"なし"}`;
+// 来店ごとに1回：このトークンで既に回答済みなら受付済み画面（端末ガード。正本はGAS側の重複排除）
+if (visitToken && localStorage.getItem(dedupKey)) { showAnswered(); }
+
+const RATINGS = [
+  { v:5, st:"★★★★★", lb:"大変満足" },
+  { v:4, st:"★★★★☆", lb:"満足" },
+  { v:3, st:"★★★☆☆", lb:"ふつう" },
+  { v:2, st:"★★☆☆☆", lb:"不満" },
+  { v:1, st:"★☆☆☆☆", lb:"大変不満" },
+];
+const REASONS = [
+  { cat:"サロン", items:["店内が清潔でなかった","音楽・会話の声が気になった","施術時間が長かった","待ち時間が長かった"] },
+  { cat:"接客",   items:["会話の内容が不快だった","対応が無愛想だった","態度が気になった","説明・カウンセリングが不足していた"] },
+  { cat:"仕上がり",items:["デザインが希望と違った","仕上がりが良くなかった","モチが悪かった","施術が痛かった・しみた"] },
+  { cat:"価格",   items:["価格が高いと感じた"] },
+];
+
+let rating = 0;
+// 満足度UI
+const ratesEl = document.getElementById("rates");
+RATINGS.forEach(r=>{
+  const d=document.createElement("div"); d.className="rate"; d.dataset.v=r.v;
+  d.innerHTML=`<span class="st">${r.st}</span><span class="lb">${r.lb}</span>`;
+  d.onclick=()=>{ rating=r.v; document.querySelectorAll(".rate").forEach(x=>x.classList.toggle("sel",x===d)); document.getElementById("next1").disabled=false; };
+  ratesEl.appendChild(d);
+});
+// 不満理由UI
+const checksEl = document.getElementById("checks");
+REASONS.forEach(g=>{
+  const cat=document.createElement("div"); cat.className="cat";
+  cat.innerHTML=`<div class="ct">${g.cat}</div>`;
+  g.items.forEach(it=>{
+    const l=document.createElement("label"); l.className="chk";
+    l.innerHTML=`<input type="checkbox" value="${it}">${it}`;
+    cat.appendChild(l);
+  });
+  checksEl.appendChild(cat);
+});
+
+function show(id){ document.querySelectorAll(".step").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo(0,0); }
+function reset(){ rating=0; document.querySelectorAll(".rate").forEach(x=>x.classList.remove("sel")); document.getElementById("next1").disabled=true; document.querySelectorAll("#checks input").forEach(c=>c.checked=false); document.getElementById("comment").value=""; show("step1"); }
+function showAnswered(){ show("already"); }
+
+function afterRate(){
+  if(rating>=REVIEW_MIN){
+    // 口コミ誘導（ブランドで出し分け）。brandパラメータが無ければ両ブランドを提示
+    const box=document.getElementById("reviewBtns"); box.innerHTML="";
+    const mk=(label,url)=>`<a class="btn line" href="${url}" target="_blank" rel="noopener">${label}</a>`;
+    if(brandParam && store.review[brandParam]){
+      box.innerHTML=mk("口コミを書く（HOT PEPPER Beauty）", store.review[brandParam]);
+    }else{
+      box.innerHTML =
+        mk("まつ毛パーマ・眉の口コミを書く", store.review.ssin)+
+        mk("マツエク(LUMISS)の口コミを書く", store.review.lumiss);
+    }
+    logResponse({rating, branch:"review"});
+    if(visitToken) localStorage.setItem(dedupKey,"1");
+    show("step2a");
+  }else{
+    show("step2b");
+  }
+}
+
+async function submitNeg(){
+  const reasons=[...document.querySelectorAll("#checks input:checked")].map(c=>c.value);
+  const comment=document.getElementById("comment").value.trim();
+  await logResponse({rating, branch:"feedback", reasons, comment});
+  if(visitToken) localStorage.setItem(dedupKey,"1");
+  show("done");
+}
+
+async function logResponse(payload){
+  const data={ store:storeKey, brand:brandParam||null, token:visitToken||null, ...payload, ua:navigator.userAgent, at:new Date().toISOString() };
+  if(SUBMIT_ENDPOINT){
+    try{ await fetch(SUBMIT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); }
+    catch(e){ console.error("submit failed",e); }
+  }else{
+    console.log("[feedback preview]",data); // 本番未接続＝コンソールに表示
+  }
+}
+</script>
+</body>
+</html>
