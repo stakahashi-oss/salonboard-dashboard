@@ -50,7 +50,7 @@
 </style>
 </head>
 <body>
-<div class="preview-flag" id="previewFlag">⚠ プレビュー（自社版・本番未接続）</div>
+<div class="preview-flag" id="previewFlag" style="display:none">⚠ プレビュー</div>
 <div class="wrap">
   <div class="hero">
     <div class="brand">SSIN STUDIO</div>
@@ -127,8 +127,8 @@ const STORES = {
 };
 // しきい値：★5（大変満足）のみ口コミ誘導。それ以外は意見フォーム。
 const REVIEW_MIN = 5;
-// 送信先（未設定＝プレビュー）。本番はSupabase/worker or GAS/Sheet のURLを入れる。
-const SUBMIT_ENDPOINT = "";
+// 送信先＝ssin-line-linker worker /api/feedback（Supabase reserve.feedback 保存＋★1-4 Slack）
+const SUBMIT_ENDPOINT = "https://ssin-line-linker.t-miyawaki.workers.dev/api/feedback";
 
 const params = new URLSearchParams(location.search);
 const storeKey = params.get("store") || "fujisawa";
@@ -212,10 +212,11 @@ async function submitNeg(){
 async function logResponse(payload){
   const data={ store:storeKey, brand:brandParam||null, token:visitToken||null, ...payload, ua:navigator.userAgent, at:new Date().toISOString() };
   if(SUBMIT_ENDPOINT){
-    try{ await fetch(SUBMIT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); }
+    // text/plain＝CORS preflight(OPTIONS)を出さないsimple request。worker側でJSON.parse。
+    try{ await fetch(SUBMIT_ENDPOINT,{method:"POST",body:JSON.stringify(data)}); }
     catch(e){ console.error("submit failed",e); }
   }else{
-    console.log("[feedback preview]",data); // 本番未接続＝コンソールに表示
+    console.log("[feedback preview]",data);
   }
 }
 </script>
