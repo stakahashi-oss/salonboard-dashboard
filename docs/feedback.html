@@ -211,15 +211,15 @@ async function submitNeg(){
   show("done");
 }
 
+// 送信先2系統：①GASのGoogleシート ②worker /api/feedback → Supabase(管理画面表示用)。二重保存。
+const SUPABASE_ENDPOINT = "https://ssin-line-linker.t-miyawaki.workers.dev/api/feedback";
 async function logResponse(payload){
   const data={ store:storeKey, brand:brandParam||null, token:visitToken||null, line_uid:lineUid||null, customer_name:custName||null, ...payload, ua:navigator.userAgent, at:new Date().toISOString() };
-  if(SUBMIT_ENDPOINT){
-    // text/plain＝CORS preflight(OPTIONS)を出さないsimple request。worker側でJSON.parse。
-    try{ await fetch(SUBMIT_ENDPOINT,{method:"POST",body:JSON.stringify(data)}); }
-    catch(e){ console.error("submit failed",e); }
-  }else{
-    console.log("[feedback preview]",data);
-  }
+  const body=JSON.stringify(data);
+  // text/plain＝CORS preflight(OPTIONS)を出さないsimple request。各受け口でJSON.parse。
+  const targets=[SUBMIT_ENDPOINT, SUPABASE_ENDPOINT].filter(Boolean);
+  if(!targets.length){ console.log("[feedback preview]",data); return; }
+  for(const u of targets){ try{ await fetch(u,{method:"POST",body}); }catch(e){ console.error("submit failed",u,e); } }
 }
 </script>
 </body>
