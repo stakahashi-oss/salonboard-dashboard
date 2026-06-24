@@ -134,6 +134,8 @@ const params = new URLSearchParams(location.search);
 const storeKey = params.get("store") || "fujisawa";
 const brandParam = params.get("brand") || ""; // ssin / lumiss（LINEから付与可）
 const visitToken = params.get("v") || ""; // ★来店ごとの一意トークン(予約番号/署名)。これで「来店1回1回答」を担保
+const lineUid = params.get("uid") || "";   // LINE userId（配信リンクに埋め込み＝誰が回答したか紐づけ）
+const custName = params.get("name") || ""; // 顧客名（配信リンクに埋め込み）
 const store = STORES[storeKey] || STORES.fujisawa;
 const dedupKey = "fb_" + storeKey + "_" + (visitToken || "");
 document.getElementById("storeName").textContent = store.name;
@@ -210,7 +212,7 @@ async function submitNeg(){
 }
 
 async function logResponse(payload){
-  const data={ store:storeKey, brand:brandParam||null, token:visitToken||null, ...payload, ua:navigator.userAgent, at:new Date().toISOString() };
+  const data={ store:storeKey, brand:brandParam||null, token:visitToken||null, line_uid:lineUid||null, customer_name:custName||null, ...payload, ua:navigator.userAgent, at:new Date().toISOString() };
   if(SUBMIT_ENDPOINT){
     // text/plain＝CORS preflight(OPTIONS)を出さないsimple request。worker側でJSON.parse。
     try{ await fetch(SUBMIT_ENDPOINT,{method:"POST",body:JSON.stringify(data)}); }
