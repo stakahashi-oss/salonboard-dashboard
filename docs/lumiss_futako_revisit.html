@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUMISS二子玉川 再来分析｜特定→改善フレーム</title>
+<style>
+  :root{
+    --navy:#11203b; --navy2:#172a4d; --navy3:#1f3a66;
+    --gold:#f2c200; --ink:#0d1830;
+    --card:#152744; --line:rgba(255,255,255,.08);
+    --txt:#eaf0fb; --sub:#9fb2d4;
+    --red:#e23b3b; --red2:#b6324a; --grn:#19a974;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+    background:linear-gradient(160deg,#0b1426,#11203b 55%,#0c1730);color:var(--txt);
+    -webkit-font-smoothing:antialiased;padding-bottom:50px}
+  .hero{padding:30px 28px 22px;background:linear-gradient(120deg,rgba(31,58,102,.5),rgba(12,23,38,.2))}
+  .hero .eyebrow{color:var(--gold);font-weight:800;letter-spacing:.18em;font-size:12px}
+  .hero h1{margin:8px 0 6px;font-size:30px;font-weight:900;letter-spacing:.01em}
+  .hero .sub{color:var(--sub);font-size:13px;line-height:1.6}
+  .total{display:flex;gap:34px;margin-top:18px;flex-wrap:wrap;align-items:flex-end}
+  .total .big{font-size:46px;font-weight:900;color:var(--gold);line-height:1}
+  .total .lbl{font-size:12px;color:var(--sub);margin-top:5px}
+  .chips{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:700;padding:6px 12px;border-radius:30px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+  .chip.g{background:rgba(25,169,116,.16);color:#7df0c0;border-color:rgba(25,169,116,.4)}
+  .chip.y{background:rgba(232,162,0,.16);color:#ffd66b;border-color:rgba(232,162,0,.4)}
+  .chip.r{background:rgba(226,59,59,.14);color:#ff9a9a;border-color:rgba(226,59,59,.4)}
+  .fixbar{padding:0 28px;margin-top:18px}
+  .fixbar .in{background:rgba(242,194,0,.08);border:1px solid rgba(242,194,0,.3);
+    border-left:5px solid var(--gold);border-radius:12px;padding:15px 18px;font-size:13.5px;
+    line-height:1.7;color:#f4e9c5}
+  .wrap{padding:8px 28px 0}
+  .section-h{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.14em;
+    margin:34px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-h::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  /* KPIカード */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;position:relative;overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .kpi.g::before{background:var(--grn)} .kpi.y::before{background:var(--gold)} .kpi.r::before{background:var(--red)}
+  .kpi .k{font-size:12px;color:var(--sub);font-weight:700}
+  .kpi .v{font-size:30px;font-weight:900;margin:6px 0 2px}
+  .kpi.g .v{color:#7df0c0} .kpi.y .v{color:#ffd66b} .kpi.r .v{color:#ff9a9a}
+  .kpi .d{font-size:11.5px;color:var(--sub);line-height:1.5}
+  /* テーブル */
+  table.t{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+  table.t th{background:rgba(255,255,255,.05);color:var(--sub);font-weight:700;padding:10px 12px;text-align:right;font-size:11.5px}
+  table.t th:first-child,table.t td:first-child{text-align:left}
+  table.t td{padding:9px 12px;text-align:right;border-top:1px solid rgba(255,255,255,.05)}
+  table.t tr:hover td{background:rgba(255,255,255,.03)}
+  .hl{color:var(--gold);font-weight:800}
+  .pos{color:#7df0c0;font-weight:800} .neg{color:#ff9a9a;font-weight:800}
+  /* MIZUKARA 6列フレーム */
+  .frame{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-top:6px}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden;display:flex;flex-direction:column}
+  .ch{padding:9px 11px;font-size:11px;font-weight:800;letter-spacing:.04em;color:#fff}
+  .ch.prob{background:#243a66} .ch.fact{background:#2b4f8a} .ch.what{background:var(--red)}
+  .ch.goal{background:var(--red2)} .ch.plan{background:var(--red2)} .ch.act{background:var(--red2)}
+  .cb{padding:11px 12px;font-size:12px;line-height:1.65;color:#dfe8f8;flex:1}
+  .cb ul{margin:0;padding-left:16px} .cb li{margin-bottom:6px}
+  .cb .num{color:var(--gold);font-weight:800}
+  .cb .tag{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:6px;margin-right:5px}
+  .tag.taka{background:rgba(120,150,220,.2);color:#bcd0f5} .tag.sv{background:rgba(200,120,190,.2);color:#ffd0f2}
+  /* 特定→改善バンド */
+  .band{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:30px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .band .bh{padding:11px 16px;font-weight:900;font-size:14px;color:var(--ink)}
+  .band .L .bh{background:#7a8aa6} .band .R .bh{background:var(--gold)}
+  .band .bc{padding:15px 18px;background:var(--card);font-size:12.5px;line-height:1.7}
+  .band .bc li{margin-bottom:8px}
+  .note{margin:26px 0 0;font-size:11px;color:var(--sub);line-height:1.6}
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.frame{grid-template-columns:1fr 1fr}.band{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="eyebrow">SSIN STUDIO ／ 最強理事会</div>
+  <h1>LUMISS二子玉川 再来分析</h1>
+  <div class="sub">LEDマツエク（2026/3開店）｜「5月→6月で再来が増えた要因」を分解 ｜ データ：SalonBoard売上明細 2026/3/2〜6/21（会計ID集約・取消除外）</div>
+  <div class="total">
+    <div><div class="big">50.0%</div><div class="lbl">6月の再来率（前月 37.5%）</div></div>
+    <div><div class="big" style="font-size:30px;color:#7df0c0">17→17</div><div class="lbl">6月 新規 ＝ 再来（初めて並んだ）</div></div>
+  </div>
+  <div class="chips">
+    <span class="chip g">🟢 再来は上昇（37.5%→50.0%）</span>
+    <span class="chip g">🟢 次回予約ループが稼働</span>
+    <span class="chip r">🔴 新規の76%が1回で消滅</span>
+  </div>
+</div>
+
+<div class="fixbar"><div class="in">
+  ▶ <b>再来率は 37.5%→50.0% に上昇</b>。エンジンは「<b>その場で次回予約</b>」＝2回目以降の人の<b>89%が当日に次回予約</b>を取りリピートのループに乗っている。<b>ただし新規の76%が1回で消える</b>（新規の当日次回予約はわずか13%）。＝伸びしろは「<b>新規の入口で次回予約を取る</b>」一点。回数券・指名には依存していない健全な形。
+</div></div>
+
+<div class="wrap">
+
+  <div class="section-h">主要KPI（6月・〜21日）</div>
+  <div class="kpis">
+    <div class="kpi g"><div class="k">6月 再来率</div><div class="v">50.0%</div><div class="d">前月 37.5%／再来数 12→17に増加（実数でも増）</div></div>
+    <div class="kpi y"><div class="k">初回→2回目 転換</div><div class="v">24.5%</div><div class="d">実顧客124人中 戻ったのは30人だけ</div></div>
+    <div class="kpi r"><div class="k">新規の当日次回予約</div><div class="v">13%</div><div class="d">全新規124人中16人のみ／76%は1回で消滅</div></div>
+    <div class="kpi g"><div class="k">2回目以降の当日次回予約</div><div class="v">89%</div><div class="d">続いた人の大半が当日予約＝ループは強い</div></div>
+    <div class="kpi y"><div class="k">一番入る入口クーポン</div><div class="v">120本</div><div class="d">「当日予約OK★120本」35名＝1位／だが再来率は20%で最低</div></div>
+    <div class="kpi y"><div class="k">後日戻りの間隔</div><div class="v">34日</div><div class="d">当日予約しない人は中央値34日後にHPB/電話で再来</div></div>
+  </div>
+
+  <div class="section-h">月次トレンド（3〜6月）</div>
+  <table class="t">
+    <thead><tr><th>月</th><th>新規</th><th>再来</th><th>計</th><th>再来率</th></tr></thead>
+    <tbody>
+      <tr><td>3月（開店）</td><td>58</td><td>1</td><td>59</td><td>1.7%</td></tr>
+      <tr><td>4月</td><td>28</td><td>19</td><td>47</td><td>40.4%</td></tr>
+      <tr><td>5月（〜21）</td><td>20</td><td>12</td><td>32</td><td>37.5%</td></tr>
+      <tr><td><b>6月（〜21）</b></td><td class="neg">17</td><td class="pos">17</td><td>34</td><td class="hl">50.0%</td></tr>
+    </tbody>
+  </table>
+  <div class="note">※5月・6月とも「〜21日」の同じ約21日窓で比較。新規は 58→28→20→17 と減少、再来は実数も増加。</div>
+
+  <div class="section-h">特定 → 改善（MIZUKARA 6列フレーム）</div>
+  <div class="frame">
+    <div class="cell"><div class="ch prob">① 問題</div><div class="cb">
+      再来率は上がっているのに、<b>新規が積み上がらない</b>。新規の<span class="num">76%</span>が1回で消えている。
+    </div></div>
+    <div class="cell"><div class="ch fact">② 事実</div><div class="cb">
+      再来率 <span class="num">37.5%→50.0%</span>（再来12→17）。新規は <span class="num">58→28→20→17</span> と減少。6月の再来17件中<span class="num">14件(82%)</span>が次回予約経由。回数券消化・指名はほぼゼロ。
+    </div></div>
+    <div class="cell"><div class="ch what">③ 課題</div><div class="cb"><ul>
+      <li>新規来店時に次回予約を取れていない（<span class="num">13%</span>だけ）</li>
+      <li>一番集める「120本クーポン」の再来率が<span class="num">最低20%</span></li>
+      <li>2回目→3回目で半減（<span class="num">30→14件</span>）</li>
+    </ul></div></div>
+    <div class="cell"><div class="ch goal">④ 理想</div><div class="cb">
+      新規→2回目の転換を上げ、<b>89%が当日予約する再来ループ</b>に乗せる。＝再来が雪だるま式に積み上がる状態。
+    </div></div>
+    <div class="cell"><div class="ch plan">⑤ 方針</div><div class="cb">
+      「入口での次回予約」を仕組み化。取れない人は<b>34日サイクル</b>に合わせLINE/SMSで呼び戻す。入口クーポンは“定着率”で選ぶ。
+    </div></div>
+    <div class="cell"><div class="ch act">⑥ 行動</div><div class="cb"><ul>
+      <li><span class="tag sv">SV</span>新規会計時に次回予約を取る運用を徹底（7月〜）</li>
+      <li><span class="tag taka">タカショー</span>取れない新規へ来店30日前後の再来リマインド配信（7月）</li>
+      <li><span class="tag taka">タカショー</span>入口クーポンを定着率で評価し120本依存を見直し（7月）</li>
+    </ul></div></div>
+  </div>
+
+  <div class="section-h">① なんのクーポンが一番入っているか（新規の入口 TOP）</div>
+  <table class="t">
+    <thead><tr><th>入口クーポン</th><th>新規</th></tr></thead>
+    <tbody>
+      <tr><td>&lt;当日予約OK★&gt;LEDフラットラッシュ120本＋無料オフ</td><td class="hl">35名</td></tr>
+      <tr><td>【OPEN記念★ご新規他店オフ無料】フラットラッシュ</td><td>21名</td></tr>
+      <tr><td>【Suzuデビュー記念☆2000円OFF】</td><td>7名</td></tr>
+      <tr><td>&lt;3/31まで☆OP2000円無料&gt;ロッド15個</td><td>7名</td></tr>
+      <tr><td>学割U24限定 ／ パリジェンヌラッシュリフト</td><td>各5名</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-h">② どのクーポンで再来が溜まっているか（入口別の再来率）</div>
+  <table class="t">
+    <thead><tr><th>入口クーポン</th><th>新規</th><th>再来した人</th><th>再来率</th></tr></thead>
+    <tbody>
+      <tr><td>OPEN記念フラットラッシュ</td><td>21</td><td>7</td><td>33%</td></tr>
+      <tr><td>当日予約OK★120本（＝一番集める入口）</td><td>35</td><td>7</td><td class="neg">20%（最低）</td></tr>
+      <tr><td>Suzuデビュー記念</td><td>7</td><td>3</td><td class="pos">43%</td></tr>
+      <tr><td>学割U24限定</td><td>4</td><td>2</td><td class="pos">50%</td></tr>
+      <tr><td>SET割（眉ワックス＋パリジェンヌ）</td><td>3</td><td>2</td><td class="pos">67%</td></tr>
+    </tbody>
+  </table>
+  <div class="note">★絶対数で再来が溜まるのは OPEN記念・120本（各7名）。だが<b>一番集める120本は再来率が最低20%</b>＝量は来るが定着が弱い。率では学割・SET割・Suzuデビューが高い（小ロット）。</div>
+
+  <div class="section-h">③④⑤⑥ 何回目が多いか／当日に次回予約を取っているか（核心）</div>
+  <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+    <div class="kpi y"><div class="k">再来は「何回目」が多いか</div><div class="v">2回目</div><div class="d">2回目 30件 → 3回目 14件 → 4回目 4件（次の壁は2→3）</div></div>
+    <div class="kpi y"><div class="k">当日予約しない人の再来間隔</div><div class="v">34日</div><div class="d">中央値34日（30〜45日が中心）＝マツエクのリペアサイクル</div></div>
+  </div>
+  <table class="t" style="margin-top:13px">
+    <thead><tr><th>区分</th><th>当日に次回予約</th><th>後日HPB/電話</th><th>戻らず</th><th>戻った人中の当日予約率</th></tr></thead>
+    <tbody>
+      <tr><td><b>新規客</b></td><td>16</td><td>14</td><td class="neg">94</td><td>53%</td></tr>
+      <tr><td><b>2回目以降</b></td><td>16</td><td>2</td><td>30</td><td class="pos hl">89%</td></tr>
+    </tbody>
+  </table>
+  <div class="note">★<b>新規はその場で取れていない</b>（全新規の13%）→76%が消滅。一方<b>2回目以降は89%が当日予約</b>＝一度ループに入れば強い。だから勝負どころは「新規初回での次回予約」。</div>
+
+  <div class="band">
+    <div class="L"><div class="bh">🔎 特定（過去＝何が起きたか）</div><div class="bc"><ul>
+      <li>再来率は 37.5%→50.0% に上昇、エンジンは「次回予約」（6月再来の82%）</li>
+      <li>新規が 58→28→20→17 と減少、新規の76%が1回で消滅</li>
+      <li>一番集める120本クーポンの再来率が最低（20%）</li>
+      <li>新規の当日次回予約13% ／ 2回目以降は89%</li>
+    </ul></div></div>
+    <div class="R"><div class="bh">🚀 改善（未来＝何をするか）</div><div class="bc"><ul>
+      <li><b>新規会計時の次回予約を運用徹底</b>（SV・7月〜）＝最大レバー</li>
+      <li>取れない新規へ<b>来店30日前後のリマインド配信</b>（タカショー・34日サイクルに合わせ）</li>
+      <li>入口クーポンを<b>“定着率”で評価</b>し、120本依存→OPEN記念/学割/SET割型へ寄せる</li>
+      <li>2回目→3回目の壁（30→14）にも次回予約を継続させる</li>
+    </ul></div></div>
+  </div>
+
+  <div class="note">
+    データ正本：SalonBoard売上明細（LUMISS二子玉川 H000802078）。期間 2026/3/2〜6/21（6月分は6/23取得・〜6/21）。来店＝会計IDユニーク・取消会計除外・新規/再来は明細の「新規再来」列。顧客キーは氏名＋フリガナ（お客様番号は空欄のため）。次回予約の判定は予約経路「新規次回予約／再来次回予約」。生成：2026-06-27 ／ 最強理事会
+  </div>
+</div>
+</body>
+</html>
